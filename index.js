@@ -265,7 +265,7 @@ export const applyCustomCode = externalCodeSetup => {
             const diffExpiringDays = expiringTime.diff(current_time, 'days');
             let diffExpiringTime = '';
             diffExpiringTime = 'Expire in '+diffExpiringDays+' Days';
-            if(diffExpiringDays<=7){
+            if(diffExpiringDays<=7 && diffExpiringDays>0){
                 statusBarColor = "grey";
                 statusText = diffExpiringTime;
                 lessonNote = 'Course is expiring soon';
@@ -291,7 +291,7 @@ export const applyCustomCode = externalCodeSetup => {
         }
         const styles = StyleSheet.create({
             containerStyle: {
-                marginHorizontal: 15,
+                marginHorizontal: scale(15),
                 backgroundColor: 'transparent',
             },
             statusBar:{
@@ -390,7 +390,7 @@ export const applyCustomCode = externalCodeSetup => {
                 paddingVertical: 0,
                 paddingHorizontal: 0,
                 width: '100%',
-                marginBottom: 15,
+                marginBottom: verticalScale(15),
             },
             boxShadow: {
                 shadowColor: "#000",
@@ -1011,6 +1011,24 @@ export const applyCustomCode = externalCodeSetup => {
                     }
                 }
                 return reducer(newUserState, action);
+            case 'UPDATE_USER_COMPLETED_LESSONS':
+                const newUserLesson = {
+                    ...state,
+                    userObject:{
+                        ...state.userObject,
+                        completed_lessons: [...state.userObject.completed_lessons, action.payload]
+                    }
+                }
+                return reducer(newUserLesson, action);
+            case 'UPDATE_USER_COMPLETED_COURSES':
+                const newUserCourse = {
+                    ...state,
+                    userObject:{
+                        ...state.userObject,
+                        completed_courses: [...state.userObject.completed_courses, action.payload]
+                    }
+                }
+                return reducer(newUserCourse, action);
             default:
                 return reducer(state, action);
         }

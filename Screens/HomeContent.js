@@ -8,7 +8,7 @@ import {
     SafeAreaView, Text, FlatList, Image
 } from "react-native";
 import {windowWidth} from "../Utils/Dimensions";
-import { scale } from '../Utils/scale';
+import {scale, verticalScale} from '../Utils/scale';
 import IconButton from "@src/components/IconButton";
 import TouchableScale from "../Components/TouchableScale";
 import TopSlider from '../Components/TopSlider';
@@ -23,6 +23,7 @@ import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workarou
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import * as Progress from 'react-native-progress';
+import EventList from "../Components/EventList";
 
 const HomeContent = (props) => {
     const {navigation, screenProps} = props;
@@ -32,7 +33,6 @@ const HomeContent = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
     const [quotesData, setQuotesData] = useState([]);
     const [quotesLoading, setQuotesLoading] = useState(true);
-
     TrackPlayer.updateOptions({
         stopWithApp: !(user.membership&&user.membership.length), // false=> music continues in background even when app is closed
         // Media controls capabilities
@@ -175,12 +175,12 @@ const HomeContent = (props) => {
                             })}
                         </View>
                 )}
-                <View style={[styles.eventRow, styles.boxShadow, {marginVertical:10, borderRadius:9}]}>
-                    <Image style={{width:windowWidth-30, height:(windowWidth-30)/16*9, borderRadius:9}} source={{uri: 'https://app.onenergy.institute/wp-content/uploads/2022/04/1st-webinar-3-days.png'}} />
-                </View>
-                <View style={[styles.eventRow, styles.boxShadow, {marginVertical:10, borderRadius:9}]}>
-                    <Image style={{width:windowWidth-30, height:(windowWidth-30)/16*9, borderRadius:9}} source={{uri: 'https://app.onenergy.institute/wp-content/uploads/2022/04/1.png'}} />
-                </View>
+                {user?
+                    <View style={styles.programRow}>
+                        <EventList location={'home'} eventsData={optionData.webinars} />
+                        <EventList location={'home'} eventsData={optionData.goals} />
+                    </View>
+                :null}
                 {user && user.firstCourseCompleted && optionData.show.includes('events') && (
                 <View style={styles.eventRow}>
                     {optionData.events && (
@@ -295,22 +295,6 @@ const HomeContent = (props) => {
                     </View>
                     :null
                 }
-                {optionData.show.includes('programs') && (
-                <View style={styles.programRow}>
-                    {optionData.featuredProgramTitle?
-                        <View style={styles.view_title}><Text style={styles.heading}>{optionData.featuredProgramTitle}</Text></View>
-                        :null}
-                    <View style={styles.eventRow}>
-                        <FlatList
-                            data={optionData.featuredPrograms}
-                            renderItem={renderFeaturedPrograms}
-                            keyExtractor={item => item.id}
-                            showsHorizontalScrollIndicator={false}
-                            horizontal
-                        />
-                    </View>
-                </View>
-                )}
                 {optionData.show.includes('blogs') && (
                 <View style={styles.blogRow}>
                     {optionData.blogs.map((blog)=>(
@@ -364,7 +348,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
     },
     slideRow: {
-        marginHorizontal: 15,
+        marginHorizontal: scale(15),
         marginTop: 20,
         marginBottom: 10,
         alignItems: 'center',
@@ -373,7 +357,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
     },
     quoteRow: {
-        marginHorizontal: 15,
+        marginHorizontal: scale(15),
         marginVertical: 10,
         alignItems: 'center',
         justifyContent: 'center',
@@ -466,7 +450,7 @@ const styles = StyleSheet.create({
     },
     view_intro: {
         marginVertical:10,
-        marginHorizontal:15,
+        marginHorizontal:scale(15),
         width:windowWidth-30,
         height:windowWidth-30,
         borderRadius: 9,

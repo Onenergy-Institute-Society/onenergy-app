@@ -6,7 +6,8 @@ import {
     TouchableOpacity,
     SafeAreaView,
     Platform,
-    FlatList
+    FlatList,
+    Image, ScrollView
 } from "react-native";
 import {useSelector} from "react-redux";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
@@ -19,7 +20,8 @@ import { scale, verticalScale } from '../Utils/scale';
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { Modalize } from 'react-native-modalize';
-
+import EventList from "../Components/EventList";
+import moment from 'moment';
 const ProgramsScreen = props => {
     const { navigation, screenProps } = props;
     const user = useSelector((state) => state.user.userObject);
@@ -62,17 +64,26 @@ const ProgramsScreen = props => {
             </TouchableScale>
         )
     }
+    const renderItem = ({ item }) => {
+        return (
+            <TouchableScale
+                onPress={()=>{}}>
+                <ImageCache style={    {
+                    width:windowWidth-scale(30),
+                    height:(windowWidth-scale(30))/16*9,
+                    borderRadius: 9,
+                    overflow: 'hidden',
+                }}
+                            source={{uri: item.image ? item.image : ''}}/>
+            </TouchableScale>
+        );
+    }
     return (
         <SafeAreaView style={global.container}>
-            <View style={styles.eventRow}>
-                <FlatList
-                    data={optionData.featuredPrograms}
-                    renderItem={renderFeaturedPrograms}
-                    keyExtractor={item => item.id}
-                    showsHorizontalScrollIndicator={false}
-                    horizontal
-                />
-            </View>
+            <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
+                <View style={{marginVertical:verticalScale(5)}}>
+                    <EventList location={'program'} eventsData={optionData.webinars} />
+                </View>
             {!user || !user.firstCourseCompleted ?
                 <View style={styles.row_intro}>
                     <TouchableScale
@@ -133,6 +144,7 @@ const ProgramsScreen = props => {
                                  {...props} />
                 </View>
             </Modalize>
+            </ScrollView>
         </SafeAreaView>
     );
 };
@@ -144,10 +156,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     scroll_view: {
-        flexGrow: 1,
+        flex:1,
     },
     eventRow: {
-        margin: 15,
+        marginHorizontal: 15,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -169,7 +181,7 @@ const styles = StyleSheet.create({
         width: (windowWidth - 50) / 2,
         height: (windowWidth - 30) / 2,
         marginRight: 20,
-        marginVertical:10,
+        marginVertical:verticalScale(15),
         backgroundColor: 'white',
         borderRadius: 9,
         paddingVertical: 0,

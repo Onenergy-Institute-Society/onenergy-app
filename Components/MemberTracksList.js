@@ -158,8 +158,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0,
         width: windowWidth - 30,
         marginHorizontal: 15,
-        marginVertical: verticalScale(10),
-        overflow: "hidden",
+        marginBottom: verticalScale(15),
         justifyContent: "flex-start",
     },
     trackItemInner: {
@@ -178,7 +177,6 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     itemStyle: {
-        // marginHorizontal: scale(8),
         paddingHorizontal: scale(8),
         display: 'flex',
         flexDirection: 'row',

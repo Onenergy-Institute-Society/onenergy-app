@@ -36,6 +36,10 @@ const LessonButton = (props) => {
                     type: 'VIDEO_RESET',
                 });
                 setCompleting(false);
+                dispatch({
+                    type: 'UPDATE_USER_COMPLETED_LESSONS',
+                    payload: lesson.id
+                });
                 if(lesson.settings.guide)
                 {
                     dispatch({
@@ -52,8 +56,26 @@ const LessonButton = (props) => {
                     setAlertConfirmText(optionData.titles[index].title);
                     setAlertShowConfirm(true);
                     setShowAlert(true);
-                }else{
+                    dispatch({
+                        type: 'UPDATE_USER_COMPLETED_LESSONS',
+                        payload: {"id": lesson.id, "date": new Date()}
+                    });
                     if(response.data.next_lesson===0){
+                        dispatch({
+                            type: 'UPDATE_USER_COMPLETED_COURSES',
+                            payload: {"id": lesson.parent.id, "date": new Date()}
+                        });
+                    }
+                }else{
+                    dispatch({
+                        type: 'UPDATE_USER_COMPLETED_LESSONS',
+                        payload: {"id": lesson.id, "date": new Date()}
+                    });
+                    if(response.data.next_lesson===0){
+                        dispatch({
+                            type: 'UPDATE_USER_COMPLETED_COURSES',
+                            payload: {"id": lesson.parent.id, "date": new Date()}
+                        });
                         if(response.data.course===29421){
                             dispatch({ type: "COMPLETE_FIRST_COURSE" });
                         }
@@ -96,7 +118,7 @@ const LessonButton = (props) => {
                 return;
         }
     }
-    console.log(lesson, videoComplete)
+
     return (
         <View style={[global.row, {paddingHorizontal: 20, paddingVertical: 15}]}>
             {lesson.completed?

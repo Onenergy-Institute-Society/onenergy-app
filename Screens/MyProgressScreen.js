@@ -16,7 +16,6 @@ import Timeline from "../Components/Timeline";
 import * as Progress from 'react-native-progress';
 
 const MyProgressScreen = (props) => {
-    const user = useSelector((state) => state.user.userObject);
     const language = useSelector((state) => state.languagesReducer.languages);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
     const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'achievement_progress_empty');
@@ -29,7 +28,7 @@ const MyProgressScreen = (props) => {
         try {
             const apiSlide = getApi(props.config);
             await apiSlide.customRequest(
-                "wp-json/onenergy/v1/timeline?user="+user.id,
+                "wp-json/onenergy/v1/timeline",
                 "get",
                 {},
                 null,

@@ -39,7 +39,7 @@ const TracksList = (props) => {
         try {
             const apiRequest = getApi(props.config);
             await apiRequest.customRequest(
-                "wp-json/onenergy/v1/progress/?user="+user.id,
+                "wp-json/onenergy/v1/progress",
                 "post",
                 {"id":selectedTrack.guide, "type":"Guide_End"},
                 null,
@@ -145,8 +145,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0,
         width: windowWidth - scale(30),
         marginHorizontal: scale(15),
-        marginTop: verticalScale(20),
-        overflow: "hidden",
+        marginBottom: verticalScale(15),
         justifyContent: "flex-start",
     },
     trackItemInner: {

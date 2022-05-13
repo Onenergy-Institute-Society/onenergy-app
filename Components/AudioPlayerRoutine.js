@@ -19,7 +19,7 @@ const AudioPlayerRoutine = (props) => {
         stopButton,
     } = styles;
     const { routine } = props;
-    const user = useSelector((state) => state.user.userObject);
+
     const [playing, setPlaying] = useState(false);
     const [stopped, setStopped] = useState(true)
     const [trackTitle, setTrackTitle] = useState('');
@@ -30,7 +30,7 @@ const AudioPlayerRoutine = (props) => {
         try {
             const apiRequest = getApi(props.config);
             await apiRequest.customRequest(
-                "wp-json/onenergy/v1/progress/?user="+user.id,
+                "wp-json/onenergy/v1/progress",
                 "post",
                 {"id":routine.id, "type":"Routine_End"},
                 null,

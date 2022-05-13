@@ -25,7 +25,6 @@ import * as Progress from 'react-native-progress';
 const EditRoutine = props => {
     const {navigation} = props;
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.user.userObject);
     const language = useSelector((state) => state.languagesReducer.languages);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
     const backgroundImages = optionData.routine_image;
@@ -62,7 +61,7 @@ const EditRoutine = props => {
         try {
             const apiSlide = getApi(props.config);
             await apiSlide.customRequest(
-                "wp-json/onenergy/v1/addRoutine/?user="+user.id,
+                "wp-json/onenergy/v1/addRoutine",
                 "post",
                 {"routine":routineDetail},
                 null,
@@ -84,7 +83,7 @@ const EditRoutine = props => {
         try {
             const apiSlide = getApi(props.config);
             await apiSlide.customRequest(
-                "wp-json/onenergy/v1/guide/?category=preparatory-practices&user="+user.id,
+                "wp-json/onenergy/v1/guide/?category=preparatory-practices",
                 "get",
                 {},
                 null,

@@ -27,6 +27,7 @@ import { Modalize } from 'react-native-modalize';
 import WaitingGroupPractice from "../Components/WaitingGroupPractice";
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
+import EventList from "../Components/EventList";
 
 const PracticeGroup = props => {
     const { navigation, screenProps } = props;
@@ -60,7 +61,7 @@ const PracticeGroup = props => {
         try {
             const api = getApi(props.config);
             await api.customRequest(
-                "wp-json/onenergy/v1/JoinGroupPractice?user="+user.id,          // Endpoint suffix or full url. Suffix will be appended to the site url that app uses. Example of a suffix is "wp-json/buddyboss/v1/members". Example of full url would be "https://app-demos.buddyboss.com/learndash/wp-json/buddyboss/v1/members".
+                "wp-json/onenergy/v1/JoinGroupPractice",          // Endpoint suffix or full url. Suffix will be appended to the site url that app uses. Example of a suffix is "wp-json/buddyboss/v1/members". Example of full url would be "https://app-demos.buddyboss.com/learndash/wp-json/buddyboss/v1/members".
                 "post",       // get, post, patch, delete etc.
                 {"gp_id":gp_id, "gp_time":gp_time},               // JSON, FormData or any other type of payload you want to send in a body of request
                 null,             // validation function or null
@@ -105,6 +106,8 @@ const PracticeGroup = props => {
     const onItemDetailPress = (groupPracticeID) => {
         if(!selectedGroupPractice || groupPracticeID !== selectedGroupPractice) {
             setSelectedGroupPractice(groupPracticeID);
+        }else{
+            setSelectedGroupPractice(null);
         }
     };
     const htmlStyle = {
@@ -128,10 +131,9 @@ const PracticeGroup = props => {
         let showDetail= false;
         showDetail = !!(selectedGroupPractice && selectedGroupPractice === item.id);
         let detail = item.content.rendered;
-        const conditionLessons  = item.meta_box.lessons.every(value => user.completed_lessons.includes(value));
+        const conditionLessons  = item.meta_box.lessons.every(value => user.completed_lessons.some(lesson=>(lesson.id=value)));
         user.completed_lessons.map((lesson) => {
-            detail = detail.replace('<span id="'+lesson+'"></span>', '<span style="color:green">(Passed)</span>')
-            console.log(detail)
+            detail = detail.replace('<span id="'+lesson.id+'"></span>', '<span style="color:green">(Passed)</span>')
         })
         const conditionWeekDay = item.meta_box.weekday.includes(new Date().getDay().toString());
         const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
@@ -157,16 +159,16 @@ const PracticeGroup = props => {
             }
         })
         return (
-            <View style={[styles.containerStyle, styles.boxShadow, {height: showDetail?verticalScale(450):verticalScale(260)}]} key={'gp-' + item.id}>
-                <ImageBackground style={[styles.imageView, {height: showDetail?verticalScale(200):verticalScale(260)}]} source={{uri: item.meta_box.bg_image.full_url}}>
-                    <View style={{height:scale(60), justifyContent:"center", alignItems:"center", width:windowWidth-30}}>
+            <View style={[styles.containerStyle, styles.boxShadow, {height: showDetail?verticalScale(450):verticalScale(200)}]} key={'gp-' + item.id}>
+                <ImageBackground style={[styles.imageView, {height: showDetail?verticalScale(200):verticalScale(200)}]} source={{uri: item.meta_box.bg_image.full_url}}>
+                    <View style={{height:scale(60), justifyContent:"center", alignItems:"center", width:windowWidth-scale(30)}}>
                         <Text style={styles.title}>{item.title.rendered}</Text>
                     </View>
                     {conditionLessons?
                         conditionWeekDay?
                             conditionTime?
                                 <View style={styles.viewTop}>
-                                    <View style={{flexDirection: "column", justifyContent:"space-around", width:windowWidth-30}}>
+                                    <View style={{flexDirection: "column", justifyContent:"space-around", width:windowWidth-scale(30)}}>
                                         <View style={{alignItems: "center"}}>
                                             <Text style={styles.waitTimeLabel}>Next Streaming:</Text>
                                             {timeToGo > 0 ?
@@ -187,7 +189,7 @@ const PracticeGroup = props => {
                                         handlePress(item.meta_box.url, item.id, CurrentStartTime)
                                     }}
                                         >
-                                            <Text style={{color: "white", fontSize:24, fontWeight: "700"}}>JOIN GROUP PRACTICE</Text>
+                                            <Text style={{color: "white", fontSize:scale(24), fontWeight: "700"}}>JOIN GROUP PRACTICE</Text>
                                         </TouchableOpacity>
                                     :null}
                                 </View>
@@ -224,21 +226,19 @@ const PracticeGroup = props => {
                             <Text style={{fontWeight:"500", fontSize:scale(18), textAlign:"center"}}>Please finish all required lessons to activate this group practice.</Text>
                         </View>
                     }
-                    {!showDetail?
                         <TouchableOpacity
                             style={styles.viewBottom}
-                            onPress={() => onItemDetailPress(item.id)}
+                            onPress={() => onItemDetailPress(item.id, showDetail)}
                         >
                             <View stlye={styles.viewDetail}>
-                                <Text style={styles.description}>Tap here to view detail</Text>
-                                <Image tintColor={"#4942e1"} source={require("@src/assets/img/dropdown_2.png")} style={{alignSelf:"center", width:16, height:16}} />
+                                <Text style={styles.description}>Tap here to {showDetail?'hide':'view'} detail</Text>
+                                <Image tintColor={"#4942e1"} source={require("@src/assets/img/dropdown_2.png")}
+                                       style={{alignSelf: "center", width: 16, height: 16, transform: [{ rotate: showDetail?'180deg':'0deg' }]}}/>
                             </View>
                         </TouchableOpacity>
-                    :null
-                    }
                 </ImageBackground>
                 {showDetail?
-                <ScrollView nestedScrollEnabled style={{height:60, backgroundColor:"white", padding:15}}>
+                <ScrollView nestedScrollEnabled style={{height:60, backgroundColor:"white", padding:15, borderBottomRightRadius:9, borderBottomLeftRadius:9}}>
                     <HTML html={detail}
                           contentWidth = {windowWidth-80}
                           imagesMaxWidth = {windowWidth}
@@ -262,18 +262,23 @@ const PracticeGroup = props => {
 
     return (
         <SafeAreaView style={styles.container}>
-            {groupPracticeLoading?(
-                <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
-            ):(
-                <FlatList
-                    style={styles.scrollView}
-                    data={groupPractice}
-                    renderItem={renderItem}
-                    extraData={this.props}
-                    showsVerticalScrollIndicator={false}
-                    keyExtractor={item => item.id}
-                />
-            )}
+            <ScrollView styles={styles.scrollView} showsVerticalScrollIndicator={false}>
+                <View style={{marginVertical:verticalScale(5)}}>
+                    <EventList location={'practice_group'} eventsData={optionData.goals} />
+                    <EventList location={'practice_group'} eventsData={optionData.challenges} />
+                </View>
+                {groupPracticeLoading?(
+                    <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
+                ):(
+                    <FlatList
+                        data={groupPractice}
+                        renderItem={renderItem}
+                        extraData={this.props}
+                        showsVerticalScrollIndicator={false}
+                        keyExtractor={item => item.id}
+                    />
+                )}
+            </ScrollView>
             <Modalize
                 ref={(pgHelpModal) => { this.pgHelpModal = pgHelpModal; }}
                 modalHeight = {windowHeight*4/5}
@@ -315,6 +320,7 @@ const PracticeGroup = props => {
             >
                 <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
             </PopupDialog>
+
         </SafeAreaView>
     );
 };
@@ -328,12 +334,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         backgroundColor: '#f6f6f8',
-        width: windowWidth - 30,
-        marginLeft: 15,
-        marginRight: 15,
-        marginBottom: 25,
+        width: windowWidth - scale(30),
+        marginHorizontal: scale(15),
+        marginBottom: verticalScale(15),
         borderRadius: 9,
-        overflow: 'hidden',
     },
     boxShadow: {
         shadowColor: "#000",
@@ -343,15 +347,12 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     scrollView: {
-        paddingTop: 15,
-        justifyContent: 'flex-start',
-        flexWrap: 'wrap',
-        paddingBottom: 60,
+        width: windowWidth - scale(30),
+        flexGrow: 1,
     },
     imageView: {
-        width: windowWidth - 30,
-        borderBottomRightRadius: 9,
-        borderBottomLeftRadius: 9,
+        width: windowWidth - scale(30),
+        borderRadius: 9,
         overflow: 'hidden',
         opacity: 0.8,
     },
@@ -384,8 +385,8 @@ const styles = StyleSheet.create({
     },
     viewTop: {
         padding:10,
-        width: windowWidth - 30,
-        height:verticalScale(140),
+        width: windowWidth - scale(30),
+        height:verticalScale(100),
         alignItems: "center",
         justifyContent: "space-around",
 
@@ -393,7 +394,7 @@ const styles = StyleSheet.create({
     viewTopInfo: {
         padding:10,
         width: windowWidth - 30,
-        height:verticalScale(140),
+        height:verticalScale(100),
         alignItems: "center",
         justifyContent: "center",
     },

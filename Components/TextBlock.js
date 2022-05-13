@@ -52,9 +52,9 @@ const TextBlock =(props) => {
         a: {
             fontSize: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize):scale(14),
         },
-        ul:{
+/*        ul:{
             width:"100%",
-        },
+        },*/
         li: {
             lineHeight: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize*1.47):scale(14*1.47),
             fontSize: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize):scale(14),
@@ -67,6 +67,12 @@ const TextBlock =(props) => {
             color: block.data.data.bodyColor?block.data.data.bodyColor:"#000",
             textAlign: block.data.data.bodyAlign?block.data.data.bodyAlign:"left",
         },
+        rawtext: {
+            lineHeight: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize*1.47):scale(14*1.47),
+            fontSize: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize):scale(14),
+            color: block.data.data.bodyColor?block.data.data.bodyColor:"#000",
+            textAlign: block.data.data.bodyAlign?block.data.data.bodyAlign:"left",
+        }
     };
     const TextComponent = () => {
         return (
@@ -81,7 +87,7 @@ const TextBlock =(props) => {
                 }]}>{block.data.data.title}</Text>
                 :null}
             {block.data.data.body?
-                <HTML html={'<p>'+block.data.data.body+'</p>'}
+                <HTML html={block.data.data.body}
                       tagsStyles={htmlStyle}
                       ignoredStyles={['height', 'width']}
                       style={{flex:1}}

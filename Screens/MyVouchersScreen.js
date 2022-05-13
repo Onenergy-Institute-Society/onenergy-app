@@ -8,28 +8,29 @@ import {
     TouchableOpacity,
     View,
     Text,
-    Flatlist,
+    FlatList,
     ImageBackground
 } from 'react-native';
 import {scale, verticalScale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import * as Progress from 'react-native-progress';
+import TouchableScale from "../Components/TouchableScale";
+import moment from 'moment';
 
 const MyVouchersScreen = (props) => {
-    const user = useSelector((state) => state.user.userObject);
     const language = useSelector((state) => state.languagesReducer.languages);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
     const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'voucher_empty');
     const emptyText = optionData.titles[emptyTextIndex].title
 
-    const [vouchers, setVouchers] = useState([]);
+    const [vouchers, setVouchers] = useState({});
     const [vouchersLoading, setVouchersLoading] = useState(true);
 
     const fetchVoucherData = async () => {
         try {
             const apiVoucher = getApi(props.config);
             await apiVoucher.customRequest(
-                "wp-json/onenergy/v1/voucher?user="+user.id,
+                "wp-json/onenergy/v1/voucher",
                 "get",
                 {},
                 null,
@@ -43,6 +44,25 @@ const MyVouchersScreen = (props) => {
             console.error(e);
         }
     }
+    const redeemVoucher = async (voucherID) => {
+        try {
+            const apiRequest = getApi(props.config);
+            await apiRequest.customRequest(
+                "wp-json/onenergy/v1/redeemVoucher",
+                "post",
+                {"id":voucherID},
+                null,
+                {},
+                false
+            ).then(response => {
+                if(response.data)
+                {
+                }
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
     useEffect(()=>{
         fetchVoucherData().then();
         let titleIndex = optionData.titles.findIndex(el => el.id === 'voucher_title');
@@ -50,33 +70,41 @@ const MyVouchersScreen = (props) => {
             title: optionData.titles[titleIndex].title,
         });
     },[])
-    const renderItem = ({ item }) => (
-        <View style={styles.voucherItem}>
-                <ImageBackground style={styles.itemStyle} source={{uri: item._embedded['wp:featuredmedia'][0].source_url ? item._embedded['wp:featuredmedia'][0].source_url : ''}}>
+    const renderItem = ({ item }) => {
+        console.log(item);
+        return (
+        <TouchableScale
+            onPress={() => {
+            }}
+        >
+            <View style={[styles.voucherItem,styles.boxShadow]}>
+                <ImageBackground style={styles.list} source={{uri: item.image ? item.image : ''}}>
                     <View style={styles.titleBox}>
                         <Text style={styles.title}>{item.title}</Text>
                     </View>
                     <View style={styles.detailBox}>
-                        <Text style={styles.subTitle}>{item.title}</Text>
+                        <Text style={styles.subTitle}>{"Expiry Date: "+moment(item.expireDate).format("MMMM Do, YYYY")}</Text>
                     </View>
-                    <View style={styles.detailBox}>
+                    <View style={styles.buttonBox}>
                         <TouchableOpacity
-                            onPress={() => {
-                            }}
+                            style={styles.buttonRedeem}
+                            onPress={() => {}}
                         >
-                            <Text style={styles.subTitle}>{item.title}</Text>
+                            <Text style={styles.redeem}>Redeem</Text>
                         </TouchableOpacity>
                     </View>
                 </ImageBackground>
-        </View>
-    );
+            </View>
+        </TouchableScale>
+        )
+    };
     return(
         <SafeAreaView style={styles.container}>
             {vouchersLoading?
                 <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
                 :
                 vouchers.length?
-                    <Flatlist
+                    <FlatList
                         data={vouchers} renderItem={renderItem} keyExtractor={item => item.id}
                     />
                     :
@@ -105,12 +133,17 @@ const styles = StyleSheet.create({
         width:windowWidth,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal:15,
     },
     list: {
-        width:windowWidth,
-        flex: 1,
-        marginTop:20,
+        width: windowWidth-scale(30),
+        height: (windowWidth-scale(30))/16*9,
+        backgroundColor: 'white',
+        paddingVertical: 0,
+        paddingHorizontal: 0,
+        borderRadius: 9,
+        justifyContent:"center",
+        alignItems:"center",
+        overflow: "hidden"
     },
     titleBox:{
 
@@ -118,8 +151,36 @@ const styles = StyleSheet.create({
     detailBox:{
 
     },
-    voucherItem:{
+    buttonBox:{
 
+    },
+    title:{
+        fontWeight: "500",
+        fontSize:scale(18),
+    },
+    subTitle:{
+        fontSize:scale(14),
+    },
+    buttonRedeem:{
+        marginTop:25,
+        borderRadius: 5,
+        backgroundColor: "green",
+        paddingHorizontal:15,
+        paddingVertical:5
+    },
+    redeem:{
+        color:"white",
+        fontSize:scale(24),
+    },
+    voucherItem:{
+        marginTop:verticalScale(20),
+        marginHorizontal:scale(15),
+        backgroundColor: 'white',
+        borderRadius: 9,
+        paddingVertical: 0,
+        paddingHorizontal: 0,
+        width: windowWidth-scale(30),
+        height: (windowWidth-scale(30))/16*9,
     },
     boxShadow: {
         shadowColor: "#000",

@@ -5,7 +5,7 @@ import {
     SafeAreaView,
     View,
     Text,
-    Platform
+    Platform, ScrollView
 } from "react-native";
 import {getApi} from "@src/services";
 import {connect, useSelector} from "react-redux";
@@ -18,6 +18,7 @@ import { Modalize } from 'react-native-modalize';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale, verticalScale} from "../Utils/scale";
 import * as Progress from 'react-native-progress';
+import EventList from "../Components/EventList";
 
 const PracticePersonal = props => {
     const user = useSelector((state) => state.user.userObject);
@@ -35,7 +36,7 @@ const PracticePersonal = props => {
         try {
             const apiSlide = getApi(props.config);
             await apiSlide.customRequest(
-                "wp-json/onenergy/v1/audio/?user="+user.id,
+                "wp-json/onenergy/v1/audio",
                 "get",
                 {},
                 null,
@@ -62,6 +63,11 @@ const PracticePersonal = props => {
     }, []);
     return (
         <SafeAreaView style={styles.container}>
+            <ScrollView>
+                <View style={{marginVertical:verticalScale(5)}}>
+                    <EventList location={'practice_guided'} eventsData={optionData.goals} />
+                    <EventList location={'practice_guided'} eventsData={optionData.challenges} />
+                </View>
             {user.hasGuide>0?
                 tracksLoading ? (
                     <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
@@ -82,6 +88,7 @@ const PracticePersonal = props => {
                                  {...props} />
                 </View>
             }
+            </ScrollView>
             <Modalize
                 ref={(ppHelpModal) => { this.ppHelpModal = ppHelpModal; }}
                 modalHeight = {windowHeight*4/5}

@@ -90,7 +90,7 @@ class VideoPlayer extends Component {
         try {
             const apiRequest = getApi(this.props.config);
             await apiRequest.customRequest(
-                "wp-json/onenergy/v1/progress/?user="+this.props.user.id,
+                "wp-json/onenergy/v1/progress",
                 "post",
                 {"id":this.props.navigation.getParam('gp_id'), "type":"Group_Practice_End"},
                 null,

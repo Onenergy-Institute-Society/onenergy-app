@@ -23,7 +23,6 @@ import * as Progress from 'react-native-progress';
 import Recaptcha from "../Components/Recaptcha";
 
 const MyFeedbackScreen = props => {
-    const user = useSelector((state) => state.user.userObject);
     const language = useSelector((state) => state.languagesReducer.languages);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
     const [content, setContent] = useState('');
@@ -35,7 +34,7 @@ const MyFeedbackScreen = props => {
         try {
             const apiSlide = getApi(props.config);
             await apiSlide.customRequest(
-                "wp-json/onenergy/v1/feedback?user="+user.id,
+                "wp-json/onenergy/v1/feedback",
                 "post",
                 {"subject":subject, "content":content},
                 null,

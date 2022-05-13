@@ -19,6 +19,7 @@ import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale, verticalScale} from "../Utils/scale";
 import TrackPlayer, {Event, useTrackPlayerEvents} from 'react-native-track-player';
 import * as Progress from 'react-native-progress';
+import EventList from "../Components/EventList";
 
 const PracticeMember = props => {
     const { navigation } = props;
@@ -37,7 +38,7 @@ const PracticeMember = props => {
         try {
             const apiSlide = getApi(props.config);
             await apiSlide.customRequest(
-                "wp-json/onenergy/v1/routine/?user="+user.id,
+                "wp-json/onenergy/v1/routine",
                 "get",
                 {},
                 null,
@@ -58,7 +59,7 @@ const PracticeMember = props => {
         try {
             const apiSlide = getApi(props.config);
             await apiSlide.customRequest(
-                "wp-json/onenergy/v1/delRoutine/?user="+user.id,
+                "wp-json/onenergy/v1/delRoutine",
                 "post",
                 {"routine":item},
                 null,
@@ -132,6 +133,10 @@ const PracticeMember = props => {
     },[]);
     return (
         <SafeAreaView style={styles.container}>
+            <View style={{marginVertical:verticalScale(5)}}>
+                <EventList location={'practice_member'} eventsData={optionData.goals} />
+                <EventList location={'practice_member'} eventsData={optionData.challenges} />
+            </View>
             {user.hasGuide>0?
                 <>
                     {user.hasRoutine > 0 ?
