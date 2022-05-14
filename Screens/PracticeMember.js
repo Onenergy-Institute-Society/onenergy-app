@@ -5,7 +5,8 @@ import {
     StyleSheet,
     TouchableOpacity,
     Text,
-    Platform
+    Platform,
+    ScrollView
 } from "react-native";
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
@@ -133,13 +134,13 @@ const PracticeMember = props => {
     },[]);
     return (
         <SafeAreaView style={styles.container}>
-            <View style={{marginVertical:verticalScale(5)}}>
-                <EventList location={'practice_member'} eventsData={optionData.goals} />
-                <EventList location={'practice_member'} eventsData={optionData.challenges} />
-            </View>
-            {user.hasGuide>0?
-                <>
-                    {user.hasRoutine > 0 ?
+            <ScrollView>
+                <View style={{marginVertical:verticalScale(5)}}>
+                    <EventList location={'practice_member'} eventsData={optionData.goals} />
+                    <EventList location={'practice_member'} eventsData={optionData.challenges} />
+                </View>
+                {user.hasGuide>0?
+                    user.hasRoutine > 0 ?
                         routinesLoading ?
                             <View style={{
                                 flex: 1,
@@ -168,45 +169,44 @@ const PracticeMember = props => {
                                          hideNavigationHeader={true}
                                          {...props} />
                         </View>
-                    }
-                    {props.routines.length<5?
-                    <IconButton
-                        pressHandler={() => {onAddPressed()}}
-                        icon={require("@src/assets/img/add.png")}
-                        style={{ height: 24, width: 24 }}
-                        tintColor={'#FFFFFF'}
-                        touchableStyle={{
-                            position: "absolute",
-                            backgroundColor: "#f4338f",
-                            bottom:scale(80),
-                            color:"white",
-                            tintColor: "#FFFFFF",
-                            alignItems: "center",
-                            borderRadius: 100,
-                            padding: 16,
-                            shadowColor: "#000",
-                            shadowOffset: {width: -2, height: 4},
-                            shadowOpacity: 0.2,
-                            shadowRadius: 3,
-                            elevation: 4,
-                        }}
-                    />
-                        :null}
-                </>
-                :
-                <View style={{
-                    flex: 1,
-                    width: windowWidth,
-                    marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0
-                }}>
-                    <BlockScreen pageId={helpPageData.id}
-                                 contentInsetTop={0}
-                                 contentOffsetY={0}
-                                 hideTitle={true}
-                                 hideNavigationHeader={true}
-                                 {...props} />
-                </View>
-            }
+                    :
+                    <View style={{
+                        flex: 1,
+                        width: windowWidth,
+                        marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0
+                    }}>
+                        <BlockScreen pageId={helpPageData.id}
+                                     contentInsetTop={0}
+                                     contentOffsetY={0}
+                                     hideTitle={true}
+                                     hideNavigationHeader={true}
+                                     {...props} />
+                    </View>
+                }
+            </ScrollView>
+            {user.hasGuide>0 && props.routines.length<5?
+                <IconButton
+                    pressHandler={() => {onAddPressed()}}
+                    icon={require("@src/assets/img/add.png")}
+                    style={{ height: 24, width: 24 }}
+                    tintColor={'#FFFFFF'}
+                    touchableStyle={{
+                        position: "absolute",
+                        backgroundColor: "#f4338f",
+                        bottom:scale(80),
+                        color:"white",
+                        tintColor: "#FFFFFF",
+                        alignItems: "center",
+                        borderRadius: 100,
+                        padding: 16,
+                        shadowColor: "#000",
+                        shadowOffset: {width: -2, height: 4},
+                        shadowOpacity: 0.2,
+                        shadowRadius: 3,
+                        elevation: 4,
+                    }}
+                />
+                :null}
             <Modalize
                 ref={(cpHelpModal) => { this.cpHelpModal = cpHelpModal; }}
                 modalHeight = {windowHeight*4/5}

@@ -9,13 +9,14 @@ import {
     View,
     Text,
     FlatList,
-    ImageBackground
+    ImageBackground, Alert
 } from 'react-native';
 import {scale, verticalScale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import * as Progress from 'react-native-progress';
-import TouchableScale from "../Components/TouchableScale";
+import PopupDialog, {ScaleAnimation} from 'react-native-popup-dialog';
 import moment from 'moment';
+import RNRestart from 'react-native-restart';
 
 const MyVouchersScreen = (props) => {
     const language = useSelector((state) => state.languagesReducer.languages);
@@ -44,25 +45,6 @@ const MyVouchersScreen = (props) => {
             console.error(e);
         }
     }
-    const redeemVoucher = async (voucherID) => {
-        try {
-            const apiRequest = getApi(props.config);
-            await apiRequest.customRequest(
-                "wp-json/onenergy/v1/redeemVoucher",
-                "post",
-                {"id":voucherID},
-                null,
-                {},
-                false
-            ).then(response => {
-                if(response.data)
-                {
-                }
-            });
-        } catch (e) {
-            console.error(e);
-        }
-    }
     useEffect(()=>{
         fetchVoucherData().then();
         let titleIndex = optionData.titles.findIndex(el => el.id === 'voucher_title');
@@ -71,12 +53,8 @@ const MyVouchersScreen = (props) => {
         });
     },[])
     const renderItem = ({ item }) => {
-        console.log(item);
+        console.log(item)
         return (
-        <TouchableScale
-            onPress={() => {
-            }}
-        >
             <View style={[styles.voucherItem,styles.boxShadow]}>
                 <ImageBackground style={styles.list} source={{uri: item.image ? item.image : ''}}>
                     <View style={styles.titleBox}>
@@ -86,16 +64,54 @@ const MyVouchersScreen = (props) => {
                         <Text style={styles.subTitle}>{"Expiry Date: "+moment(item.expireDate).format("MMMM Do, YYYY")}</Text>
                     </View>
                     <View style={styles.buttonBox}>
-                        <TouchableOpacity
-                            style={styles.buttonRedeem}
-                            onPress={() => {}}
-                        >
-                            <Text style={styles.redeem}>Redeem</Text>
-                        </TouchableOpacity>
+                        {item.redeemDate ?
+                            <>
+                                <Text style={[styles.redeem, {color:"black"}]}>Redeemed</Text>
+                                <Text style={styles.subTitle}>{"on " + moment(item.redeemDate).format("MMMM Do, YYYY")}</Text>
+                            </>
+                        :
+                            <TouchableOpacity
+                                style={styles.buttonRedeem}
+                                onPress={async () => {
+                                    try {
+                                        this.savingDialog.show();
+                                        const apiRequest = getApi(props.config);
+                                        await apiRequest.customRequest(
+                                            "wp-json/onenergy/v1/redeemVoucher",
+                                            "post",
+                                            {"id": item.id},
+                                            null,
+                                            {},
+                                            false
+                                        ).then(response => {
+                                            this.savingDialog.dismiss();
+                                            if (response.data) {
+                                                if (response.data.result) {
+                                                    switch(response.data.action){
+                                                        case 'restart':
+                                                            Alert.alert('Notice', response.data.message, [
+                                                                {text: 'OK', onPress: () => RNRestart.Restart()},
+                                                            ]);
+                                                            break;
+                                                        case 'back':
+                                                            Alert.alert('Notice', response.data.message, [
+                                                                {text: 'OK', onPress: () => props.navigation.goBack()},
+                                                            ]);
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    } catch (e) {
+                                        console.error(e);
+                                    }
+                                }}
+                            >
+                                <Text style={styles.redeem}>Redeem Now</Text>
+                            </TouchableOpacity>
+                        }
                     </View>
                 </ImageBackground>
             </View>
-        </TouchableScale>
         )
     };
     return(
@@ -124,6 +140,14 @@ const MyVouchersScreen = (props) => {
                         </View>
                     </View>
             }
+            <PopupDialog
+                ref={(savingDialog) => { this.savingDialog = savingDialog; }}
+                width = {windowWidth*2/3}
+                height = {windowWidth/5}
+                dialogAnimation = {new ScaleAnimation()}
+            >
+                <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Redeeming</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
+            </PopupDialog>
         </SafeAreaView>
     )
 }

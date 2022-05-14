@@ -37,6 +37,7 @@ import CourseActionButton from "@src/components/Course/CourseActionButton";
 import MyAppPageScreen from "./Screens/MyAppPageScreen";
 import AppAvatar from "@src/components/AppAvatar";
 import LessonScreenHeader from "./Components/LessonScreenHeader";
+import QuizScreenHeader from "./Components/QuizScreenHeader";
 import {FontWeights} from "@src/styles/global";
 import TextBlock from "./Components/TextBlock";
 import ImageBlock from "./Components/ImageBlock";
@@ -777,6 +778,9 @@ export const applyCustomCode = externalCodeSetup => {
     //Custom back button in Single Lesson Screen
     externalCodeSetup.lessonSingleScreenApi.setLessonScreenHeader(props => <LessonScreenHeader {...props}/>)
 
+    //Custom back button in Single Quiz Screen
+    externalCodeSetup.quizApi.setQuizScreenHeader(props => <QuizScreenHeader {...props} />)
+
     //Custom complete button in Single Lesson Screen
     externalCodeSetup.lessonSingleScreenApi.setTransformLessonActionButtons((
         lessonButton,
@@ -1012,6 +1016,7 @@ export const applyCustomCode = externalCodeSetup => {
                 }
                 return reducer(newUserState, action);
             case 'UPDATE_USER_COMPLETED_LESSONS':
+                console.log(state.userObject.completed_lessons, action.payload)
                 const newUserLesson = {
                     ...state,
                     userObject:{
@@ -1019,6 +1024,7 @@ export const applyCustomCode = externalCodeSetup => {
                         completed_lessons: [...state.userObject.completed_lessons, action.payload]
                     }
                 }
+                console.log(newUserLesson);
                 return reducer(newUserLesson, action);
             case 'UPDATE_USER_COMPLETED_COURSES':
                 const newUserCourse = {

@@ -25,7 +25,6 @@ const EventList = props => {
         let showDate = null;
         let show = false;
         if(item.location.includes(location)) {
-            console.log(item.location, location)
             switch (item.show) {
                 case 'date':
                     let date2 = new moment.utc(item.showDate);

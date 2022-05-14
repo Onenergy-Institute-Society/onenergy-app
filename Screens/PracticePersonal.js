@@ -68,26 +68,26 @@ const PracticePersonal = props => {
                     <EventList location={'practice_guided'} eventsData={optionData.goals} />
                     <EventList location={'practice_guided'} eventsData={optionData.challenges} />
                 </View>
-            {user.hasGuide>0?
-                tracksLoading ? (
-                    <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
-                ) : (
-                    <TracksList tracks={tracks}/>
-                )
-            :
-                <View style={{
-                    flex: 1,
-                    width: windowWidth,
-                    marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0
-                }}>
-                    <BlockScreen pageId={helpPageData.id}
-                                 contentInsetTop={0}
-                                 contentOffsetY={0}
-                                 hideTitle={true}
-                                 hideNavigationHeader={true}
-                                 {...props} />
-                </View>
-            }
+                {user.hasGuide>0?
+                    tracksLoading ? (
+                        <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
+                    ) : (
+                        <TracksList tracks={tracks}/>
+                    )
+                :
+                    <View style={{
+                        flex: 1,
+                        width: windowWidth,
+                        marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0
+                    }}>
+                        <BlockScreen pageId={helpPageData.id}
+                                     contentInsetTop={0}
+                                     contentOffsetY={0}
+                                     hideTitle={true}
+                                     hideNavigationHeader={true}
+                                     {...props} />
+                    </View>
+                }
             </ScrollView>
             <Modalize
                 ref={(ppHelpModal) => { this.ppHelpModal = ppHelpModal; }}
