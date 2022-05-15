@@ -33,7 +33,6 @@ const HomeContent = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
     const [quotesData, setQuotesData] = useState([]);
     const [quotesLoading, setQuotesLoading] = useState(true);
-    console.log(user)
     TrackPlayer.updateOptions({
         stopWithApp: user?!(user.membership&&user.membership.length):false, // false=> music continues in background even when app is closed
         // Media controls capabilities

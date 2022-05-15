@@ -11,6 +11,7 @@ import {getApi} from "@src/services";
 import {connect, useSelector} from "react-redux";
 import TracksList from '../Components/TracksList';
 import IconButton from "@src/components/IconButton";
+import {withNavigation} from "react-navigation";
 import TrackPlayer from 'react-native-track-player';
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
@@ -63,32 +64,32 @@ const PracticePersonal = props => {
     }, []);
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView>
-                <View style={{marginVertical:verticalScale(5)}}>
-                    <EventList location={'practice_guided'} eventsData={optionData.goals} />
-                    <EventList location={'practice_guided'} eventsData={optionData.challenges} />
-                </View>
-                {user.hasGuide>0?
-                    tracksLoading ? (
-                        <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
-                    ) : (
+            {user.hasGuide>0?
+                tracksLoading ? (
+                    <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
+                ) : (
+                    <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
+                        <View style={{marginVertical:verticalScale(5)}}>
+                            <EventList location={'practice_guided'} eventsData={optionData.goals} />
+                            <EventList location={'practice_guided'} eventsData={optionData.challenges} />
+                        </View>
                         <TracksList tracks={tracks}/>
-                    )
-                :
-                    <View style={{
-                        flex: 1,
-                        width: windowWidth,
-                        marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0
-                    }}>
-                        <BlockScreen pageId={helpPageData.id}
-                                     contentInsetTop={0}
-                                     contentOffsetY={0}
-                                     hideTitle={true}
-                                     hideNavigationHeader={true}
-                                     {...props} />
-                    </View>
-                }
-            </ScrollView>
+                    </ScrollView>
+                )
+            :
+                <View style={{
+                    flex: 1,
+                    width: windowWidth,
+                    marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0
+                }}>
+                    <BlockScreen pageId={helpPageData.id}
+                                 contentInsetTop={0}
+                                 contentOffsetY={0}
+                                 hideTitle={true}
+                                 hideNavigationHeader={true}
+                                 {...props} />
+                </View>
+            }
             <Modalize
                 ref={(ppHelpModal) => { this.ppHelpModal = ppHelpModal; }}
                 modalHeight = {windowHeight*4/5}
@@ -135,6 +136,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#f6f6f8',
         paddingTop:30,
     },
+    scroll_view: {
+        flexGrow: 1,
+    }
 });
 PracticePersonal.navigationOptions = ({ navigation }) => {
     const {params = {}} = navigation.state;
@@ -173,4 +177,4 @@ const mapStateToProps = (state) => ({
     config: state.config,
     accessToken: state.auth.token,
 });
-export default connect(mapStateToProps)(PracticePersonal);
+export default connect(mapStateToProps)(withNavigation(PracticePersonal));

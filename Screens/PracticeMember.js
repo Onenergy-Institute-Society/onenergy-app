@@ -18,7 +18,7 @@ import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {NavigationActions, withNavigation} from "react-navigation";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale, verticalScale} from "../Utils/scale";
-import TrackPlayer, {Event, useTrackPlayerEvents} from 'react-native-track-player';
+import TrackPlayer from 'react-native-track-player';
 import * as Progress from 'react-native-progress';
 import EventList from "../Components/EventList";
 
@@ -77,6 +77,9 @@ const PracticeMember = props => {
         this.cpHelpModal.open();
     }
     const onAddPressed = () => {
+        TrackPlayer.stop();
+        TrackPlayer.reset();
+
         navigation.dispatch(
             NavigationActions.navigate({
                 routeName: "EditRoutine",
@@ -87,6 +90,9 @@ const PracticeMember = props => {
         );
     }
     const onEditRoutinePress = (item, index) =>{
+        TrackPlayer.stop();
+        TrackPlayer.reset();
+
         navigation.dispatch(
             NavigationActions.navigate({
                 routeName: "EditRoutine",
@@ -97,7 +103,10 @@ const PracticeMember = props => {
             })
         );
     }
-    const onRemoveRoutine = (item) => {
+    const onRemoveRoutine = async (item) => {
+        TrackPlayer.stop();
+        TrackPlayer.reset();
+
         let array = [...props.routines]; // make a separate copy of the array
         let index = array.indexOf(item);
         if (index !== -1) {
@@ -134,56 +143,56 @@ const PracticeMember = props => {
     },[]);
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView>
-                <View style={{marginVertical:verticalScale(5)}}>
-                    <EventList location={'practice_member'} eventsData={optionData.goals} />
-                    <EventList location={'practice_member'} eventsData={optionData.challenges} />
-                </View>
-                {user.hasGuide>0?
-                    user.hasRoutine > 0 ?
-                        routinesLoading ?
-                            <View style={{
-                                flex: 1,
-                                top: 0,
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                justifyContent: "center",
-                                alignItems: "center",
-                                flexDirection: "column"
-                            }}><Text style={{fontSize: scale(14), color: "#4942e1"}}>Loading</Text><Progress.Bar
-                                indeterminate={true} progress={1} size={50} borderColor={"#4942e1"}
-                                color={"#4942e1"}/></View>
-                            :
-                            <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine}/>
-                        :
+            {user.hasGuide>0?
+                user.hasRoutine > 0 ?
+                    routinesLoading ?
                         <View style={{
                             flex: 1,
-                            width: windowWidth,
-                            marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0
-                        }}>
-                            <BlockScreen pageId={emptyData.id}
-                                         contentInsetTop={0}
-                                         contentOffsetY={0}
-                                         hideTitle={true}
-                                         hideNavigationHeader={true}
-                                         {...props} />
-                        </View>
+                            top: 0,
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexDirection: "column"
+                        }}><Text style={{fontSize: scale(14), color: "#4942e1"}}>Loading</Text><Progress.Bar
+                            indeterminate={true} progress={1} size={50} borderColor={"#4942e1"}
+                            color={"#4942e1"}/></View>
+                        :
+                        <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
+                            <View style={{marginVertical:verticalScale(5)}}>
+                                <EventList location={'practice_member'} eventsData={optionData.goals} />
+                                <EventList location={'practice_member'} eventsData={optionData.challenges} />
+                            </View>
+                            <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine}/>
+                        </ScrollView>
                     :
                     <View style={{
                         flex: 1,
                         width: windowWidth,
                         marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0
                     }}>
-                        <BlockScreen pageId={helpPageData.id}
+                        <BlockScreen pageId={emptyData.id}
                                      contentInsetTop={0}
                                      contentOffsetY={0}
                                      hideTitle={true}
                                      hideNavigationHeader={true}
                                      {...props} />
                     </View>
-                }
-            </ScrollView>
+                :
+                <View style={{
+                    flex: 1,
+                    width: windowWidth,
+                    marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0
+                }}>
+                    <BlockScreen pageId={helpPageData.id}
+                                 contentInsetTop={0}
+                                 contentOffsetY={0}
+                                 hideTitle={true}
+                                 hideNavigationHeader={true}
+                                 {...props} />
+                </View>
+            }
             {user.hasGuide>0 && props.routines.length<5?
                 <IconButton
                     pressHandler={() => {onAddPressed()}}
@@ -250,6 +259,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#f6f6f8',
     },
+    scroll_view: {
+        flexGrow: 1,
+    }
 });
 PracticeMember.navigationOptions = ({ navigation }) => {
     const {params = {}} = navigation.state;

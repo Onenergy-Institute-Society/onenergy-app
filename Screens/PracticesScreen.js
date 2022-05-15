@@ -103,10 +103,12 @@ const PracticesScreen = props => {
         return (
             <SafeAreaView style={styles.container}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <View style={{marginVertical:verticalScale(5)}}>
-                        <EventList location={'practice'} eventsData={optionData.goals} />
-                        <EventList location={'practice'} eventsData={optionData.challenges} />
-                    </View>
+                    {user?
+                        <View style={{marginVertical:verticalScale(5)}}>
+                            <EventList location={'practice'} eventsData={optionData.goals} />
+                            <EventList location={'practice'} eventsData={optionData.challenges} />
+                        </View>
+                    :null}
                     <TouchableScale
                         onPress={personalPracticePressed}>
                         <View style={[styles.card, styles.boxShadow]}>

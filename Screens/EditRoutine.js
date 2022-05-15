@@ -12,7 +12,7 @@ import {
     TouchableWithoutFeedback, Platform, TextInput, Image, Keyboard, ScrollView
 } from "react-native";
 import IconButton from "@src/components/IconButton";
-import {Swipeable} from "react-native-gesture-handler";
+import {Swipeable, GestureHandlerRootView} from "react-native-gesture-handler";
 import PopupDialog, {ScaleAnimation} from 'react-native-popup-dialog';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import SortList from "../Components/SortList";
@@ -217,7 +217,12 @@ const EditRoutine = props => {
     const row = [];
     const [key, setKey] = useState('');
     const handleWillOpen = (index : any) => () => {
-        (key !== '') && (key !== index) && row[key].close();
+        if((key !== '') && (key !== index))
+        {
+            if(row[key]){
+                row[key].close();
+            }
+        }
     }
     const handleOpen = (index : any) => () => {
         setKey(index);
@@ -227,7 +232,7 @@ const EditRoutine = props => {
         return (
             <Swipeable
                 ref={ref => row[id] = ref}
-                renderRightActions={(_, dragX) => rightActions(dragX, itemData)}
+                renderRightActions={(_, dragX) => rightActions(dragX, itemData, id)}
                 onSwipeableRightWillOpen={handleWillOpen(id)}
                 onSwipeableLeftWillOpen={handleWillOpen(id)}
                 onSwipeableOpen={handleOpen(id)}
@@ -427,7 +432,7 @@ const EditRoutine = props => {
                 />
             </View>
             <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()} >
-            <View style={{height:"100%"}}>
+            <GestureHandlerRootView style={{height:"100%"}}>
                 {routineSettings.length===0?(
                     <View><Text>No practice selected, please tap "Plus Sign" to add.</Text></View>
                     ):(
@@ -443,7 +448,7 @@ const EditRoutine = props => {
                         contentContainerStyle={styles.contentContainer}
                     />
                 )}
-            </View>
+            </GestureHandlerRootView>
             </TouchableWithoutFeedback>
             </View>
             <PopupDialog

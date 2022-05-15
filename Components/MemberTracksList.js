@@ -127,7 +127,7 @@ const MemberTracksList = (props) => {
                         }}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style={{justifyContent:"center", alignItems:"center"}} onPress={() => {props.onEditRoutinePress(item, index);row[key].close()}}>
+                <TouchableOpacity style={{justifyContent:"center", alignItems:"center"}} onPress={() => {row[key].close();setSelectedRoutine(null);props.onEditRoutinePress(item, index);}}>
                     <IconButton
                         icon={require("@src/assets/img/edit_2.png")}
                         tintColor={"#4942e1"}

@@ -81,32 +81,34 @@ const ProgramsScreen = props => {
     return (
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                <View style={{marginVertical:verticalScale(5)}}>
-                    <EventList location={'program'} eventsData={optionData.webinars} />
-                </View>
             {!user || !user.firstCourseCompleted ?
-                <View style={styles.row_intro}>
-                    <TouchableScale
-                        onPress={
-                            () => {
-                                navigation.dispatch(
-                                    NavigationActions.navigate({
-                                        routeName: "MyCourseScreen",
-                                        params: {
-                                            courseId: 29421
-                                        }
-                                    })
-                                )
-                            }
-                        }>
-                        <View style={[styles.view_intro, styles.boxShadow]}>
-                            <ImageCache
-                                source={{uri: optionData.intro.image}}
-                                style={styles.image_intro}
-                            />
-                        </View>
-                    </TouchableScale>
-                </View>
+                <>
+                    <View style={{marginVertical:verticalScale(5)}}>
+                        <EventList location={'program'} eventsData={optionData.webinars} />
+                    </View>
+                    <View style={styles.row_intro}>
+                        <TouchableScale
+                            onPress={
+                                () => {
+                                    navigation.dispatch(
+                                        NavigationActions.navigate({
+                                            routeName: "MyCourseScreen",
+                                            params: {
+                                                courseId: 29421
+                                            }
+                                        })
+                                    )
+                                }
+                            }>
+                            <View style={[styles.view_intro, styles.boxShadow]}>
+                                <ImageCache
+                                    source={{uri: optionData.intro.image}}
+                                    style={styles.image_intro}
+                                />
+                            </View>
+                        </TouchableScale>
+                    </View>
+                </>
                 :
                 <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
                                hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>

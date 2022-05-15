@@ -12,6 +12,8 @@ import ImageCache from './ImageCache';
 import TouchableScale from './TouchableScale';
 import { windowWidth, windowHeight, scale, verticalScale } from '../Utils/scale';
 import AwesomeAlert from "../Components/AwesomeAlert";
+import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
+import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import moment from 'moment';
 
 const EventList = props => {
@@ -254,4 +256,4 @@ const styles = StyleSheet.create({
 });
 
 EventList.navigationOptions = {header: null};
-export default withNavigation(EventList);
+export default withNavigation(withDeeplinkClickHandler(EventList));
