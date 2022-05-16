@@ -113,6 +113,7 @@ const ProgramsScreen = props => {
                 <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
                                hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
             }
+            </ScrollView>
             <Modalize
                 ref={(popupProgramDialog) => { this.popupProgramDialog = popupProgramDialog; }}
                 modalHeight = {windowHeight*4/5}
@@ -122,19 +123,19 @@ const ProgramsScreen = props => {
                     <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
                         <Text style={{fontSize:24}}>{helpModal.title}</Text>
                         <IconButton
-                        pressHandler={() => {this.popupProgramDialog.close();}}
-                        icon={require("@src/assets/img/close.png")}
-                        style={{ height: scale(16), width: scale(16) }}
-                        touchableStyle={{
-                            position:"absolute", top:10, right: 10,
-                            height: scale(24),
-                            width: scale(24),
-                            backgroundColor: "#e6e6e8",
-                            alignItems: "center",
-                            borderRadius: 100,
-                            padding: scale(5),
-                        }}
-                    /></View>
+                            pressHandler={() => {this.popupProgramDialog.close();}}
+                            icon={require("@src/assets/img/close.png")}
+                            style={{ height: scale(16), width: scale(16) }}
+                            touchableStyle={{
+                                position:"absolute", top:10, right: 10,
+                                height: scale(24),
+                                width: scale(24),
+                                backgroundColor: "#e6e6e8",
+                                alignItems: "center",
+                                borderRadius: 100,
+                                padding: scale(5),
+                            }}
+                        /></View>
                 }
             >
                 <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?verticalScale(-100):0}} >
@@ -146,7 +147,6 @@ const ProgramsScreen = props => {
                                  {...props} />
                 </View>
             </Modalize>
-            </ScrollView>
         </SafeAreaView>
     );
 };

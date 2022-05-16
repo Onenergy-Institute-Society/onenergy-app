@@ -82,9 +82,9 @@ const PracticeGroup = props => {
             title: optionData.titles[titleIndex].title,
             toggleHelpModal: toggleHelpModal,
         });
-        setCurrentTime(moment());
+        setCurrentTime(moment.utc().local().format());
         let secTimer = setInterval( () => {
-            setCurrentTime(moment());
+            setCurrentTime(moment.utc().local().format());
         },60000)
         return () => clearInterval(secTimer)
     }, []);
@@ -146,7 +146,6 @@ const PracticeGroup = props => {
         let CurrentStartTime = '';
         item.meta_box.times.map((time) => {
             let startTime = moment(year + '-' + month + '-' + date + ' ' + time, "YYYY-MM-DD hh:mm");
-
             if(startTime.diff(currentTime, 'minutes')>0&&startTime.diff(currentTime, 'minutes')<=30){
                 conditionTime = true;
                 timeToGo = startTime.diff(currentTime, 'minutes');
@@ -262,7 +261,7 @@ const PracticeGroup = props => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView styles={styles.scrollView} showsVerticalScrollIndicator={false}>
+            <ScrollView nestedScrollEnabled styles={styles.scrollView} showsVerticalScrollIndicator={false}>
                 <View style={{marginVertical:verticalScale(5)}}>
                     <EventList location={'practice_group'} eventsData={optionData.goals} />
                     <EventList location={'practice_group'} eventsData={optionData.challenges} />
