@@ -41,6 +41,7 @@ const PracticeGroup = props => {
     const [ groupPracticeLoading, setGroupPracticeLoading] = useState(true);
     const [selectedGroupPractice, setSelectedGroupPractice] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
+    console.log(user, optionData.goals)
     const fetchGroupPractice = async () => {
         try {
             const api = getApi(props.config);
@@ -131,7 +132,7 @@ const PracticeGroup = props => {
         let showDetail= false;
         showDetail = !!(selectedGroupPractice && selectedGroupPractice === item.id);
         let detail = item.content.rendered;
-        const conditionLessons  = item.meta_box.lessons.every(value => user.completed_lessons.some(lesson=>(lesson.id=value)));
+        const conditionLessons  = item.meta_box.lessons.every(value => user.completed_lessons.some(lesson=>(lesson.id===value)));
         user.completed_lessons.map((lesson) => {
             detail = detail.replace('<span id="'+lesson.id+'"></span>', '<span style="color:green">(Passed)</span>')
         })
