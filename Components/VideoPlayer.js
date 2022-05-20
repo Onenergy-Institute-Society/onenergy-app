@@ -46,7 +46,8 @@ class VideoPlayer extends Component {
             resizeMode: "cover",
             showControls: this.props.navigation.getParam('showControls')? this.props.navigation.getParam('showControls'):false,
             video : this.props.navigation.getParam('video'),
-            seek : this.props.navigation.getParam('seek')
+            seek : this.props.navigation.getParam('seek'),
+            config: this.props.navigation.getParam('config'),
 
         }
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -87,24 +88,19 @@ class VideoPlayer extends Component {
     }
 
     updateProgress = async () => {
-        try {
-            const apiRequest = getApi(this.props.config);
-            await apiRequest.customRequest(
-                "wp-json/onenergy/v1/progress",
-                "post",
-                {"id":this.props.navigation.getParam('gp_id'), "type":"Group_Practice_End"},
-                null,
-                {},
-                false
-            ).then(response => {
-                if(response.data.updated)
-                {
-
-                }
-            });
-        } catch (e) {
-            console.error(e);
-        }
+        const apiRequest = getApi(this.state.config);
+        await apiRequest.customRequest(
+            "wp-json/onenergy/v1/progress",
+            "post",
+            {"id":this.props.navigation.getParam('gp_id'), "type":"Group_Practice_End"},
+            null,
+            {},
+            false
+        ).then(response => {
+            if(response.data.updated)
+            {
+            }
+        });
     }
 
     handleBackButtonClick() {
@@ -165,6 +161,7 @@ class VideoPlayer extends Component {
     }
 }
 function mapStateToProps(state) {
+    console.log(state.config)
     const {config} = state.config
     const {accessToken} = state.auth.token
     const {user} = state.user

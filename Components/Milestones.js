@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {getApi} from "@src/services";
 import {connect, useSelector} from "react-redux";
 import IconButton from "@src/components/IconButton";
-import {View, Text, StyleSheet, SafeAreaView, FlatList} from 'react-native';
+import {View, Text, StyleSheet, SafeAreaView, FlatList, ActivityIndicator, Platform} from 'react-native';
 import FastImage from "react-native-fast-image";
 import {scale, verticalScale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
@@ -88,11 +88,16 @@ const Milestones = (props) => {
                                                 </Text>
                                             </View>
                                             {step.progress.total>0?
-                                                <View style={{width:"100%", justifyContent:"space-between", alignItems:"center"}}>
-                                                    <Progress.Bar progress={step.progress.current/step.progress.total} width={windowWidth-60} height={verticalScale(10)} />
-                                                    <Text>{step.progress.current}/{step.progress.total}</Text>
-                                                </View>
-                                                :null}
+                                                Platform.OS === 'android' ?
+                                                    <View style={{width:"100%", justifyContent:"space-between", alignItems:"center"}}>
+                                                            <Progress.Bar
+                                                                progress={step.progress.current / step.progress.total}
+                                                                width={windowWidth - 60} height={verticalScale(10)}/>
+                                                            <Text>{step.progress.current}/{step.progress.total}</Text>
+                                                    </View>
+                                                :
+                                                    <ActivityIndicator size="large" />
+                                            :null}
                                         </View>
                                     )
                                 })}

@@ -10,6 +10,7 @@ import Video from 'react-native-video';
 import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 
 const AudioPlayerRoutine = (props) => {
+    const user = useSelector((state) => state.user.userObject);
     const {
         playerMaxView,
         buttonsSection,
@@ -74,7 +75,7 @@ const AudioPlayerRoutine = (props) => {
         await TrackPlayer.removeUpcomingTracks();
         return await TrackPlayer.add(track, -1);
     }
-    useTrackPlayerEvents([Event.PlaybackState], (event) => {
+    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause], (event) => {
         if (event.state === State.Playing) {
             setPlaying(true);
             setStopped(false);
@@ -89,6 +90,21 @@ const AudioPlayerRoutine = (props) => {
             setPlaying(false);
             setStopped(true);
             deactivateKeepAwake();
+        }
+        if (event.type === Event.RemotePlay) {
+            TrackPlayer.play();
+            setPlaying(true);
+            setStopped(false);
+        }
+        if (event.type === Event.RemotePause) {
+            TrackPlayer.pause();
+            setPlaying(false);
+            setStopped(false);
+        }
+        if (event.type === Event.RemoteStop) {
+            TrackPlayer.stop();
+            setPlaying(false);
+            setStopped(true);
         }
     });
     useTrackPlayerEvents([Event.PlaybackTrackChanged], ({nextTrack}) => {
@@ -167,7 +183,7 @@ const AudioPlayerRoutine = (props) => {
                     <Video
                         ref={videoPlayer => this.videoPlayer = videoPlayer}
                         audioOnly={true}
-                        playInBackground={true}
+                        playInBackground={user.membership&&user.membership.length}
                         playWhenInactive={true}
                         ignoreSilentSwitch="ignore"
                         repeat={true}

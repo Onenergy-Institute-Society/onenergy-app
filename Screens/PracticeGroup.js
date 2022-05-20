@@ -9,7 +9,8 @@ import {
     TouchableOpacity,
     FlatList,
     ImageBackground,
-    ScrollView
+    ScrollView,
+    ActivityIndicator
 } from "react-native";
 import {connect, useSelector} from "react-redux";
 import {getApi} from "@src/services";
@@ -60,6 +61,7 @@ const PracticeGroup = props => {
     }
     const JoinGroupPractice = async (gp_id, gp_time) => {
         try {
+            console.log('1',props.config)
             const api = getApi(props.config);
             await api.customRequest(
                 "wp-json/onenergy/v1/JoinGroupPractice",          // Endpoint suffix or full url. Suffix will be appended to the site url that app uses. Example of a suffix is "wp-json/buddyboss/v1/members". Example of full url would be "https://app-demos.buddyboss.com/learndash/wp-json/buddyboss/v1/members".
@@ -99,7 +101,8 @@ const PracticeGroup = props => {
                 params: {
                     video: url,
                     gp_id: gp_id,
-                    gp_time: gp_time
+                    gp_time: gp_time,
+                    config: props.config
                 }
             })
         )
@@ -168,9 +171,8 @@ const PracticeGroup = props => {
                         conditionWeekDay?
                             conditionTime?
                                 <View style={styles.viewTop}>
-                                    <View style={{flexDirection: "column", justifyContent:"space-around", width:windowWidth-scale(30)}}>
-                                        <View style={{alignItems: "center"}}>
-                                            <Text style={styles.waitTimeLabel}>Next Streaming:</Text>
+                                    <View style={{flexDirection: "column", justifyContent:"flex-start", alignItems:"center", width:windowWidth-scale(30)}}>
+                                        <Text style={styles.waitTimeLabel}>Next Streaming:</Text>
                                             {timeToGo > 0 ?
                                                 <Text style={styles.waitTime}>{timeToGo} Minutes</Text>
                                                 :
@@ -178,20 +180,19 @@ const PracticeGroup = props => {
                                                     <Text style={styles.waitTime}>{moreTimeToGo} Minutes</Text>
                                                     :null
                                             }
-                                        </View>
                                         {timeToGo > 0 ?
                                             <WaitingGroupPractice waitingText={'waiting'} gp_id={item.id} gp_time={CurrentStartTime} waitingStyle={styles.waiting} />
-                                        :null}
-                                    </View>
+                                            :null}
                                     {timeToGo>0?
                                         <TouchableOpacity style={styles.btnJoin}
                                         onPress={() => {
                                         handlePress(item.meta_box.url, item.id, CurrentStartTime)
                                     }}
                                         >
-                                            <Text style={{color: "white", fontSize:scale(24), fontWeight: "700"}}>JOIN GROUP PRACTICE</Text>
+                                            <Text style={{color: "white", fontSize:scale(20), fontWeight: "700"}}>JOIN NOW</Text>
                                         </TouchableOpacity>
                                     :null}
+                                    </View>
                                 </View>
                             :
                                 <View style={styles.viewTopInfo}>
@@ -268,13 +269,17 @@ const PracticeGroup = props => {
                     <EventList location={'practice_group'} eventsData={optionData.challenges} />
                 </View>
                 {groupPracticeLoading?(
-                    <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
+                    Platform.OS === 'android' ?
+                        <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
+                        :
+                        <ActivityIndicator size="large"/>
                 ):(
                     <FlatList
                         data={groupPractice}
                         renderItem={renderItem}
                         extraData={this.props}
                         showsVerticalScrollIndicator={false}
+                        nestedscrollenabled={true}
                         keyExtractor={item => item.id}
                     />
                 )}
@@ -318,7 +323,21 @@ const PracticeGroup = props => {
                 width = {windowWidth*2/3}
                 height = {windowWidth/5}
             >
-                <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
+                {Platform.OS === 'android' ?
+                    <View style={{
+                        flex: 1,
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexDirection: "column"
+                    }}><Text style={{fontSize: scale(14), color: "#4942e1"}}>Loading</Text><Progress.Bar
+                        indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"}/></View>
+                    :
+                    <ActivityIndicator size="large"/>
+                }
             </PopupDialog>
 
         </SafeAreaView>
@@ -401,10 +420,10 @@ const styles = StyleSheet.create({
     viewDetail:{
         justifyContent:"center",
         alignItems:"center",
-        height:verticalScale(60),
+        height:verticalScale(30),
     },
     viewBottom: {
-        height:40,
+        height:verticalScale(30),
         width: windowWidth - 30,
         justifyContent:"center",
         alignItems: "center",
@@ -423,14 +442,15 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         alignSelf:"center",
         textAlign:"center",
-        marginTop:verticalScale(10),
+        marginVertical:verticalScale(5),
     },
     btnJoin: {
-        fontSize: scale(25),
+        fontSize: scale(20),
         color:"white",
         borderRadius:9,
         backgroundColor:"#4942e1",
         padding:10,
+        marginBottom:verticalScale(10),
     }
 });
 const mapStateToProps = (state) => ({

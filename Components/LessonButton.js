@@ -56,7 +56,7 @@ const LessonButton = (props) => {
                             payload: {"id": lesson.parent.id, "date": new Date().getTime() / 1000}
                         });
                     }
-                    if(lesson.settings.no_video!=="1") {
+                    if(!lesson.settings.no_video) {
                         let index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_title');
                         setAlertTitle(optionData.titles[index].title);
                         index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_body');
@@ -84,34 +84,26 @@ const LessonButton = (props) => {
                         if(response.data.course===29421){
                             dispatch({ type: "COMPLETE_FIRST_COURSE" });
                         }
-                        if(lesson.settings.no_video!=="1") {
-                            let index = optionData.titles.findIndex(el => el.id === 'alert_course_completed_title');
-                            setAlertTitle(optionData.titles[index].title);
-                            index = optionData.titles.findIndex(el => el.id === 'alert_course_completed_body');
-                            setAlertBody(optionData.titles[index].title + ' ' + lesson.title);
-                            setAlertCancelText('');
-                            setAlertConfirmType('top');
-                            index = optionData.titles.findIndex(el => el.id === 'alert_course_completed_button');
-                            setAlertConfirmText(optionData.titles[index].title);
-                            setAlertShowConfirm(true);
-                            setShowAlert(true);
-                        }else{
-                            props.navigation.goBack();
-                        }
+                    }
+                    if(!lesson.settings.no_video||!lesson.settings.no_popup) {
+                        let index = optionData.titles.findIndex(el => el.id === 'alert_course_completed_title');
+                        setAlertTitle(optionData.titles[index].title);
+                        index = optionData.titles.findIndex(el => el.id === 'alert_course_completed_body');
+                        setAlertBody(optionData.titles[index].title + ' ' + lesson.title);
+                        setAlertCancelText('');
+                        setAlertConfirmType(lesson.settings.back_to);
+                        index = optionData.titles.findIndex(el => el.id === 'alert_course_completed_button');
+                        setAlertConfirmText(optionData.titles[index].title);
+                        setAlertShowConfirm(true);
+                        setShowAlert(true);
                     }else{
-                        if(lesson.settings.no_video!=="1") {
-                            let index = optionData.titles.findIndex(el => el.id === 'alert_lesson_completed_title');
-                            setAlertTitle(optionData.titles[index].title);
-                            index = optionData.titles.findIndex(el => el.id === 'alert_lesson_completed_body');
-                            setAlertBody(optionData.titles[index].title + ' ' + lesson.title);
-                            setAlertCancelText('');
-                            setAlertConfirmType('back');
-                            index = optionData.titles.findIndex(el => el.id === 'alert_lesson_completed_button');
-                            setAlertConfirmText(optionData.titles[index].title);
-                            setAlertShowConfirm(true);
-                            setShowAlert(true);
-                        }else{
-                            props.navigation.goBack();
+                        switch(lesson.settings.back_to){
+                            case "top":
+                                props.navigation.dispatch(StackActions.popToTop());
+                                break;
+                            case "parent":
+                                props.navigation.goBack();
+                                break
                         }
                     }
                 }
@@ -125,7 +117,7 @@ const LessonButton = (props) => {
             case 'top':
                 props.navigation.dispatch(StackActions.popToTop());
                 break;
-            case 'back':
+            case 'parent':
                 props.navigation.goBack();
             default:
                 return;

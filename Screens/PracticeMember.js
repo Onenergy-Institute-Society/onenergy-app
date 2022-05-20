@@ -6,7 +6,8 @@ import {
     TouchableOpacity,
     Text,
     Platform,
-    ScrollView
+    ScrollView,
+    ActivityIndicator
 } from "react-native";
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
@@ -146,18 +147,21 @@ const PracticeMember = props => {
             {user.hasGuide>0?
                 user.hasRoutine > 0 ?
                     routinesLoading ?
-                        <View style={{
-                            flex: 1,
-                            top: 0,
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            flexDirection: "column"
-                        }}><Text style={{fontSize: scale(14), color: "#4942e1"}}>Loading</Text><Progress.Bar
-                            indeterminate={true} progress={1} size={50} borderColor={"#4942e1"}
-                            color={"#4942e1"}/></View>
+                        Platform.OS === 'android' ?
+                            <View style={{
+                                flex: 1,
+                                top: 0,
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                flexDirection: "column"
+                            }}><Text style={{fontSize: scale(14), color: "#4942e1"}}>Loading</Text><Progress.Bar
+                                indeterminate={true} progress={1} size={50} borderColor={"#4942e1"}
+                                color={"#4942e1"}/></View>
+                            :
+                            <ActivityIndicator size="large"/>
                         :
                         <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                             <View style={{marginVertical:verticalScale(5)}}>

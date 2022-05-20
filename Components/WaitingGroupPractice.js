@@ -27,7 +27,11 @@ const WaitingGroupPractice = props => {
     }
     useEffect(() =>{
         fetchGroupPracticeNumber().then();
-    });
+        let secTimer = setInterval( () => {
+            fetchGroupPracticeNumber().then();
+        },60000)
+        return () => clearInterval(secTimer)
+    },[]);
     return (
         <Text style={waitingStyle}>{waitingNumber} {waitingText}</Text>
     );

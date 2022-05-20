@@ -46,7 +46,6 @@ const EventList = props => {
                             }
                         }
                     } else if (item.showCourseOption === 'completed') {
-                        console.log(item.showCourse);
                         let showCourse = user.completed_courses.find(course => course.id === parseInt(item.showCourse));
                         if (showCourse) {
                             showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
@@ -78,7 +77,6 @@ const EventList = props => {
                     show = true;
                     break;
             }
-            console.log('1', item.showCourse, show);
             if (show) {
                 switch (item.hide) {
                     case 'date':
@@ -123,7 +121,6 @@ const EventList = props => {
                         break;
                 }
             }
-            console.log('2', item.showCourse, show);
             if(show)
                 if(item.group) {
                     if (displayGroup.includes(item.group)) {

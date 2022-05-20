@@ -9,7 +9,10 @@ import {
     View,
     Text,
     FlatList,
-    ImageBackground, Alert
+    ImageBackground, Alert,
+    ActivityIndicator,
+    Platform,
+    Image
 } from 'react-native';
 import {scale, verticalScale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
@@ -55,69 +58,91 @@ const MyVouchersScreen = (props) => {
     const renderItem = ({ item }) => {
         console.log(item)
         return (
-            <View style={[styles.voucherItem,styles.boxShadow]}>
-                <ImageBackground style={styles.list} source={{uri: item.image ? item.image : ''}}>
-                    <View style={styles.titleBox}>
-                        <Text style={styles.title}>{item.title}</Text>
-                    </View>
-                    <View style={styles.detailBox}>
-                        <Text style={styles.subTitle}>{"Expiry Date: "+moment(item.expireDate).format("MMMM Do, YYYY")}</Text>
-                    </View>
-                    <View style={styles.buttonBox}>
-                        {item.redeemDate ?
-                            <>
-                                <Text style={[styles.redeem, {color:"black"}]}>Redeemed</Text>
-                                <Text style={styles.subTitle}>{"on " + moment(item.redeemDate).format("MMMM Do, YYYY")}</Text>
-                            </>
-                        :
-                            <TouchableOpacity
-                                style={styles.buttonRedeem}
-                                onPress={async () => {
-                                    try {
-                                        this.savingDialog.show();
-                                        const apiRequest = getApi(props.config);
-                                        await apiRequest.customRequest(
-                                            "wp-json/onenergy/v1/redeemVoucher",
-                                            "post",
-                                            {"id": item.id},
-                                            null,
-                                            {},
-                                            false
-                                        ).then(response => {
-                                            this.savingDialog.dismiss();
-                                            if (response.data) {
-                                                if (response.data.result) {
-                                                    switch(response.data.action){
-                                                        case 'restart':
-                                                            Alert.alert('Notice', response.data.message, [
-                                                                {text: 'OK', onPress: () => RNRestart.Restart()},
-                                                            ]);
-                                                            break;
-                                                        case 'back':
-                                                            Alert.alert('Notice', response.data.message, [
-                                                                {text: 'OK', onPress: () => props.navigation.goBack()},
-                                                            ]);
+            <TouchableOpacity
+                onPress={() => {
+                    if(item.redeemDate){
+                        Alert.alert('Notice', "You have already redeemed this voucher?", [
+                            {
+                                text: 'OK'
+                            }
+                        ])
+                    }else {
+                        Alert.alert('Notice', "Redeem voucher now?", [
+                            {
+                                text: 'OK', onPress:
+                                    async () => {
+                                        try {
+
+                                            this.savingDialog.show();
+                                            const apiRequest = getApi(props.config);
+                                            await apiRequest.customRequest(
+                                                "wp-json/onenergy/v1/redeemVoucher",
+                                                "post",
+                                                {"id": item.id},
+                                                null,
+                                                {},
+                                                false
+                                            ).then(response => {
+                                                this.savingDialog.dismiss();
+                                                if (response.data) {
+                                                    if (response.data.result) {
+                                                        switch (response.data.action) {
+                                                            case 'restart':
+                                                                Alert.alert('Notice', response.data.message, [
+                                                                    {text: 'OK', onPress: () => RNRestart.Restart()},
+                                                                ]);
+                                                                break;
+                                                            case 'back':
+                                                                Alert.alert('Notice', response.data.message, [
+                                                                    {
+                                                                        text: 'OK',
+                                                                        onPress: () => props.navigation.goBack()
+                                                                    },
+                                                                ]);
+                                                        }
                                                     }
                                                 }
-                                            }
-                                        });
-                                    } catch (e) {
-                                        console.error(e);
+                                            });
+                                        } catch (e) {
+                                            console.error(e);
+                                        }
                                     }
-                                }}
-                            >
-                                <Text style={styles.redeem}>Redeem Now</Text>
-                            </TouchableOpacity>
-                        }
-                    </View>
-                </ImageBackground>
-            </View>
+                            },
+                            {
+                                text: 'Cancel'
+                            }
+                        ])}
+                    }
+                }
+            >
+                <View style={[styles.voucherItem,styles.boxShadow, {width: windowWidth-scale(30), height: (windowWidth-scale(30))/parseInt(item.width)*parseInt(item.height),}]}>
+                    <ImageBackground style={[styles.list,{width: windowWidth-scale(30), height: (windowWidth-scale(30))/parseInt(item.width)*parseInt(item.height),}]} source={{uri: item.image ? item.image : ''}}>
+                        <Text style={[styles.subTitle,{color:item.color}]}>{moment(item.expireDate).format("MMMM Do, YYYY")}</Text>
+                        {item.redeemDate?
+                            <Text style={styles.redeemedText}>REDEEMED</Text>
+                        :null}
+                    </ImageBackground>
+                </View>
+            </TouchableOpacity>
         )
     };
     return(
         <SafeAreaView style={styles.container}>
-            {vouchersLoading?
-                <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
+            {vouchersLoading ?
+                Platform.OS === 'android' ?
+                    <View style={{
+                        flex: 1,
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexDirection: "column"
+                    }}><Text style={{fontSize: scale(14), color: "#4942e1"}}>Loading</Text><Progress.Bar
+                        indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"}/></View>
+                    :
+                    <ActivityIndicator size="large"/>
                 :
                 vouchers.length?
                     <FlatList
@@ -159,8 +184,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     list: {
-        width: windowWidth-scale(30),
-        height: (windowWidth-scale(30))/16*9,
         backgroundColor: 'white',
         paddingVertical: 0,
         paddingHorizontal: 0,
@@ -169,28 +192,20 @@ const styles = StyleSheet.create({
         alignItems:"center",
         overflow: "hidden"
     },
-    titleBox:{
-
-    },
-    detailBox:{
-
-    },
-    buttonBox:{
-
-    },
-    title:{
-        fontWeight: "500",
-        fontSize:scale(18),
-    },
     subTitle:{
+        position: "absolute",
+        right: scale(20),
+        bottom: scale(20),
         fontSize:scale(14),
     },
-    buttonRedeem:{
-        marginTop:25,
-        borderRadius: 5,
-        backgroundColor: "green",
-        paddingHorizontal:15,
-        paddingVertical:5
+    redeemedText:{
+        position: "absolute",
+        fontSize:scale(44),
+        borderStyle:"solid",
+        borderWidth: 1,
+        borderColor: "green",
+        color: "green",
+        transform: [{ rotate: '-30deg'}]
     },
     redeem:{
         color:"white",
@@ -203,8 +218,6 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         paddingVertical: 0,
         paddingHorizontal: 0,
-        width: windowWidth-scale(30),
-        height: (windowWidth-scale(30))/16*9,
     },
     boxShadow: {
         shadowColor: "#000",
