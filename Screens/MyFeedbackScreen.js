@@ -201,7 +201,9 @@ const MyFeedbackScreen = props => {
                       blurAmount={5}
                       reducedTransparencyFallbackColor="white"
             >
-                <ActivityIndicator size='large' />
+                <View>
+                    <ActivityIndicator size='large' />
+                </View>
             </BlurView>
             }
         </SafeAreaView>
