@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, TouchableOpacity, View} from 'react-native';
+import {AppState, Text, TouchableOpacity, View} from 'react-native';
 import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
 import IconButton from "@src/components/IconButton";
 import { StyleSheet } from 'react-native';
@@ -30,7 +30,7 @@ const AudioPlayer = ({ track }) => {
         await TrackPlayer.removeUpcomingTracks();
         return await TrackPlayer.add(track, -1);
     }
-    useTrackPlayerEvents([Event.PlaybackState], (event) => {
+    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause], (event) => {
         if (event.state === State.Playing) {
             setPlaying(true);
             setStopped(false);
@@ -45,6 +45,21 @@ const AudioPlayer = ({ track }) => {
             setPlaying(false);
             setStopped(true);
             deactivateKeepAwake();
+        }
+        if (event.type === Event.RemotePlay) {
+            TrackPlayer.play();
+            setPlaying(true);
+            setStopped(false);
+        }
+        if (event.type === Event.RemotePause) {
+            TrackPlayer.pause();
+            setPlaying(false);
+            setStopped(false);
+        }
+        if (event.type === Event.RemoteStop) {
+            TrackPlayer.stop();
+            setPlaying(false);
+            setStopped(true);
         }
     });
 

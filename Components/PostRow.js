@@ -53,24 +53,24 @@ const PostRow = props => {
         }
     }
     const renderItem = ({ item }) => (
-        <View style={[styles.containerStyle, styles.boxShadow]} key={'post-' + item.id}>
-            <TouchableScale
-                key={item.id + 'img'}
-                onPress={() =>{
-                    try {
-                        navigation.dispatch(
-                            NavigationActions.navigate({
-                                routeName: "MyBlogScreen",
-                                params: {
-                                    blogId: item.id,
-                                    title: item.title.rendered
-                                }
-                            })
-                        );
-                    } catch (err) {
-                        console.log(`${err}`);
-                    }
-                }}>
+        <TouchableScale
+            key={item.id + 'img'}
+            onPress={() =>{
+                try {
+                    navigation.dispatch(
+                        NavigationActions.navigate({
+                            routeName: "MyBlogScreen",
+                            params: {
+                                blogId: item.id,
+                                title: item.title.rendered
+                            }
+                        })
+                    );
+                } catch (err) {
+                    console.log(`${err}`);
+                }
+            }}>
+            <View style={[styles.containerStyle, styles.boxShadow]} key={'post-' + item.id}>
                 <View style={styles.imageView}>
                     <ImageCache style={styles.image} source={{uri: item._embedded['wp:featuredmedia'][0].source_url?item._embedded['wp:featuredmedia'][0].source_url:''}} />
                     {renderOverlayImage(item.format)}
@@ -81,8 +81,8 @@ const PostRow = props => {
                         )}
                     </View>
                 </View>
-            </TouchableScale>
-        </View>
+            </View>
+        </TouchableScale>
     );
 
     return (

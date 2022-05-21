@@ -151,7 +151,7 @@ const CustomDrawerContentComponent = (props) => {
                                         payload: 'achievement'
                                     });
                                     navigation.navigate("MyMilestonesScreen");}}>
-                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                                         <Text
                                             style={{fontSize:scale(18)}}>
                                             {optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_achievements')].title}
@@ -290,7 +290,7 @@ const Drawer = createDrawerNavigator(
         Home: Home,
     },
     {
-        edgeWidth: 70,
+        edgeWidth: 140,
         minSwipeDistance: 3,
         contentOptions: {
             activeTintColor: '#4942e1',

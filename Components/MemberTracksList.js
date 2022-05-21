@@ -7,6 +7,7 @@ import {
     Text,
     TouchableOpacity,
     View,
+    SafeAreaView
 } from 'react-native';
 import { useSelector } from "react-redux";
 import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
@@ -75,7 +76,6 @@ const MemberTracksList = (props) => {
         return (
                 <Swipeable
                     ref={ref => row[index] = ref}
-                    style={styles.boxShadow}
                     friction={2}
                     leftThreshold={10}
                     rightThreshold={10}
@@ -84,7 +84,7 @@ const MemberTracksList = (props) => {
                     onSwipeableLeftWillOpen={handleWillOpen(index)}
                     onSwipeableOpen={handleOpen(index)}
                 >
-                    <View style={[styles.trackItem, { height: showPlayer?verticalScale(120):verticalScale(80)}]}>
+                    <View style={[styles.trackItem, styles.boxShadow, { height: showPlayer?verticalScale(120):verticalScale(80)}]}>
                         <TouchableScale
                             onPress={() => {
                                 onTrackItemPress(item).then();
@@ -127,7 +127,7 @@ const MemberTracksList = (props) => {
                         }}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style={{justifyContent:"center", alignItems:"center"}} onPress={() => {props.onEditRoutinePress(item, index);row[key].close()}}>
+                <TouchableOpacity style={{justifyContent:"center", alignItems:"center"}} onPress={() => {row[key].close();setSelectedRoutine(null);props.onEditRoutinePress(item, index);}}>
                     <IconButton
                         icon={require("@src/assets/img/edit_2.png")}
                         tintColor={"#4942e1"}
@@ -141,25 +141,26 @@ const MemberTracksList = (props) => {
         )
     }
     return (
-        <View style={styles.listBox}>
+        <SafeAreaView style={styles.container}>
             <FlatList data={routines} renderItem={renderItem} keyExtractor={item => item.id} />
-        </View>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent:"center",
+        alignItems:"center",
     },
     trackItem: {
         backgroundColor: 'white',
         borderRadius: 9,
         paddingVertical: 0,
         paddingHorizontal: 0,
-        width: windowWidth - 30,
-        marginHorizontal: 15,
-        marginVertical: verticalScale(10),
-        overflow: "hidden",
+        width: windowWidth - scale(30),
+        marginHorizontal: scale(15),
+        marginBottom: verticalScale(15),
         justifyContent: "flex-start",
     },
     trackItemInner: {
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         paddingVertical: 0,
         paddingHorizontal: 0,
-        width: windowWidth - 30,
+        width: windowWidth - scale(30),
         overflow: "hidden",
     },
     boxShadow: {
@@ -178,7 +179,6 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     itemStyle: {
-        // marginHorizontal: scale(8),
         paddingHorizontal: scale(8),
         display: 'flex',
         flexDirection: 'row',

@@ -5,7 +5,9 @@ import {
     StyleSheet,
     TouchableOpacity,
     Text,
-    Platform
+    Platform,
+    ScrollView,
+    ActivityIndicator
 } from "react-native";
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
@@ -17,8 +19,9 @@ import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {NavigationActions, withNavigation} from "react-navigation";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale, verticalScale} from "../Utils/scale";
-import TrackPlayer, {Event, useTrackPlayerEvents} from 'react-native-track-player';
+import TrackPlayer from 'react-native-track-player';
 import * as Progress from 'react-native-progress';
+import EventList from "../Components/EventList";
 
 const PracticeMember = props => {
     const { navigation } = props;
@@ -37,7 +40,7 @@ const PracticeMember = props => {
         try {
             const apiSlide = getApi(props.config);
             await apiSlide.customRequest(
-                "wp-json/onenergy/v1/routine/?user="+user.id,
+                "wp-json/onenergy/v1/routine",
                 "get",
                 {},
                 null,
@@ -58,7 +61,7 @@ const PracticeMember = props => {
         try {
             const apiSlide = getApi(props.config);
             await apiSlide.customRequest(
-                "wp-json/onenergy/v1/delRoutine/?user="+user.id,
+                "wp-json/onenergy/v1/delRoutine",
                 "post",
                 {"routine":item},
                 null,
@@ -75,6 +78,9 @@ const PracticeMember = props => {
         this.cpHelpModal.open();
     }
     const onAddPressed = () => {
+        TrackPlayer.stop();
+        TrackPlayer.reset();
+
         navigation.dispatch(
             NavigationActions.navigate({
                 routeName: "EditRoutine",
@@ -85,6 +91,9 @@ const PracticeMember = props => {
         );
     }
     const onEditRoutinePress = (item, index) =>{
+        TrackPlayer.stop();
+        TrackPlayer.reset();
+
         navigation.dispatch(
             NavigationActions.navigate({
                 routeName: "EditRoutine",
@@ -95,7 +104,10 @@ const PracticeMember = props => {
             })
         );
     }
-    const onRemoveRoutine = (item) => {
+    const onRemoveRoutine = async (item) => {
+        TrackPlayer.stop();
+        TrackPlayer.reset();
+
         let array = [...props.routines]; // make a separate copy of the array
         let index = array.indexOf(item);
         if (index !== -1) {
@@ -133,61 +145,33 @@ const PracticeMember = props => {
     return (
         <SafeAreaView style={styles.container}>
             {user.hasGuide>0?
-                <>
-                    {user.hasRoutine > 0 ?
-                        routinesLoading ?
-                            <View style={{
-                                flex: 1,
-                                top: 0,
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                justifyContent: "center",
-                                alignItems: "center",
-                                flexDirection: "column"
-                            }}><Text style={{fontSize: scale(14), color: "#4942e1"}}>Loading</Text><Progress.Bar
-                                indeterminate={true} progress={1} size={50} borderColor={"#4942e1"}
-                                color={"#4942e1"}/></View>
-                            :
-                            <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine}/>
+                user.hasRoutine > 0 ?
+                    routinesLoading ?
+                        <ActivityIndicator size="large"/>
                         :
-                        <View style={{
-                            flex: 1,
-                            width: windowWidth,
-                            marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0
-                        }}>
-                            <BlockScreen pageId={emptyData.id}
-                                         contentInsetTop={0}
-                                         contentOffsetY={0}
-                                         hideTitle={true}
-                                         hideNavigationHeader={true}
-                                         {...props} />
-                        </View>
-                    }
-                    {props.routines.length<5?
-                    <IconButton
-                        pressHandler={() => {onAddPressed()}}
-                        icon={require("@src/assets/img/add.png")}
-                        style={{ height: 24, width: 24 }}
-                        tintColor={'#FFFFFF'}
-                        touchableStyle={{
-                            position: "absolute",
-                            backgroundColor: "#f4338f",
-                            bottom:scale(80),
-                            color:"white",
-                            tintColor: "#FFFFFF",
-                            alignItems: "center",
-                            borderRadius: 100,
-                            padding: 16,
-                            shadowColor: "#000",
-                            shadowOffset: {width: -2, height: 4},
-                            shadowOpacity: 0.2,
-                            shadowRadius: 3,
-                            elevation: 4,
-                        }}
-                    />
-                        :null}
-                </>
+                        <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
+                            {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
+                                <View style={{marginVertical: verticalScale(5)}}>
+                                    <EventList location={'practice_member'} eventsData={optionData.goals}/>
+                                    <EventList location={'practice_member'} eventsData={optionData.challenges}/>
+                                </View>
+                                : null
+                            }
+                            <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine}/>
+                        </ScrollView>
+                    :
+                    <View style={{
+                        flex: 1,
+                        width: windowWidth,
+                        marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0
+                    }}>
+                        <BlockScreen pageId={emptyData.id}
+                                     contentInsetTop={0}
+                                     contentOffsetY={0}
+                                     hideTitle={true}
+                                     hideNavigationHeader={true}
+                                     {...props} />
+                    </View>
                 :
                 <View style={{
                     flex: 1,
@@ -202,6 +186,29 @@ const PracticeMember = props => {
                                  {...props} />
                 </View>
             }
+            {user.hasGuide>0 && props.routines.length<5?
+                <IconButton
+                    pressHandler={() => {onAddPressed()}}
+                    icon={require("@src/assets/img/add.png")}
+                    style={{ height: 24, width: 24 }}
+                    tintColor={'#FFFFFF'}
+                    touchableStyle={{
+                        position: "absolute",
+                        backgroundColor: "#f4338f",
+                        bottom:scale(80),
+                        color:"white",
+                        tintColor: "#FFFFFF",
+                        alignItems: "center",
+                        borderRadius: 100,
+                        padding: 16,
+                        shadowColor: "#000",
+                        shadowOffset: {width: -2, height: 4},
+                        shadowOpacity: 0.2,
+                        shadowRadius: 3,
+                        elevation: 4,
+                    }}
+                />
+                :null}
             <Modalize
                 ref={(cpHelpModal) => { this.cpHelpModal = cpHelpModal; }}
                 modalHeight = {windowHeight*4/5}
@@ -245,6 +252,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#f6f6f8',
     },
+    scroll_view: {
+        flexGrow: 1,
+    }
 });
 PracticeMember.navigationOptions = ({ navigation }) => {
     const {params = {}} = navigation.state;

@@ -5,19 +5,20 @@ import {
     SafeAreaView,
     View,
     Text,
-    Platform
+    Platform, ScrollView,ActivityIndicator
 } from "react-native";
 import {getApi} from "@src/services";
 import {connect, useSelector} from "react-redux";
 import TracksList from '../Components/TracksList';
 import IconButton from "@src/components/IconButton";
+import {withNavigation} from "react-navigation";
 import TrackPlayer from 'react-native-track-player';
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { Modalize } from 'react-native-modalize';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale, verticalScale} from "../Utils/scale";
-import * as Progress from 'react-native-progress';
+import EventList from "../Components/EventList";
 
 const PracticePersonal = props => {
     const user = useSelector((state) => state.user.userObject);
@@ -29,13 +30,11 @@ const PracticePersonal = props => {
     const helpPageData = {title:optionData.helps[helpPageIndex].title?optionData.helps[helpPageIndex].title:'',id:optionData.helps[helpPageIndex].id};
     const [tracks, setTracks] = useState([]);
     const [tracksLoading, setTracksLoading] = useState(true);
-    if (!props.isFocused)
-        return null;
     const fetchTracks = async () => {
         try {
             const apiSlide = getApi(props.config);
             await apiSlide.customRequest(
-                "wp-json/onenergy/v1/audio/?user="+user.id,
+                "wp-json/onenergy/v1/audio",
                 "get",
                 {},
                 null,
@@ -62,12 +61,20 @@ const PracticePersonal = props => {
     }, []);
     return (
         <SafeAreaView style={styles.container}>
-            {user.hasGuide>0?
-                tracksLoading ? (
-                    <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
-                ) : (
-                    <TracksList tracks={tracks}/>
-                )
+            {user.hasGuide>0||tracks.length?
+                tracksLoading ?
+                    <ActivityIndicator size="large"/>
+                :
+                    <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
+                        {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
+                            <View style={{marginVertical: verticalScale(5)}}>
+                                <EventList location={'practice_guided'} eventsData={optionData.goals}/>
+                                <EventList location={'practice_guided'} eventsData={optionData.challenges}/>
+                            </View>
+                            : null
+                        }
+                        <TracksList tracks={tracks}/>
+                    </ScrollView>
             :
                 <View style={{
                     flex: 1,
@@ -128,6 +135,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#f6f6f8',
         paddingTop:30,
     },
+    scroll_view: {
+        flexGrow: 1,
+    }
 });
 PracticePersonal.navigationOptions = ({ navigation }) => {
     const {params = {}} = navigation.state;
@@ -166,4 +176,4 @@ const mapStateToProps = (state) => ({
     config: state.config,
     accessToken: state.auth.token,
 });
-export default connect(mapStateToProps)(PracticePersonal);
+export default connect(mapStateToProps)(withNavigation(PracticePersonal));

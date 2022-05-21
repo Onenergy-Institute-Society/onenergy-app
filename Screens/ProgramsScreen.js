@@ -6,7 +6,8 @@ import {
     TouchableOpacity,
     SafeAreaView,
     Platform,
-    FlatList
+    FlatList,
+    Image, ScrollView
 } from "react-native";
 import {useSelector} from "react-redux";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
@@ -19,7 +20,8 @@ import { scale, verticalScale } from '../Utils/scale';
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { Modalize } from 'react-native-modalize';
-
+import EventList from "../Components/EventList";
+import moment from 'moment';
 const ProgramsScreen = props => {
     const { navigation, screenProps } = props;
     const user = useSelector((state) => state.user.userObject);
@@ -62,17 +64,22 @@ const ProgramsScreen = props => {
             </TouchableScale>
         )
     }
+    const renderItem = ({ item }) => {
+        return (
+            <TouchableScale
+                onPress={()=>{}}>
+                <ImageCache style={    {
+                    width:windowWidth-scale(30),
+                    height:(windowWidth-scale(30))/16*9,
+                    borderRadius: 9,
+                    overflow: 'hidden',
+                }}
+                            source={{uri: item.image ? item.image : ''}}/>
+            </TouchableScale>
+        );
+    }
     return (
         <SafeAreaView style={global.container}>
-            <View style={styles.eventRow}>
-                <FlatList
-                    data={optionData.featuredPrograms}
-                    renderItem={renderFeaturedPrograms}
-                    keyExtractor={item => item.id}
-                    showsHorizontalScrollIndicator={false}
-                    horizontal
-                />
-            </View>
             {!user || !user.firstCourseCompleted ?
                 <View style={styles.row_intro}>
                     <TouchableScale
@@ -97,8 +104,13 @@ const ProgramsScreen = props => {
                     </TouchableScale>
                 </View>
                 :
-                <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
-                               hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
+                <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
+                    <View style={{marginVertical:verticalScale(5)}}>
+                        <EventList location={'program'} eventsData={optionData.webinars} />
+                    </View>
+                    <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
+                                   hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
+                </ScrollView>
             }
             <Modalize
                 ref={(popupProgramDialog) => { this.popupProgramDialog = popupProgramDialog; }}
@@ -109,19 +121,19 @@ const ProgramsScreen = props => {
                     <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
                         <Text style={{fontSize:24}}>{helpModal.title}</Text>
                         <IconButton
-                        pressHandler={() => {this.popupProgramDialog.close();}}
-                        icon={require("@src/assets/img/close.png")}
-                        style={{ height: scale(16), width: scale(16) }}
-                        touchableStyle={{
-                            position:"absolute", top:10, right: 10,
-                            height: scale(24),
-                            width: scale(24),
-                            backgroundColor: "#e6e6e8",
-                            alignItems: "center",
-                            borderRadius: 100,
-                            padding: scale(5),
-                        }}
-                    /></View>
+                            pressHandler={() => {this.popupProgramDialog.close();}}
+                            icon={require("@src/assets/img/close.png")}
+                            style={{ height: scale(16), width: scale(16) }}
+                            touchableStyle={{
+                                position:"absolute", top:10, right: 10,
+                                height: scale(24),
+                                width: scale(24),
+                                backgroundColor: "#e6e6e8",
+                                alignItems: "center",
+                                borderRadius: 100,
+                                padding: scale(5),
+                            }}
+                        /></View>
                 }
             >
                 <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?verticalScale(-100):0}} >
@@ -144,10 +156,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     scroll_view: {
-        flexGrow: 1,
+        flex:1,
     },
     eventRow: {
-        margin: 15,
+        marginHorizontal: 15,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -169,7 +181,7 @@ const styles = StyleSheet.create({
         width: (windowWidth - 50) / 2,
         height: (windowWidth - 30) / 2,
         marginRight: 20,
-        marginVertical:10,
+        marginVertical:verticalScale(15),
         backgroundColor: 'white',
         borderRadius: 9,
         paddingVertical: 0,

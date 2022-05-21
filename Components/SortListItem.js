@@ -13,6 +13,7 @@ export default class SortListItem extends Component
 
                 onPanResponderGrant: (evt, gestureState) =>
                 {
+                    this.props.setCancelContentTouches(false);
                     let offset = props.horizontal === true ? {x:position.__getValue().x, y:0} : {x:0, y:position.__getValue().y};
                     position.setOffset(offset);
                     this.setState({ ...this.state, offset:offset, isMoving: true });
@@ -37,11 +38,16 @@ export default class SortListItem extends Component
 
                 onPanResponderRelease: (evt, gesture) =>
                 {
+                    this.props.setCancelContentTouches(true);
                     const lastPos = (this.state.index - props.initIndex) * this.state.itemSize;
                     position.setOffset(props.horizontal === true ? {x:lastPos, y:0} : {x:0, y:lastPos});
                     position.setValue({x:0,y:0});
                     this.setState({ ...this.state, isMoving: false });
                     this.props.save(props.id, this.state.itemSize);
+                },
+
+                onPanResponderTerminate: (evt, gesture) => { // When user's touch/gesture is moved outside of direct parent container
+                    this.props.setCancelContentTouches(true);
                 }
             });
 

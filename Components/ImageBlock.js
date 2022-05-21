@@ -8,7 +8,6 @@ import {withNavigation, NavigationActions} from "react-navigation";
 import {windowWidth} from "../Utils/Dimensions";
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
-import * as Progress from 'react-native-progress';
 
 const ImageBlock =(props) => {
     const {block, navigation} = props;

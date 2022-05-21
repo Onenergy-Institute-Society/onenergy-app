@@ -4,7 +4,7 @@ import {
     Alert,
     StyleSheet,
     View,
-    SafeAreaView, Text, TouchableOpacity, Platform
+    SafeAreaView, Text, TouchableOpacity, Platform, ScrollView
 } from "react-native";
 import {NavigationActions} from "react-navigation";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
@@ -16,6 +16,7 @@ import externalCodeDependencies from "@src/externalCode/externalRepo/externalCod
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { Modalize } from 'react-native-modalize';
 import {scale, verticalScale} from "../Utils/scale";
+import EventList from "../Components/EventList";
 
 const PracticesScreen = props => {
     try {
@@ -101,7 +102,15 @@ const PracticesScreen = props => {
 
         return (
             <SafeAreaView style={styles.container}>
-                <View>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    {user?
+                        (optionData.goals&&optionData.goals.length)||(optionData.challenges&&optionData.challenges.length)?
+                            <View style={{marginVertical:verticalScale(5)}}>
+                                <EventList location={'practice'} eventsData={optionData.goals} />
+                                <EventList location={'practice'} eventsData={optionData.challenges} />
+                            </View>
+                        :null
+                    :null}
                     <TouchableScale
                         onPress={personalPracticePressed}>
                         <View style={[styles.card, styles.boxShadow]}>
@@ -132,7 +141,7 @@ const PracticesScreen = props => {
                             />
                         </View>
                     </TouchableScale>
-                </View>
+                </ScrollView>
                 <Modalize
                     ref={(popupPracticeDialog) => { this.popupPracticeDialog = popupPracticeDialog; }}
                     modalHeight = {windowHeight*4/5}
@@ -193,7 +202,7 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         paddingVertical: 0,
         paddingHorizontal: 0,
-        marginTop: verticalScale(20),
+        marginBottom: verticalScale(15),
         marginHorizontal: scale(15),
     },
     boxShadow: {

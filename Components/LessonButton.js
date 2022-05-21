@@ -36,48 +36,75 @@ const LessonButton = (props) => {
                     type: 'VIDEO_RESET',
                 });
                 setCompleting(false);
+                dispatch({
+                    type: 'UPDATE_USER_COMPLETED_LESSONS',
+                    payload: {"id": lesson.id, "date": new Date().getTime() / 1000}
+                });
                 if(lesson.settings.guide)
                 {
                     dispatch({
                         type: 'NOTIFICATION_INCREMENT',
                         payload: 'guide_personal'
                     });
-                    let index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_title');
-                    setAlertTitle(optionData.titles[index].title);
-                    index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_body');
-                    setAlertBody(optionData.titles[index].title + ' ' + lesson.title);
-                    setAlertCancelText('');
-                    setAlertConfirmType('top');
-                    index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_button');
-                    setAlertConfirmText(optionData.titles[index].title);
-                    setAlertShowConfirm(true);
-                    setShowAlert(true);
-                }else{
+                    dispatch({
+                        type: 'UPDATE_USER_COMPLETED_LESSONS',
+                        payload: {"id": lesson.id, "date": new Date().getTime() / 1000}
+                    });
                     if(response.data.next_lesson===0){
+                        dispatch({
+                            type: 'UPDATE_USER_COMPLETED_COURSES',
+                            payload: {"id": lesson.parent.id, "date": new Date().getTime() / 1000}
+                        });
+                    }
+                    if(!lesson.settings.no_video) {
+                        let index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_title');
+                        setAlertTitle(optionData.titles[index].title);
+                        index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_body');
+                        setAlertBody(optionData.titles[index].title + ' ' + lesson.title);
+                        setAlertCancelText('');
+                        setAlertConfirmType('top');
+                        index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_button');
+                        setAlertConfirmText(optionData.titles[index].title);
+                        setAlertShowConfirm(true);
+                        setShowAlert(true);
+                    }else{
+                        props.navigation.goBack();
+                    }
+                }else{
+                    dispatch({
+                        type: 'UPDATE_USER_COMPLETED_LESSONS',
+                        payload: {"id": lesson.id, "date": new Date().getTime() / 1000}
+                    });
+                    if(response.data.next_lesson===0){
+                        console.log(response.data);
+                        dispatch({
+                            type: 'UPDATE_USER_COMPLETED_COURSES',
+                            payload: {"id": lesson.parent.id, "date": new Date().getTime() / 1000}
+                        });
                         if(response.data.course===29421){
                             dispatch({ type: "COMPLETE_FIRST_COURSE" });
                         }
+                    }
+                    if(!lesson.settings.no_video||!lesson.settings.no_popup) {
                         let index = optionData.titles.findIndex(el => el.id === 'alert_course_completed_title');
                         setAlertTitle(optionData.titles[index].title);
                         index = optionData.titles.findIndex(el => el.id === 'alert_course_completed_body');
                         setAlertBody(optionData.titles[index].title + ' ' + lesson.title);
                         setAlertCancelText('');
-                        setAlertConfirmType('top');
+                        setAlertConfirmType(lesson.settings.back_to);
                         index = optionData.titles.findIndex(el => el.id === 'alert_course_completed_button');
                         setAlertConfirmText(optionData.titles[index].title);
                         setAlertShowConfirm(true);
                         setShowAlert(true);
                     }else{
-                        let index = optionData.titles.findIndex(el => el.id === 'alert_lesson_completed_title');
-                        setAlertTitle(optionData.titles[index].title);
-                        index = optionData.titles.findIndex(el => el.id === 'alert_lesson_completed_body');
-                        setAlertBody(optionData.titles[index].title + ' ' + lesson.title);
-                        setAlertCancelText('');
-                        setAlertConfirmType('back');
-                        index = optionData.titles.findIndex(el => el.id === 'alert_lesson_completed_button');
-                        setAlertConfirmText(optionData.titles[index].title);
-                        setAlertShowConfirm(true);
-                        setShowAlert(true);
+                        switch(lesson.settings.back_to){
+                            case "top":
+                                props.navigation.dispatch(StackActions.popToTop());
+                                break;
+                            case "parent":
+                                props.navigation.goBack();
+                                break
+                        }
                     }
                 }
             });
@@ -90,13 +117,13 @@ const LessonButton = (props) => {
             case 'top':
                 props.navigation.dispatch(StackActions.popToTop());
                 break;
-            case 'back':
+            case 'parent':
                 props.navigation.goBack();
             default:
                 return;
         }
     }
-    console.log(lesson, videoComplete)
+
     return (
         <View style={[global.row, {paddingHorizontal: 20, paddingVertical: 15}]}>
             {lesson.completed?

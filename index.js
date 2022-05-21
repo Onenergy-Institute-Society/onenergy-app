@@ -37,6 +37,7 @@ import CourseActionButton from "@src/components/Course/CourseActionButton";
 import MyAppPageScreen from "./Screens/MyAppPageScreen";
 import AppAvatar from "@src/components/AppAvatar";
 import LessonScreenHeader from "./Components/LessonScreenHeader";
+import QuizScreenHeader from "./Components/QuizScreenHeader";
 import {FontWeights} from "@src/styles/global";
 import TextBlock from "./Components/TextBlock";
 import ImageBlock from "./Components/ImageBlock";
@@ -265,7 +266,7 @@ export const applyCustomCode = externalCodeSetup => {
             const diffExpiringDays = expiringTime.diff(current_time, 'days');
             let diffExpiringTime = '';
             diffExpiringTime = 'Expire in '+diffExpiringDays+' Days';
-            if(diffExpiringDays<=7){
+            if(diffExpiringDays<=7 && diffExpiringDays>0){
                 statusBarColor = "grey";
                 statusText = diffExpiringTime;
                 lessonNote = 'Course is expiring soon';
@@ -291,7 +292,7 @@ export const applyCustomCode = externalCodeSetup => {
         }
         const styles = StyleSheet.create({
             containerStyle: {
-                marginHorizontal: 15,
+                marginHorizontal: scale(15),
                 backgroundColor: 'transparent',
             },
             statusBar:{
@@ -390,7 +391,7 @@ export const applyCustomCode = externalCodeSetup => {
                 paddingVertical: 0,
                 paddingHorizontal: 0,
                 width: '100%',
-                marginBottom: 15,
+                marginBottom: verticalScale(15),
             },
             boxShadow: {
                 shadowColor: "#000",
@@ -777,6 +778,9 @@ export const applyCustomCode = externalCodeSetup => {
     //Custom back button in Single Lesson Screen
     externalCodeSetup.lessonSingleScreenApi.setLessonScreenHeader(props => <LessonScreenHeader {...props}/>)
 
+    //Custom back button in Single Quiz Screen
+    externalCodeSetup.quizApi.setQuizScreenHeader(props => <QuizScreenHeader {...props} />)
+
     //Custom complete button in Single Lesson Screen
     externalCodeSetup.lessonSingleScreenApi.setTransformLessonActionButtons((
         lessonButton,
@@ -1011,6 +1015,26 @@ export const applyCustomCode = externalCodeSetup => {
                     }
                 }
                 return reducer(newUserState, action);
+            case 'UPDATE_USER_COMPLETED_LESSONS':
+                console.log(state.userObject.completed_lessons, action.payload)
+                const newUserLesson = {
+                    ...state,
+                    userObject:{
+                        ...state.userObject,
+                        completed_lessons: [...state.userObject.completed_lessons, action.payload]
+                    }
+                }
+                console.log(newUserLesson);
+                return reducer(newUserLesson, action);
+            case 'UPDATE_USER_COMPLETED_COURSES':
+                const newUserCourse = {
+                    ...state,
+                    userObject:{
+                        ...state.userObject,
+                        completed_courses: [...state.userObject.completed_courses, action.payload]
+                    }
+                }
+                return reducer(newUserCourse, action);
             default:
                 return reducer(state, action);
         }

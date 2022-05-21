@@ -9,18 +9,14 @@ import {
     StyleSheet,
     SafeAreaView,
     FlatList,
-    TouchableOpacity,
+    ActivityIndicator,
     ImageBackground
 } from 'react-native';
 import {scale, verticalScale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
-import * as Progress from 'react-native-progress';
-import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
-import BlockScreen from "@src/containers/Custom/BlockScreen";
 
 const Quests = (props) => {
     const {type} = props;
-    const user = useSelector((state) => state.user.userObject);
     const language = useSelector((state) => state.languagesReducer.languages);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
     const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'achievement_quest_empty');
@@ -34,7 +30,7 @@ const Quests = (props) => {
         try {
             const apiQuotes = getApi(props.config);
             await apiQuotes.customRequest(
-                "wp-json/onenergy/v1/quests/?type="+type+"&user="+user.id,
+                "wp-json/onenergy/v1/quests/?type="+type,
                 "get",
                 {},
                 null,
@@ -53,7 +49,7 @@ const Quests = (props) => {
     }, []);
     const renderItem = ({ item }) => {
         let timeLeft;
-        if(item.type==="daily"){
+        if(type==="daily"){
             timeLeft = hourLeft;
         }else{
             timeLeft = item.steps.length - item.completed_steps;
@@ -175,7 +171,7 @@ const Quests = (props) => {
                         </View>
                     </View>
                 :
-                <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
+                <ActivityIndicator size="large" />
             }
         </SafeAreaView>
     )
