@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import {scale, verticalScale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
-import * as Progress from 'react-native-progress';
 
 const Quests = (props) => {
     const {type} = props;
@@ -172,10 +171,7 @@ const Quests = (props) => {
                         </View>
                     </View>
                 :
-                Platform.OS === 'android' ?
-                    <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
-                    :
-                    <ActivityIndicator size="large" />
+                <ActivityIndicator size="large" />
             }
         </SafeAreaView>
     )

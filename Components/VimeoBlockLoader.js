@@ -4,7 +4,7 @@ import axios from 'axios';
 import {
     ActivityIndicator, ImageBackground, Platform, StyleSheet, View
 } from "react-native";
-import VimeoBlock from "./VimeoBlock_new";
+import VimeoBlock from "./VimeoBlock";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 
 const VimeoBlockLoader =(props) => {

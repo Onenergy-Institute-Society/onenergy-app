@@ -18,7 +18,6 @@ import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { Modalize } from 'react-native-modalize';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale, verticalScale} from "../Utils/scale";
-import * as Progress from 'react-native-progress';
 import EventList from "../Components/EventList";
 
 const PracticePersonal = props => {
@@ -63,20 +62,19 @@ const PracticePersonal = props => {
     return (
         <SafeAreaView style={styles.container}>
             {user.hasGuide>0||tracks.length?
-                tracksLoading ? (
-                    Platform.OS === 'android' ?
-                        <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
-                        :
-                        <ActivityIndicator size="large"/>
-                ) : (
+                tracksLoading ?
+                    <ActivityIndicator size="large"/>
+                :
                     <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                        <View style={{marginVertical:verticalScale(5)}}>
-                            <EventList location={'practice_guided'} eventsData={optionData.goals} />
-                            <EventList location={'practice_guided'} eventsData={optionData.challenges} />
-                        </View>
+                        {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
+                            <View style={{marginVertical: verticalScale(5)}}>
+                                <EventList location={'practice_guided'} eventsData={optionData.goals}/>
+                                <EventList location={'practice_guided'} eventsData={optionData.challenges}/>
+                            </View>
+                            : null
+                        }
                         <TracksList tracks={tracks}/>
                     </ScrollView>
-                )
             :
                 <View style={{
                     flex: 1,

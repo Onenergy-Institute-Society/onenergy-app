@@ -13,14 +13,13 @@ import {
 } from "react-native";
 import IconButton from "@src/components/IconButton";
 import {Swipeable, GestureHandlerRootView} from "react-native-gesture-handler";
-import PopupDialog, {ScaleAnimation} from 'react-native-popup-dialog';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import SortList from "../Components/SortList";
 import { Modalize } from 'react-native-modalize';
 import {scale, verticalScale} from "../Utils/scale";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
-import * as Progress from 'react-native-progress';
+import { BlurView } from "@react-native-community/blur";
 
 const EditRoutine = props => {
     const {navigation} = props;
@@ -29,6 +28,7 @@ const EditRoutine = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
     const backgroundImages = optionData.routine_image;
     const backgroundMusics = optionData.routine_bgm;
+    const [ loading, setLoading ] = useState(false);
     const [routineDetail, setRoutineDetail] = useState(navigation.getParam('routine')?navigation.getParam('routine'):{id:0,title:'',image:optionData.routine_image[0],bgm:optionData.routine_bgm[0].name,tracks:[],routine:[]});
     const [selectBgm, setSelectBgm] = useState('');
     const [guides, setGuides] = useState([]);
@@ -38,6 +38,7 @@ const EditRoutine = props => {
     const [currentTrack, setCurrentTrack] = useState({index:-1, detail:{}});
     const [changedStatus, setChangedStatus] = useState(false);
     const [routineHelpModal, setHelpModal] = useState({title:'',id:0});
+    const [cancelContentTouches, setCancelContentTouches ] = useState(true);
 
     const updateTracks = async () => {
         try {
@@ -120,7 +121,6 @@ const EditRoutine = props => {
                 payload: routineDetail,
             })
             setChangedStatus(false);
-            this.savingDialog.dismiss();
             navigation.goBack();
         }
     },[tracksLoading])
@@ -177,7 +177,7 @@ const EditRoutine = props => {
                 alert('Please choose a routine name.');
                 return false;
             }
-            this.savingDialog.show();
+            setLoading(true);
             if(navigation.getParam('routine')) {
                 updateTracks().then();
             }else{
@@ -384,7 +384,8 @@ const EditRoutine = props => {
     }
     return (
         <SafeAreaView style={styles.Container}>
-            <View style={styles.ScrollContainer}>
+            <ScrollView nestedScrollEnabled={true} style={styles.ScrollContainer} canCancelContentTouches={cancelContentTouches}
+            >
             <View>
             <Text style={styles.title}>Routine Name</Text>
             <TextInput
@@ -446,19 +447,21 @@ const EditRoutine = props => {
                         edgeColor={"rgba(0,140,230,0.3)"}           // The color of the edge zone (can be transparent if needed)
                         style={styles.list}
                         contentContainerStyle={styles.contentContainer}
+                        setCancelContentTouches={setCancelContentTouches}
                     />
                 )}
             </GestureHandlerRootView>
             </TouchableWithoutFeedback>
-            </View>
-            <PopupDialog
-                ref={(savingDialog) => { this.savingDialog = savingDialog; }}
-                width = {windowWidth*2/3}
-                height = {windowWidth/5}
-                dialogAnimation = {new ScaleAnimation()}
-            >
-                <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Saving</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
-            </PopupDialog>
+            </ScrollView>
+            {loading &&
+                <BlurView style={styles.loading}
+                          blurType="light"
+                          blurAmount={5}
+                          reducedTransparencyFallbackColor="white"
+                          >
+                    <ActivityIndicator size='large' />
+                </BlurView>
+            }
             <Modalize
                 ref={(routineHelpModal) => { this.routineHelpModal = routineHelpModal; }}
                 modalHeight = {windowHeight*4/5}
@@ -615,6 +618,15 @@ const styles = StyleSheet.create({
     },
     contentContainer:{
         width: windowWidth-30,
+    },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     index:{
     },

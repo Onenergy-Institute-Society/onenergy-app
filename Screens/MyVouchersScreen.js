@@ -11,22 +11,19 @@ import {
     FlatList,
     ImageBackground, Alert,
     ActivityIndicator,
-    Platform,
-    Image
 } from 'react-native';
 import {scale, verticalScale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
-import * as Progress from 'react-native-progress';
-import PopupDialog, {ScaleAnimation} from 'react-native-popup-dialog';
 import moment from 'moment';
 import RNRestart from 'react-native-restart';
+import { BlurView } from "@react-native-community/blur";
 
 const MyVouchersScreen = (props) => {
     const language = useSelector((state) => state.languagesReducer.languages);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
     const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'voucher_empty');
     const emptyText = optionData.titles[emptyTextIndex].title
-
+    const [ loading, setLoading ] = useState(false);
     const [vouchers, setVouchers] = useState({});
     const [vouchersLoading, setVouchersLoading] = useState(true);
 
@@ -61,7 +58,7 @@ const MyVouchersScreen = (props) => {
             <TouchableOpacity
                 onPress={() => {
                     if(item.redeemDate){
-                        Alert.alert('Notice', "You have already redeemed this voucher?", [
+                        Alert.alert('Notice', "You have already redeemed this voucher.", [
                             {
                                 text: 'OK'
                             }
@@ -73,7 +70,7 @@ const MyVouchersScreen = (props) => {
                                     async () => {
                                         try {
 
-                                            this.savingDialog.show();
+                                            setLoading(true);
                                             const apiRequest = getApi(props.config);
                                             await apiRequest.customRequest(
                                                 "wp-json/onenergy/v1/redeemVoucher",
@@ -83,7 +80,7 @@ const MyVouchersScreen = (props) => {
                                                 {},
                                                 false
                                             ).then(response => {
-                                                this.savingDialog.dismiss();
+                                                setLoading(false);
                                                 if (response.data) {
                                                     if (response.data.result) {
                                                         switch (response.data.action) {
@@ -117,7 +114,7 @@ const MyVouchersScreen = (props) => {
             >
                 <View style={[styles.voucherItem,styles.boxShadow, {width: windowWidth-scale(30), height: (windowWidth-scale(30))/parseInt(item.width)*parseInt(item.height),}]}>
                     <ImageBackground style={[styles.list,{width: windowWidth-scale(30), height: (windowWidth-scale(30))/parseInt(item.width)*parseInt(item.height),}]} source={{uri: item.image ? item.image : ''}}>
-                        <Text style={[styles.subTitle,{color:item.color}]}>{moment(item.expireDate).format("MMMM Do, YYYY")}</Text>
+                        <Text style={[styles.subTitle,{color:item.color, left:item.left?scale(item.left):null, top:item.top?scale(item.top):null, right:item.right?scale(item.right):null, bottom:item.bottom?scale(item.bottom):null, }]}>{moment(item.expireDate).format("MMMM Do, YYYY")}</Text>
                         {item.redeemDate?
                             <Text style={styles.redeemedText}>REDEEMED</Text>
                         :null}
@@ -129,20 +126,7 @@ const MyVouchersScreen = (props) => {
     return(
         <SafeAreaView style={styles.container}>
             {vouchersLoading ?
-                Platform.OS === 'android' ?
-                    <View style={{
-                        flex: 1,
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        flexDirection: "column"
-                    }}><Text style={{fontSize: scale(14), color: "#4942e1"}}>Loading</Text><Progress.Bar
-                        indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"}/></View>
-                    :
-                    <ActivityIndicator size="large"/>
+                <ActivityIndicator size="large"/>
                 :
                 vouchers.length?
                     <FlatList
@@ -165,14 +149,15 @@ const MyVouchersScreen = (props) => {
                         </View>
                     </View>
             }
-            <PopupDialog
-                ref={(savingDialog) => { this.savingDialog = savingDialog; }}
-                width = {windowWidth*2/3}
-                height = {windowWidth/5}
-                dialogAnimation = {new ScaleAnimation()}
+            {loading &&
+            <BlurView style={styles.loading}
+                blurType="light"
+                blurAmount={5}
+                reducedTransparencyFallbackColor="white"
             >
-                <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Redeeming</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
-            </PopupDialog>
+                <ActivityIndicator size='large' />
+            </BlurView>
+            }
         </SafeAreaView>
     )
 }
@@ -194,8 +179,6 @@ const styles = StyleSheet.create({
     },
     subTitle:{
         position: "absolute",
-        right: scale(20),
-        bottom: scale(20),
         fontSize:scale(14),
     },
     redeemedText:{
@@ -225,6 +208,15 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
+    },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });
 const mapStateToProps = (state) => ({

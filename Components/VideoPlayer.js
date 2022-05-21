@@ -19,6 +19,7 @@ import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
 import WaitingGroupPractice from "./WaitingGroupPractice";
+import { updateNotification } from '../Utils/actions'
 
 const statusBarSize = 25;
 class VideoPlayer extends Component {
@@ -99,6 +100,9 @@ class VideoPlayer extends Component {
         ).then(response => {
             if(response.data.updated)
             {
+                this.props.updateNotification('NOTIFICATION_INCREMENT', 'progress');
+                this.props.updateNotification('NOTIFICATION_INCREMENT', 'achievement');
+                this.props.updateNotification('NOTIFICATION_INCREMENT', 'quest');
             }
         });
     }
@@ -160,11 +164,14 @@ class VideoPlayer extends Component {
         );
     }
 }
+const mapDispatchToProps = {
+    updateNotification,
+}
+
 function mapStateToProps(state) {
-    console.log(state.config)
     const {config} = state.config
     const {accessToken} = state.auth.token
     const {user} = state.user
     return {config, accessToken, user}
 }
-export default connect(mapStateToProps)(VideoPlayer)
+export default connect(mapStateToProps, mapDispatchToProps)(VideoPlayer)

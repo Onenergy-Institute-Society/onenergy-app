@@ -147,27 +147,16 @@ const PracticeMember = props => {
             {user.hasGuide>0?
                 user.hasRoutine > 0 ?
                     routinesLoading ?
-                        Platform.OS === 'android' ?
-                            <View style={{
-                                flex: 1,
-                                top: 0,
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                justifyContent: "center",
-                                alignItems: "center",
-                                flexDirection: "column"
-                            }}><Text style={{fontSize: scale(14), color: "#4942e1"}}>Loading</Text><Progress.Bar
-                                indeterminate={true} progress={1} size={50} borderColor={"#4942e1"}
-                                color={"#4942e1"}/></View>
-                            :
-                            <ActivityIndicator size="large"/>
+                        <ActivityIndicator size="large"/>
                         :
                         <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                            <View style={{marginVertical:verticalScale(5)}}>
-                                <EventList location={'practice_member'} eventsData={optionData.goals} />
-                                <EventList location={'practice_member'} eventsData={optionData.challenges} />
-                            </View>
+                            {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
+                                <View style={{marginVertical: verticalScale(5)}}>
+                                    <EventList location={'practice_member'} eventsData={optionData.goals}/>
+                                    <EventList location={'practice_member'} eventsData={optionData.challenges}/>
+                                </View>
+                                : null
+                            }
                             <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine}/>
                         </ScrollView>
                     :

@@ -183,9 +183,9 @@ const AudioPlayerRoutine = (props) => {
                     <Video
                         ref={videoPlayer => this.videoPlayer = videoPlayer}
                         audioOnly={true}
-                        playInBackground={user.membership&&user.membership.length}
+                        playInBackground={!!(user.membership && user.membership.length)}
                         playWhenInactive={true}
-                        ignoreSilentSwitch="ignore"
+                        ignoreSilentSwitch={"ignore"}
                         repeat={true}
                         paused={!playing}
                         source={{uri: routine.bgm_url}}   // Can be a URL or a local file.

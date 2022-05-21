@@ -20,8 +20,6 @@ import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale, verticalScale} from "../Utils/scale";
 import HTML from "react-native-render-html";
 import moment from 'moment';
-import PopupDialog, {ScaleAnimation} from 'react-native-popup-dialog';
-import * as Progress from 'react-native-progress';
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { Modalize } from 'react-native-modalize';
@@ -29,6 +27,7 @@ import WaitingGroupPractice from "../Components/WaitingGroupPractice";
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import EventList from "../Components/EventList";
+import { BlurView } from "@react-native-community/blur";
 
 const PracticeGroup = props => {
     const { navigation, screenProps } = props;
@@ -38,11 +37,11 @@ const PracticeGroup = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
     const helpIndex = optionData.helps.findIndex(el => el.name === 'practice_group_popup');
     const helpData = {title:optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'',id:optionData.helps[helpIndex].id};
+    const [ loading, setLoading ] = useState(false);
     const [ groupPractice, setGroupPractice ] = useState([]);
     const [ groupPracticeLoading, setGroupPracticeLoading] = useState(true);
-    const [selectedGroupPractice, setSelectedGroupPractice] = useState(0);
+    const [groupPracticeDetail, setGroupPracticeDetail] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
-    console.log(user, optionData.goals)
     const fetchGroupPractice = async () => {
         try {
             const api = getApi(props.config);
@@ -107,12 +106,9 @@ const PracticeGroup = props => {
             })
         )
     }
-    const onItemDetailPress = (groupPracticeID) => {
-        if(!selectedGroupPractice || groupPracticeID !== selectedGroupPractice) {
-            setSelectedGroupPractice(groupPracticeID);
-        }else{
-            setSelectedGroupPractice(null);
-        }
+    const onItemDetailPress = (detail) => {
+        setGroupPracticeDetail(detail);
+        this.DetailModal.open();
     };
     const htmlStyle = {
         body:{height:200},
@@ -132,8 +128,6 @@ const PracticeGroup = props => {
         },
     };
     const renderItem = ({ item }) => {
-        let showDetail= false;
-        showDetail = !!(selectedGroupPractice && selectedGroupPractice === item.id);
         let detail = item.content.rendered;
         const conditionLessons  = item.meta_box.lessons.every(value => user.completed_lessons.some(lesson=>(lesson.id===value)));
         user.completed_lessons.map((lesson) => {
@@ -162,8 +156,8 @@ const PracticeGroup = props => {
             }
         })
         return (
-            <View style={[styles.containerStyle, styles.boxShadow, {height: showDetail?verticalScale(450):verticalScale(200)}]} key={'gp-' + item.id}>
-                <ImageBackground style={[styles.imageView, {height: showDetail?verticalScale(200):verticalScale(200)}]} source={{uri: item.meta_box.bg_image.full_url}}>
+            <View style={[styles.containerStyle, styles.boxShadow, {height: verticalScale(200)}]} key={'gp-' + item.id}>
+                <ImageBackground style={[styles.imageView, {height: verticalScale(200)}]} source={{uri: item.meta_box.bg_image.full_url}}>
                     <View style={{height:scale(60), justifyContent:"center", alignItems:"center", width:windowWidth-scale(30)}}>
                         <Text style={styles.title}>{item.title.rendered}</Text>
                     </View>
@@ -229,51 +223,32 @@ const PracticeGroup = props => {
                     }
                         <TouchableOpacity
                             style={styles.viewBottom}
-                            onPress={() => onItemDetailPress(item.id, showDetail)}
+                            onPress={() => onItemDetailPress(detail)}
                         >
                             <View stlye={styles.viewDetail}>
-                                <Text style={styles.description}>Tap here to {showDetail?'hide':'view'} detail</Text>
+                                <Text style={styles.description}>Tap here to view detail</Text>
                                 <Image tintColor={"#4942e1"} source={require("@src/assets/img/dropdown_2.png")}
-                                       style={{alignSelf: "center", width: 16, height: 16, transform: [{ rotate: showDetail?'180deg':'0deg' }]}}/>
+                                       style={{alignSelf: "center", width: 16, height: 16, }}/>
                             </View>
                         </TouchableOpacity>
                 </ImageBackground>
-                {showDetail?
-                <ScrollView nestedScrollEnabled style={{height:60, backgroundColor:"white", padding:15, borderBottomRightRadius:9, borderBottomLeftRadius:9}}>
-                    <HTML html={detail}
-                          contentWidth = {windowWidth-80}
-                          imagesMaxWidth = {windowWidth}
-                          tagsStyles={htmlStyle}
-                          ignoredStyles={['height', 'width']}
-                          style={{flex:1}}
-                          onLinkPress={async (evt, href) => {
-                              this.loadingDialog.show();
-                              let secTimer = setInterval( () => {
-                                  this.loadingDialog.dismiss();
-                                  clearInterval(secTimer);
-                              },1000)
-                              await props.attemptDeepLink(false)(null, href);
-                          }}
-                    />
-                </ScrollView>
-                :null}
             </View>
         );
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView nestedScrollEnabled styles={styles.scrollView} showsVerticalScrollIndicator={false}>
-                <View style={{marginVertical:verticalScale(5)}}>
-                    <EventList location={'practice_group'} eventsData={optionData.goals} />
-                    <EventList location={'practice_group'} eventsData={optionData.challenges} />
-                </View>
-                {groupPracticeLoading?(
-                    Platform.OS === 'android' ?
-                        <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
-                        :
-                        <ActivityIndicator size="large"/>
-                ):(
+            {groupPracticeLoading?(
+                <ActivityIndicator size="large"/>
+            ):(
+                <ScrollView nestedScrollEnabled={true} styles={styles.scrollView} showsVerticalScrollIndicator={false}>
+                    {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
+                        <View style={{marginVertical: verticalScale(5)}}>
+                            <EventList location={'practice_group'} eventsData={optionData.goals}/>
+                            <EventList location={'practice_group'} eventsData={optionData.challenges}/>
+                        </View>
+                        : null
+                    }
                     <FlatList
                         data={groupPractice}
                         renderItem={renderItem}
@@ -282,8 +257,49 @@ const PracticeGroup = props => {
                         nestedscrollenabled={true}
                         keyExtractor={item => item.id}
                     />
-                )}
-            </ScrollView>
+                </ScrollView>
+            )}
+            <Modalize
+                ref={(DetailModal) => { this.DetailModal = DetailModal; }}
+                modalHeight = {windowHeight*4/5}
+                childrenStyle = {{backgroundColor:"#f2f2f2"}}
+                handlePosition = "outside"
+                HeaderComponent={
+                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
+                        <Text style={{fontSize:24}}>Group Practice Detail</Text>
+                        <IconButton
+                            pressHandler={() => {this.DetailModal.close();}}
+                            icon={require("@src/assets/img/close.png")}
+                            style={{ height: scale(16), width: scale(16) }}
+                            touchableStyle={{
+                                position:"absolute", top:10, right: 10,
+                                height: scale(24),
+                                width: scale(24),
+                                backgroundColor: "#e6e6e8",
+                                alignItems: "center",
+                                borderRadius: 100,
+                                padding: scale(5),
+                            }}
+                        />
+                    </View>
+                }
+            >
+                <View style={{flex:1, marginHorizontal: 10}}>
+                <HTML html={groupPracticeDetail}
+                      contentWidth = {windowWidth-80}
+                      imagesMaxWidth = {windowWidth}
+                      tagsStyles={htmlStyle}
+                      ignoredStyles={['height', 'width']}
+                      style={{flex:1}}
+                      onLinkPress={async (evt, href) => {
+                          this.DetailModal.close();
+                          setLoading(true);
+                          await props.attemptDeepLink(false)(null, href);
+                          setLoading(false);
+                      }}
+                />
+                </View>
+            </Modalize>
             <Modalize
                 ref={(pgHelpModal) => { this.pgHelpModal = pgHelpModal; }}
                 modalHeight = {windowHeight*4/5}
@@ -318,28 +334,15 @@ const PracticeGroup = props => {
                                  {...props} />
                 </View>
             </Modalize>
-            <PopupDialog
-                ref={(loadingDialog) => { this.loadingDialog = loadingDialog; }}
-                width = {windowWidth*2/3}
-                height = {windowWidth/5}
-            >
-                {Platform.OS === 'android' ?
-                    <View style={{
-                        flex: 1,
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        flexDirection: "column"
-                    }}><Text style={{fontSize: scale(14), color: "#4942e1"}}>Loading</Text><Progress.Bar
-                        indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"}/></View>
-                    :
-                    <ActivityIndicator size="large"/>
-                }
-            </PopupDialog>
-
+            {loading &&
+                <BlurView style={styles.loading}
+                          blurType="light"
+                          blurAmount={5}
+                          reducedTransparencyFallbackColor="white"
+                >
+                    <ActivityIndicator size='large' />
+                </BlurView>
+            }
         </SafeAreaView>
     );
 };
@@ -396,6 +399,15 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         fontFamily: Platform.OS === 'android'
             ? 'Roboto' : 'Helvetica',
+    },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     tapForDetail: {
         fontWeight:"normal",

@@ -16,14 +16,13 @@ import DailyQuotes from '../Components/DailyQuotes'
 import Skeleton from '../Components/Loaders/QuoteSkeletonLoading';
 import PostRow from '../Components/PostRow';
 import ImageCache from "../Components/ImageCache";
-import PopupDialog from 'react-native-popup-dialog';
 import {NavigationActions} from "react-navigation";
 import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
-import * as Progress from 'react-native-progress';
 import EventList from "../Components/EventList";
+import { BlurView } from "@react-native-community/blur";
 
 const HomeContent = (props) => {
     const {navigation, screenProps} = props;
@@ -31,10 +30,11 @@ const HomeContent = (props) => {
     const user = useSelector((state) => state.user.userObject);
     const language = useSelector((state) => state.languagesReducer.languages);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const [ loading, setLoading ] = useState(false);
     const [quotesData, setQuotesData] = useState([]);
     const [quotesLoading, setQuotesLoading] = useState(true);
     TrackPlayer.updateOptions({
-        stopWithApp: user?!(user.membership&&user.membership.length):true, // false=> music continues in background even when app is closed
+        stopWithApp: !(user&&user.membership&&user.membership.length), // false=> music continues in background even when app is closed
         // Media controls capabilities
         capabilities: [
             Capability.Play,
@@ -127,9 +127,9 @@ const HomeContent = (props) => {
                     )
                     break;
                 case 'link':
-                    this.loadingDialog.show();
+                    setLoading(true);
                     let secTimer = setInterval( () => {
-                        this.loadingDialog.dismiss();
+                        setLoading(false);
                         clearInterval(secTimer);
                     },1000)
                     await props.attemptDeepLink(false)(null, item.link);
@@ -327,27 +327,15 @@ const HomeContent = (props) => {
                 <View style={styles.bottomRow}>
                 </View>
             </ScrollView>
-            <PopupDialog
-                ref={(loadingDialog) => { this.loadingDialog = loadingDialog; }}
-                width = {windowWidth*2/3}
-                height = {windowWidth/5}
+            {loading &&
+            <BlurView style={styles.loading}
+                      blurType="light"
+                      blurAmount={5}
+                      reducedTransparencyFallbackColor="white"
             >
-                {Platform.OS === 'android' ?
-                    <View style={{
-                        flex: 1,
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        flexDirection: "column"
-                    }}><Text style={{fontSize: scale(14), color: "#4942e1"}}>Loading</Text><Progress.Bar
-                        indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"}/></View>
-                    :
-                    <ActivityIndicator size="large"/>
-                }
-            </PopupDialog>
+                <ActivityIndicator size='large' />
+            </BlurView>
+            }
         </SafeAreaView>
     );
 };
@@ -501,6 +489,15 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
+    },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });
 
