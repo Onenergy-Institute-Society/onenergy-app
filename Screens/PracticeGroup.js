@@ -9,7 +9,8 @@ import {
     TouchableOpacity,
     FlatList,
     ImageBackground,
-    ScrollView
+    ScrollView,
+    ActivityIndicator
 } from "react-native";
 import {connect, useSelector} from "react-redux";
 import {getApi} from "@src/services";
@@ -19,14 +20,14 @@ import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale, verticalScale} from "../Utils/scale";
 import HTML from "react-native-render-html";
 import moment from 'moment';
-import PopupDialog, {ScaleAnimation} from 'react-native-popup-dialog';
-import * as Progress from 'react-native-progress';
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { Modalize } from 'react-native-modalize';
 import WaitingGroupPractice from "../Components/WaitingGroupPractice";
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
+import EventList from "../Components/EventList";
+import { BlurView } from "@react-native-community/blur";
 
 const PracticeGroup = props => {
     const { navigation, screenProps } = props;
@@ -36,9 +37,10 @@ const PracticeGroup = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
     const helpIndex = optionData.helps.findIndex(el => el.name === 'practice_group_popup');
     const helpData = {title:optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'',id:optionData.helps[helpIndex].id};
+    const [ loading, setLoading ] = useState(false);
     const [ groupPractice, setGroupPractice ] = useState([]);
     const [ groupPracticeLoading, setGroupPracticeLoading] = useState(true);
-    const [selectedGroupPractice, setSelectedGroupPractice] = useState(0);
+    const [groupPracticeDetail, setGroupPracticeDetail] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const fetchGroupPractice = async () => {
         try {
@@ -58,9 +60,10 @@ const PracticeGroup = props => {
     }
     const JoinGroupPractice = async (gp_id, gp_time) => {
         try {
+            console.log('1',props.config)
             const api = getApi(props.config);
             await api.customRequest(
-                "wp-json/onenergy/v1/JoinGroupPractice?user="+user.id,          // Endpoint suffix or full url. Suffix will be appended to the site url that app uses. Example of a suffix is "wp-json/buddyboss/v1/members". Example of full url would be "https://app-demos.buddyboss.com/learndash/wp-json/buddyboss/v1/members".
+                "wp-json/onenergy/v1/JoinGroupPractice",          // Endpoint suffix or full url. Suffix will be appended to the site url that app uses. Example of a suffix is "wp-json/buddyboss/v1/members". Example of full url would be "https://app-demos.buddyboss.com/learndash/wp-json/buddyboss/v1/members".
                 "post",       // get, post, patch, delete etc.
                 {"gp_id":gp_id, "gp_time":gp_time},               // JSON, FormData or any other type of payload you want to send in a body of request
                 null,             // validation function or null
@@ -81,9 +84,9 @@ const PracticeGroup = props => {
             title: optionData.titles[titleIndex].title,
             toggleHelpModal: toggleHelpModal,
         });
-        setCurrentTime(moment());
+        setCurrentTime(moment.utc().local().format());
         let secTimer = setInterval( () => {
-            setCurrentTime(moment());
+            setCurrentTime(moment.utc().local().format());
         },60000)
         return () => clearInterval(secTimer)
     }, []);
@@ -97,15 +100,15 @@ const PracticeGroup = props => {
                 params: {
                     video: url,
                     gp_id: gp_id,
-                    gp_time: gp_time
+                    gp_time: gp_time,
+                    config: props.config
                 }
             })
         )
     }
-    const onItemDetailPress = (groupPracticeID) => {
-        if(!selectedGroupPractice || groupPracticeID !== selectedGroupPractice) {
-            setSelectedGroupPractice(groupPracticeID);
-        }
+    const onItemDetailPress = (detail) => {
+        setGroupPracticeDetail(detail);
+        this.DetailModal.open();
     };
     const htmlStyle = {
         body:{height:200},
@@ -125,13 +128,10 @@ const PracticeGroup = props => {
         },
     };
     const renderItem = ({ item }) => {
-        let showDetail= false;
-        showDetail = !!(selectedGroupPractice && selectedGroupPractice === item.id);
         let detail = item.content.rendered;
-        const conditionLessons  = item.meta_box.lessons.every(value => user.completed_lessons.includes(value));
+        const conditionLessons  = item.meta_box.lessons.every(value => user.completed_lessons.some(lesson=>(lesson.id===value)));
         user.completed_lessons.map((lesson) => {
-            detail = detail.replace('<span id="'+lesson+'"></span>', '<span style="color:green">(Passed)</span>')
-            console.log(detail)
+            detail = detail.replace('<span id="'+lesson.id+'"></span>', '<span style="color:green">(Passed)</span>')
         })
         const conditionWeekDay = item.meta_box.weekday.includes(new Date().getDay().toString());
         const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
@@ -144,7 +144,6 @@ const PracticeGroup = props => {
         let CurrentStartTime = '';
         item.meta_box.times.map((time) => {
             let startTime = moment(year + '-' + month + '-' + date + ' ' + time, "YYYY-MM-DD hh:mm");
-
             if(startTime.diff(currentTime, 'minutes')>0&&startTime.diff(currentTime, 'minutes')<=30){
                 conditionTime = true;
                 timeToGo = startTime.diff(currentTime, 'minutes');
@@ -157,18 +156,17 @@ const PracticeGroup = props => {
             }
         })
         return (
-            <View style={[styles.containerStyle, styles.boxShadow, {height: showDetail?verticalScale(450):verticalScale(260)}]} key={'gp-' + item.id}>
-                <ImageBackground style={[styles.imageView, {height: showDetail?verticalScale(200):verticalScale(260)}]} source={{uri: item.meta_box.bg_image.full_url}}>
-                    <View style={{height:scale(60), justifyContent:"center", alignItems:"center", width:windowWidth-30}}>
+            <View style={[styles.containerStyle, styles.boxShadow, {height: verticalScale(200)}]} key={'gp-' + item.id}>
+                <ImageBackground style={[styles.imageView, {height: verticalScale(200)}]} source={{uri: item.meta_box.bg_image.full_url}}>
+                    <View style={{height:scale(60), justifyContent:"center", alignItems:"center", width:windowWidth-scale(30)}}>
                         <Text style={styles.title}>{item.title.rendered}</Text>
                     </View>
                     {conditionLessons?
                         conditionWeekDay?
                             conditionTime?
                                 <View style={styles.viewTop}>
-                                    <View style={{flexDirection: "column", justifyContent:"space-around", width:windowWidth-30}}>
-                                        <View style={{alignItems: "center"}}>
-                                            <Text style={styles.waitTimeLabel}>Next Streaming:</Text>
+                                    <View style={{flexDirection: "column", justifyContent:"flex-start", alignItems:"center", width:windowWidth-scale(30)}}>
+                                        <Text style={styles.waitTimeLabel}>Next Streaming:</Text>
                                             {timeToGo > 0 ?
                                                 <Text style={styles.waitTime}>{timeToGo} Minutes</Text>
                                                 :
@@ -176,20 +174,19 @@ const PracticeGroup = props => {
                                                     <Text style={styles.waitTime}>{moreTimeToGo} Minutes</Text>
                                                     :null
                                             }
-                                        </View>
                                         {timeToGo > 0 ?
                                             <WaitingGroupPractice waitingText={'waiting'} gp_id={item.id} gp_time={CurrentStartTime} waitingStyle={styles.waiting} />
-                                        :null}
-                                    </View>
+                                            :null}
                                     {timeToGo>0?
                                         <TouchableOpacity style={styles.btnJoin}
                                         onPress={() => {
                                         handlePress(item.meta_box.url, item.id, CurrentStartTime)
                                     }}
                                         >
-                                            <Text style={{color: "white", fontSize:24, fontWeight: "700"}}>JOIN GROUP PRACTICE</Text>
+                                            <Text style={{color: "white", fontSize:scale(20), fontWeight: "700"}}>JOIN NOW</Text>
                                         </TouchableOpacity>
                                     :null}
+                                    </View>
                                 </View>
                             :
                                 <View style={styles.viewTopInfo}>
@@ -224,38 +221,17 @@ const PracticeGroup = props => {
                             <Text style={{fontWeight:"500", fontSize:scale(18), textAlign:"center"}}>Please finish all required lessons to activate this group practice.</Text>
                         </View>
                     }
-                    {!showDetail?
                         <TouchableOpacity
                             style={styles.viewBottom}
-                            onPress={() => onItemDetailPress(item.id)}
+                            onPress={() => onItemDetailPress(detail)}
                         >
                             <View stlye={styles.viewDetail}>
                                 <Text style={styles.description}>Tap here to view detail</Text>
-                                <Image tintColor={"#4942e1"} source={require("@src/assets/img/dropdown_2.png")} style={{alignSelf:"center", width:16, height:16}} />
+                                <Image tintColor={"#4942e1"} source={require("@src/assets/img/dropdown_2.png")}
+                                       style={{alignSelf: "center", width: 16, height: 16, }}/>
                             </View>
                         </TouchableOpacity>
-                    :null
-                    }
                 </ImageBackground>
-                {showDetail?
-                <ScrollView nestedScrollEnabled style={{height:60, backgroundColor:"white", padding:15}}>
-                    <HTML html={detail}
-                          contentWidth = {windowWidth-80}
-                          imagesMaxWidth = {windowWidth}
-                          tagsStyles={htmlStyle}
-                          ignoredStyles={['height', 'width']}
-                          style={{flex:1}}
-                          onLinkPress={async (evt, href) => {
-                              this.loadingDialog.show();
-                              let secTimer = setInterval( () => {
-                                  this.loadingDialog.dismiss();
-                                  clearInterval(secTimer);
-                              },1000)
-                              await props.attemptDeepLink(false)(null, href);
-                          }}
-                    />
-                </ScrollView>
-                :null}
             </View>
         );
     };
@@ -263,17 +239,67 @@ const PracticeGroup = props => {
     return (
         <SafeAreaView style={styles.container}>
             {groupPracticeLoading?(
-                <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
+                <ActivityIndicator size="large"/>
             ):(
-                <FlatList
-                    style={styles.scrollView}
-                    data={groupPractice}
-                    renderItem={renderItem}
-                    extraData={this.props}
-                    showsVerticalScrollIndicator={false}
-                    keyExtractor={item => item.id}
-                />
+                <ScrollView nestedScrollEnabled={true} styles={styles.scrollView} showsVerticalScrollIndicator={false}>
+                    {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
+                        <View style={{marginVertical: verticalScale(5)}}>
+                            <EventList location={'practice_group'} eventsData={optionData.goals}/>
+                            <EventList location={'practice_group'} eventsData={optionData.challenges}/>
+                        </View>
+                        : null
+                    }
+                    <FlatList
+                        data={groupPractice}
+                        renderItem={renderItem}
+                        extraData={this.props}
+                        showsVerticalScrollIndicator={false}
+                        nestedscrollenabled={true}
+                        keyExtractor={item => item.id}
+                    />
+                </ScrollView>
             )}
+            <Modalize
+                ref={(DetailModal) => { this.DetailModal = DetailModal; }}
+                modalHeight = {windowHeight*4/5}
+                childrenStyle = {{backgroundColor:"#f2f2f2"}}
+                handlePosition = "outside"
+                HeaderComponent={
+                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
+                        <Text style={{fontSize:24}}>Group Practice Detail</Text>
+                        <IconButton
+                            pressHandler={() => {this.DetailModal.close();}}
+                            icon={require("@src/assets/img/close.png")}
+                            style={{ height: scale(16), width: scale(16) }}
+                            touchableStyle={{
+                                position:"absolute", top:10, right: 10,
+                                height: scale(24),
+                                width: scale(24),
+                                backgroundColor: "#e6e6e8",
+                                alignItems: "center",
+                                borderRadius: 100,
+                                padding: scale(5),
+                            }}
+                        />
+                    </View>
+                }
+            >
+                <View style={{flex:1, marginHorizontal: 10}}>
+                <HTML html={groupPracticeDetail}
+                      contentWidth = {windowWidth-80}
+                      imagesMaxWidth = {windowWidth}
+                      tagsStyles={htmlStyle}
+                      ignoredStyles={['height', 'width']}
+                      style={{flex:1}}
+                      onLinkPress={async (evt, href) => {
+                          this.DetailModal.close();
+                          setLoading(true);
+                          await props.attemptDeepLink(false)(null, href);
+                          setLoading(false);
+                      }}
+                />
+                </View>
+            </Modalize>
             <Modalize
                 ref={(pgHelpModal) => { this.pgHelpModal = pgHelpModal; }}
                 modalHeight = {windowHeight*4/5}
@@ -308,13 +334,17 @@ const PracticeGroup = props => {
                                  {...props} />
                 </View>
             </Modalize>
-            <PopupDialog
-                ref={(loadingDialog) => { this.loadingDialog = loadingDialog; }}
-                width = {windowWidth*2/3}
-                height = {windowWidth/5}
-            >
-                <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
-            </PopupDialog>
+            {loading &&
+                <BlurView style={styles.loading}
+                          blurType="light"
+                          blurAmount={5}
+                          reducedTransparencyFallbackColor="white"
+                >
+                    <View>
+                        <ActivityIndicator size='large' />
+                    </View>
+                </BlurView>
+            }
         </SafeAreaView>
     );
 };
@@ -328,12 +358,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         backgroundColor: '#f6f6f8',
-        width: windowWidth - 30,
-        marginLeft: 15,
-        marginRight: 15,
-        marginBottom: 25,
+        width: windowWidth - scale(30),
+        marginHorizontal: scale(15),
+        marginBottom: verticalScale(15),
         borderRadius: 9,
-        overflow: 'hidden',
     },
     boxShadow: {
         shadowColor: "#000",
@@ -343,15 +371,12 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     scrollView: {
-        paddingTop: 15,
-        justifyContent: 'flex-start',
-        flexWrap: 'wrap',
-        paddingBottom: 60,
+        width: windowWidth - scale(30),
+        flexGrow: 1,
     },
     imageView: {
-        width: windowWidth - 30,
-        borderBottomRightRadius: 9,
-        borderBottomLeftRadius: 9,
+        width: windowWidth - scale(30),
+        borderRadius: 9,
         overflow: 'hidden',
         opacity: 0.8,
     },
@@ -377,6 +402,15 @@ const styles = StyleSheet.create({
         fontFamily: Platform.OS === 'android'
             ? 'Roboto' : 'Helvetica',
     },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     tapForDetail: {
         fontWeight:"normal",
         fontSize: scale(10),
@@ -384,8 +418,8 @@ const styles = StyleSheet.create({
     },
     viewTop: {
         padding:10,
-        width: windowWidth - 30,
-        height:verticalScale(140),
+        width: windowWidth - scale(30),
+        height:verticalScale(100),
         alignItems: "center",
         justifyContent: "space-around",
 
@@ -393,17 +427,17 @@ const styles = StyleSheet.create({
     viewTopInfo: {
         padding:10,
         width: windowWidth - 30,
-        height:verticalScale(140),
+        height:verticalScale(100),
         alignItems: "center",
         justifyContent: "center",
     },
     viewDetail:{
         justifyContent:"center",
         alignItems:"center",
-        height:verticalScale(60),
+        height:verticalScale(30),
     },
     viewBottom: {
-        height:40,
+        height:verticalScale(30),
         width: windowWidth - 30,
         justifyContent:"center",
         alignItems: "center",
@@ -422,14 +456,15 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         alignSelf:"center",
         textAlign:"center",
-        marginTop:verticalScale(10),
+        marginVertical:verticalScale(5),
     },
     btnJoin: {
-        fontSize: scale(25),
+        fontSize: scale(20),
         color:"white",
         borderRadius:9,
         backgroundColor:"#4942e1",
         padding:10,
+        marginBottom:verticalScale(10),
     }
 });
 const mapStateToProps = (state) => ({

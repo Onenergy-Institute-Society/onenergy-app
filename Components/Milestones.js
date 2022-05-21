@@ -2,17 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {getApi} from "@src/services";
 import {connect, useSelector} from "react-redux";
 import IconButton from "@src/components/IconButton";
-import {View, Text, ActivityIndicator, StyleSheet, SafeAreaView, FlatList, Platform} from 'react-native';
+import {View, Text, StyleSheet, SafeAreaView, FlatList, ActivityIndicator, Platform} from 'react-native';
 import FastImage from "react-native-fast-image";
 import {scale, verticalScale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import * as Progress from 'react-native-progress';
-import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
-import BlockScreen from "@src/containers/Custom/BlockScreen";
 
 const Milestones = (props) => {
     const {completed} = props;
-    const user = useSelector((state) => state.user.userObject);
     const language = useSelector((state) => state.languagesReducer.languages);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
     const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'achievement_milestone_empty');
@@ -23,7 +20,7 @@ const Milestones = (props) => {
         try {
             const apiQuotes = getApi(props.config);
             await apiQuotes.customRequest(
-                "wp-json/onenergy/v1/milestones/?completed="+completed+"&user="+user.id,
+                "wp-json/onenergy/v1/milestones/?completed="+completed,
                 "get",
                 {},
                 null,
@@ -92,10 +89,12 @@ const Milestones = (props) => {
                                             </View>
                                             {step.progress.total>0?
                                                 <View style={{width:"100%", justifyContent:"space-between", alignItems:"center"}}>
-                                                    <Progress.Bar progress={step.progress.current/step.progress.total} width={windowWidth-60} height={verticalScale(10)} />
+                                                    <Progress.Bar
+                                                        progress={step.progress.current / step.progress.total}
+                                                        width={windowWidth - 60} height={verticalScale(10)}/>
                                                     <Text>{step.progress.current}/{step.progress.total}</Text>
                                                 </View>
-                                                :null}
+                                            :null}
                                         </View>
                                     )
                                 })}
@@ -138,7 +137,7 @@ const Milestones = (props) => {
                         </View>
                     </View>
                 :
-                <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
+                <ActivityIndicator size="large"/>
             }
         </SafeAreaView>
     )

@@ -8,28 +8,30 @@ import {
     TouchableOpacity,
     View,
     Text,
-    Flatlist,
-    ImageBackground
+    FlatList,
+    ImageBackground, Alert,
+    ActivityIndicator,
 } from 'react-native';
 import {scale, verticalScale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
-import * as Progress from 'react-native-progress';
+import moment from 'moment';
+import RNRestart from 'react-native-restart';
+import { BlurView } from "@react-native-community/blur";
 
 const MyVouchersScreen = (props) => {
-    const user = useSelector((state) => state.user.userObject);
     const language = useSelector((state) => state.languagesReducer.languages);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
     const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'voucher_empty');
     const emptyText = optionData.titles[emptyTextIndex].title
-
-    const [vouchers, setVouchers] = useState([]);
+    const [ loading, setLoading ] = useState(false);
+    const [vouchers, setVouchers] = useState({});
     const [vouchersLoading, setVouchersLoading] = useState(true);
 
     const fetchVoucherData = async () => {
         try {
             const apiVoucher = getApi(props.config);
             await apiVoucher.customRequest(
-                "wp-json/onenergy/v1/voucher?user="+user.id,
+                "wp-json/onenergy/v1/voucher",
                 "get",
                 {},
                 null,
@@ -50,33 +52,84 @@ const MyVouchersScreen = (props) => {
             title: optionData.titles[titleIndex].title,
         });
     },[])
-    const renderItem = ({ item }) => (
-        <View style={styles.voucherItem}>
-                <ImageBackground style={styles.itemStyle} source={{uri: item._embedded['wp:featuredmedia'][0].source_url ? item._embedded['wp:featuredmedia'][0].source_url : ''}}>
-                    <View style={styles.titleBox}>
-                        <Text style={styles.title}>{item.title}</Text>
-                    </View>
-                    <View style={styles.detailBox}>
-                        <Text style={styles.subTitle}>{item.title}</Text>
-                    </View>
-                    <View style={styles.detailBox}>
-                        <TouchableOpacity
-                            onPress={() => {
-                            }}
-                        >
-                            <Text style={styles.subTitle}>{item.title}</Text>
-                        </TouchableOpacity>
-                    </View>
-                </ImageBackground>
-        </View>
-    );
+    const renderItem = ({ item }) => {
+        console.log(item)
+        return (
+            <TouchableOpacity
+                onPress={() => {
+                    if(item.redeemDate){
+                        Alert.alert('Notice', "You have already redeemed this voucher.", [
+                            {
+                                text: 'OK'
+                            }
+                        ])
+                    }else {
+                        Alert.alert('Notice', "Redeem voucher now?", [
+                            {
+                                text: 'OK', onPress:
+                                    async () => {
+                                        try {
+
+                                            setLoading(true);
+                                            const apiRequest = getApi(props.config);
+                                            await apiRequest.customRequest(
+                                                "wp-json/onenergy/v1/redeemVoucher",
+                                                "post",
+                                                {"id": item.id},
+                                                null,
+                                                {},
+                                                false
+                                            ).then(response => {
+                                                setLoading(false);
+                                                if (response.data) {
+                                                    if (response.data.result) {
+                                                        switch (response.data.action) {
+                                                            case 'restart':
+                                                                Alert.alert('Notice', response.data.message, [
+                                                                    {text: 'OK', onPress: () => RNRestart.Restart()},
+                                                                ]);
+                                                                break;
+                                                            case 'back':
+                                                                Alert.alert('Notice', response.data.message, [
+                                                                    {
+                                                                        text: 'OK',
+                                                                        onPress: () => props.navigation.goBack()
+                                                                    },
+                                                                ]);
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        } catch (e) {
+                                            console.error(e);
+                                        }
+                                    }
+                            },
+                            {
+                                text: 'Cancel'
+                            }
+                        ])}
+                    }
+                }
+            >
+                <View style={[styles.voucherItem,styles.boxShadow, {width: windowWidth-scale(30), height: (windowWidth-scale(30))/parseInt(item.width)*parseInt(item.height),}]}>
+                    <ImageBackground style={[styles.list,{width: windowWidth-scale(30), height: (windowWidth-scale(30))/parseInt(item.width)*parseInt(item.height),}]} source={{uri: item.image ? item.image : ''}}>
+                        <Text style={[styles.subTitle,{color:item.color, left:item.left?scale(item.left):null, top:item.top?scale(item.top):null, right:item.right?scale(item.right):null, bottom:item.bottom?scale(item.bottom):null, }]}>{moment(item.expireDate).format("MMMM Do, YYYY")}</Text>
+                        {item.redeemDate?
+                            <Text style={styles.redeemedText}>REDEEMED</Text>
+                        :null}
+                    </ImageBackground>
+                </View>
+            </TouchableOpacity>
+        )
+    };
     return(
         <SafeAreaView style={styles.container}>
-            {vouchersLoading?
-                <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
+            {vouchersLoading ?
+                <ActivityIndicator size="large"/>
                 :
                 vouchers.length?
-                    <Flatlist
+                    <FlatList
                         data={vouchers} renderItem={renderItem} keyExtractor={item => item.id}
                     />
                     :
@@ -96,6 +149,17 @@ const MyVouchersScreen = (props) => {
                         </View>
                     </View>
             }
+            {loading &&
+            <BlurView style={styles.loading}
+                blurType="light"
+                blurAmount={5}
+                reducedTransparencyFallbackColor="white"
+            >
+                <View>
+                    <ActivityIndicator size='large' />
+                </View>
+            </BlurView>
+            }
         </SafeAreaView>
     )
 }
@@ -105,21 +169,40 @@ const styles = StyleSheet.create({
         width:windowWidth,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal:15,
     },
     list: {
-        width:windowWidth,
-        flex: 1,
-        marginTop:20,
+        backgroundColor: 'white',
+        paddingVertical: 0,
+        paddingHorizontal: 0,
+        borderRadius: 9,
+        justifyContent:"center",
+        alignItems:"center",
+        overflow: "hidden"
     },
-    titleBox:{
-
+    subTitle:{
+        position: "absolute",
+        fontSize:scale(14),
     },
-    detailBox:{
-
+    redeemedText:{
+        position: "absolute",
+        fontSize:scale(44),
+        borderStyle:"solid",
+        borderWidth: 1,
+        borderColor: "green",
+        color: "green",
+        transform: [{ rotate: '-30deg'}]
+    },
+    redeem:{
+        color:"white",
+        fontSize:scale(24),
     },
     voucherItem:{
-
+        marginTop:verticalScale(20),
+        marginHorizontal:scale(15),
+        backgroundColor: 'white',
+        borderRadius: 9,
+        paddingVertical: 0,
+        paddingHorizontal: 0,
     },
     boxShadow: {
         shadowColor: "#000",
@@ -127,6 +210,15 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
+    },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });
 const mapStateToProps = (state) => ({

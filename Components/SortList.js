@@ -65,6 +65,7 @@ export default function SortList(props)
                 scrollPosition={scrollPosition}
                 onMove={onMove}
                 save={onSave}
+                setCancelContentTouches={props.setCancelContentTouches}
             />
         );
     };

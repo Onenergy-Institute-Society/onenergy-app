@@ -35,14 +35,14 @@ const DailyQuotes = (props) => {
 }
 const styles = StyleSheet.create({
     image: {
-        width: windowWidth-30,
+        width: windowWidth-scale(30),
         height: (windowWidth-30)/3.75,
         borderRadius: 9,
         overflow: 'hidden',
     },
     imageView: {
-        width: windowWidth-30,
-        height: (windowWidth-30)/3.75,
+        width: windowWidth-scale(30),
+        height: (windowWidth-scale(30))/3.75,
         borderRadius: 9,
         overflow: 'hidden',
         alignItems: 'center',

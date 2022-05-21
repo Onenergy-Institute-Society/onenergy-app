@@ -1,150 +1,42 @@
-import React, {useEffect, useState, createRef} from "react";
+import React from "react";
 import {
-    View, StyleSheet, Text, TouchableOpacity, Image, StatusBar, TouchableWithoutFeedback
+    View, StyleSheet, TouchableOpacity, Image
 } from "react-native";
-import Orientation from "react-native-orientation";
+import {NavigationActions, withNavigation} from "react-navigation";
 import {windowWidth, windowHeight} from "../Utils/Dimensions";
-import {VideoModal} from './VideoModal';
-import {scale, verticalScale} from "../Utils/scale";
 
-const VimeoBlock =(props) => {
-    try {
-        const {
-            block,
-            navigation,
-        } = props;
-        const {
-            video, thumbnail, textTracks, selectedTextTrack, openCCDialog
-        } = props;
-        const videoRef = createRef();
-        const [state, setState] = useState({
-            fullscreen: false,
-            play: false,
-            currentTime: 0,
-            duration: 0,
-            showControls: true,
-            topViewStyle: {
-                //flex: 1,
-                position: "absolute",
-                /*            transform: [
-                                { rotateZ: '90deg'},
-                                { translateY: ((PixelRatio.getPixelSizeForLayoutSize(windowHeight)-
-                                            PixelRatio.getPixelSizeForLayoutSize(windowWidth))/
-                                        PixelRatio.get()) - statusBarSize },
-                            ],*/
-                /*            height: windowWidth,
-                            width: windowHeight,*/
-                //zIndex:900,
-                width: windowWidth,
-                height: windowHeight,
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-            },
-        });
-        const [showModal, setShowModal] = useState({isVisible: false, video: video, thumbnail: thumbnail, textTracks: textTracks});
-        const [fullScreenButton, setFullScreenButton] = useState("https://media.onenergy.institute/images/full-screen_hires.png")
-        const toggleModal = state => {
-            setShowModal({
-                isVisible: state.isVisible,
-                video: state.video,
-                thumbnail: state.thumbnail,
-                textTracks: state.textTracks,
-            });
-            StatusBar.setHidden(state.isVisible);
-        };
-        const onEnd = () => {
-            setState({...state, play: false});
-            videoRef.current.seek(0);
-        }
-        const onLoadEnd = (data = OnLoadData) => {
-            setState(s => ({
-                ...s,
-                duration: data.duration,
-                currentTime: data.currentTime,
-            }));
-        }
-        const onProgress = (data = OnProgressData) => {
-            setState(s => ({
-                ...s,
-                currentTime: data.currentTime,
-            }));
-        }
-        const handlePlayPause = () => {
-            // If playing, pause and show controls immediately.
-            if (state.play) {
-                setState({...state, play: false, showControls: true});
-                return;
-            }
-
-            setState({...state, play: true});
-            setTimeout(() => setState(s => ({...s, showControls: false})), 2000);
-        }
-        const skipBackward = () => {
-            videoRef.current.seek(state.currentTime - 15);
-            setState({...state, currentTime: state.currentTime - 15});
-        }
-
-        const skipForward = () => {
-            videoRef.current.seek(state.currentTime + 15);
-            setState({...state, currentTime: state.currentTime + 15});
-        }
-
-        const onSeek = (data = OnSeekData) => {
-            videoRef.current.seek(data.seekTime);
-            setState({...state, currentTime: data.seekTime});
-        }
-
-        function handleFullscreen() {
-            if (state.fullscreen) {
-                Orientation.unlockAllOrientations();
-                setState(s => ({...s, fullscreen: false}));
-            } else {
-                Orientation.lockToPortrait();
-                setState(s => ({...s, fullscreen: true}));
-            }
-        }
-        return (
-            <View
-                style={{flex: 1}}>
-                <StatusBar/>
-                {showModal.isVisible ? (
-                <VideoModal
-                    isVisible={showModal.isVisible}
-                    toggleModal={toggleModal}
-                    videoDetail={showModal.video}
-                    videoThumbnail={showModal.thumbnail}
-                    textTracks={showModal.textTracks}
-                    {...props}
-                />
-                ) : null}
-                <View style={state.fullscreen ? state.topViewStyle : styles.normalViewStyle}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            setShowModal({
-                                isVisible: true,
+const VimeoBlock = props => {
+    const {
+        navigation, video, thumbnail, textTracks, no_skip_forward, lesson_video, selectedCCUrl
+    } = props;
+    return (
+        <View
+            style={{flex: 1}}>
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.dispatch(
+                        NavigationActions.navigate({
+                            routeName: "vimeoPlayer",
+                            params: {
                                 video: video,
-                                thumbnail: thumbnail,
                                 textTracks: textTracks,
-                            });
-                            StatusBar.setHidden(true);
-                        }}>
-                        <View style = {styles.overlay_button}><Image style={styles.play} source={{uri: "https://app.onenergy.institute/wp-content/uploads/2021/11/arrow_right-1.png"}} /></View>
-                        <Image
-                        style={styles.BackGroundImage}
-                        source={{uri: thumbnail}}
-                        resizeMode={'cover'}
-                        />
-                    </TouchableOpacity>
-                </View>
-            </View>
-        )
-    }catch (e) {
-        console.log(e);
-    }
+                                no_skip_forward: no_skip_forward,
+                                lesson_video: lesson_video,
+                                selectedCCUrl: selectedCCUrl
+                            }
+                        })
+                    )
+                }}>
+                <View style = {styles.overlay_button}><Image style={styles.play} source={{uri: "https://app.onenergy.institute/wp-content/uploads/2021/11/arrow_right-1.png"}} /></View>
+                <Image
+                    style={styles.BackGroundImage}
+                    source={{uri: thumbnail}}
+                    resizeMode={'cover'}
+                />
+            </TouchableOpacity>
+        </View>
+    )
 }
-
 const styles = StyleSheet.create({
     overlay_button:{
         flex: 1,
@@ -208,8 +100,8 @@ const styles = StyleSheet.create({
         borderRadius: 9,
     },
     fullscreenButtonImage:{
-      width:32,
-      height:32,
+        width:32,
+        height:32,
     },
     fullscreenButton: {
         position: 'absolute',
@@ -222,4 +114,4 @@ const styles = StyleSheet.create({
         paddingRight: 10,
     },
 });
-export default VimeoBlock;
+export default withNavigation(VimeoBlock);

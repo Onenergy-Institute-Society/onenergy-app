@@ -103,32 +103,32 @@ const PostList = props => {
             }
         }
         return (
-            <View style={[styles.containerStyle, styles.boxShadow]} key={'post-' + item.id}>
-                <TouchableScale
-                    key={item.id + 'img'}
-                    onPress={() => {
-                        try {
-                            if(user) {
-                                dispatch({
-                                    type: 'NOTIFICATION_POST_REMOVE',
-                                    payload: item.id,
-                                    mode: mode
-                                });
-                            }
-                            navigation.dispatch(
-                                NavigationActions.navigate({
-                                    routeName: "MyBlogScreen",
-                                    params: {
-                                        blogId: item.id,
-                                        title: item.title.rendered
-                                    }
-                                })
-                            );
-                        } catch (err) {
-                            console.log(`${err}`);
+            <TouchableScale
+                key={item.id + 'img'}
+                onPress={() => {
+                    try {
+                        if(user) {
+                            dispatch({
+                                type: 'NOTIFICATION_POST_REMOVE',
+                                payload: item.id,
+                                mode: mode
+                            });
                         }
+                        navigation.dispatch(
+                            NavigationActions.navigate({
+                                routeName: "MyBlogScreen",
+                                params: {
+                                    blogId: item.id,
+                                    title: item.title.rendered
+                                }
+                            })
+                        );
+                    } catch (err) {
+                        console.log(`${err}`);
                     }
-                    }>
+                }
+                }>
+                <View style={[styles.containerStyle, styles.boxShadow]} key={'post-' + item.id}>
                     <View style={styles.rowStyle}>
                         <View style={styles.imageView}>
                             <ImageCache style={styles.image}
@@ -148,9 +148,9 @@ const PostList = props => {
                             </View>
                         </View>
                     </View>
-                </TouchableScale>
-                <NotificationTabBarIcon notificationID={mode} top={3} right={3} size={15} fontSize={10} showNumber={false} data={item.id} />
-            </View>
+                    <NotificationTabBarIcon notificationID={mode} top={3} right={3} size={15} fontSize={10} showNumber={false} data={item.id} />
+                </View>
+            </TouchableScale>
         );
     }
     return (

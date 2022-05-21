@@ -5,10 +5,10 @@ import {
     StyleSheet,
     ScrollView,
     View,
-    SafeAreaView, Text, FlatList, Image
+    SafeAreaView, Text, ActivityIndicator, Platform
 } from "react-native";
 import {windowWidth} from "../Utils/Dimensions";
-import { scale } from '../Utils/scale';
+import {scale, verticalScale} from '../Utils/scale';
 import IconButton from "@src/components/IconButton";
 import TouchableScale from "../Components/TouchableScale";
 import TopSlider from '../Components/TopSlider';
@@ -16,13 +16,13 @@ import DailyQuotes from '../Components/DailyQuotes'
 import Skeleton from '../Components/Loaders/QuoteSkeletonLoading';
 import PostRow from '../Components/PostRow';
 import ImageCache from "../Components/ImageCache";
-import PopupDialog from 'react-native-popup-dialog';
 import {NavigationActions} from "react-navigation";
 import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
-import * as Progress from 'react-native-progress';
+import EventList from "../Components/EventList";
+import { BlurView } from "@react-native-community/blur";
 
 const HomeContent = (props) => {
     const {navigation, screenProps} = props;
@@ -30,11 +30,11 @@ const HomeContent = (props) => {
     const user = useSelector((state) => state.user.userObject);
     const language = useSelector((state) => state.languagesReducer.languages);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const [ loading, setLoading ] = useState(false);
     const [quotesData, setQuotesData] = useState([]);
     const [quotesLoading, setQuotesLoading] = useState(true);
-
     TrackPlayer.updateOptions({
-        stopWithApp: true, // false=> music continues in background even when app is closed
+        stopWithApp: !(user&&user.membership&&user.membership.length), // false=> music continues in background even when app is closed
         // Media controls capabilities
         capabilities: [
             Capability.Play,
@@ -127,9 +127,9 @@ const HomeContent = (props) => {
                     )
                     break;
                 case 'link':
-                    this.loadingDialog.show();
+                    setLoading(true);
                     let secTimer = setInterval( () => {
-                        this.loadingDialog.dismiss();
+                        setLoading(false);
                         clearInterval(secTimer);
                     },1000)
                     await props.attemptDeepLink(false)(null, item.link);
@@ -175,12 +175,12 @@ const HomeContent = (props) => {
                             })}
                         </View>
                 )}
-                <View style={[styles.eventRow, styles.boxShadow, {marginVertical:10, borderRadius:9}]}>
-                    <Image style={{width:windowWidth-30, height:(windowWidth-30)/16*9, borderRadius:9}} source={{uri: 'https://app.onenergy.institute/wp-content/uploads/2022/04/1st-webinar-3-days.png'}} />
-                </View>
-                <View style={[styles.eventRow, styles.boxShadow, {marginVertical:10, borderRadius:9}]}>
-                    <Image style={{width:windowWidth-30, height:(windowWidth-30)/16*9, borderRadius:9}} source={{uri: 'https://app.onenergy.institute/wp-content/uploads/2022/04/1.png'}} />
-                </View>
+                {user?
+                    <View style={styles.programRow}>
+                        <EventList location={'home'} eventsData={optionData.webinars} />
+                        <EventList location={'home'} eventsData={optionData.goals} />
+                    </View>
+                :null}
                 {user && user.firstCourseCompleted && optionData.show.includes('events') && (
                 <View style={styles.eventRow}>
                     {optionData.events && (
@@ -295,22 +295,6 @@ const HomeContent = (props) => {
                     </View>
                     :null
                 }
-                {optionData.show.includes('programs') && (
-                <View style={styles.programRow}>
-                    {optionData.featuredProgramTitle?
-                        <View style={styles.view_title}><Text style={styles.heading}>{optionData.featuredProgramTitle}</Text></View>
-                        :null}
-                    <View style={styles.eventRow}>
-                        <FlatList
-                            data={optionData.featuredPrograms}
-                            renderItem={renderFeaturedPrograms}
-                            keyExtractor={item => item.id}
-                            showsHorizontalScrollIndicator={false}
-                            horizontal
-                        />
-                    </View>
-                </View>
-                )}
                 {optionData.show.includes('blogs') && (
                 <View style={styles.blogRow}>
                     {optionData.blogs.map((blog)=>(
@@ -343,13 +327,17 @@ const HomeContent = (props) => {
                 <View style={styles.bottomRow}>
                 </View>
             </ScrollView>
-            <PopupDialog
-                ref={(loadingDialog) => { this.loadingDialog = loadingDialog; }}
-                width = {windowWidth*2/3}
-                height = {windowWidth/5}
+            {loading &&
+            <BlurView style={styles.loading}
+                      blurType="light"
+                      blurAmount={5}
+                      reducedTransparencyFallbackColor="white"
             >
-                <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Loading</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
-            </PopupDialog>
+                <View>
+                    <ActivityIndicator size='large' />
+                </View>
+            </BlurView>
+            }
         </SafeAreaView>
     );
 };
@@ -364,7 +352,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
     },
     slideRow: {
-        marginHorizontal: 15,
+        marginHorizontal: scale(15),
         marginTop: 20,
         marginBottom: 10,
         alignItems: 'center',
@@ -373,7 +361,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
     },
     quoteRow: {
-        marginHorizontal: 15,
+        marginHorizontal: scale(15),
         marginVertical: 10,
         alignItems: 'center',
         justifyContent: 'center',
@@ -466,7 +454,7 @@ const styles = StyleSheet.create({
     },
     view_intro: {
         marginVertical:10,
-        marginHorizontal:15,
+        marginHorizontal:scale(15),
         width:windowWidth-30,
         height:windowWidth-30,
         borderRadius: 9,
@@ -503,6 +491,15 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
+    },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });
 

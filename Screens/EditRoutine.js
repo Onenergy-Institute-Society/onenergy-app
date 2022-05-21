@@ -12,24 +12,23 @@ import {
     TouchableWithoutFeedback, Platform, TextInput, Image, Keyboard, ScrollView
 } from "react-native";
 import IconButton from "@src/components/IconButton";
-import {Swipeable} from "react-native-gesture-handler";
-import PopupDialog, {ScaleAnimation} from 'react-native-popup-dialog';
+import {Swipeable, GestureHandlerRootView} from "react-native-gesture-handler";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import SortList from "../Components/SortList";
 import { Modalize } from 'react-native-modalize';
 import {scale, verticalScale} from "../Utils/scale";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
-import * as Progress from 'react-native-progress';
+import { BlurView } from "@react-native-community/blur";
 
 const EditRoutine = props => {
     const {navigation} = props;
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.user.userObject);
     const language = useSelector((state) => state.languagesReducer.languages);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
     const backgroundImages = optionData.routine_image;
     const backgroundMusics = optionData.routine_bgm;
+    const [ loading, setLoading ] = useState(false);
     const [routineDetail, setRoutineDetail] = useState(navigation.getParam('routine')?navigation.getParam('routine'):{id:0,title:'',image:optionData.routine_image[0],bgm:optionData.routine_bgm[0].name,tracks:[],routine:[]});
     const [selectBgm, setSelectBgm] = useState('');
     const [guides, setGuides] = useState([]);
@@ -39,6 +38,7 @@ const EditRoutine = props => {
     const [currentTrack, setCurrentTrack] = useState({index:-1, detail:{}});
     const [changedStatus, setChangedStatus] = useState(false);
     const [routineHelpModal, setHelpModal] = useState({title:'',id:0});
+    const [cancelContentTouches, setCancelContentTouches ] = useState(true);
 
     const updateTracks = async () => {
         try {
@@ -62,7 +62,7 @@ const EditRoutine = props => {
         try {
             const apiSlide = getApi(props.config);
             await apiSlide.customRequest(
-                "wp-json/onenergy/v1/addRoutine/?user="+user.id,
+                "wp-json/onenergy/v1/addRoutine",
                 "post",
                 {"routine":routineDetail},
                 null,
@@ -84,7 +84,7 @@ const EditRoutine = props => {
         try {
             const apiSlide = getApi(props.config);
             await apiSlide.customRequest(
-                "wp-json/onenergy/v1/guide/?category=preparatory-practices&user="+user.id,
+                "wp-json/onenergy/v1/guide/?category=preparatory-practices",
                 "get",
                 {},
                 null,
@@ -121,7 +121,6 @@ const EditRoutine = props => {
                 payload: routineDetail,
             })
             setChangedStatus(false);
-            this.savingDialog.dismiss();
             navigation.goBack();
         }
     },[tracksLoading])
@@ -178,7 +177,7 @@ const EditRoutine = props => {
                 alert('Please choose a routine name.');
                 return false;
             }
-            this.savingDialog.show();
+            setLoading(true);
             if(navigation.getParam('routine')) {
                 updateTracks().then();
             }else{
@@ -218,7 +217,12 @@ const EditRoutine = props => {
     const row = [];
     const [key, setKey] = useState('');
     const handleWillOpen = (index : any) => () => {
-        (key !== '') && (key !== index) && row[key].close();
+        if((key !== '') && (key !== index))
+        {
+            if(row[key]){
+                row[key].close();
+            }
+        }
     }
     const handleOpen = (index : any) => () => {
         setKey(index);
@@ -228,7 +232,7 @@ const EditRoutine = props => {
         return (
             <Swipeable
                 ref={ref => row[id] = ref}
-                renderRightActions={(_, dragX) => rightActions(dragX, itemData)}
+                renderRightActions={(_, dragX) => rightActions(dragX, itemData, id)}
                 onSwipeableRightWillOpen={handleWillOpen(id)}
                 onSwipeableLeftWillOpen={handleWillOpen(id)}
                 onSwipeableOpen={handleOpen(id)}
@@ -380,7 +384,8 @@ const EditRoutine = props => {
     }
     return (
         <SafeAreaView style={styles.Container}>
-            <View style={styles.ScrollContainer}>
+            <ScrollView nestedScrollEnabled={true} style={styles.ScrollContainer} canCancelContentTouches={cancelContentTouches}
+            >
             <View>
             <Text style={styles.title}>Routine Name</Text>
             <TextInput
@@ -428,7 +433,7 @@ const EditRoutine = props => {
                 />
             </View>
             <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()} >
-            <View style={{height:"100%"}}>
+            <GestureHandlerRootView style={{height:"100%"}}>
                 {routineSettings.length===0?(
                     <View><Text>No practice selected, please tap "Plus Sign" to add.</Text></View>
                     ):(
@@ -442,19 +447,23 @@ const EditRoutine = props => {
                         edgeColor={"rgba(0,140,230,0.3)"}           // The color of the edge zone (can be transparent if needed)
                         style={styles.list}
                         contentContainerStyle={styles.contentContainer}
+                        setCancelContentTouches={setCancelContentTouches}
                     />
                 )}
-            </View>
+            </GestureHandlerRootView>
             </TouchableWithoutFeedback>
-            </View>
-            <PopupDialog
-                ref={(savingDialog) => { this.savingDialog = savingDialog; }}
-                width = {windowWidth*2/3}
-                height = {windowWidth/5}
-                dialogAnimation = {new ScaleAnimation()}
-            >
-                <View style={{flex:1, top:0, bottom:0, left:0, right:0, justifyContent:"center", alignItems:"center", flexDirection:"column"}}><Text style={{fontSize:scale(14), color:"#4942e1"}}>Saving</Text><Progress.Bar indeterminate={true} progress={1} size={50} borderColor={"#4942e1"} color={"#4942e1"} /></View>
-            </PopupDialog>
+            </ScrollView>
+            {loading &&
+                <BlurView style={styles.loading}
+                          blurType="light"
+                          blurAmount={5}
+                          reducedTransparencyFallbackColor="white"
+                          >
+                    <View>
+                        <ActivityIndicator size='large' />
+                    </View>
+                </BlurView>
+            }
             <Modalize
                 ref={(routineHelpModal) => { this.routineHelpModal = routineHelpModal; }}
                 modalHeight = {windowHeight*4/5}
@@ -611,6 +620,15 @@ const styles = StyleSheet.create({
     },
     contentContainer:{
         width: windowWidth-30,
+    },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     index:{
     },

@@ -19,6 +19,7 @@ import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
 import WaitingGroupPractice from "./WaitingGroupPractice";
+import { execDispatch } from '../Utils/actions'
 
 const statusBarSize = 25;
 class VideoPlayer extends Component {
@@ -46,7 +47,8 @@ class VideoPlayer extends Component {
             resizeMode: "cover",
             showControls: this.props.navigation.getParam('showControls')? this.props.navigation.getParam('showControls'):false,
             video : this.props.navigation.getParam('video'),
-            seek : this.props.navigation.getParam('seek')
+            seek : this.props.navigation.getParam('seek'),
+            config: this.props.navigation.getParam('config'),
 
         }
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -87,24 +89,24 @@ class VideoPlayer extends Component {
     }
 
     updateProgress = async () => {
-        try {
-            const apiRequest = getApi(this.props.config);
-            await apiRequest.customRequest(
-                "wp-json/onenergy/v1/progress/?user="+this.props.user.id,
-                "post",
-                {"id":this.props.navigation.getParam('gp_id'), "type":"Group_Practice_End"},
-                null,
-                {},
-                false
-            ).then(response => {
-                if(response.data.updated)
-                {
-
-                }
-            });
-        } catch (e) {
-            console.error(e);
-        }
+        const apiRequest = getApi(this.state.config);
+        await apiRequest.customRequest(
+            "wp-json/onenergy/v1/progress",
+            "post",
+            {"id":this.props.navigation.getParam('gp_id'), "type":"Group_Practice_End"},
+            null,
+            {},
+            false
+        ).then(response => {
+            if(response.data.updated)
+            {
+                this.props.execDispatch('UPDATE_POINTS', response.data.qi);
+                this.props.execDispatch('UPDATE_USER_POINTS', response.data.qi);
+                this.props.execDispatch('NOTIFICATION_INCREMENT', 'progress');
+                this.props.execDispatch('NOTIFICATION_INCREMENT', 'achievement');
+                this.props.execDispatch('NOTIFICATION_INCREMENT', 'quest');
+            }
+        });
     }
 
     handleBackButtonClick() {
@@ -164,10 +166,14 @@ class VideoPlayer extends Component {
         );
     }
 }
+const mapDispatchToProps = {
+    execDispatch,
+}
+
 function mapStateToProps(state) {
     const {config} = state.config
     const {accessToken} = state.auth.token
     const {user} = state.user
     return {config, accessToken, user}
 }
-export default connect(mapStateToProps)(VideoPlayer)
+export default connect(mapStateToProps, mapDispatchToProps)(VideoPlayer)

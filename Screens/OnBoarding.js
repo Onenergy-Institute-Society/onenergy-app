@@ -25,7 +25,11 @@ const OnBoarding = props => {
         if (currentIndex < optionData.feature_slider.length - 1){
             slidesRef.current.scrollToIndex({index: currentIndex + 1});
         } else {
-            props.navigation.navigate("Main");
+            try {
+                props.navigation.navigate("Main");
+            }catch (e){
+                console.log(e)
+            }
         }
     }
     return (
