@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import EditRoutine from '../Screens/EditRoutine'
+import EditRoutine from './EditRoutine'
 
 const RoutineList = ({list}) => {
     const [showListVisible, setShowListVisible] = useState(false);

@@ -59,15 +59,22 @@ const TracksList = (props) => {
                         type: 'NOTIFICATION_INCREMENT',
                         payload: 'quest'
                     });
+                    dispatch({
+                        type: 'NOTIFICATION_INCREMENT',
+                        payload: 'progress'
+                    });
+                    dispatch({
+                        type: 'NOTIFICATION_INCREMENT',
+                        payload: 'achievement'
+                    });
                 }
-                dispatch({
-                    type: 'NOTIFICATION_INCREMENT',
-                    payload: 'progress'
-                });
-                dispatch({
-                    type: 'NOTIFICATION_INCREMENT',
-                    payload: 'achievement'
-                });
+                if(response.data.achievements)
+                {
+                    dispatch({
+                        type: 'UPDATE_USER_COMPLETED_ACHIEVEMENTS',
+                        payload:response.data.achievements
+                    });
+                }
             });
         } catch (e) {
             console.error(e);

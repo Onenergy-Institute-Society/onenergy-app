@@ -6,4 +6,5 @@ module.exports = async function () {
     useTrackPlayerEvents([Event.RemotePlay], () => TrackPlayer.play());
     useTrackPlayerEvents([Event.RemotePaused], () => TrackPlayer.pause());
     useTrackPlayerEvents([Event.RemoteStop], () => TrackPlayer.stop());
+    useTrackPlayerEvents([Event.RemoteDuck], () => TrackPlayer.pause());
 };

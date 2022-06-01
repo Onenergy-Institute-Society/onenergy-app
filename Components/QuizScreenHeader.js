@@ -18,7 +18,6 @@ const QuizScreenHeader = (props) => {
         renderQuizTimer,
         navigation
     } = props;
-    console.log(quiz);
     return (
         <Animated.View
             style={[

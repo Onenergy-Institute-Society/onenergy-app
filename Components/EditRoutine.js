@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, {useEffect, useState} from "react";
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
@@ -14,7 +14,7 @@ import {
 import IconButton from "@src/components/IconButton";
 import {Swipeable, GestureHandlerRootView} from "react-native-gesture-handler";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import SortList from "../Components/SortList";
+import SortList from "./SortList";
 import { Modalize } from 'react-native-modalize';
 import {scale, verticalScale} from "../Utils/scale";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
@@ -201,6 +201,7 @@ const EditRoutine = props => {
     }
 
     const rightActions = (dragX, item) => {
+        console.log(dragX, item)
         return (
             <TouchableOpacity style={{justifyContent:"center", alignItems:"center"}} onPress={() => {removeItem(item.id)}}>
                 <IconButton
@@ -589,6 +590,7 @@ const EditRoutine = props => {
                         /></View>
                     }
                     sectionListProps = {{
+                        stickySectionHeadersEnabled:false,
                         sections:guides,
                         renderItem:renderGuides,
                         renderSectionHeader:renderSectionHeader,

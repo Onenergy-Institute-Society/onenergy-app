@@ -54,6 +54,9 @@ const Quests = (props) => {
         }else{
             timeLeft = item.steps.length - item.completed_steps;
         }
+        if(type==="weekly"){
+            console.log(item)
+        }
         return (
             <View style={[styles.achievementItemBox, styles.boxShadow]}>
                 <View style={styles.achievementItemBoxImageWrap}>

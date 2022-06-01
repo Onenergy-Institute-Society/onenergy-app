@@ -9,7 +9,7 @@ import {
     View,
     Text,
     FlatList,
-    ImageBackground, Alert,
+    Alert,
     ActivityIndicator,
 } from 'react-native';
 import {scale, verticalScale} from "../Utils/scale";
@@ -17,6 +17,7 @@ import {windowWidth} from "../Utils/Dimensions";
 import moment from 'moment';
 import RNRestart from 'react-native-restart';
 import { BlurView } from "@react-native-community/blur";
+import ScalableImage from "../Components/ScalableImage";
 
 const MyVouchersScreen = (props) => {
     const language = useSelector((state) => state.languagesReducer.languages);
@@ -53,7 +54,6 @@ const MyVouchersScreen = (props) => {
         });
     },[])
     const renderItem = ({ item }) => {
-        console.log(item)
         return (
             <TouchableOpacity
                 onPress={() => {
@@ -112,13 +112,16 @@ const MyVouchersScreen = (props) => {
                     }
                 }
             >
-                <View style={[styles.voucherItem,styles.boxShadow, {width: windowWidth-scale(30), height: (windowWidth-scale(30))/parseInt(item.width)*parseInt(item.height),}]}>
-                    <ImageBackground style={[styles.list,{width: windowWidth-scale(30), height: (windowWidth-scale(30))/parseInt(item.width)*parseInt(item.height),}]} source={{uri: item.image ? item.image : ''}}>
+                <View style={[styles.voucherItem,styles.boxShadow]}>
+                    <ScalableImage
+                        background={true}
+                        width={windowWidth-scale(30)}
+                        style={styles.list} source={{uri: item.image ? item.image : ''}}>
                         <Text style={[styles.subTitle,{color:item.color, left:item.left?scale(item.left):null, top:item.top?scale(item.top):null, right:item.right?scale(item.right):null, bottom:item.bottom?scale(item.bottom):null, }]}>{moment(item.expireDate).format("MMMM Do, YYYY")}</Text>
                         {item.redeemDate?
                             <Text style={styles.redeemedText}>REDEEMED</Text>
                         :null}
-                    </ImageBackground>
+                    </ScalableImage>
                 </View>
             </TouchableOpacity>
         )

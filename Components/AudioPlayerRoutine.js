@@ -61,6 +61,13 @@ const AudioPlayerRoutine = (props) => {
                         payload: 'quest'
                     });
                 }
+                if(response.data.achievements)
+                {
+                    dispatch({
+                        type: 'UPDATE_USER_COMPLETED_ACHIEVEMENTS',
+                        payload:response.data.achievements
+                    });
+                }
             });
         } catch (e) {
             console.error(e);
@@ -75,7 +82,7 @@ const AudioPlayerRoutine = (props) => {
         await TrackPlayer.removeUpcomingTracks();
         return await TrackPlayer.add(track, -1);
     }
-    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause], (event) => {
+    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.PlaybackQueueEnded], (event) => {
         if (event.state === State.Playing) {
             setPlaying(true);
             setStopped(false);
@@ -86,7 +93,7 @@ const AudioPlayerRoutine = (props) => {
             setStopped(false);
             deactivateKeepAwake();
         }
-        if ((event.state === State.Stopped) || (event.state === State.None)) {
+        if ((event.state === State.Stopped) || (event.state === State.None) || (event.type === 'playback-queue-ended')) {
             setPlaying(false);
             setStopped(true);
             deactivateKeepAwake();
@@ -95,16 +102,19 @@ const AudioPlayerRoutine = (props) => {
             TrackPlayer.play();
             setPlaying(true);
             setStopped(false);
+            deactivateKeepAwake();
         }
         if (event.type === Event.RemotePause) {
             TrackPlayer.pause();
             setPlaying(false);
             setStopped(false);
+            deactivateKeepAwake();
         }
         if (event.type === Event.RemoteStop) {
             TrackPlayer.stop();
             setPlaying(false);
             setStopped(true);
+            deactivateKeepAwake();
         }
     });
     useTrackPlayerEvents([Event.PlaybackTrackChanged], ({nextTrack}) => {

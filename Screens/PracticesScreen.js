@@ -8,9 +8,9 @@ import {
 } from "react-native";
 import {NavigationActions} from "react-navigation";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
+import ScalableImage from "../Components/ScalableImage";
 import TouchableScale from "../Components/TouchableScale";
 import IconButton from "@src/components/IconButton";
-import ImageCache from '../Components/ImageCache';
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
@@ -114,7 +114,8 @@ const PracticesScreen = props => {
                     <TouchableScale
                         onPress={personalPracticePressed}>
                         <View style={[styles.card, styles.boxShadow]}>
-                            <ImageCache
+                            <ScalableImage
+                                width={windowWidth - scale(30)}
                                 source={{uri: optionData.personal_practice ? optionData.personal_practice : null}}
                                 style={styles.image}
                             />
@@ -125,7 +126,8 @@ const PracticesScreen = props => {
                     <TouchableScale
                         onPress={groupPracticePressed}>
                         <View style={[styles.card, styles.boxShadow]}>
-                            <ImageCache
+                            <ScalableImage
+                                width={windowWidth - scale(30)}
                                 source={{uri: optionData.group_practice ? optionData.group_practice : null}}
                                 style={styles.image}
                             />
@@ -135,7 +137,8 @@ const PracticesScreen = props => {
                     <TouchableScale
                         onPress={customPracticePressed}>
                         <View style={[styles.card, styles.boxShadow]}>
-                            <ImageCache
+                            <ScalableImage
+                                width={windowWidth - scale(30)}
                                 source={{uri: optionData.member_practice ? optionData.member_practice : null}}
                                 style={styles.image}
                             />
@@ -187,8 +190,6 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     image: {
-        width: windowWidth - scale(30),
-        height: (windowWidth - scale(30))/9*4,
         borderRadius: 9,
         marginLeft: 0,
         marginTop: 0,
@@ -196,8 +197,6 @@ const styles = StyleSheet.create({
         resizeMode: "contain",
     },
     card: {
-        width: windowWidth - scale(30),
-        height: (windowWidth - scale(30))/9*4,
         backgroundColor: 'white',
         borderRadius: 9,
         paddingVertical: 0,

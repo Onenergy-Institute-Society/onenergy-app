@@ -29,7 +29,7 @@ import {scale, verticalScale} from './Utils/scale';
 import ImageCache from "./Components/ImageCache";
 import {windowWidth} from "./Utils/Dimensions";
 import ProgramsScreen from "./Screens/ProgramsScreen";
-import EditRoutine from "./Screens/EditRoutine";
+import EditRoutine from "./Components/EditRoutine";
 import MyFeedbackScreen from "./Screens/MyFeedbackScreen";
 import NotificationTabBarIcon from "./Components/NotificationTabBarIcon";
 import TrackPlayer from 'react-native-track-player';
@@ -1016,7 +1016,6 @@ export const applyCustomCode = externalCodeSetup => {
                 }
                 return reducer(newUserState, action);
             case 'UPDATE_USER_COMPLETED_LESSONS':
-                console.log(state.userObject.completed_lessons, action.payload)
                 const newUserLesson = {
                     ...state,
                     userObject:{
@@ -1024,7 +1023,6 @@ export const applyCustomCode = externalCodeSetup => {
                         completed_lessons: [...state.userObject.completed_lessons, action.payload]
                     }
                 }
-                console.log(newUserLesson);
                 return reducer(newUserLesson, action);
             case 'UPDATE_USER_COMPLETED_COURSES':
                 const newUserCourse = {
@@ -1035,6 +1033,15 @@ export const applyCustomCode = externalCodeSetup => {
                     }
                 }
                 return reducer(newUserCourse, action);
+            case 'UPDATE_USER_COMPLETED_ACHIEVEMENTS':
+                const newUserAchievement = {
+                    ...state,
+                    userObject:{
+                        ...state.userObject,
+                        completed_achievements: action.payload
+                    }
+                }
+                return reducer(newUserAchievement, action);
             default:
                 return reducer(state, action);
         }

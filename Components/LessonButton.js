@@ -76,7 +76,6 @@ const LessonButton = (props) => {
                         payload: {"id": lesson.id, "date": new Date().getTime() / 1000}
                     });
                     if(response.data.next_lesson===0){
-                        console.log(response.data);
                         dispatch({
                             type: 'UPDATE_USER_COMPLETED_COURSES',
                             payload: {"id": lesson.parent.id, "date": new Date().getTime() / 1000}

@@ -30,7 +30,8 @@ const AudioPlayer = ({ track }) => {
         await TrackPlayer.removeUpcomingTracks();
         return await TrackPlayer.add(track, -1);
     }
-    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause], (event) => {
+    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.PlaybackQueueEnded], (event) => {
+        console.log(event)
         if (event.state === State.Playing) {
             setPlaying(true);
             setStopped(false);
@@ -41,7 +42,7 @@ const AudioPlayer = ({ track }) => {
             setStopped(false);
             deactivateKeepAwake();
         }
-        if ((event.state === State.Stopped) || (event.state === State.None)) {
+        if ((event.state === State.Stopped) || (event.state === State.None) || (event.type === 'playback-queue-ended')) {
             setPlaying(false);
             setStopped(true);
             deactivateKeepAwake();
@@ -50,16 +51,19 @@ const AudioPlayer = ({ track }) => {
             TrackPlayer.play();
             setPlaying(true);
             setStopped(false);
+            deactivateKeepAwake();
         }
         if (event.type === Event.RemotePause) {
             TrackPlayer.pause();
             setPlaying(false);
             setStopped(false);
+            deactivateKeepAwake();
         }
         if (event.type === Event.RemoteStop) {
             TrackPlayer.stop();
             setPlaying(false);
             setStopped(true);
+            deactivateKeepAwake();
         }
     });
 
@@ -106,7 +110,7 @@ const AudioPlayer = ({ track }) => {
                             }}
                         />
                     </TouchableOpacity>
-                    {playing || !stopped?(
+                    {!stopped?(
                     <TouchableOpacity onPress={onStopPress} style={stopButton} hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
                         <IconButton
                             icon={require("@src/assets/img/stop.png")}
