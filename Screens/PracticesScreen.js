@@ -17,6 +17,7 @@ import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { Modalize } from 'react-native-modalize';
 import {scale, verticalScale} from "../Utils/scale";
 import EventList from "../Components/EventList";
+import PracticeTipsRow from "../Components/PracticeTipsRow";
 
 const PracticesScreen = props => {
     try {
@@ -144,6 +145,10 @@ const PracticesScreen = props => {
                             />
                         </View>
                     </TouchableScale>
+
+                    <View style={styles.eventRow}>
+                        <PracticeTipsRow />
+                    </View>
                 </ScrollView>
                 <Modalize
                     ref={(popupPracticeDialog) => { this.popupPracticeDialog = popupPracticeDialog; }}
@@ -210,6 +215,11 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
+    },
+    eventRow: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
     },
 });
 PracticesScreen.navigationOptions  = ({ navigation }) => {
