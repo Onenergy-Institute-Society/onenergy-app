@@ -42,6 +42,7 @@ import {FontWeights} from "@src/styles/global";
 import TextBlock from "./Components/TextBlock";
 import ImageBlock from "./Components/ImageBlock";
 import BgVideoBlock from "./Components/BgVideoBlock";
+import RelatedPostsRow from "./Components/RelatedPostsRow";
 
 export const applyCustomCode = externalCodeSetup => {
     externalCodeSetup.navigationApi.addNavigationRoute(
@@ -1083,6 +1084,16 @@ export const applyCustomCode = externalCodeSetup => {
     );
     externalCodeSetup.indexJsApi.addIndexJsFunction(() => {
         TrackPlayer.registerPlaybackService(() => require('./Components/TrackPlayerService'));
+    })
+    externalCodeSetup.blogSingleApi.setAfterBlogSingleBody((props) => {
+        const {blog} = props;
+        if(blog.meta_box.related_posts&&blog.meta_box.related_posts.length) {
+            return(
+                <RelatedPostsRow posts={blog.meta_box.related_posts}  />
+            )
+        }else{
+            return null;
+        }
     })
 };
 

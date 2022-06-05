@@ -46,7 +46,6 @@ const PracticeTipsRow = props => {
         fetchPostsData().then();
     }, []);
     const renderItem = ({ item }) => {
-        console.log(item)
         let show = true;
         if(item.meta_box.course)
         {
@@ -90,12 +89,12 @@ const PracticeTipsRow = props => {
     return (
         <SafeAreaView style={styles.container}>
             {postLoading?(
-                <View style={{height:150, justifyContent:"center", alignItems:"center"}}>
+                <View style={{height:150, justifyContent:"center", alignItems:"flex-start"}}>
                     <ActivityIndicator size="large"/>
                 </View>
             ):(
                 dataPosts?
-                    <>
+                    <View style={styles.ScrollView}>
                         {showTitle?
                             <View style={styles.view_blog_title}>
                                 <Text style={styles.heading}>Practice Tips</Text>
@@ -103,7 +102,6 @@ const PracticeTipsRow = props => {
                             :null
                         }
                         <FlatList
-                            style={styles.scrollView}
                             data={dataPosts}
                             renderItem={renderItem}
                             extraData={this.props}
@@ -111,7 +109,7 @@ const PracticeTipsRow = props => {
                             showsHorizontalScrollIndicator={false}
                             horizontal
                         />
-                    </>
+                    </View>
                 :null
             )}
         </SafeAreaView>
@@ -132,9 +130,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     scrollView: {
-        justifyContent: 'flex-start',
-        flexWrap: 'wrap',
-        paddingLeft: scale(15),
+        flex:1,
+        width:windowWidth-scale(30),
+        alignItems:"flex-start",
+        justifyContent:"center",
     },
     image: {
         width: 150,
@@ -210,7 +209,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         width: windowWidth - scale(30),
-        justifyContent: "center",
+        justifyContent: "flex-start",
         marginVertical: 10,
     },
     heading: {

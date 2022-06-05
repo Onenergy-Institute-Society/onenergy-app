@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     },
     eventRow: {
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         flexDirection: 'row',
     },
 });
