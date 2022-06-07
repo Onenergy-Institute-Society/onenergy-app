@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     StyleSheet,
     View,
@@ -15,7 +15,7 @@ import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHand
 import moment from 'moment';
 
 const EventList = props => {
-    const {navigation, location, eventsData} = props;
+    const {navigation, location, eventsDate} = props;
     const user = useSelector((state) => state.user.userObject);
     const [showAlert, setShowAlert] = useState(false);
     const [alertTitle, setAlertTitle] = useState('');
@@ -23,9 +23,9 @@ const EventList = props => {
     const current_time = new moment.utc();
     let displayGroup = [];
     const renderItem = () => {
-        let showDate = null;
-        let show = false;
-        return eventsData.map((item) => {
+        return eventsDate.map((item) => {
+            let showDate = null;
+            let show = false;
             if(item.location.includes(location)) {
                 switch (item.show) {
                     case 'date':
@@ -129,6 +129,7 @@ const EventList = props => {
                         }
                     }
             }
+            console.log(item.image)
             return (
                 show?
                 <TouchableScale
@@ -207,7 +208,7 @@ const EventList = props => {
     }
     return (
         <View style={styles.container}>
-            {eventsData?renderItem():null}
+            {eventsDate?renderItem():null}
 {/*
              <FlatList
                 data={eventsData}

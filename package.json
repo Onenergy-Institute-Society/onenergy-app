@@ -17,13 +17,9 @@
     "react": "16.9.0",
     "react-native": "0.61.5"
   },
+  "nativeDependencies": {},
+  "podDependencies": {},
   "dependencies": {
-    "react-native-google-mobile-ads": "^6.3.0"
-  },
-  "nativeDependencies": {
-    "react-native-google-mobile-ads": "^6.3.0"
-  },
-  "podDependencies": {
-    "RNGoogleMobileAds": "react-native-google-mobile-ads"
+    "react-native-base": "^1.1.0"
   }
 }

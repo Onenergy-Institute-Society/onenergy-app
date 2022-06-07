@@ -178,8 +178,8 @@ const HomeContent = (props) => {
                 )}
                 {user?
                     <View style={styles.programRow}>
-                        <EventList location={'home'} eventsData={optionData.webinars} />
-                        <EventList location={'home'} eventsData={optionData.goals} />
+                        <EventList location={'home'} eventsDate={optionData.webinars} />
+                        <EventList location={'home'} eventsDate={optionData.goals} />
                     </View>
                 :null}
                 {user && user.firstCourseCompleted && optionData.show.includes('events') && (

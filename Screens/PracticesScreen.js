@@ -107,8 +107,8 @@ const PracticesScreen = props => {
                     {user?
                         (optionData.goals&&optionData.goals.length)||(optionData.challenges&&optionData.challenges.length)?
                             <View style={{marginVertical:verticalScale(5)}}>
-                                <EventList location={'practice'} eventsData={optionData.goals} />
-                                <EventList location={'practice'} eventsData={optionData.challenges} />
+                                <EventList location={'practice'} eventsDate={optionData.goals} />
+                                <EventList location={'practice'} eventsDate={optionData.challenges} />
                             </View>
                         :null
                     :null}

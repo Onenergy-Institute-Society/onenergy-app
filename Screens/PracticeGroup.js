@@ -244,8 +244,8 @@ const PracticeGroup = props => {
                 <ScrollView nestedScrollEnabled={true} styles={styles.scrollView} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
                         <View style={{marginVertical: verticalScale(5)}}>
-                            <EventList location={'practice_group'} eventsData={optionData.goals}/>
-                            <EventList location={'practice_group'} eventsData={optionData.challenges}/>
+                            <EventList location={'practice_group'} eventsDate={optionData.goals} />
+                            <EventList location={'practice_group'} eventsDate={optionData.challenges} />
                         </View>
                         : null
                     }

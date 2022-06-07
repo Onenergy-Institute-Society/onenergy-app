@@ -9,7 +9,7 @@ import {
     View,
     SafeAreaView,
     TouchableOpacity,
-    TouchableWithoutFeedback, Platform, TextInput, Image, Keyboard, ScrollView
+    TouchableWithoutFeedback, Platform, TextInput, Image, Keyboard, ScrollView, Switch, FlatList
 } from "react-native";
 import IconButton from "@src/components/IconButton";
 import {Swipeable, GestureHandlerRootView} from "react-native-gesture-handler";
@@ -34,6 +34,7 @@ const EditRoutine = props => {
     const [guides, setGuides] = useState([]);
     const [tracksLoading, setTracksLoading] = useState(true);
     const [guidesLoading, setGuidesLoading] = useState(true);
+    const [reminders, setReminders] = useState(routineDetail.reminder);
     const [routineSettings, setRoutineSettings] = useState(routineDetail.routine);
     const [currentTrack, setCurrentTrack] = useState({index:-1, detail:{}});
     const [changedStatus, setChangedStatus] = useState(false);
@@ -360,6 +361,41 @@ const EditRoutine = props => {
             </TouchableWithoutFeedback>
         )
     }
+    const addReminder = () => {
+        let reminder = {
+            time:"10:00",
+            enable:false
+        }
+        setReminders(prevState => {return [...prevState, reminder]});
+    }
+    const removeReminder = (index) => {
+        let array = [...reminders]; // make a separate copy of the array
+        array.splice(index, 1);
+        setReminders(array);
+        setChangedStatus(true);
+    }
+    const renderReminders = (reminder, index) => {
+        console.log(reminder)
+        return (
+            <View style={styles.alarmItem}>
+                <View style={{ paddingLeft: 30, flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 50, fontWeight: '600' }}>{reminder.time} </Text>
+                        <Image style={{marginLeft:5,tintColor:"#4942e1"}} source={require("@src/assets/img/arrow-down.png")} />
+                </View>
+                <Switch value={reminder.enable} trackColor={{ false: "#ede9d5", true: "#baf5b8" }} thumbColor={reminder.enable ? '#57e352' : '#ebe7e4'} />
+                <TouchableOpacity style={{justifyContent:"center", alignItems:"center"}} onPress={() => {removeReminder(index)}}>
+                    <IconButton
+                        icon={require("@src/assets/img/delete.png")}
+                        tintColor={"#4942e1"}
+                        style={{
+                            alignSelf: "center",
+                            height: 24,
+                        }}
+                    />
+                </TouchableOpacity>
+            </View>
+        )
+    }
     const renderSectionHeader = (section) => {
         return(
             <Text style={{backgroundColor: '#e6e6e8', paddingVertical:10, fontSize: 24, marginTop:15, textAlign: "center" }}>{section.section.title.toUpperCase()}</Text>
@@ -423,6 +459,22 @@ const EditRoutine = props => {
                         </View>
                     </TouchableWithoutFeedback>
                 </View>
+            </View>
+            <View style={{width: windowWidth-30, flexDirection:"row", justifyContent: "space-between", alignItems:"center"}}>
+                <Text style={styles.title}>Reminder</Text>
+                <IconButton
+                    pressHandler={() => {addReminder();}}
+                    icon={require("@src/assets/img/add.png")}
+                    tintColor={"#4942e1"}
+                    style={{ height: 20, width: 20 }}
+                />
+            </View>
+            <View>
+                {reminders&&reminders.length?
+                    <FlatList data={reminders} renderItem={renderReminders} />
+                    :
+                    <Text>You don't have any reminder, tap + sign to add.</Text>
+                }
             </View>
             <View style={{width: windowWidth-30, flexDirection:"row", justifyContent: "space-between", alignItems:"center"}}>
                 <Text style={styles.title}>Practices</Text>
@@ -599,6 +651,37 @@ const EditRoutine = props => {
                     }}
                 />
             )}
+            <Modalize
+                ref={(addReminderModal) => { this.addReminderModal = addReminderModal; }}
+                modalHeight={windowHeight*2/3}
+                handlePosition = "outside"
+                HeaderComponent={
+                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
+                        <Text style={{fontSize:24}}>Practices</Text><IconButton
+                        pressHandler={() => {this.addReminderModal.close();}}
+                        icon={require("@src/assets/img/close.png")}
+                        tintColor={"#838384"}
+                        style={{ height: scale(16), width: scale(16) }}
+                        touchableStyle={{
+                            position:"absolute", top:10, right: 10,
+                            height: scale(24),
+                            width: scale(24),
+                            backgroundColor: "#e6e6e8",
+                            alignItems: "center",
+                            borderRadius: 100,
+                            padding: scale(5),
+                        }}
+                    /></View>
+                }
+                sectionListProps = {{
+                    stickySectionHeadersEnabled:false,
+                    sections:guides,
+                    renderItem:renderGuides,
+                    renderSectionHeader:renderSectionHeader,
+                    keyExtractor:(item, index) => `${item.title}-${index}`,
+                    showsVerticalScrollIndicator: false,
+                }}
+            />
         </SafeAreaView>
     );
 };
@@ -708,6 +791,10 @@ const styles = StyleSheet.create({
         height:36,
         borderRadius: 4,
         marginHorizontal:5
+    },
+    alarmItem: {
+        flexDirection: "row",
+        justifyContent: "space-between"
     }
 })
 EditRoutine.navigationOptions = ({ navigation }) => {
