@@ -198,7 +198,7 @@ const EditRoutine = props => {
                     fireDate.setHours(parseInt(routineDetail.reminder_time.substr(0, 2)));
                     fireDate.setMinutes(parseInt(routineDetail.reminder_time.substr(3, 2)));
                     let title = "⏰ Time to practice " + routineDetail.title;
-                    let message = "it's " + routineDetail.reminder_time + ", are you ready to practice your customize routine: " + routineDetail.title + "?";
+                    let message = "it's " + routineDetail.reminder_time + ", ready to practice your customize routine: " + routineDetail.title + "?";
                     if (Platform.OS === 'ios') {
                         PushNotificationIOS.scheduleLocalNotification({
                             fireDate: fireDate.toISOString(),
