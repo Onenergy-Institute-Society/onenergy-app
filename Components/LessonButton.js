@@ -50,6 +50,9 @@ const LessonButton = (props) => {
                         type: 'UPDATE_USER_COMPLETED_LESSONS',
                         payload: {"id": lesson.id, "date": new Date().getTime() / 1000}
                     });
+                    dispatch({
+                        type: 'ONENERGY_GUIDE_EMPTY'
+                    });
                     if(response.data.next_lesson===0){
                         dispatch({
                             type: 'UPDATE_USER_COMPLETED_COURSES',
@@ -167,7 +170,7 @@ const LessonButton = (props) => {
                                     Mark Complete
                                 </Text>
                                 {completing?
-                                    <ActivityIndicator style={{marginLeft:10}} color={"#FFF"} size={"large"} />
+                                    <ActivityIndicator style={{marginLeft:10}} color={"#FFF"} size={"small"} />
                                     :null}
                             </View>
                         </View>

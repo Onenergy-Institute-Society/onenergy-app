@@ -9,7 +9,7 @@ import {
     View,
     SafeAreaView,
     TouchableOpacity,
-    TouchableWithoutFeedback, Platform, TextInput, Image, Keyboard, ScrollView, Switch, FlatList
+    TouchableWithoutFeedback, Platform, TextInput, Image, Keyboard, ScrollView, Switch
 } from "react-native";
 import IconButton from "@src/components/IconButton";
 import {Swipeable, GestureHandlerRootView} from "react-native-gesture-handler";
@@ -20,6 +20,9 @@ import {scale, verticalScale} from "../Utils/scale";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { BlurView } from "@react-native-community/blur";
+import DatePicker from 'react-native-datepicker';
+import PushNotification from "react-native-push-notification";
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
 
 const EditRoutine = props => {
     const {navigation} = props;
@@ -29,14 +32,14 @@ const EditRoutine = props => {
     const backgroundImages = optionData.routine_image;
     const backgroundMusics = optionData.routine_bgm;
     const [ loading, setLoading ] = useState(false);
-    const [routineDetail, setRoutineDetail] = useState(navigation.getParam('routine')?navigation.getParam('routine'):{id:0,title:'',image:optionData.routine_image[0],bgm:optionData.routine_bgm[0].name,tracks:[],routine:[]});
+    const [routineDetail, setRoutineDetail] = useState(navigation.getParam('routine')?navigation.getParam('routine'):{id:0,title:'',image:optionData.routine_image[0],bgm:optionData.routine_bgm[0].name,tracks:[],routine:[],reminder_time:"00:00",reminder_enable:false});
     const [selectBgm, setSelectBgm] = useState('');
     const [guides, setGuides] = useState([]);
     const [tracksLoading, setTracksLoading] = useState(true);
     const [guidesLoading, setGuidesLoading] = useState(true);
-    const [reminders, setReminders] = useState(routineDetail.reminder);
     const [routineSettings, setRoutineSettings] = useState(routineDetail.routine);
     const [currentTrack, setCurrentTrack] = useState({index:-1, detail:{}});
+    const [changedReminder, setChangedReminder] = useState(false);
     const [changedStatus, setChangedStatus] = useState(false);
     const [routineHelpModal, setHelpModal] = useState({title:'',id:0});
     const [cancelContentTouches, setCancelContentTouches ] = useState(true);
@@ -184,6 +187,39 @@ const EditRoutine = props => {
             }else{
                 addTracks().then();
             }
+            if(changedReminder) {
+                if (Platform.OS === 'ios') {
+                    PushNotificationIOS.cancelLocalNotifications({id: routineDetail.id});
+                }else{
+                    PushNotification.cancelLocalNotification(routineDetail.id);
+                }
+                if (routineDetail.reminder_enable) {
+                    let fireDate = new Date();
+                    fireDate.setHours(parseInt(routineDetail.reminder_time.substr(0, 2)));
+                    fireDate.setMinutes(parseInt(routineDetail.reminder_time.substr(3, 2)));
+                    let title = "⏰ Time to practice " + routineDetail.title;
+                    let message = "it's " + routineDetail.reminder_time + ", are you ready to practice your customize routine: " + routineDetail.title + "?";
+                    if (Platform.OS === 'ios') {
+                        PushNotificationIOS.scheduleLocalNotification({
+                            fireDate: fireDate.toISOString(),
+                            alertTitle: title,
+                            alertBody: message,
+                            repeats: true,
+                            repeatInterval: "day",
+                            userInfo: {id: routineDetail.id}
+                        });
+                    } else {
+                        PushNotification.localNotificationSchedule({
+                            channelId: "routine-reminder",
+                            id: routineDetail.id,
+                            date: fireDate,
+                            repeatType: "day",
+                            title: title,
+                            message: message,
+                        });
+                    }
+                }
+            }
         }else{
             navigation.goBack();
         }
@@ -202,7 +238,6 @@ const EditRoutine = props => {
     }
 
     const rightActions = (dragX, item) => {
-        console.log(dragX, item)
         return (
             <TouchableOpacity style={{justifyContent:"center", alignItems:"center"}} onPress={() => {removeItem(item.id)}}>
                 <IconButton
@@ -361,41 +396,6 @@ const EditRoutine = props => {
             </TouchableWithoutFeedback>
         )
     }
-    const addReminder = () => {
-        let reminder = {
-            time:"10:00",
-            enable:false
-        }
-        setReminders(prevState => {return [...prevState, reminder]});
-    }
-    const removeReminder = (index) => {
-        let array = [...reminders]; // make a separate copy of the array
-        array.splice(index, 1);
-        setReminders(array);
-        setChangedStatus(true);
-    }
-    const renderReminders = (reminder, index) => {
-        console.log(reminder)
-        return (
-            <View style={styles.alarmItem}>
-                <View style={{ paddingLeft: 30, flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 50, fontWeight: '600' }}>{reminder.time} </Text>
-                        <Image style={{marginLeft:5,tintColor:"#4942e1"}} source={require("@src/assets/img/arrow-down.png")} />
-                </View>
-                <Switch value={reminder.enable} trackColor={{ false: "#ede9d5", true: "#baf5b8" }} thumbColor={reminder.enable ? '#57e352' : '#ebe7e4'} />
-                <TouchableOpacity style={{justifyContent:"center", alignItems:"center"}} onPress={() => {removeReminder(index)}}>
-                    <IconButton
-                        icon={require("@src/assets/img/delete.png")}
-                        tintColor={"#4942e1"}
-                        style={{
-                            alignSelf: "center",
-                            height: 24,
-                        }}
-                    />
-                </TouchableOpacity>
-            </View>
-        )
-    }
     const renderSectionHeader = (section) => {
         return(
             <Text style={{backgroundColor: '#e6e6e8', paddingVertical:10, fontSize: 24, marginTop:15, textAlign: "center" }}>{section.section.title.toUpperCase()}</Text>
@@ -461,20 +461,31 @@ const EditRoutine = props => {
                 </View>
             </View>
             <View style={{width: windowWidth-30, flexDirection:"row", justifyContent: "space-between", alignItems:"center"}}>
-                <Text style={styles.title}>Reminder</Text>
-                <IconButton
-                    pressHandler={() => {addReminder();}}
-                    icon={require("@src/assets/img/add.png")}
-                    tintColor={"#4942e1"}
-                    style={{ height: 20, width: 20 }}
-                />
+                <Text style={styles.title}>Daily Reminder</Text>
             </View>
             <View>
-                {reminders&&reminders.length?
-                    <FlatList data={reminders} renderItem={renderReminders} />
-                    :
-                    <Text>You don't have any reminder, tap + sign to add.</Text>
-                }
+                <View style={{flexDirection: 'row', justifyContent:"flex-start", alignItems: 'center', paddingHorizontal:scale(15)}}>
+                    <DatePicker
+                        customStyles={{
+                            placeholderText: {
+                                fontSize: scale(24),
+                            }
+                        }}
+                        date={routineDetail.reminder_time?routineDetail.reminder_time:"00:00"}
+                        mode="time"
+                        format="HH:mm"
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
+                        minuteInterval={1}
+                        onDateChange={(time) => {setRoutineDetail(prevState => {return {...prevState, reminder_time: time}});setChangedStatus(true);setChangedReminder(true);}}
+                    />
+                    <Switch
+                        value={routineDetail.reminder_enable?true:false}
+                        onValueChange={()=>{setRoutineDetail(prevState => {return {...prevState, reminder_enable: !prevState.reminder_enable}});setChangedStatus(true);setChangedReminder(true);}}
+                        trackColor={{ false: "red", true: "green" }}
+                        thumbColor={'white'}
+                    />
+                </View>
             </View>
             <View style={{width: windowWidth-30, flexDirection:"row", justifyContent: "space-between", alignItems:"center"}}>
                 <Text style={styles.title}>Practices</Text>
@@ -651,37 +662,6 @@ const EditRoutine = props => {
                     }}
                 />
             )}
-            <Modalize
-                ref={(addReminderModal) => { this.addReminderModal = addReminderModal; }}
-                modalHeight={windowHeight*2/3}
-                handlePosition = "outside"
-                HeaderComponent={
-                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
-                        <Text style={{fontSize:24}}>Practices</Text><IconButton
-                        pressHandler={() => {this.addReminderModal.close();}}
-                        icon={require("@src/assets/img/close.png")}
-                        tintColor={"#838384"}
-                        style={{ height: scale(16), width: scale(16) }}
-                        touchableStyle={{
-                            position:"absolute", top:10, right: 10,
-                            height: scale(24),
-                            width: scale(24),
-                            backgroundColor: "#e6e6e8",
-                            alignItems: "center",
-                            borderRadius: 100,
-                            padding: scale(5),
-                        }}
-                    /></View>
-                }
-                sectionListProps = {{
-                    stickySectionHeadersEnabled:false,
-                    sections:guides,
-                    renderItem:renderGuides,
-                    renderSectionHeader:renderSectionHeader,
-                    keyExtractor:(item, index) => `${item.title}-${index}`,
-                    showsVerticalScrollIndicator: false,
-                }}
-            />
         </SafeAreaView>
     );
 };
@@ -792,10 +772,6 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         marginHorizontal:5
     },
-    alarmItem: {
-        flexDirection: "row",
-        justifyContent: "space-between"
-    }
 })
 EditRoutine.navigationOptions = ({ navigation }) => {
     const {params = {}} = navigation.state;

@@ -20,14 +20,14 @@ import {NavigationActions, withNavigation} from "react-navigation";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale, verticalScale} from "../Utils/scale";
 import TrackPlayer from 'react-native-track-player';
-import * as Progress from 'react-native-progress';
 import EventList from "../Components/EventList";
+import PushNotification from "react-native-push-notification";
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
 
 const PracticeMember = props => {
     const { navigation } = props;
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.userObject);
-
     const language = useSelector((state) => state.languagesReducer.languages);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
     const helpPageIndex = optionData.helps.findIndex(el => el.name === 'practice_guided_empty');
@@ -125,9 +125,18 @@ const PracticeMember = props => {
         }
         setRoutinesLoading(true);
         removeRoutine(item).then();
+        if (Platform.OS === 'ios') {
+            PushNotificationIOS.cancelLocalNotifications({id: item.id});
+        }else{
+            PushNotification.cancelLocalNotification(item.id);
+        }
     }
     useEffect(() => {
-        fetchTracks().then();
+        if(!props.routines||!props.routines.length) {
+            fetchTracks().then();
+        }else{
+            setRoutinesLoading(false);
+        }
         let helpIndex;
         if(user&&user.membership.length > 0) {
             helpIndex = optionData.helps.findIndex(el => el.name === 'practice_customize_popup_member');
@@ -293,6 +302,6 @@ PracticeMember.navigationOptions = ({ navigation }) => {
 const mapStateToProps = (state) => ({
     config: state.config,
     accessToken: state.auth.token,
-    routines: state.routinesReducer.data
+    routines: state.routinesReducer.routines
 });
 export default connect(mapStateToProps)(withNavigation(PracticeMember));

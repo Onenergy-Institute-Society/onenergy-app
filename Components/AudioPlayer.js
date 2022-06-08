@@ -31,7 +31,6 @@ const AudioPlayer = ({ track }) => {
         return await TrackPlayer.add(track, -1);
     }
     useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.PlaybackQueueEnded], (event) => {
-        console.log(event)
         if (event.state === State.Playing) {
             setPlaying(true);
             setStopped(false);

@@ -10,7 +10,8 @@ import {
     FlatList,
     ImageBackground,
     ScrollView,
-    ActivityIndicator
+    ActivityIndicator,
+    Switch
 } from "react-native";
 import {connect, useSelector} from "react-redux";
 import {getApi} from "@src/services";
@@ -28,6 +29,7 @@ import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workarou
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import EventList from "../Components/EventList";
 import { BlurView } from "@react-native-community/blur";
+import DatePicker from 'react-native-datepicker';
 
 const PracticeGroup = props => {
     const { navigation, screenProps } = props;
@@ -60,7 +62,6 @@ const PracticeGroup = props => {
     }
     const JoinGroupPractice = async (gp_id, gp_time) => {
         try {
-            console.log('1',props.config)
             const api = getApi(props.config);
             await api.customRequest(
                 "wp-json/onenergy/v1/JoinGroupPractice",          // Endpoint suffix or full url. Suffix will be appended to the site url that app uses. Example of a suffix is "wp-json/buddyboss/v1/members". Example of full url would be "https://app-demos.buddyboss.com/learndash/wp-json/buddyboss/v1/members".
@@ -161,23 +162,23 @@ const PracticeGroup = props => {
                     <View style={{height:scale(60), justifyContent:"center", alignItems:"center", width:windowWidth-scale(30)}}>
                         <Text style={styles.title}>{item.title.rendered}</Text>
                     </View>
-                    {conditionLessons?
-                        conditionWeekDay?
-                            conditionTime?
+                    {conditionLessons||1?
+                        conditionWeekDay||1?
+                            conditionTime||1?
                                 <View style={styles.viewTop}>
                                     <View style={{flexDirection: "column", justifyContent:"flex-start", alignItems:"center", width:windowWidth-scale(30)}}>
                                         <Text style={styles.waitTimeLabel}>Next Streaming:</Text>
-                                            {timeToGo > 0 ?
+                                            {timeToGo > 0||1 ?
                                                 <Text style={styles.waitTime}>{timeToGo} Minutes</Text>
                                                 :
                                                 moreTimeToGo > 0 ?
                                                     <Text style={styles.waitTime}>{moreTimeToGo} Minutes</Text>
                                                     :null
                                             }
-                                        {timeToGo > 0 ?
+                                        {timeToGo > 0||1 ?
                                             <WaitingGroupPractice waitingText={'waiting'} gp_id={item.id} gp_time={CurrentStartTime} waitingStyle={styles.waiting} />
                                             :null}
-                                    {timeToGo>0?
+                                    {timeToGo>0||1?
                                         <TouchableOpacity style={styles.btnJoin}
                                         onPress={() => {
                                         handlePress(item.meta_box.url, item.id, CurrentStartTime)

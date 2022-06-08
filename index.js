@@ -84,6 +84,12 @@ export const applyCustomCode = externalCodeSetup => {
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
+        "BlogsScreen",
+        "BlogsScreen",
+        BlogsScreen,
+        "All" // "Auth" | "noAuth" | "Main" | "All"
+    );
+    externalCodeSetup.navigationApi.addNavigationRoute(
         "ChooseLanguage",
         "ChooseLanguage",
         ChooseLanguage,
@@ -286,7 +292,7 @@ export const applyCustomCode = externalCodeSetup => {
             if (viewModel.price && viewModel.price.required_points && (viewModel.price.required_points > viewModel.price.user_points)) {
                 statusBarColor = colors.coursesLabelNotEnrolled;
                 statusText = viewModel.price.required_points + " Qi Required";
-                lessonNote = 'Practice to gather more Qi';
+                lessonNote = 'Practice to gather more Qi to unlock';
             } else {
                 statusBarColor = colors.coursesLabelStart;
                 statusText = "Start Course";
@@ -555,20 +561,24 @@ export const applyCustomCode = externalCodeSetup => {
     // Add routine reducer
     externalCodeSetup.reduxApi.addReducer(
         "routinesReducer",
-        (state = {data: {}}, action) => {
+        (state = {routines: [], guides:[]}, action) => {
             switch (action.type){
                 case "ONENERGY_ROUTINE_UPDATE":
-                    return {...state, data: action.payload};
+                    return {...state, routines: action.payload};
                 case "ONENERGY_ROUTINE_SAVE":
                     let routine = action.payload;
-                    let tempState = [...state.data];
+                    let tempState = [...state.routines];
                     let index = tempState.findIndex(el => el.id === routine.id);
                     if(index !== -1){
                         tempState[index] = routine;
-                        return {...state, data: tempState};
+                        return {...state, routines: tempState};
                     }else{
-                        return {...state, data: [...state.data, routine]};
+                        return {...state, routines: [...state.routines, routine]};
                     }
+                case "ONENERGY_GUIDE_UPDATE":
+                    return {...state, guides: action.payload};
+                case "ONENERGY_GUIDE_EMPTY":
+                    return {...state, guides: []};
                 default:
                     return state;
             }
@@ -614,7 +624,7 @@ export const applyCustomCode = externalCodeSetup => {
 
     // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
-        let whiteList = [...props.whitelist, "languagesReducer", "notifyReducer"];
+        let whiteList = [...props.whitelist, "languagesReducer", "notifyReducer", "routinesReducer"];
         let index = whiteList.indexOf('blog');
         if (index !== -1) {
             whiteList.splice(index, 1);
@@ -1096,6 +1106,29 @@ export const applyCustomCode = externalCodeSetup => {
             return null;
         }
     })
+    externalCodeSetup.deeplinksApi.setDeeplinksWithoutEmbeddedReturnValueFilter((defaultValue, linkObject, navigationService) => {
+        if (linkObject.action === "open_screen") {
+            switch(linkObject.item_id)
+            {
+                case 'programs':
+                    navigationService.navigate({
+                        routeName: "ProgramsScreen",
+                    })
+                    return true;
+                case 'practices':
+                    navigationService.navigate({
+                        routeName: "PracticesScreen",
+                    })
+                    return true;
+                case 'wisdom':
+                    navigationService.navigate({
+                        routeName: "BlogsScreen",
+                    })
+                    return true;
+            }
+        }
+        return false;
+    });
 };
 
 

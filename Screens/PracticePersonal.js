@@ -8,7 +8,7 @@ import {
     Platform, ScrollView,ActivityIndicator
 } from "react-native";
 import {getApi} from "@src/services";
-import {connect, useSelector} from "react-redux";
+import {connect, useSelector, useDispatch} from "react-redux";
 import TracksList from '../Components/TracksList';
 import IconButton from "@src/components/IconButton";
 import {withNavigation} from "react-navigation";
@@ -21,6 +21,7 @@ import {scale, verticalScale} from "../Utils/scale";
 import EventList from "../Components/EventList";
 
 const PracticePersonal = props => {
+    const dispatch = useDispatch();
     const user = useSelector((state) => state.user.userObject);
     const language = useSelector((state) => state.languagesReducer.languages);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
@@ -42,6 +43,10 @@ const PracticePersonal = props => {
                 {},
                 false
             ).then(response => {
+                dispatch({
+                    type: "ONENERGY_GUIDE_UPDATE",
+                    payload: response.data
+                });
                 setTracks(response.data);
                 setTracksLoading(false);
             });
@@ -53,7 +58,12 @@ const PracticePersonal = props => {
         this.ppHelpModal.open();
     };
     useEffect(() => {
-        fetchTracks().then();
+        if(!props.guides||!props.guides.length) {
+            fetchTracks().then();
+        }else{
+            setTracks(props.guides);
+            setTracksLoading(false);
+        }
         let titleIndex = optionData.titles.findIndex(el => el.id === 'practices_basic');
         props.navigation.setParams({
             title: optionData.titles[titleIndex].title,
@@ -176,5 +186,6 @@ PracticePersonal.navigationOptions = ({ navigation }) => {
 const mapStateToProps = (state) => ({
     config: state.config,
     accessToken: state.auth.token,
+    guides: state.routinesReducer.guides
 });
 export default connect(mapStateToProps)(withNavigation(PracticePersonal));

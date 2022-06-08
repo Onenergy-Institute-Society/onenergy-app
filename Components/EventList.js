@@ -129,7 +129,6 @@ const EventList = props => {
                         }
                     }
             }
-            console.log(item.image)
             return (
                 show?
                 <TouchableScale
