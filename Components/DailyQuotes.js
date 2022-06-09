@@ -1,10 +1,8 @@
-import React, {PureComponent} from 'react';
-import {Animated, Dimensions, Image, Platform, StyleSheet, Text, ImageBackground, View} from 'react-native';
-import PropTypes from "prop-types";
-import {windowWidth, windowHeight} from "../Utils/Dimensions";
+import React from 'react';
+import {Platform, StyleSheet, Text, ImageBackground} from 'react-native';
+import {windowWidth} from "../Utils/Dimensions";
 import {NavigationActions, withNavigation} from "react-navigation";
-import ImageCache from "./ImageCache";
-import { scale, verticalScale } from '../Utils/scale';
+import { scale } from '../Utils/scale';
 import TouchableScale from './TouchableScale';
 
 const DailyQuotes = (props) => {
@@ -27,7 +25,11 @@ const DailyQuotes = (props) => {
                     console.log(`${err}`);
                 }
             }}>
-            <ImageBackground source={{uri: 'https://app.onenergy.institute/wp-content/uploads/2022/01/design-6.png'}} style={[styles.imageView, styles.boxShadow]}>
+            <ImageBackground source={{uri: 'https://app.onenergy.institute/wp-content/uploads/2022/01/design-6.png'}} style={[styles.imageView, styles.boxShadow]}
+                             imageStyle={{
+                                resizeMode: "contain",
+                                alignSelf: "flex-start"
+                            }}>
                 <Text style={styles.title}>{excerpt}</Text>
             </ImageBackground>
         </TouchableScale>
@@ -36,13 +38,13 @@ const DailyQuotes = (props) => {
 const styles = StyleSheet.create({
     image: {
         width: windowWidth-scale(30),
-        height: (windowWidth-30)/3.75,
+        height: (windowWidth-30)/3.25,
         borderRadius: 9,
         overflow: 'hidden',
     },
     imageView: {
         width: windowWidth-scale(30),
-        height: (windowWidth-scale(30))/3.75,
+        height: (windowWidth-scale(30))/3.25,
         borderRadius: 9,
         overflow: 'hidden',
         alignItems: 'center',

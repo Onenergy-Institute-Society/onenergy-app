@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        height: (windowWidth-30)/3.75,
+        height: (windowWidth-30)/3.25,
     },
     eventRow: {
         alignItems: 'center',

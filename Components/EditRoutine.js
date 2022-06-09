@@ -213,6 +213,7 @@ const EditRoutine = props => {
                             channelId: "routine-reminder",
                             id: routineDetail.id,
                             date: fireDate,
+                            repeats: true,
                             repeatType: "day",
                             title: title,
                             message: message,

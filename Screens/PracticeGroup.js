@@ -162,23 +162,23 @@ const PracticeGroup = props => {
                     <View style={{height:scale(60), justifyContent:"center", alignItems:"center", width:windowWidth-scale(30)}}>
                         <Text style={styles.title}>{item.title.rendered}</Text>
                     </View>
-                    {conditionLessons||1?
-                        conditionWeekDay||1?
-                            conditionTime||1?
+                    {conditionLessons?
+                        conditionWeekDay?
+                            conditionTime?
                                 <View style={styles.viewTop}>
                                     <View style={{flexDirection: "column", justifyContent:"flex-start", alignItems:"center", width:windowWidth-scale(30)}}>
                                         <Text style={styles.waitTimeLabel}>Next Streaming:</Text>
-                                            {timeToGo > 0||1 ?
+                                            {timeToGo > 0 ?
                                                 <Text style={styles.waitTime}>{timeToGo} Minutes</Text>
                                                 :
                                                 moreTimeToGo > 0 ?
                                                     <Text style={styles.waitTime}>{moreTimeToGo} Minutes</Text>
                                                     :null
                                             }
-                                        {timeToGo > 0||1 ?
+                                        {timeToGo > 0 ?
                                             <WaitingGroupPractice waitingText={'waiting'} gp_id={item.id} gp_time={CurrentStartTime} waitingStyle={styles.waiting} />
                                             :null}
-                                    {timeToGo>0||1?
+                                    {timeToGo>0?
                                         <TouchableOpacity style={styles.btnJoin}
                                         onPress={() => {
                                         handlePress(item.meta_box.url, item.id, CurrentStartTime)

@@ -1114,20 +1114,19 @@ export const applyCustomCode = externalCodeSetup => {
                     navigationService.navigate({
                         routeName: "ProgramsScreen",
                     })
-                    return true;
+                    break;
                 case 'practices':
                     navigationService.navigate({
                         routeName: "PracticesScreen",
                     })
-                    return true;
+                    break;
                 case 'wisdom':
                     navigationService.navigate({
                         routeName: "BlogsScreen",
                     })
-                    return true;
+                    break;
             }
         }
-        return false;
     });
 };
 

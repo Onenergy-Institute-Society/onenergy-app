@@ -145,10 +145,12 @@ const PracticesScreen = props => {
                             />
                         </View>
                     </TouchableScale>
-
-                    <View style={styles.eventRow}>
-                        <PracticeTipsRow />
-                    </View>
+                    {user?
+                        <View style={styles.eventRow}>
+                            <PracticeTipsRow />
+                        </View>
+                    :null
+                    }
                 </ScrollView>
                 <Modalize
                     ref={(popupPracticeDialog) => { this.popupPracticeDialog = popupPracticeDialog; }}
