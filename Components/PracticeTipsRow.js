@@ -21,8 +21,8 @@ const PracticeTipsRow = props => {
     const user = useSelector((state) => state.user.userObject);
     const [ dataPosts, setPostsData ] = useState([]);
     const [ postLoading, setPostLoading ] = useState(true);
-    const [ showTitle, setShowTitle ] = useState(true);
-    const { navigation, showAuthor } = props;
+    const [ showTitle, setShowTitle ] = useState(false);
+    const { navigation } = props;
 
     const fetchPostsData = async () => {
         try {
@@ -52,8 +52,8 @@ const PracticeTipsRow = props => {
             item.meta_box.course.map((item, itemIndex) =>
             {
                 show = user.completed_courses.find(course => course.id === parseInt(item));
-                if(!show){
-                    setShowTitle(!show);
+                if(show){
+                    setShowTitle(show);
                 }
             })
         }

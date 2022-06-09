@@ -28,8 +28,7 @@ const HomeContent = (props) => {
     const {navigation, screenProps} = props;
     const {global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [ loading, setLoading ] = useState(false);
     const [quotesData, setQuotesData] = useState([]);
     const [quotesLoading, setQuotesLoading] = useState(true);

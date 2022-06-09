@@ -15,8 +15,7 @@ import {windowWidth} from "../Utils/Dimensions";
 import Timeline from "../Components/Timeline";
 
 const MyProgressScreen = (props) => {
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'achievement_progress_empty');
     const emptyText = optionData.titles[emptyTextIndex].title
 

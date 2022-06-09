@@ -28,8 +28,7 @@ const CategoryPageWatch = () => {
     }
 }
 const TabTitle = ({tintColor, name}) => {
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     let titleIndex = optionData.titles.findIndex(el => el.id === name);
     return (
         <Text style={{ color: tintColor }}>{optionData.titles[titleIndex].title}</Text>

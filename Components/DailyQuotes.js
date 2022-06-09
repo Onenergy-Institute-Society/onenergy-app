@@ -18,7 +18,7 @@ const DailyQuotes = (props) => {
                 try {
                     navigation.dispatch(
                         NavigationActions.navigate({
-                            routeName: "quotes",
+                            routeName: "QuotesScreen",
                         })
                     )
                 } catch (err) {

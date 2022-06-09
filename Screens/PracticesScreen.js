@@ -22,11 +22,10 @@ import PracticeTipsRow from "../Components/PracticeTipsRow";
 const PracticesScreen = props => {
     try {
         const dispatch = useDispatch();
-        const {navigation, screenProps} = props;
+        const {navigation} = props;
         const user = useSelector((state) => state.user.userObject);
         const [helpModal, setHelpModal] = useState({title:'',id:0});
-        const language = useSelector((state) => state.languagesReducer.languages);
-        const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+        const optionData = useSelector((state) => state.settings.settings.onenergy_option);
 
         useEffect(()=>{
             let titleIndex = optionData.titles.findIndex(el => el.id === 'practices_title');

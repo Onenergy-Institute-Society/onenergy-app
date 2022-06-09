@@ -23,8 +23,7 @@ import EventList from "../Components/EventList";
 const PracticePersonal = props => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.userObject);
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const helpIndex = optionData.helps.findIndex(el => el.name === 'practice_guided_popup');
     const helpData = {title:optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'',id:optionData.helps[helpIndex].id};
     const helpPageIndex = optionData.helps.findIndex(el => el.name === 'practice_guided_empty');

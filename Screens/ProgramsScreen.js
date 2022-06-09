@@ -6,8 +6,7 @@ import {
     TouchableOpacity,
     SafeAreaView,
     Platform,
-    FlatList,
-    Image, ScrollView
+    ScrollView
 } from "react-native";
 import {useSelector} from "react-redux";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
@@ -21,12 +20,10 @@ import externalCodeDependencies from "@src/externalCode/externalRepo/externalCod
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { Modalize } from 'react-native-modalize';
 import EventList from "../Components/EventList";
-import moment from 'moment';
 const ProgramsScreen = props => {
     const { navigation, screenProps } = props;
     const user = useSelector((state) => state.user.userObject);
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [helpModal, setHelpModal] = useState({title:'',id:0});
     const { global, colors } = screenProps;
     const toggleHelpModal = () => {
@@ -41,43 +38,6 @@ const ProgramsScreen = props => {
             toggleHelpModal: toggleHelpModal,
         });
     },[]);
-    const renderFeaturedPrograms = (item) => {
-        return (
-            <TouchableScale
-                onPress={() => {
-                    navigation.dispatch(
-                        NavigationActions.navigate({
-                            routeName: "MyAppPageScreen",
-                            params: {
-                                pageId: item.item.page,
-                                title: item.item.title,
-                            }
-                        })
-                    );
-                }}>
-                <View style={[styles.block_half_left, styles.boxShadow]}>
-                    <ImageCache
-                        source={{uri: item.item.image}}
-                        style={styles.image_half}
-                    />
-                </View>
-            </TouchableScale>
-        )
-    }
-    const renderItem = ({ item }) => {
-        return (
-            <TouchableScale
-                onPress={()=>{}}>
-                <ImageCache style={    {
-                    width:windowWidth-scale(30),
-                    height:(windowWidth-scale(30))/16*9,
-                    borderRadius: 9,
-                    overflow: 'hidden',
-                }}
-                            source={{uri: item.image ? item.image : ''}}/>
-            </TouchableScale>
-        );
-    }
     return (
         <SafeAreaView style={global.container}>
             {!user || !user.firstCourseCompleted ?

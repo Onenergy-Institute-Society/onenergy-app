@@ -28,8 +28,7 @@ const PracticeMember = props => {
     const { navigation } = props;
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.userObject);
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const helpPageIndex = optionData.helps.findIndex(el => el.name === 'practice_guided_empty');
     const helpPageData = {title:optionData.helps[helpPageIndex].title?optionData.helps[helpPageIndex].title:'',id:optionData.helps[helpPageIndex].id};
     const emptyIndex = optionData.helps.findIndex(el => el.name === 'practice_customize_empty_member');

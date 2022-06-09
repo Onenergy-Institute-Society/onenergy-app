@@ -20,8 +20,7 @@ import { BlurView } from "@react-native-community/blur";
 import ScalableImage from "../Components/ScalableImage";
 
 const MyVouchersScreen = (props) => {
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'voucher_empty');
     const emptyText = optionData.titles[emptyTextIndex].title
     const [ loading, setLoading ] = useState(false);

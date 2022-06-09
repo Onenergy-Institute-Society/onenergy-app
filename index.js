@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {Image, Platform, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native";
 import {NavigationActions} from "react-navigation";
+import {useDispatch} from "react-redux";
 import moment from 'moment';
 import Share from "react-native-share";
 import IconButton from "@src/components/IconButton";
@@ -43,7 +44,6 @@ import TextBlock from "./Components/TextBlock";
 import ImageBlock from "./Components/ImageBlock";
 import BgVideoBlock from "./Components/BgVideoBlock";
 import RelatedPostsRow from "./Components/RelatedPostsRow";
-import AppButton from "@src/components/AppButton";
 
 export const applyCustomCode = externalCodeSetup => {
     externalCodeSetup.navigationApi.addNavigationRoute(
@@ -126,8 +126,8 @@ export const applyCustomCode = externalCodeSetup => {
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "quotes",
-        "OnenergyQuotes",
+        "QuotesScreen",
+        "QuotesScreen",
         QuotesScreen,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
@@ -662,6 +662,7 @@ export const applyCustomCode = externalCodeSetup => {
         const diffMinutes = lesson_time.diff(current_time, 'minutes');
         const diffHours = lesson_time.diff(current_time, 'hours');
         const diffDays = lesson_time.diff(current_time, 'days');
+        const dispatch = useDispatch();
 
         let diffTime = '';
         if(diffMinutes < 60){
@@ -777,7 +778,14 @@ export const applyCustomCode = externalCodeSetup => {
                         justifyContent: "space-between",
                     }}>
                         <CourseActionButton
-                            onPress={()=>{startCourse();setButtonEnroll('Enrolling, please wait...')}}
+                            onPress={()=>{
+                                startCourse();
+                                setButtonEnroll('Enrolling, please wait...');
+                                dispatch({
+                                    type: 'UPDATE_USER_ENROLLED_COURSES',
+                                    payload: {"id": courseVM.id, "date": new Date().getTime() / 1000}
+                                });
+                            }}
                             title={buttonEnroll}
                         />
                     </View>
@@ -1036,6 +1044,15 @@ export const applyCustomCode = externalCodeSetup => {
                     }
                 }
                 return reducer(newUserLesson, action);
+            case 'UPDATE_USER_ENROLLED_COURSES':
+                const newUserEnrolledCourse = {
+                    ...state,
+                    userObject:{
+                        ...state.userObject,
+                        enrolled_courses: [...state.userObject.enrolled_courses, action.payload]
+                    }
+                }
+                return reducer(newUserEnrolledCourse, action);
             case 'UPDATE_USER_COMPLETED_COURSES':
                 const newUserCourse = {
                     ...state,
@@ -1107,6 +1124,7 @@ export const applyCustomCode = externalCodeSetup => {
         }
     })
     externalCodeSetup.deeplinksApi.setDeeplinksWithoutEmbeddedReturnValueFilter((defaultValue, linkObject, navigationService) => {
+        console.log(linkObject)
         if (linkObject.action === "open_screen") {
             switch(linkObject.item_id)
             {
@@ -1125,6 +1143,14 @@ export const applyCustomCode = externalCodeSetup => {
                         routeName: "BlogsScreen",
                     })
                     break;
+            }
+        }
+        if(linkObject.action === "inapp") {
+            if(linkObject.url.includes('QuotesScreen')) {
+                navigationService.navigate({
+                    routeName: "QuotesScreen",
+                })
+                return true;
             }
         }
     });

@@ -19,8 +19,7 @@ import IconButton from "@src/components/IconButton";
 import TouchableScale from "./TouchableScale";
 
 const MemberTracksList = (props) => {
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const routines = useSelector((state) => state.routinesReducer.routines);
     const [selectedRoutine, setSelectedRoutine] = useState(null);
 

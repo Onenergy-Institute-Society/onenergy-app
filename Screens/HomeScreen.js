@@ -24,8 +24,7 @@ const CustomDrawerContentComponent = (props) => {
     const dispatch = useDispatch();
     const {colors} = screenProps;
     const user = useSelector((state) => state.user.userObject);
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     return (
         <SafeAreaView style={{flex:1, backgroundColor: colors.bodyBg}}>
             <ScrollView
@@ -42,7 +41,7 @@ const CustomDrawerContentComponent = (props) => {
                                         onPress={() => navigation.navigate("ProfileScreen")}
                                     >
                                         <FastImage
-                                            source={{uri: user.avatar_urls.thumb}}
+                                            source={{uri: user.avatar_urls['96']}}
                                             style={{height: scale(80), width: scale(80), borderRadius: 100, marginBottom: verticalScale(10)}}
                                         />
                                     </TouchableOpacity>
@@ -55,7 +54,7 @@ const CustomDrawerContentComponent = (props) => {
                                             textAlign:"right",
                                             marginBottom:10
                                         }}>
-                                        {user.profile_name}
+                                        {user.name}
                                     </Text>
                                     {user.user_ranks?(
                                         <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center"}}>

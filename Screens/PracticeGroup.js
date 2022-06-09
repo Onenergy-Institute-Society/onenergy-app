@@ -33,10 +33,9 @@ import DatePicker from 'react-native-datepicker';
 
 const PracticeGroup = props => {
     const { navigation, screenProps } = props;
-    const { t, global, colors, calcFontSize } = screenProps;
+    const { colors } = screenProps;
     const user = useSelector((state) => state.user.userObject);
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const helpIndex = optionData.helps.findIndex(el => el.name === 'practice_group_popup');
     const helpData = {title:optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'',id:optionData.helps[helpIndex].id};
     const [ loading, setLoading ] = useState(false);
@@ -162,23 +161,23 @@ const PracticeGroup = props => {
                     <View style={{height:scale(60), justifyContent:"center", alignItems:"center", width:windowWidth-scale(30)}}>
                         <Text style={styles.title}>{item.title.rendered}</Text>
                     </View>
-                    {conditionLessons?
-                        conditionWeekDay?
-                            conditionTime?
+                    {conditionLessons||optionData.testing_mode?
+                        conditionWeekDay||optionData.testing_mode?
+                            conditionTime||optionData.testing_mode?
                                 <View style={styles.viewTop}>
                                     <View style={{flexDirection: "column", justifyContent:"flex-start", alignItems:"center", width:windowWidth-scale(30)}}>
                                         <Text style={styles.waitTimeLabel}>Next Streaming:</Text>
-                                            {timeToGo > 0 ?
+                                            {timeToGo > 0||optionData.testing_mode ?
                                                 <Text style={styles.waitTime}>{timeToGo} Minutes</Text>
                                                 :
                                                 moreTimeToGo > 0 ?
                                                     <Text style={styles.waitTime}>{moreTimeToGo} Minutes</Text>
                                                     :null
                                             }
-                                        {timeToGo > 0 ?
+                                        {timeToGo > 0||optionData.testing_mode ?
                                             <WaitingGroupPractice waitingText={'waiting'} gp_id={item.id} gp_time={CurrentStartTime} waitingStyle={styles.waiting} />
                                             :null}
-                                    {timeToGo>0?
+                                    {timeToGo>0||optionData.testing_mode?
                                         <TouchableOpacity style={styles.btnJoin}
                                         onPress={() => {
                                         handlePress(item.meta_box.url, item.id, CurrentStartTime)
