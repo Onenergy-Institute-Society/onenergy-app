@@ -18,11 +18,12 @@
     "react-native": "0.61.5"
   },
   "nativeDependencies": {
-    "react-native-push-notification": "^8.1.1"
+    "react-native-push-notification": "^8.1.1",
+    "native-base": "^2.15.2"
   },
   "podDependencies": {},
   "dependencies": {
-    "react-native-paper": "^4.12.1",
+    "native-base": "^2.15.2",
     "react-native-push-notification": "^8.1.1"
   }
 }

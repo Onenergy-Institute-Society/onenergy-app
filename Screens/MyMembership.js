@@ -26,6 +26,7 @@ const MyMembership = (props) => {
             expiry_date = moment(start_date).add(30, 'day').format('YYYY-MM-DD');
         }
     }
+    const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
     return(
         <SafeAreaView style={styles.container}>
             {user.membership.length > 0 ?
