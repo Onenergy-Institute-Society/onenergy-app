@@ -60,23 +60,6 @@ const MyMembership = (props) => {
                             </View>
                         </View>
                     </View>
-                    <View style={styles.cardContainer}>
-                        <View style={styles.topContainer}>
-                            <View style={styles.metaContainer}>
-                                <View>
-                                    <Text style={styles.title}>You have no Membership</Text>
-                                    <Text style={styles.description}>Upgrade to Onenergy VIP member to unlock more features only available to members.</Text>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                    <TouchableOpacity style={styles.btnUpgrade}
-                                      onPress={ async() => {
-                                          await props.attemptDeepLink(false)(null, 'https://app.onenergy.institute/bbapp/screen/iap_products');
-                                      }}
-                    >
-                        <Text style={{color: "white", fontSize:scale(20), fontWeight: "700"}}>UPGRADE NOW</Text>
-                    </TouchableOpacity>
                 </>
             :
                 <>
