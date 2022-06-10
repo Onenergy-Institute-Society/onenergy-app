@@ -21,8 +21,10 @@ import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale, verticalScale} from "../Utils/scale";
 import TrackPlayer from 'react-native-track-player';
 import EventList from "../Components/EventList";
+/*
 import PushNotification from "react-native-push-notification";
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
+*/
 
 const PracticeMember = props => {
     const { navigation } = props;
@@ -124,11 +126,13 @@ const PracticeMember = props => {
         }
         setRoutinesLoading(true);
         removeRoutine(item).then();
+/*
         if (Platform.OS === 'ios') {
             PushNotificationIOS.cancelLocalNotifications({id: item.id});
         }else{
             PushNotification.cancelLocalNotification(item.id);
         }
+*/
     }
     useEffect(() => {
         if(!props.routines||!props.routines.length) {

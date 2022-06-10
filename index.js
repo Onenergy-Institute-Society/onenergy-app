@@ -1140,6 +1140,8 @@ export const applyCustomCode = externalCodeSetup => {
         }
     })
     externalCodeSetup.deeplinksApi.setDeeplinksWithoutEmbeddedReturnValueFilter((defaultValue, linkObject, navigationService) => {
+
+        console.log(linkObject, defaultValue);
         if (linkObject.action === "open_screen") {
             switch(linkObject.item_id)
             {

@@ -128,6 +128,7 @@ const PracticeGroup = props => {
         },
     };
     const renderItem = ({ item }) => {
+        console.log(item)
         let detail = item.content.rendered;
         const conditionLessons  = item.meta_box.lessons.every(value => user.completed_lessons.some(lesson=>(lesson.id===value)));
         user.completed_lessons.map((lesson) => {
