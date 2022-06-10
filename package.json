@@ -22,6 +22,7 @@
   },
   "podDependencies": {},
   "dependencies": {
+    "@native-base/react-native-template": "^1.3.0",
     "react-native-push-notification": "^8.1.1"
   }
 }

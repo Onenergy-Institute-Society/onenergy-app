@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Image, Platform, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native";
 import {NavigationActions} from "react-navigation";
-import {useDispatch} from "react-redux";
+import {useSelector,useDispatch} from "react-redux";
 import moment from 'moment';
 import Share from "react-native-share";
 import IconButton from "@src/components/IconButton";
@@ -26,6 +26,7 @@ import MyQuestsScreen from './Screens/MyQuestsScreen';
 import MyMilestonesScreen from './Screens/MyMilestonesScreen';
 import MyProgressScreen from './Screens/MyProgressScreen';
 import MyVouchersScreen from './Screens/MyVouchersScreen';
+import MyMembership from './Screens/MyMembership';
 import {scale, verticalScale} from './Utils/scale';
 import ImageCache from "./Components/ImageCache";
 import {windowWidth} from "./Utils/Dimensions";
@@ -195,6 +196,12 @@ export const applyCustomCode = externalCodeSetup => {
         "MyVouchersScreen",
         "MyVouchersScreen",
         MyVouchersScreen,
+        "All" // "Auth" | "noAuth" | "Main" | "All"
+    );
+    externalCodeSetup.navigationApi.addNavigationRoute(
+        "MyMembership",
+        "MyMembership",
+        MyMembership,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
@@ -1100,10 +1107,19 @@ export const applyCustomCode = externalCodeSetup => {
                 label: "Achievement", //Set label of menu
                 onPress: () => navigation.navigate(
                     NavigationActions.navigate({
-                        routeName: "MilestonesScreen",
+                        routeName: "MyMilestonesScreen",
                     })
                 )
-            }
+            },
+            {
+                icon: require("@src/assets/img/privacy_group.png"), //Set icon
+                label: "Membership", //Set label of menu
+                onPress: () => navigation.navigate(
+                    NavigationActions.navigate({
+                        routeName: "MyMembership",
+                    })
+                )
+            },
         ]
     })
     externalCodeSetup.reduxApi.wrapReducer(
@@ -1124,7 +1140,6 @@ export const applyCustomCode = externalCodeSetup => {
         }
     })
     externalCodeSetup.deeplinksApi.setDeeplinksWithoutEmbeddedReturnValueFilter((defaultValue, linkObject, navigationService) => {
-        console.log(linkObject)
         if (linkObject.action === "open_screen") {
             switch(linkObject.item_id)
             {
@@ -1132,16 +1147,25 @@ export const applyCustomCode = externalCodeSetup => {
                     navigationService.navigate({
                         routeName: "ProgramsScreen",
                     })
+                    return true;
                     break;
                 case 'practices':
                     navigationService.navigate({
                         routeName: "PracticesScreen",
                     })
+                    return true;
                     break;
                 case 'wisdom':
                     navigationService.navigate({
                         routeName: "BlogsScreen",
                     })
+                    return true;
+                    break;
+                case 'QuotesScreen':
+                    navigationService.navigate({
+                        routeName: "QuotesScreen",
+                    })
+                    return true;
                     break;
             }
         }
@@ -1153,7 +1177,15 @@ export const applyCustomCode = externalCodeSetup => {
                 return true;
             }
         }
+        return defaultValue;
     });
+    const AfterDetailsComponent = ({ user }) => {
+        const userInfo = useSelector((state) => state.user.userObject);
+        return (
+            <Text> {userInfo.membership[0].plan.name} </Text>
+        )
+    }
+    externalCodeSetup.profileScreenHooksApi.setAfterDetailsComponent(AfterDetailsComponent);
 };
 
 
