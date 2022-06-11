@@ -45,6 +45,9 @@ const QuotesScreen = props => {
 
     useEffect(()=>{
         setLoading(true);
+        setTimeout(function () {
+            setLoading(false);
+        }, 1000);
         fetchQuote().then();
     }, [page]);
 

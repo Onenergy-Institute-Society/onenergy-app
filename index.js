@@ -59,7 +59,6 @@ export const applyCustomCode = externalCodeSetup => {
         BlogsScreen,
         "Main" // "Auth" | "noAuth" | "Main" | "All"
     );
-
     externalCodeSetup.navigationApi.addNavigationRoute(
         "programs",
         "Programs",
@@ -1171,14 +1170,14 @@ export const applyCustomCode = externalCodeSetup => {
                     break;
             }
         }
-        if(linkObject.action === "inapp") {
+/*        if(linkObject.action === "inapp") {
             if(linkObject.url.includes('QuotesScreen')) {
                 navigationService.navigate({
                     routeName: "QuotesScreen",
                 })
                 return true;
             }
-        }
+        }*/
         return defaultValue;
     });
     const AfterDetailsComponent = ({ user }) => {
@@ -1188,6 +1187,7 @@ export const applyCustomCode = externalCodeSetup => {
         )
     }
     externalCodeSetup.profileScreenHooksApi.setAfterDetailsComponent(AfterDetailsComponent);
+    externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "videoPlayer", "vimeoPlayer"])
 };
 
 
