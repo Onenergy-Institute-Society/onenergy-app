@@ -76,9 +76,9 @@ const PracticeMember = props => {
     const toggleHelpModal = () => {
         this.cpHelpModal.open();
     }
-    const onAddPressed = () => {
-        TrackPlayer.stop();
-        TrackPlayer.reset();
+    const onAddPressed = async () => {
+        await TrackPlayer.stop();
+        await TrackPlayer.reset();
 
         navigation.dispatch(
             NavigationActions.navigate({
@@ -89,9 +89,9 @@ const PracticeMember = props => {
             })
         );
     }
-    const onEditRoutinePress = (item, index) =>{
-        TrackPlayer.stop();
-        TrackPlayer.reset();
+    const onEditRoutinePress = async (item, index) =>{
+        await TrackPlayer.stop();
+        await TrackPlayer.reset();
 
         navigation.dispatch(
             NavigationActions.navigate({
@@ -104,8 +104,8 @@ const PracticeMember = props => {
         );
     }
     const onRemoveRoutine = async (item) => {
-        TrackPlayer.stop();
-        TrackPlayer.reset();
+        await TrackPlayer.stop();
+        await TrackPlayer.reset();
 
         let array = [...props.routines]; // make a separate copy of the array
         let index = array.indexOf(item);
@@ -127,7 +127,7 @@ const PracticeMember = props => {
         if (Platform.OS === 'ios') {
             PushNotificationIOS.cancelLocalNotifications({id: item.id});
         }else{
-            PushNotification.cancelLocalNotification(item.id);
+            PushNotification.deleteChannel("routine-reminder"+item.id);
         }
     }
     useEffect(() => {
@@ -271,9 +271,9 @@ PracticeMember.navigationOptions = ({ navigation }) => {
         headerTitleStyle: {textAlign:'left'},
         headerLeft:
             <TouchableOpacity
-                onPress={() => {
-                    TrackPlayer.stop();
-                    TrackPlayer.reset();
+                onPress={async () => {
+                    await TrackPlayer.stop();
+                    await TrackPlayer.reset();
                     navigation.goBack()
                 }}
             >

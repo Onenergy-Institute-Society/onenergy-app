@@ -210,8 +210,7 @@ const EditRoutine = props => {
                         });
                     } else {
                         PushNotification.localNotificationSchedule({
-                            channelId: "routine-reminder",
-                            id: routineDetail.id,
+                            channelId: "routine-reminder"+routineDetail.id,
                             date: fireDate,
                             repeats: true,
                             repeatType: "day",
