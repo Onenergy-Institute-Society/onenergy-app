@@ -20,7 +20,7 @@ import {scale, verticalScale} from "../Utils/scale";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { BlurView } from "@react-native-community/blur";
-import DatePicker from 'react-native-date-picker';
+import DatePicker from 'react-native-datepicker';
 import PushNotification from "react-native-push-notification";
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 
@@ -481,7 +481,7 @@ const EditRoutine = props => {
                         onDateChange={(time) => {setRoutineDetail(prevState => {return {...prevState, reminder_time: time}});setChangedStatus(true);setChangedReminder(true);}}
                     />
                     <Switch
-                        value={routineDetail.reminder_enable?true:false}
+                        value={routineDetail.reminder_enable}
                         onValueChange={()=>{setRoutineDetail(prevState => {return {...prevState, reminder_enable: !prevState.reminder_enable}});setChangedStatus(true);setChangedReminder(true);}}
                         trackColor={{ false: "red", true: "green" }}
                         thumbColor={'white'}
