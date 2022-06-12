@@ -22,7 +22,7 @@ import OnBoarding from './Screens/OnBoarding';
 import MyBlogScreen from './Screens/MyBlogScreen';
 import MyCourseScreen from './Screens/MyCourseScreen';
 import ChooseLanguage from './Screens/ChooseLanguage';
-import MyQuestsScreen from './Screens/MyQuestsScreen';
+/*import MyQuestsScreen from './Screens/MyQuestsScreen';*/
 import MyMilestonesScreen from './Screens/MyMilestonesScreen';
 import MyProgressScreen from './Screens/MyProgressScreen';
 import MyVouchersScreen from './Screens/MyVouchersScreen';
@@ -173,12 +173,12 @@ export const applyCustomCode = externalCodeSetup => {
         EditRoutine,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
-    externalCodeSetup.navigationApi.addNavigationRoute(
+/*    externalCodeSetup.navigationApi.addNavigationRoute(
         "MyQuestsScreen",
         "MyQuestsScreen",
         MyQuestsScreen,
         "All" // "Auth" | "noAuth" | "Main" | "All"
-    );
+    );*/
     externalCodeSetup.navigationApi.addNavigationRoute(
         "MyMilestonesScreen",
         "MyMilestonesScreen",
@@ -241,6 +241,7 @@ export const applyCustomCode = externalCodeSetup => {
 
     //Program screen course list
     const NewWidgetItemCourseComponent = (props) => {
+        const user = useSelector((state) => state.user.userObject);
         const {viewModel, colors} = props;
         let featuredUrl = viewModel.featuredUrl.replace('-300x200', '-1024x683');
         let statusText;
@@ -295,7 +296,7 @@ export const applyCustomCode = externalCodeSetup => {
                 }
             }
         }else{
-            if (viewModel.price && viewModel.price.required_points && (viewModel.price.required_points > viewModel.price.user_points)) {
+            if (viewModel.price && viewModel.price.required_points && (viewModel.price.required_points > user.points.point)) {
                 statusBarColor = colors.coursesLabelNotEnrolled;
                 statusText = viewModel.price.required_points + " Qi Required";
                 lessonNote = 'Practice to gather more Qi to unlock';
@@ -663,6 +664,7 @@ export const applyCustomCode = externalCodeSetup => {
         continueCourse,
         priceComponentRender) => {
 
+        const user = useSelector((state) => state.user.userObject);
         const lesson_time = new moment.utc(courseVM.date);
         const current_time = new moment.utc();
         const diffMinutes = lesson_time.diff(current_time, 'minutes');
@@ -750,7 +752,7 @@ export const applyCustomCode = externalCodeSetup => {
                 </View>
             ]
         }else{
-            if(courseVM.price.required_points > 0 && courseVM.price.user_points < courseVM.price.required_points && courseVM.error.message){
+            if(courseVM.price.required_points > 0 && user.points.point < courseVM.price.required_points && courseVM.error.message){
                 const Info =
                     <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
                         <Text style={{color:"red", fontSize:scale(14)}}>{courseVM.error.message}</Text>
@@ -1182,8 +1184,11 @@ export const applyCustomCode = externalCodeSetup => {
     });
     const AfterDetailsComponent = ({ user }) => {
         const userInfo = useSelector((state) => state.user.userObject);
+        console.log(userInfo)
         return (
+            userInfo.membership&&userInfo.membership.length>0?
             <Text> {userInfo.membership[0].plan.name} </Text>
+                :null
         )
     }
     externalCodeSetup.profileScreenHooksApi.setAfterDetailsComponent(AfterDetailsComponent);

@@ -120,7 +120,7 @@ const CustomDrawerContentComponent = (props) => {
                                     />
                                 </View>
                             </TouchableWithoutFeedback>
-                            <TouchableWithoutFeedback onPress={() => {
+{/*                            <TouchableWithoutFeedback onPress={() => {
                                 dispatch({
                                     type: 'NOTIFICATION_CLEAR',
                                     payload: 'quest'
@@ -140,7 +140,7 @@ const CustomDrawerContentComponent = (props) => {
                                         }}
                                     />
                                 </View>
-                            </TouchableWithoutFeedback>
+                            </TouchableWithoutFeedback>*/}
                             <TouchableWithoutFeedback onPress={() => {
                                 dispatch({
                                     type: 'NOTIFICATION_CLEAR',
@@ -221,6 +221,22 @@ const CustomDrawerContentComponent = (props) => {
                 </View>
             ):null}
             <View style={{flex:1,justifyContent:"flex-end", marginBottom:verticalScale(30),padding: 15, borderTopWidth: 1, borderTopColor: '#ccc'}}>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate("LoginScreen")}
+                    style={{marginBottom: 5}}
+                >
+                    <View style={{flexDirection:"row",justifyContent:"flex-start",alignItems: 'center'}}>
+                        <IconButton
+                            icon={require("@src/assets/img/feed-settings.png")}
+                            tintColor={"#000"}
+                            style={{
+                                width:24,
+                                height:24,
+                            }}
+                        />
+                        <Text style={{fontSize:scale(14)}}>Login</Text>
+                    </View>
+                </TouchableOpacity>
                 {user?
                     <TouchableOpacity
                         onPress={() => navigation.navigate("MyFeedbackScreen")}

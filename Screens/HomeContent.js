@@ -28,6 +28,7 @@ const HomeContent = (props) => {
     const {navigation, screenProps} = props;
     const {global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
+    console.log(user)
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [ loading, setLoading ] = useState(false);
     const [quotesData, setQuotesData] = useState([]);

@@ -36,20 +36,13 @@ const Milestones = (props) => {
     useEffect(() => {
         fetchQuests().then();
     }, []);
+    const onItemDetailPress = (detail) => {
+        setGroupPracticeDetail(detail);
+        this.DetailModal.open();
+    };
     const renderItem = ({ item }) => {
         return (
             <View style={[styles.achievementItemBox, styles.boxShadow]}>
-                <View style={[styles.achievementItemBoxImageWrap,{alignSelf:completed==='true'?'center':'flex-start', marginLeft:completed==='true'?null:20}]}>
-                    {item.completed ?
-                        <FastImage style={styles.achievementItemBoxImageWrap}
-                                   source={{uri: "https://media.onenergy.institute/images/completed.png"}}
-                                   style={{width: scale(150), height: scale(150)}}/>
-                        :
-                        <FastImage style={styles.achievementItemBoxImageWrap}
-                                   source={{uri: "https://media.onenergy.institute/images/hourglass.png"}}
-                                   style={{width: scale(80), height: scale(80)}}/>
-                    }
-                </View>
                 <View style={styles.achievementItemBoxInfo}>
                     {completed==='false'?
                         <View style={[styles.textSticker,{width:"100%",justifyContent:"flex-end", marginRight:25}]}>
@@ -97,16 +90,6 @@ const Milestones = (props) => {
                                         </View>
                                     )
                                 })}
-                            </View>
-                            :null}
-                    </View>
-                    <View style={styles.achievementItemBoxInfoBottom}>
-                        {completed==='true'?
-                            <View style={[styles.textSticker,{justifyContent: "space-around", alignItems:"center"}]}>
-                                <IconButton
-                                    icon={require("@src/assets/img/add.png")}
-                                    style={{tintColor:"#00c7d9", width:24, height:24}}
-                                /><Text style={[styles.pointText,{fontSize: scale(18)}]}>{item.points} {item.points_type.singular_name}</Text>
                             </View>
                             :null}
                     </View>

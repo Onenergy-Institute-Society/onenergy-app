@@ -19,7 +19,26 @@ const LessonButton = (props) => {
     const [alertConfirmText, setAlertConfirmText] = useState('');
     const [alertShowConfirm, setAlertShowConfirm] = useState(false);
     const dispatch = useDispatch();
-
+    const getUserPoints = async () => {
+        const apiRequest = getApi(props.config);
+        await apiRequest.customRequest(
+            "wp-json/onenergy/v1/points",
+            "get",
+            {},
+            null,
+            {},
+            false
+        ).then(response => {
+            dispatch({
+                type:"UPDATE_POINTS",
+                payload:response.data
+            });
+            dispatch({
+                type:"UPDATE_USER_POINTS",
+                payload:response.data
+            });
+        })
+    }
     const completeLesson = async () => {
         try {
             const apiRequest = getApi(props.config);
@@ -108,6 +127,7 @@ const LessonButton = (props) => {
                         setShowAlert(true);
                     }
                 }
+                getUserPoints();
             });
         } catch (e) {
             console.error(e);
@@ -124,7 +144,7 @@ const LessonButton = (props) => {
                 return;
         }
     }
-
+console.log(videoComplete, lesson.settings.no_video, optionData.testing_mode)
     return (
         <View style={[global.row, {paddingHorizontal: 20, paddingVertical: 15}]}>
             {lesson.completed?
