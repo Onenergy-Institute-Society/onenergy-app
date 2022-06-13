@@ -15,6 +15,15 @@
 + (void)rootViewVisible:(RCTRootView *)rootView
 {}
 
+- (BOOL)application:(UIApplication *)application
+    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+  // Use Firebase library to configure APIs.
+  [FIRApp configure];
+  // Initialize the Google Mobile Ads SDK.
+  [[GADMobileAds sharedInstance] startWithCompletionHandler:nil];
+  return YES;
+}
+
 // Here you can write your own custom native modules to use in your custom repo
 // Below is an example of a simple method to multiply two numbers
 // See https://reactnative.dev/docs/native-modules-ios for more information

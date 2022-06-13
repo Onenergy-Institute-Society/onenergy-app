@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import { View, TouchableOpacity, Text, FlatList, StyleSheet, LayoutAnimation, Platform, UIManager} from "react-native";
 import ImageCache from "./ImageCache";
+import IconButton from "@src/components/IconButton";
+import {windowWidth} from "../Utils/Dimensions";
 
 export default class Accordian extends Component{
 
@@ -22,7 +24,7 @@ export default class Accordian extends Component{
             <View>
                 <TouchableOpacity style={styles.row} onPress={()=>this.toggleExpand()}>
                     <Text style={[styles.title]}>{this.props.title}</Text>
-                    <ImageCache source={require("@src/assets/img/arrow-down.png")} name={this.state.expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={30} color={Colors.DARKGRAY} />
+                    <ImageCache source={require("@src/assets/img/arrow-down.png")} style={{transform: [{ rotate: this.state.expanded?'180deg':'0deg' }]}} size={30} color={Colors.DARKGRAY} />
                 </TouchableOpacity>
                 <View style={styles.parentHr}/>
                 {
@@ -36,7 +38,14 @@ export default class Accordian extends Component{
                                 <View>
                                     <TouchableOpacity style={[styles.childRow, styles.button, item.value ? styles.btnActive : styles.btnInActive]} onPress={()=>this.onClick(index)}>
                                         <Text style={[styles.font, styles.itemInActive]} >{item.key}</Text>
-                                        <Icon name={'check-circle'} size={24} color={ item.value ? Colors.GREEN :  Colors.LIGHTGRAY } />
+                                        <IconButton
+                                            icon={require("@src/assets/img/check2.png")}
+                                            tintColor={item.completed ? Colors.GREEN :  Colors.LIGHTGRAY}
+                                            style={{
+                                                height: 24,
+                                                width: 24,
+                                            }}
+                                        />
                                     </TouchableOpacity>
                                     <View style={styles.childHr}/>
                                 </View>
@@ -102,6 +111,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.DARKGRAY,
     },
     row:{
+        width: windowWidth-30,
         flexDirection: 'row',
         justifyContent:'space-between',
         height:56,
