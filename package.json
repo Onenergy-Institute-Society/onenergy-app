@@ -19,12 +19,15 @@
   },
   "nativeDependencies": {
     "react-native-push-notification": "^8.1.1",
-    "react-native-track-player": "^2.1.3"
+    "react-native-track-player": "^2.1.3",
+    "react-native-admob-native-ads": "^0.6.0"
   },
   "podDependencies": {
-    "react-native-track-player": "react-native-track-player"
+    "react-native-track-player": "react-native-track-player",
+    "react-native-admob-native-ads": "react-native-admob-native-ads"
   },
   "dependencies": {
+    "react-native-admob-native-ads": "^0.6.0",
     "react-native-push-notification": "^8.1.1",
     "react-native-track-player": "^2.1.3"
   }

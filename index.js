@@ -22,7 +22,7 @@ import OnBoarding from './Screens/OnBoarding';
 import MyBlogScreen from './Screens/MyBlogScreen';
 import MyCourseScreen from './Screens/MyCourseScreen';
 import ChooseLanguage from './Screens/ChooseLanguage';
-/*import MyQuestsScreen from './Screens/MyQuestsScreen';*/
+import MyQuestsScreen from './Screens/MyQuestsScreen';
 import MyMilestonesScreen from './Screens/MyMilestonesScreen';
 import MyProgressScreen from './Screens/MyProgressScreen';
 import MyVouchersScreen from './Screens/MyVouchersScreen';
@@ -173,12 +173,12 @@ export const applyCustomCode = externalCodeSetup => {
         EditRoutine,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
-/*    externalCodeSetup.navigationApi.addNavigationRoute(
+    externalCodeSetup.navigationApi.addNavigationRoute(
         "MyQuestsScreen",
         "MyQuestsScreen",
         MyQuestsScreen,
         "All" // "Auth" | "noAuth" | "Main" | "All"
-    );*/
+    );
     externalCodeSetup.navigationApi.addNavigationRoute(
         "MyMilestonesScreen",
         "MyMilestonesScreen",

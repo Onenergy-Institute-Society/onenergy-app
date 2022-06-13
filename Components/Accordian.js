@@ -67,6 +67,7 @@ const Colors = {
     LIGHTGRAY: '#C7C7C7',
     DARKGRAY: '#5E5E5E',
     CGRAY: '#ececec',
+    GRAY: '#808080',
 }
 const styles = StyleSheet.create({
     container:{

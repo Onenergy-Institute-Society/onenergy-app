@@ -120,7 +120,7 @@ const CustomDrawerContentComponent = (props) => {
                                     />
                                 </View>
                             </TouchableWithoutFeedback>
-{/*                            <TouchableWithoutFeedback onPress={() => {
+                            <TouchableWithoutFeedback onPress={() => {
                                 dispatch({
                                     type: 'NOTIFICATION_CLEAR',
                                     payload: 'quest'
@@ -140,7 +140,7 @@ const CustomDrawerContentComponent = (props) => {
                                         }}
                                     />
                                 </View>
-                            </TouchableWithoutFeedback>*/}
+                            </TouchableWithoutFeedback>
                             <TouchableWithoutFeedback onPress={() => {
                                 dispatch({
                                     type: 'NOTIFICATION_CLEAR',
