@@ -6,7 +6,7 @@ import {View, Text, StyleSheet, SafeAreaView, FlatList, ActivityIndicator, Platf
 import {scale, verticalScale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import * as Progress from 'react-native-progress';
-/*import Accordian from "./Accordian";*/
+import Accordian from "./Accordian";
 
 const Milestones = (props) => {
     const {completed} = props;
@@ -38,8 +38,8 @@ const Milestones = (props) => {
     }, []);
     const renderItem = ({ item }) => {
         return (
-/*            <Accordian title={item.name} data={item.steps} />*/
-            <View style={[styles.achievementItemBox, styles.boxShadow]}>
+            <Accordian title={item.name} data={item.steps} />
+/*            <View style={[styles.achievementItemBox, styles.boxShadow]}>
                 <View style={styles.achievementItemBoxInfo}>
                     {completed==='false'?
                         <View style={[styles.textSticker,{width:"100%",justifyContent:"flex-end", marginRight:25}]}>
@@ -91,7 +91,7 @@ const Milestones = (props) => {
                             :null}
                     </View>
                 </View>
-            </View>
+            </View>*/
         );
     };
     return(
