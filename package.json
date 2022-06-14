@@ -25,6 +25,7 @@
     "react-native-track-player": "react-native-track-player"
   },
   "dependencies": {
+    "native-base": "2.7",
     "react-native-push-notification": "^8.1.1",
     "react-native-track-player": "^2.1.3"
   }
