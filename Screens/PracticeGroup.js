@@ -166,8 +166,9 @@ const PracticeGroup = props => {
                         conditionWeekDay||optionData.testing_mode?
                             conditionTime||optionData.testing_mode?
                                 <View style={styles.viewTop}>
-                                    <View style={{flexDirection: "column", justifyContent:"flex-start", alignItems:"center", width:windowWidth-scale(30)}}>
-                                        <Text style={styles.waitTimeLabel}>Next Streaming:</Text>
+                                    <View style={{flexDirection: "column", justifyContent:"space-evenly", alignItems:"center", width:windowWidth-scale(30)}}>
+                                        <View style={{flexDirection: "row", justifyContent: "space-around", alignItems:"center", width:windowWidth-scale(30)}}>
+                                        <Text style={styles.waitTimeLabel}>Up Coming:</Text>
                                             {timeToGo > 0||optionData.testing_mode ?
                                                 <Text style={styles.waitTime}>{timeToGo} Minutes</Text>
                                                 :
@@ -178,6 +179,7 @@ const PracticeGroup = props => {
                                         {timeToGo > 0||optionData.testing_mode ?
                                             <WaitingGroupPractice waitingText={'waiting'} gp_id={item.id} gp_time={CurrentStartTime} waitingStyle={styles.waiting} />
                                             :null}
+                                        </View>
                                     {timeToGo>0||optionData.testing_mode?
                                         <TouchableOpacity style={styles.btnJoin}
                                         onPress={() => {
@@ -445,15 +447,15 @@ const styles = StyleSheet.create({
         padding:10,
     },
     waitTimeLabel:{
-        fontSize:scale(24),
+        fontSize:scale(20),
         fontWeight: "700",
     },
     waitTime: {
-        fontSize:scale(18),
+        fontSize:scale(16),
         fontWeight: "700",
     },
     waiting:{
-        fontSize:scale(14),
+        fontSize:scale(16),
         fontWeight: "700",
         alignSelf:"center",
         textAlign:"center",

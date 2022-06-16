@@ -26,6 +26,7 @@ import MyQuestsScreen from './Screens/MyQuestsScreen';
 import MyMilestonesScreen from './Screens/MyMilestonesScreen';
 import MyProgressScreen from './Screens/MyProgressScreen';
 import MyVouchersScreen from './Screens/MyVouchersScreen';
+import MyStatsScreen from './Screens/MyStatsScreen';
 import MyMembership from './Screens/MyMembership';
 import {scale, verticalScale} from './Utils/scale';
 import ImageCache from "./Components/ImageCache";
@@ -207,6 +208,12 @@ export const applyCustomCode = externalCodeSetup => {
         "MyFeedbackScreen",
         "MyFeedbackScreen",
         MyFeedbackScreen,
+        "All" // "Auth" | "noAuth" | "Main" | "All"
+    );
+    externalCodeSetup.navigationApi.addNavigationRoute(
+        "MyStatsScreen",
+        "MyStatsScreen",
+        MyStatsScreen,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.blocksApi.addCustomBlockRender(
@@ -1184,7 +1191,6 @@ export const applyCustomCode = externalCodeSetup => {
     });
     const AfterDetailsComponent = ({ user }) => {
         const userInfo = useSelector((state) => state.user.userObject);
-        console.log(userInfo)
         return (
             userInfo.membership&&userInfo.membership.length>0?
             <Text> {userInfo.membership[0].plan.name} </Text>

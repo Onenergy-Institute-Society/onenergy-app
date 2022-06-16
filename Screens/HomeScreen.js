@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {
-    ScrollView,
     View,
     Text,
     ImageBackground,
@@ -103,7 +102,7 @@ const CustomDrawerContentComponent = (props) => {
                                     type: 'NOTIFICATION_CLEAR',
                                     payload: 'progress'
                                 });
-                                navigation.navigate('MyProgressScreen');
+                                navigation.navigate('MyStatsScreen');
                                 }}>
                                 <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', borderTopRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                                     <Text
@@ -221,22 +220,6 @@ const CustomDrawerContentComponent = (props) => {
                 </View>
             ):null}
             <View style={{flex:1,justifyContent:"flex-end", marginBottom:verticalScale(30),padding: 15, borderTopWidth: 1, borderTopColor: '#ccc'}}>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate("LoginScreen")}
-                    style={{marginBottom: 5}}
-                >
-                    <View style={{flexDirection:"row",justifyContent:"flex-start",alignItems: 'center'}}>
-                        <IconButton
-                            icon={require("@src/assets/img/feed-settings.png")}
-                            tintColor={"#000"}
-                            style={{
-                                width:24,
-                                height:24,
-                            }}
-                        />
-                        <Text style={{fontSize:scale(14)}}>Login</Text>
-                    </View>
-                </TouchableOpacity>
                 {user?
                     <TouchableOpacity
                         onPress={() => navigation.navigate("MyFeedbackScreen")}
