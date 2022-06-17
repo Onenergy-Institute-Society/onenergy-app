@@ -575,7 +575,7 @@ export const applyCustomCode = externalCodeSetup => {
     // Add routine reducer
     externalCodeSetup.reduxApi.addReducer(
         "routinesReducer",
-        (state = {routines: [], guides:[]}, action) => {
+        (state = {routines:[], guides:[], groups:[]}, action) => {
             switch (action.type){
                 case "ONENERGY_ROUTINE_UPDATE":
                     return {...state, routines: action.payload};
@@ -591,6 +591,8 @@ export const applyCustomCode = externalCodeSetup => {
                     }
                 case "ONENERGY_GUIDE_UPDATE":
                     return {...state, guides: action.payload};
+                case "ONENERGY_GROUP_UPDATE":
+                    return {...state, groups: action.payload};
                 case "ONENERGY_GUIDE_EMPTY":
                     return {...state, guides: []};
                 default:

@@ -30,7 +30,6 @@ const PracticePersonal = props => {
     const helpPageData = {title:optionData.helps[helpPageIndex].title?optionData.helps[helpPageIndex].title:'',id:optionData.helps[helpPageIndex].id};
     const [tracks, setTracks] = useState([]);
     const [tracksLoading, setTracksLoading] = useState(true);
-
     const fetchTracks = async () => {
         try {
             const apiSlide = getApi(props.config);

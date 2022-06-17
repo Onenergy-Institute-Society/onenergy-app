@@ -21,8 +21,6 @@ import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale, verticalScale} from "../Utils/scale";
 import TrackPlayer from 'react-native-track-player';
 import EventList from "../Components/EventList";
-import PushNotification from "react-native-push-notification";
-import PushNotificationIOS from "@react-native-community/push-notification-ios";
 
 const PracticeMember = props => {
     const { navigation } = props;
@@ -46,6 +44,7 @@ const PracticeMember = props => {
                 {},
                 false
             ).then(response => {
+                console.log(response.data);
                 dispatch({
                     type: "ONENERGY_ROUTINE_UPDATE",
                     payload: response.data
@@ -107,6 +106,7 @@ const PracticeMember = props => {
         await TrackPlayer.stop();
         await TrackPlayer.reset();
 
+
         let array = [...props.routines]; // make a separate copy of the array
         let index = array.indexOf(item);
         if (index !== -1) {
@@ -124,11 +124,6 @@ const PracticeMember = props => {
         }
         setRoutinesLoading(true);
         removeRoutine(item).then();
-        if (Platform.OS === 'ios') {
-            PushNotificationIOS.cancelLocalNotifications({id: item.id});
-        }else{
-            PushNotification.deleteChannel("routine-reminder"+item.id);
-        }
     }
     useEffect(() => {
         if(!props.routines||!props.routines.length) {

@@ -91,7 +91,7 @@ const AudioPlayer = ({ track }) => {
     const onStopPress = async () => {
         const state = await TrackPlayer.getState();
         if ((state === State.Playing) || (state === State.Paused)) {
-            TrackPlayer.stop();
+            await TrackPlayer.stop();
         }
     };
 

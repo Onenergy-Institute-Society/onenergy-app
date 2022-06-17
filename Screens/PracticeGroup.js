@@ -13,7 +13,7 @@ import {
     ActivityIndicator,
     Switch
 } from "react-native";
-import {connect, useSelector} from "react-redux";
+import {connect, useSelector, useDispatch} from "react-redux";
 import {getApi} from "@src/services";
 import IconButton from "@src/components/IconButton";
 import {NavigationActions, withNavigation} from "react-navigation";
@@ -29,7 +29,6 @@ import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workarou
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import EventList from "../Components/EventList";
 import { BlurView } from "@react-native-community/blur";
-import DatePicker from 'react-native-datepicker';
 
 const PracticeGroup = props => {
     const { navigation, screenProps } = props;
@@ -38,11 +37,12 @@ const PracticeGroup = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const helpIndex = optionData.helps.findIndex(el => el.name === 'practice_group_popup');
     const helpData = {title:optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'',id:optionData.helps[helpIndex].id};
-    const [ loading, setLoading ] = useState(false);
-    const [ groupPractice, setGroupPractice ] = useState([]);
-    const [ groupPracticeLoading, setGroupPracticeLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [groupPractice, setGroupPractice ] = useState([]);
+    const [groupPracticeLoading, setGroupPracticeLoading] = useState(true);
     const [groupPracticeDetail, setGroupPracticeDetail] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
+    const dispatch = useDispatch();
     const fetchGroupPractice = async () => {
         try {
             const api = getApi(props.config);
@@ -53,8 +53,14 @@ const PracticeGroup = props => {
                 null,             // validation function or null
                 {},               // request headers object
                 false   // true - if full url is given, false if you use the suffix for the url. False is default.
-            ).then(response => setGroupPractice(response.data));
-            setGroupPracticeLoading(false);
+            ).then(response => {
+                dispatch({
+                    type: "ONENERGY_GROUP_UPDATE",
+                    payload: response.data
+                });
+                setGroupPractice(response.data)
+                setGroupPracticeLoading(false);
+            });
         } catch (e) {
             console.error(e);
         }
@@ -78,7 +84,12 @@ const PracticeGroup = props => {
         this.pgHelpModal.open();
     };
     useEffect(() => {
-        fetchGroupPractice().then();
+        if(!props.groups||!props.groups.length) {
+            fetchGroupPractice().then();
+        }else{
+            setGroupPractice(props.groups);
+            setGroupPracticeLoading(false);
+        }
         let titleIndex = optionData.titles.findIndex(el => el.id === 'practices_group');
         props.navigation.setParams({
             title: optionData.titles[titleIndex].title,
@@ -473,6 +484,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
     config: state.config,
     accessToken: state.auth.token,
+    groups: state.routinesReducer.groups
 });
 PracticeGroup.navigationOptions = ({ navigation }) => {
     const {params = {}} = navigation.state;

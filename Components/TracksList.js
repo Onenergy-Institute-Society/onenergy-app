@@ -15,12 +15,12 @@ import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-trac
 import {scale, verticalScale} from '../Utils/scale';
 import AudioPlayer from './AudioPlayer';
 import {windowWidth} from "../Utils/Dimensions";
-
 const TracksList = (props) => {
     const {tracks} = props;
     const user = useSelector((state) => state.user.userObject);
     const [selectedTrack, setSelectedTrack] = useState(null);
     const dispatch = useDispatch();
+
     const onTrackItemPress = async (track) => {
         if(!selectedTrack || track.id !== selectedTrack.id) {
             setSelectedTrack(track);
@@ -75,6 +75,13 @@ const TracksList = (props) => {
                         payload:response.data.achievements
                     });
                 }
+                MessageBarManager.showAlert({
+                    title: 'Your alert title goes here',
+                    message: 'Your alert message goes here',
+                    alertType: 'success',
+                    // See Properties section for full customization
+                    // Or check `index.ios.js` or `index.android.js` for a complete example
+                });
             });
         } catch (e) {
             console.error(e);

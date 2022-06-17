@@ -94,20 +94,6 @@ const MemberTracksList = (props) => {
                                 <View style={styles.titleBox}>
                                     <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center", width:"100%"}}>
                                         <Text style={styles.title}>{item.title}</Text>
-                                        {
-                                            item.reminder_enable?
-                                                <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
-                                                    <IconButton
-                                                        icon={require("@src/assets/img/notification-icon.png")}
-                                                        tintColor={"#fff"}
-                                                        style={{
-                                                            height: 12
-                                                        }}
-                                                    />
-                                                    <Text style={{fontSize:scale(12), color:"white"}}>{item.reminder_time}</Text>
-                                                </View>
-                                                :null
-                                        }
                                     </View>
                                     <View style={styles.detail}>
                                     {
