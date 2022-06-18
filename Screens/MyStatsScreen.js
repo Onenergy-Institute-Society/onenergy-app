@@ -274,6 +274,7 @@ const MyStatsScreen = (props) => {
                             </LinearGradient>
                         </View>
                     </View>
+
                 </ScrollView>
                 :
                 <ActivityIndicator size="large" />
@@ -292,7 +293,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
         paddingHorizontal: 15,
-        paddingBottom:15,
     },
     card: {
         flex:1,

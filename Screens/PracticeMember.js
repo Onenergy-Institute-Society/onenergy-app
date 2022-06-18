@@ -44,7 +44,7 @@ const PracticeMember = props => {
                 {},
                 false
             ).then(response => {
-                console.log(response.data);
+
                 dispatch({
                     type: "ONENERGY_ROUTINE_UPDATE",
                     payload: response.data

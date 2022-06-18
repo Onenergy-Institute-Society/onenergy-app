@@ -17,7 +17,7 @@ import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHand
 const MyMembership = (props) => {
     const {navigation} = props;
     const user = useSelector((state) => state.user.userObject);
-    console.log(user)
+
     let start_date;
     let expiry_date;
     if(user.membership.length > 0){

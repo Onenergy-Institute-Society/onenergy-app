@@ -94,9 +94,15 @@ const AudioPlayerRoutine = (props) => {
             deactivateKeepAwake();
         }
         if ((event.state === State.Stopped) || (event.state === State.None) || (event.type === 'playback-queue-ended')) {
-            setPlaying(false);
-            setStopped(true);
-            deactivateKeepAwake();
+            if(Platform.OS === 'ios') {
+                if (nextTrack === routine.tracks.length - 1) {
+                    TrackPlayer.stop();
+                    updateProgress().then();
+                }
+            }else{
+                TrackPlayer.stop();
+                updateProgress().then();
+            }
         }
         if (event.type === Event.RemotePlay) {
             TrackPlayer.play();
