@@ -16,7 +16,7 @@ import {scale, verticalScale} from '../Utils/scale';
 import AudioPlayer from './AudioPlayer';
 import {windowWidth} from "../Utils/Dimensions";
 const TracksList = (props) => {
-    const {tracks} = props;
+    const {tracks, setMessageBarDisplay} = props;
     const user = useSelector((state) => state.user.userObject);
     const [selectedTrack, setSelectedTrack] = useState(null);
     const dispatch = useDispatch();
@@ -75,13 +75,7 @@ const TracksList = (props) => {
                         payload:response.data.achievements
                     });
                 }
-                MessageBarManager.showAlert({
-                    title: 'Your alert title goes here',
-                    message: 'Your alert message goes here',
-                    alertType: 'success',
-                    // See Properties section for full customization
-                    // Or check `index.ios.js` or `index.android.js` for a complete example
-                });
+                setMessageBarDisplay(true);
             });
         } catch (e) {
             console.error(e);

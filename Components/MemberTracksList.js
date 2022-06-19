@@ -19,6 +19,7 @@ import IconButton from "@src/components/IconButton";
 import TouchableScale from "./TouchableScale";
 
 const MemberTracksList = (props) => {
+    const {setMessageBarDisplay} = props;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const routines = useSelector((state) => state.routinesReducer.routines);
     const [selectedRoutine, setSelectedRoutine] = useState(null);
@@ -108,7 +109,7 @@ const MemberTracksList = (props) => {
                         </ImageBackground>
                         </TouchableScale>
                         {showPlayer? (
-                            <AudioPlayerRoutine routine={selectedRoutine} />
+                            <AudioPlayerRoutine routine={selectedRoutine} setMessageBarDisplay={setMessageBarDisplay} />
                         ):null}
                     </View>
                 </Swipeable>

@@ -19,7 +19,7 @@ const AudioPlayerRoutine = (props) => {
         playPauseButton,
         stopButton,
     } = styles;
-    const { routine } = props;
+    const { routine, setMessageBarDisplay } = props;
 
     const [playing, setPlaying] = useState(false);
     const [stopped, setStopped] = useState(true)
@@ -68,6 +68,7 @@ const AudioPlayerRoutine = (props) => {
                         payload:response.data.achievements
                     });
                 }
+                setMessageBarDisplay(true);
             });
         } catch (e) {
             console.error(e);
@@ -83,16 +84,7 @@ const AudioPlayerRoutine = (props) => {
         return await TrackPlayer.add(track, -1);
     }
     useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.PlaybackQueueEnded], (event) => {
-        if (event.state === State.Playing) {
-            setPlaying(true);
-            setStopped(false);
-            activateKeepAwake();
-        }
-        if (event.state === State.Paused) {
-            setPlaying(false);
-            setStopped(false);
-            deactivateKeepAwake();
-        }
+        console.log(event, State)
         if ((event.state === State.Stopped) || (event.state === State.None) || (event.type === 'playback-queue-ended')) {
             if(Platform.OS === 'ios') {
                 if (nextTrack === routine.tracks.length - 1) {
@@ -103,6 +95,19 @@ const AudioPlayerRoutine = (props) => {
                 TrackPlayer.stop();
                 updateProgress().then();
             }
+            setPlaying(false);
+            setStopped(true);
+            deactivateKeepAwake();
+        }
+        if (event.state === State.Playing) {
+            setPlaying(true);
+            setStopped(false);
+            activateKeepAwake();
+        }
+        if (event.state === State.Paused) {
+            setPlaying(false);
+            setStopped(false);
+            deactivateKeepAwake();
         }
         if (event.type === Event.RemotePlay) {
             TrackPlayer.play();
@@ -160,8 +165,11 @@ const AudioPlayerRoutine = (props) => {
 
     const onStopPress = async () => {
         const state = await TrackPlayer.getState();
+        console.log(state)
         if ((state === State.Playing) || (state === State.Paused)) {
-            TrackPlayer.stop();
+            await TrackPlayer.stop();
+            setNextTrack(0);
+            setTrackTitle('');
         }
     };
 
@@ -179,7 +187,7 @@ const AudioPlayerRoutine = (props) => {
                             }}
                         />
                     </TouchableOpacity>
-                    {playing || !stopped?(
+                    {!stopped?(
                     <TouchableOpacity onPress={onStopPress} style={stopButton} hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
                         <IconButton
                             icon={require("@src/assets/img/stop.png")}

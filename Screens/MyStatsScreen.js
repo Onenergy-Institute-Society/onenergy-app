@@ -150,7 +150,7 @@ const MyStatsScreen = (props) => {
                                     </View>
                                     <View style={[styles.rowHr, {backgroundColor: "#fff7ed"}]}/>
                                     <View style={[styles.row, styles.lastRow]}>
-                                        <Text style={styles.title}>Custom Routine:</Text>
+                                        <Text style={styles.title}>Customized Routine:</Text>
                                         <Text style={styles.text}> {statsData.routines_stats.length}</Text>
                                     </View>
                                 </LinearGradient>
@@ -159,7 +159,7 @@ const MyStatsScreen = (props) => {
                         <View style={[styles.boxShadow, styles.card]}>
                             <View style={[styles.header,{backgroundColor:"#f9a8d4"}]}>
                                 <Text style={styles.headerText}>
-                                    Routine Statistics
+                                    Routine Practice Stats
                                 </Text>
                             </View>
                             <View>
@@ -208,7 +208,7 @@ const MyStatsScreen = (props) => {
                     <View style={[styles.boxShadow, styles.card]}>
                         <View style={[styles.header,{backgroundColor:"#c4b5fd"}]}>
                             <Text style={styles.headerText}>
-                                Group Practice Statistics
+                                Group Practice Stats
                             </Text>
                         </View>
                         <View>
@@ -237,10 +237,10 @@ const MyStatsScreen = (props) => {
                             </LinearGradient>
                         </View>
                     </View>
-                    <View style={[styles.boxShadow, styles.card]}>
+                    <View style={[styles.boxShadow, styles.card, {marginBottom:25}]}>
                         <View style={[styles.header,{backgroundColor:"#6ee7b7"}]}>
                             <Text style={styles.headerText}>
-                                Practice Statistics
+                                Guided Practice Stats
                             </Text>
                         </View>
                         <View>

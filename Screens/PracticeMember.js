@@ -7,7 +7,8 @@ import {
     Text,
     Platform,
     ScrollView,
-    ActivityIndicator
+    ActivityIndicator,
+    Animated
 } from "react-native";
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
@@ -33,6 +34,14 @@ const PracticeMember = props => {
     const emptyData = {title:optionData.helps[emptyIndex].title?optionData.helps[emptyIndex].title:'',id:optionData.helps[emptyIndex].id};
     const [routinesLoading, setRoutinesLoading] = useState(true);
     const [helpModal, setHelpModal] = useState({title:'',id:0});
+    const [messageBarDisplay, setMessageBarDisplay] = useState(false);
+    const [fadeAnim] = useState(new Animated.Value(0));
+    React.useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 500,
+        }).start();
+    }, []);
     const fetchTracks = async () => {
         try {
             const apiSlide = getApi(props.config);
@@ -145,6 +154,14 @@ const PracticeMember = props => {
             onAddPressed: onAddPressed,
         });
     },[]);
+    useEffect(()=>{
+        if(messageBarDisplay)
+        {
+            setTimeout(function () {
+                setMessageBarDisplay(false);
+            }, 3000)
+        }
+    },[messageBarDisplay])
     return (
         <SafeAreaView style={styles.container}>
             {user.hasGuide>0?
@@ -160,7 +177,7 @@ const PracticeMember = props => {
                                 </View>
                                 : null
                             }
-                            <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine}/>
+                            <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine} setMessageBarDisplay={setMessageBarDisplay} />
                         </ScrollView>
                     :
                     <View style={{
@@ -245,6 +262,9 @@ const PracticeMember = props => {
                                  {...props} />
                 </View>
             </Modalize>
+            {messageBarDisplay?
+                <Animated.View style={[styles.messageBar, {opacity: fadeAnim}]}><Text style={styles.messageText}>Great! You just gather more qi. Keep it up!</Text></Animated.View>
+                :null}
         </SafeAreaView>
     );
 };
@@ -257,6 +277,19 @@ const styles = StyleSheet.create({
     },
     scroll_view: {
         flexGrow: 1,
+    },
+    messageText:{
+        fontSize:scale(14),
+        color: "white",
+    },
+    messageBar:{
+        position: "absolute",
+        top:10,
+        backgroundColor:"#737373",
+        borderColor:"#404040",
+        borderRadius:9,
+        paddingVertical:scale(5),
+        paddingHorizontal:scale(10),
     }
 });
 PracticeMember.navigationOptions = ({ navigation }) => {
