@@ -106,6 +106,10 @@ class VideoPlayer extends Component {
                 this.props.execDispatch('NOTIFICATION_INCREMENT', 'achievement');
                 this.props.execDispatch('NOTIFICATION_INCREMENT', 'quest');
             }
+            if(response.data.achievements)
+            {
+                this.props.execDispatch('UPDATE_USER_COMPLETED_ACHIEVEMENTS', response.data.achievements);
+            }
         });
     }
 

@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, {useEffect, useState} from "react";
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
@@ -9,12 +9,12 @@ import {
     View,
     SafeAreaView,
     TouchableOpacity,
-    TouchableWithoutFeedback, Platform, TextInput, Image, Keyboard, ScrollView
+    TouchableWithoutFeedback, Platform, TextInput, Image, Keyboard, ScrollView, Switch
 } from "react-native";
 import IconButton from "@src/components/IconButton";
 import {Swipeable, GestureHandlerRootView} from "react-native-gesture-handler";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import SortList from "../Components/SortList";
+import SortList from "./SortList";
 import { Modalize } from 'react-native-modalize';
 import {scale, verticalScale} from "../Utils/scale";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
@@ -24,8 +24,7 @@ import { BlurView } from "@react-native-community/blur";
 const EditRoutine = props => {
     const {navigation} = props;
     const dispatch = useDispatch();
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const backgroundImages = optionData.routine_image;
     const backgroundMusics = optionData.routine_bgm;
     const [ loading, setLoading ] = useState(false);
@@ -384,7 +383,7 @@ const EditRoutine = props => {
     }
     return (
         <SafeAreaView style={styles.Container}>
-            <ScrollView nestedScrollEnabled={true} style={styles.ScrollContainer} canCancelContentTouches={cancelContentTouches}
+           <ScrollView nestedScrollEnabled={true} style={styles.ScrollContainer} canCancelContentTouches={cancelContentTouches}
             >
             <View>
             <Text style={styles.title}>Routine Name</Text>
@@ -589,6 +588,7 @@ const EditRoutine = props => {
                         /></View>
                     }
                     sectionListProps = {{
+                        stickySectionHeadersEnabled:false,
                         sections:guides,
                         renderItem:renderGuides,
                         renderSectionHeader:renderSectionHeader,
@@ -706,7 +706,7 @@ const styles = StyleSheet.create({
         height:36,
         borderRadius: 4,
         marginHorizontal:5
-    }
+    },
 })
 EditRoutine.navigationOptions = ({ navigation }) => {
     const {params = {}} = navigation.state;

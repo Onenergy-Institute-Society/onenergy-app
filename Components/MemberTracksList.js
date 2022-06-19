@@ -19,9 +19,9 @@ import IconButton from "@src/components/IconButton";
 import TouchableScale from "./TouchableScale";
 
 const MemberTracksList = (props) => {
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
-    const routines = useSelector((state) => state.routinesReducer.data);
+    const {setMessageBarDisplay} = props;
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    const routines = useSelector((state) => state.routinesReducer.routines);
     const [selectedRoutine, setSelectedRoutine] = useState(null);
 
     // state vars
@@ -93,7 +93,9 @@ const MemberTracksList = (props) => {
                         <ImageBackground style={[styles.trackItemInner, styles.itemStyle]} source={{uri: item.image}}>
                             <View style={styles.trackDescBox}>
                                 <View style={styles.titleBox}>
-                                    <Text style={styles.title}>{item.title}</Text>
+                                    <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center", width:"100%"}}>
+                                        <Text style={styles.title}>{item.title}</Text>
+                                    </View>
                                     <View style={styles.detail}>
                                     {
                                         item.routine.map((item)=>{
@@ -107,7 +109,7 @@ const MemberTracksList = (props) => {
                         </ImageBackground>
                         </TouchableScale>
                         {showPlayer? (
-                            <AudioPlayerRoutine routine={selectedRoutine} />
+                            <AudioPlayerRoutine routine={selectedRoutine} setMessageBarDisplay={setMessageBarDisplay} />
                         ):null}
                     </View>
                 </Swipeable>

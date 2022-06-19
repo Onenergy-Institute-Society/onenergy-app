@@ -1,137 +1,136 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     StyleSheet,
     View,
-    SafeAreaView,
-    FlatList,
     Text
 } from "react-native";
 import {useSelector} from "react-redux";
 import {NavigationActions, withNavigation} from "react-navigation";
-import ImageCache from './ImageCache';
+import ScalableImage from "../Components/ScalableImage";
 import TouchableScale from './TouchableScale';
-import { windowWidth, windowHeight, scale, verticalScale } from '../Utils/scale';
+import { windowWidth, scale, verticalScale } from '../Utils/scale';
 import AwesomeAlert from "../Components/AwesomeAlert";
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import moment from 'moment';
 
 const EventList = props => {
-    const {navigation, location, eventsData} = props;
+    const {navigation, location, eventsDate} = props;
     const user = useSelector((state) => state.user.userObject);
     const [showAlert, setShowAlert] = useState(false);
     const [alertTitle, setAlertTitle] = useState('');
     const [alertBody, setAlertBody] = useState('');
     const current_time = new moment.utc();
     let displayGroup = [];
-    const renderItem = ({ item }) => {
-        let showDate = null;
-        let show = false;
-        if(item.location.includes(location)) {
-            switch (item.show) {
-                case 'date':
-                    let date2 = new moment.utc(item.showDate);
-                    if (current_time >= date2) {
-                        showDate = item.showDate;
-                        show = true
-                    }
-                    break;
-                case 'course':
-                    if (item.showCourseOption === 'enrolled') {
-                        let showCourse = user.enrolled_courses.find(course => course.id === parseInt(item.showCourse));
-                        if (showCourse) {
-                            showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
-                            if (current_time > showDate) {
-                                show = true;
-                            }
-                        }
-                    } else if (item.showCourseOption === 'completed') {
-                        let showCourse = user.completed_courses.find(course => course.id === parseInt(item.showCourse));
-                        if (showCourse) {
-                            showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
-                            if (current_time > showDate) {
-                                show = true;
-                            }
-                        }
-                    }
-                    break;
-                case 'lesson':
-                    let showLesson = user.completed_lessons.find(lesson => lesson.id === parseInt(item.showLesson));
-                    if (showLesson) {
-                        showDate = new moment.unix(showLesson['date']).add(item.delay, 'd');
-                        if (current_time > showDate) {
-                            show = true;
-                        }
-                    }
-                    break;
-                case 'achievement':
-                    let showAchievement = user.completed_achievements.find(achievement => achievement.id === parseInt(item.showAchievement));
-                    if (showAchievement) {
-                        showDate = new moment.unix(showAchievement['date']).add(item.delay, 'd');
-                        if (current_time > showDate) {
-                            show = true;
-                        }
-                    }
-                    break;
-                default:
-                    show = true;
-                    break;
-            }
-            if (show) {
-                switch (item.hide) {
+    const renderItem = () => {
+        return eventsDate.map((item) => {
+            let showDate = null;
+            let show = false;
+            if(item.location.includes(location)) {
+                switch (item.show) {
                     case 'date':
-                        switch (item.hideDateOption.hideDateType) {
-                            case 'fix':
-                                let date2 = new moment.utc(item.hideDateOption.date);
-                                if (current_time >= date2) {
-                                    show = false
-                                }
-                                break;
-                            case 'days':
-                                let diffDays = current_time.diff(showDate, 'days');
-                                if (diffDays >= parseInt(item.hideDateOption.days)) {
-                                    show = false
-                                }
-                                break;
+                        let date2 = new moment.utc(item.showDate);
+                        if (current_time >= date2) {
+                            showDate = item.showDate;
+                            show = true
                         }
                         break;
                     case 'course':
-                        if (item.hideCourseOption === 'enrolled') {
-                            if (user.enrolled_courses.find(course => course.id === parseInt(item.hideCourse))) {
-                                show = false;
+                        if (item.showCourseOption === 'enrolled') {
+                            let showCourse = user.enrolled_courses.find(course => course.id === parseInt(item.showCourse));
+                            if (showCourse) {
+                                showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
+                                if (current_time > showDate) {
+                                    show = true;
+                                }
                             }
-                        } else if (item.hideCourseOption === 'completed') {
-                            if (user.completed_courses.find(course => course.id === parseInt(item.hideCourse))) {
-                                show = false;
+                        } else if (item.showCourseOption === 'completed') {
+                            let showCourse = user.completed_courses.find(course => course.id === parseInt(item.showCourse));
+                            if (showCourse) {
+                                showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
+                                if (current_time > showDate) {
+                                    show = true;
+                                }
                             }
                         }
                         break;
                     case 'lesson':
-                        if (user.completed_lessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
-                            show = false;
+                        let showLesson = user.completed_lessons.find(lesson => lesson.id === parseInt(item.showLesson));
+                        if (showLesson) {
+                            showDate = new moment.unix(showLesson['date']).add(item.delay, 'd');
+                            if (current_time > showDate) {
+                                show = true;
+                            }
                         }
                         break;
                     case 'achievement':
-                        if (user.completed_achievements.find(achievement => achievement.id === parseInt(item.hideAchievement))) {
-                            show = false;
+                        let showAchievement = user.completed_achievements.find(achievement => achievement.id === parseInt(item.showAchievement));
+                        if (showAchievement) {
+                            showDate = new moment.unix(showAchievement['date']).add(item.delay, 'd');
+                            if (current_time > showDate) {
+                                show = true;
+                            }
                         }
                         break;
                     default:
                         show = true;
                         break;
                 }
-            }
-            if(show)
-                if(item.group) {
-                    if (displayGroup.includes(item.group)) {
-                        show = false;
-                    } else {
-                        displayGroup = [...displayGroup, item.group];
+                if (show) {
+                    switch (item.hide) {
+                        case 'date':
+                            switch (item.hideDateOption.hideDateType) {
+                                case 'fix':
+                                    let date2 = new moment.utc(item.hideDateOption.date);
+                                    if (current_time >= date2) {
+                                        show = false
+                                    }
+                                    break;
+                                case 'days':
+                                    let diffDays = current_time.diff(showDate, 'days');
+                                    if (diffDays >= parseInt(item.hideDateOption.days)) {
+                                        show = false
+                                    }
+                                    break;
+                            }
+                            break;
+                        case 'course':
+                            if (item.hideCourseOption === 'enrolled') {
+                                if (user.enrolled_courses.find(course => course.id === parseInt(item.hideCourse))) {
+                                    show = false;
+                                }
+                            } else if (item.hideCourseOption === 'completed') {
+                                if (user.completed_courses.find(course => course.id === parseInt(item.hideCourse))) {
+                                    show = false;
+                                }
+                            }
+                            break;
+                        case 'lesson':
+                            if (user.completed_lessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
+                                show = false;
+                            }
+                            break;
+                        case 'achievement':
+                            if (user.completed_achievements.find(achievement => achievement.id === parseInt(item.hideAchievement))) {
+                                show = false;
+                            }
+                            break;
+                        default:
+                            show = true;
+                            break;
                     }
                 }
-        }
-        return (
-            show?
+                if(show)
+                    if(item.group) {
+                        if (displayGroup.includes(item.group)) {
+                            show = false;
+                        } else {
+                            displayGroup = [...displayGroup, item.group];
+                        }
+                    }
+            }
+            return (
+                show?
                 <TouchableScale
                     onPress={async () => {
                         try {
@@ -196,21 +195,27 @@ const EventList = props => {
                     }
                     }>
                     <View style={[styles.containerStyle, styles.boxShadow]}>
-                        <ImageCache style={styles.image}
-                                    source={{uri: item.image ? item.image : ''}}/>
+                        <ScalableImage
+                            width={windowWidth - scale(30)}
+                            style={styles.image}
+                            source={{uri: item.image ? item.image : ''}}/>
                     </View>
                 </TouchableScale>
-            :null
-        );
+                    :null
+            );
+        })
     }
     return (
         <View style={styles.container}>
+            {eventsDate?renderItem():null}
+{/*
              <FlatList
                 data={eventsData}
                 renderItem={renderItem}
                 showsVerticalScrollIndicator={false}
-                keyExtractor={(item, index) => item.key}
+                keyExtractor={(item, index) => item.index}
             />
+*/}
             <AwesomeAlert
                 show={showAlert}
                 showProgress={false}
@@ -242,7 +247,6 @@ const styles = StyleSheet.create({
         marginVertical: verticalScale(10),
         marginHorizontal: scale(15),
         width: windowWidth - scale(30),
-        height:(windowWidth-scale(30))/16*9,
     },
     rowStyle: {
         overflow: 'hidden',
@@ -250,8 +254,6 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     image: {
-        width:windowWidth-scale(30),
-        height:(windowWidth-scale(30))/16*9,
         borderRadius: 9,
         overflow: 'hidden',
     },

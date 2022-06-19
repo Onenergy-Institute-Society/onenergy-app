@@ -8,8 +8,7 @@ import AwesomeAlert from "../Components/AwesomeAlert";
 
 const LessonButton = (props) => {
     const { global, colors, lesson } = props;
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
     const [completing, setCompleting] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
@@ -20,7 +19,26 @@ const LessonButton = (props) => {
     const [alertConfirmText, setAlertConfirmText] = useState('');
     const [alertShowConfirm, setAlertShowConfirm] = useState(false);
     const dispatch = useDispatch();
-
+    const getUserPoints = async () => {
+        const apiRequest = getApi(props.config);
+        await apiRequest.customRequest(
+            "wp-json/onenergy/v1/points",
+            "get",
+            {},
+            null,
+            {},
+            false
+        ).then(response => {
+            dispatch({
+                type:"UPDATE_POINTS",
+                payload:response.data
+            });
+            dispatch({
+                type:"UPDATE_USER_POINTS",
+                payload:response.data
+            });
+        })
+    }
     const completeLesson = async () => {
         try {
             const apiRequest = getApi(props.config);
@@ -50,13 +68,18 @@ const LessonButton = (props) => {
                         type: 'UPDATE_USER_COMPLETED_LESSONS',
                         payload: {"id": lesson.id, "date": new Date().getTime() / 1000}
                     });
+                    dispatch({
+                        type: 'ONENERGY_GUIDE_EMPTY'
+                    });
                     if(response.data.next_lesson===0){
                         dispatch({
                             type: 'UPDATE_USER_COMPLETED_COURSES',
                             payload: {"id": lesson.parent.id, "date": new Date().getTime() / 1000}
                         });
                     }
-                    if(!lesson.settings.no_video) {
+                    if(lesson.settings.no_video||optionData.testing_mode) {
+                        props.navigation.goBack();
+                    }else{
                         let index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_title');
                         setAlertTitle(optionData.titles[index].title);
                         index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_body');
@@ -67,8 +90,6 @@ const LessonButton = (props) => {
                         setAlertConfirmText(optionData.titles[index].title);
                         setAlertShowConfirm(true);
                         setShowAlert(true);
-                    }else{
-                        props.navigation.goBack();
                     }
                 }else{
                     dispatch({
@@ -76,7 +97,6 @@ const LessonButton = (props) => {
                         payload: {"id": lesson.id, "date": new Date().getTime() / 1000}
                     });
                     if(response.data.next_lesson===0){
-                        console.log(response.data);
                         dispatch({
                             type: 'UPDATE_USER_COMPLETED_COURSES',
                             payload: {"id": lesson.parent.id, "date": new Date().getTime() / 1000}
@@ -85,7 +105,16 @@ const LessonButton = (props) => {
                             dispatch({ type: "COMPLETE_FIRST_COURSE" });
                         }
                     }
-                    if(!lesson.settings.no_video||!lesson.settings.no_popup) {
+                    if(lesson.settings.no_video||lesson.settings.no_popup||optionData.testing_mode) {
+                        switch(lesson.settings.back_to){
+                            case "top":
+                                props.navigation.dispatch(StackActions.popToTop());
+                                break;
+                            case "parent":
+                                props.navigation.goBack();
+                                break
+                        }
+                    }else{
                         let index = optionData.titles.findIndex(el => el.id === 'alert_course_completed_title');
                         setAlertTitle(optionData.titles[index].title);
                         index = optionData.titles.findIndex(el => el.id === 'alert_course_completed_body');
@@ -96,17 +125,9 @@ const LessonButton = (props) => {
                         setAlertConfirmText(optionData.titles[index].title);
                         setAlertShowConfirm(true);
                         setShowAlert(true);
-                    }else{
-                        switch(lesson.settings.back_to){
-                            case "top":
-                                props.navigation.dispatch(StackActions.popToTop());
-                                break;
-                            case "parent":
-                                props.navigation.goBack();
-                                break
-                        }
                     }
                 }
+                getUserPoints();
             });
         } catch (e) {
             console.error(e);
@@ -123,7 +144,7 @@ const LessonButton = (props) => {
                 return;
         }
     }
-
+console.log(videoComplete, lesson.settings.no_video, optionData.testing_mode)
     return (
         <View style={[global.row, {paddingHorizontal: 20, paddingVertical: 15}]}>
             {lesson.completed?
@@ -149,7 +170,7 @@ const LessonButton = (props) => {
                     </View>
                 </View>
             :
-                videoComplete || lesson.settings.no_video==="1"?
+                videoComplete || lesson.settings.no_video || optionData.testing_mode?
                     <TouchableOpacity
                         style={[
                             global.completeLessonButtonW,
@@ -168,7 +189,7 @@ const LessonButton = (props) => {
                                     Mark Complete
                                 </Text>
                                 {completing?
-                                    <ActivityIndicator style={{marginLeft:10}} color={"#FFF"} size={"large"} />
+                                    <ActivityIndicator style={{marginLeft:10}} color={"#FFF"} size={"small"} />
                                     :null}
                             </View>
                         </View>

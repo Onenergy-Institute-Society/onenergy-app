@@ -120,7 +120,8 @@ const PostList = props => {
                                 params: {
                                     blogId: item.id,
                                     title: item.title.rendered
-                                }
+                                },
+                                key: 'MyBlogScreen-' + item.id
                             })
                         );
                     } catch (err) {

@@ -12,7 +12,7 @@ import {scale} from "../Utils/scale";
 const MilestonesCompleted = () => {
     try {
         return (
-            <Milestones completed="true" />
+            <Milestones completed={true} />
         )
     } catch (err) {
         console.log(`${err}`);
@@ -21,15 +21,14 @@ const MilestonesCompleted = () => {
 const MilestonesUncompleted = () => {
     try {
         return (
-            <Milestones completed="false" />
+            <Milestones completed={false} />
         )
     } catch (err) {
         console.log(`${err}`);
     }
 }
 const TabTitle = ({tintColor, name}) => {
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     let titleIndex = optionData.titles.findIndex(el => el.id === name);
     return (
         <Text style={{ color: tintColor }}>{optionData.titles[titleIndex].title}</Text>
@@ -61,14 +60,14 @@ const Tabs = createMaterialTopTabNavigator(
         },
     },
     {
-        initialRouteName: 'Uncompleted',
+        initialRouteName: 'Completed',
         swipeEnabled: true,
         lazy: true,
         optimizationsEnabled: true,
         tabBarOptions: {
             style: {
                 height: 45,
-                backgroundColor: '#f9f9f9',
+                backgroundColor: '#fff',
                 marginTop: 0
             },
             indicatorStyle: {
@@ -88,7 +87,7 @@ const MyMilestonesScreen = createStackNavigator({
     }
 });
 MyMilestonesScreen.navigationOptions = ({navigation}) => ({
-    title: 'My Achievements',
+    title: 'My Milestones',
     headerTitleStyle: {textAlign:'left'},
     headerLeft:
         <TouchableOpacity

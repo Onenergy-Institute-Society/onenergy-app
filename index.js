@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {Image, Platform, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native";
 import {NavigationActions} from "react-navigation";
+import {useSelector,useDispatch} from "react-redux";
 import moment from 'moment';
 import Share from "react-native-share";
 import IconButton from "@src/components/IconButton";
@@ -25,11 +26,13 @@ import MyQuestsScreen from './Screens/MyQuestsScreen';
 import MyMilestonesScreen from './Screens/MyMilestonesScreen';
 import MyProgressScreen from './Screens/MyProgressScreen';
 import MyVouchersScreen from './Screens/MyVouchersScreen';
+import MyStatsScreen from './Screens/MyStatsScreen';
+import MyMembership from './Screens/MyMembership';
 import {scale, verticalScale} from './Utils/scale';
 import ImageCache from "./Components/ImageCache";
 import {windowWidth} from "./Utils/Dimensions";
 import ProgramsScreen from "./Screens/ProgramsScreen";
-import EditRoutine from "./Screens/EditRoutine";
+import EditRoutine from "./Components/EditRoutine";
 import MyFeedbackScreen from "./Screens/MyFeedbackScreen";
 import NotificationTabBarIcon from "./Components/NotificationTabBarIcon";
 import TrackPlayer from 'react-native-track-player';
@@ -42,6 +45,7 @@ import {FontWeights} from "@src/styles/global";
 import TextBlock from "./Components/TextBlock";
 import ImageBlock from "./Components/ImageBlock";
 import BgVideoBlock from "./Components/BgVideoBlock";
+import RelatedPostsRow from "./Components/RelatedPostsRow";
 
 export const applyCustomCode = externalCodeSetup => {
     externalCodeSetup.navigationApi.addNavigationRoute(
@@ -56,7 +60,6 @@ export const applyCustomCode = externalCodeSetup => {
         BlogsScreen,
         "Main" // "Auth" | "noAuth" | "Main" | "All"
     );
-
     externalCodeSetup.navigationApi.addNavigationRoute(
         "programs",
         "Programs",
@@ -79,6 +82,12 @@ export const applyCustomCode = externalCodeSetup => {
         "PracticesScreen",
         "PracticesScreen",
         PracticesScreen,
+        "All" // "Auth" | "noAuth" | "Main" | "All"
+    );
+    externalCodeSetup.navigationApi.addNavigationRoute(
+        "BlogsScreen",
+        "BlogsScreen",
+        BlogsScreen,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
@@ -118,8 +127,8 @@ export const applyCustomCode = externalCodeSetup => {
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "quotes",
-        "OnenergyQuotes",
+        "QuotesScreen",
+        "QuotesScreen",
         QuotesScreen,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
@@ -190,9 +199,21 @@ export const applyCustomCode = externalCodeSetup => {
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
+        "MyMembership",
+        "MyMembership",
+        MyMembership,
+        "All" // "Auth" | "noAuth" | "Main" | "All"
+    );
+    externalCodeSetup.navigationApi.addNavigationRoute(
         "MyFeedbackScreen",
         "MyFeedbackScreen",
         MyFeedbackScreen,
+        "All" // "Auth" | "noAuth" | "Main" | "All"
+    );
+    externalCodeSetup.navigationApi.addNavigationRoute(
+        "MyStatsScreen",
+        "MyStatsScreen",
+        MyStatsScreen,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.blocksApi.addCustomBlockRender(
@@ -227,6 +248,7 @@ export const applyCustomCode = externalCodeSetup => {
 
     //Program screen course list
     const NewWidgetItemCourseComponent = (props) => {
+        const user = useSelector((state) => state.user.userObject);
         const {viewModel, colors} = props;
         let featuredUrl = viewModel.featuredUrl.replace('-300x200', '-1024x683');
         let statusText;
@@ -281,10 +303,10 @@ export const applyCustomCode = externalCodeSetup => {
                 }
             }
         }else{
-            if (viewModel.price && viewModel.price.required_points && (viewModel.price.required_points > viewModel.price.user_points)) {
+            if (viewModel.price && viewModel.price.required_points && (viewModel.price.required_points > user.points.point)) {
                 statusBarColor = colors.coursesLabelNotEnrolled;
                 statusText = viewModel.price.required_points + " Qi Required";
-                lessonNote = 'Practice to gather more Qi';
+                lessonNote = 'Practice to gather more Qi to unlock';
             } else {
                 statusBarColor = colors.coursesLabelStart;
                 statusText = "Start Course";
@@ -553,20 +575,26 @@ export const applyCustomCode = externalCodeSetup => {
     // Add routine reducer
     externalCodeSetup.reduxApi.addReducer(
         "routinesReducer",
-        (state = {data: {}}, action) => {
+        (state = {routines:[], guides:[], groups:[]}, action) => {
             switch (action.type){
                 case "ONENERGY_ROUTINE_UPDATE":
-                    return {...state, data: action.payload};
+                    return {...state, routines: action.payload};
                 case "ONENERGY_ROUTINE_SAVE":
                     let routine = action.payload;
-                    let tempState = [...state.data];
+                    let tempState = [...state.routines];
                     let index = tempState.findIndex(el => el.id === routine.id);
                     if(index !== -1){
                         tempState[index] = routine;
-                        return {...state, data: tempState};
+                        return {...state, routines: tempState};
                     }else{
-                        return {...state, data: [...state.data, routine]};
+                        return {...state, routines: [...state.routines, routine]};
                     }
+                case "ONENERGY_GUIDE_UPDATE":
+                    return {...state, guides: action.payload};
+                case "ONENERGY_GROUP_UPDATE":
+                    return {...state, groups: action.payload};
+                case "ONENERGY_GUIDE_EMPTY":
+                    return {...state, guides: []};
                 default:
                     return state;
             }
@@ -612,7 +640,7 @@ export const applyCustomCode = externalCodeSetup => {
 
     // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
-        let whiteList = [...props.whitelist, "languagesReducer", "notifyReducer"];
+        let whiteList = [...props.whitelist, "languagesReducer", "notifyReducer", "routinesReducer"];
         let index = whiteList.indexOf('blog');
         if (index !== -1) {
             whiteList.splice(index, 1);
@@ -645,11 +673,13 @@ export const applyCustomCode = externalCodeSetup => {
         continueCourse,
         priceComponentRender) => {
 
+        const user = useSelector((state) => state.user.userObject);
         const lesson_time = new moment.utc(courseVM.date);
         const current_time = new moment.utc();
         const diffMinutes = lesson_time.diff(current_time, 'minutes');
         const diffHours = lesson_time.diff(current_time, 'hours');
         const diffDays = lesson_time.diff(current_time, 'days');
+        const dispatch = useDispatch();
 
         let diffTime = '';
         if(diffMinutes < 60){
@@ -731,7 +761,7 @@ export const applyCustomCode = externalCodeSetup => {
                 </View>
             ]
         }else{
-            if(courseVM.price.required_points > 0 && courseVM.price.user_points < courseVM.price.required_points && courseVM.error.message){
+            if(courseVM.price.required_points > 0 && user.points.point < courseVM.price.required_points && courseVM.error.message){
                 const Info =
                     <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
                         <Text style={{color:"red", fontSize:scale(14)}}>{courseVM.error.message}</Text>
@@ -765,7 +795,14 @@ export const applyCustomCode = externalCodeSetup => {
                         justifyContent: "space-between",
                     }}>
                         <CourseActionButton
-                            onPress={()=>{startCourse();setButtonEnroll('Enrolling, please wait...')}}
+                            onPress={()=>{
+                                startCourse();
+                                setButtonEnroll('Enrolling, please wait...');
+                                dispatch({
+                                    type: 'UPDATE_USER_ENROLLED_COURSES',
+                                    payload: {"id": courseVM.id, "date": new Date().getTime() / 1000}
+                                });
+                            }}
                             title={buttonEnroll}
                         />
                     </View>
@@ -1016,7 +1053,6 @@ export const applyCustomCode = externalCodeSetup => {
                 }
                 return reducer(newUserState, action);
             case 'UPDATE_USER_COMPLETED_LESSONS':
-                console.log(state.userObject.completed_lessons, action.payload)
                 const newUserLesson = {
                     ...state,
                     userObject:{
@@ -1024,8 +1060,16 @@ export const applyCustomCode = externalCodeSetup => {
                         completed_lessons: [...state.userObject.completed_lessons, action.payload]
                     }
                 }
-                console.log(newUserLesson);
                 return reducer(newUserLesson, action);
+            case 'UPDATE_USER_ENROLLED_COURSES':
+                const newUserEnrolledCourse = {
+                    ...state,
+                    userObject:{
+                        ...state.userObject,
+                        enrolled_courses: [...state.userObject.enrolled_courses, action.payload]
+                    }
+                }
+                return reducer(newUserEnrolledCourse, action);
             case 'UPDATE_USER_COMPLETED_COURSES':
                 const newUserCourse = {
                     ...state,
@@ -1035,6 +1079,15 @@ export const applyCustomCode = externalCodeSetup => {
                     }
                 }
                 return reducer(newUserCourse, action);
+            case 'UPDATE_USER_COMPLETED_ACHIEVEMENTS':
+                const newUserAchievement = {
+                    ...state,
+                    userObject:{
+                        ...state.userObject,
+                        completed_achievements: action.payload
+                    }
+                }
+                return reducer(newUserAchievement, action);
             default:
                 return reducer(state, action);
         }
@@ -1064,10 +1117,19 @@ export const applyCustomCode = externalCodeSetup => {
                 label: "Achievement", //Set label of menu
                 onPress: () => navigation.navigate(
                     NavigationActions.navigate({
-                        routeName: "MilestonesScreen",
+                        routeName: "MyMilestonesScreen",
                     })
                 )
-            }
+            },
+            {
+                icon: require("@src/assets/img/privacy_group.png"), //Set icon
+                label: "Membership", //Set label of menu
+                onPress: () => navigation.navigate(
+                    NavigationActions.navigate({
+                        routeName: "MyMembership",
+                    })
+                )
+            },
         ]
     })
     externalCodeSetup.reduxApi.wrapReducer(
@@ -1077,6 +1139,68 @@ export const applyCustomCode = externalCodeSetup => {
     externalCodeSetup.indexJsApi.addIndexJsFunction(() => {
         TrackPlayer.registerPlaybackService(() => require('./Components/TrackPlayerService'));
     })
+    externalCodeSetup.blogSingleApi.setAfterBlogSingleBody((props) => {
+        const {blog} = props;
+        if(blog.meta_box.related_posts&&blog.meta_box.related_posts.length) {
+            return(
+                <RelatedPostsRow posts={blog.meta_box.related_posts} />
+            )
+        }else{
+            return null;
+        }
+    })
+    externalCodeSetup.deeplinksApi.setDeeplinksWithoutEmbeddedReturnValueFilter((defaultValue, linkObject, navigationService) => {
+
+        console.log(linkObject, defaultValue);
+        if (linkObject.action === "open_screen") {
+            switch(linkObject.item_id)
+            {
+                case 'programs':
+                    navigationService.navigate({
+                        routeName: "ProgramsScreen",
+                    })
+                    return true;
+                    break;
+                case 'practices':
+                    navigationService.navigate({
+                        routeName: "PracticesScreen",
+                    })
+                    return true;
+                    break;
+                case 'wisdom':
+                    navigationService.navigate({
+                        routeName: "BlogsScreen",
+                    })
+                    return true;
+                    break;
+                case 'QuotesScreen':
+                    navigationService.navigate({
+                        routeName: "QuotesScreen",
+                    })
+                    return true;
+                    break;
+            }
+        }
+/*        if(linkObject.action === "inapp") {
+            if(linkObject.url.includes('QuotesScreen')) {
+                navigationService.navigate({
+                    routeName: "QuotesScreen",
+                })
+                return true;
+            }
+        }*/
+        return defaultValue;
+    });
+    const AfterDetailsComponent = ({ user }) => {
+        const userInfo = useSelector((state) => state.user.userObject);
+        return (
+            userInfo.membership&&userInfo.membership.length>0?
+            <Text> {userInfo.membership[0].plan.name} </Text>
+                :null
+        )
+    }
+    externalCodeSetup.profileScreenHooksApi.setAfterDetailsComponent(AfterDetailsComponent);
+    externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "videoPlayer", "vimeoPlayer"])
 };
 
 

@@ -28,13 +28,13 @@ const HomeContent = (props) => {
     const {navigation, screenProps} = props;
     const {global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [ loading, setLoading ] = useState(false);
     const [quotesData, setQuotesData] = useState([]);
     const [quotesLoading, setQuotesLoading] = useState(true);
     TrackPlayer.updateOptions({
         stopWithApp: !(user&&user.membership&&user.membership.length), // false=> music continues in background even when app is closed
+        alwaysPauseOnInterruption: true,
         // Media controls capabilities
         capabilities: [
             Capability.Play,
@@ -177,8 +177,8 @@ const HomeContent = (props) => {
                 )}
                 {user?
                     <View style={styles.programRow}>
-                        <EventList location={'home'} eventsData={optionData.webinars} />
-                        <EventList location={'home'} eventsData={optionData.goals} />
+                        <EventList location={'home'} eventsDate={optionData.webinars} />
+                        <EventList location={'home'} eventsDate={optionData.goals} />
                     </View>
                 :null}
                 {user && user.firstCourseCompleted && optionData.show.includes('events') && (
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        height: (windowWidth-30)/3.75,
+        height: (windowWidth-30)/3.25,
     },
     eventRow: {
         alignItems: 'center',

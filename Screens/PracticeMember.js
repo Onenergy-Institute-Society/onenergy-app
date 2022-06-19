@@ -7,7 +7,8 @@ import {
     Text,
     Platform,
     ScrollView,
-    ActivityIndicator
+    ActivityIndicator,
+    Animated
 } from "react-native";
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
@@ -20,22 +21,27 @@ import {NavigationActions, withNavigation} from "react-navigation";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale, verticalScale} from "../Utils/scale";
 import TrackPlayer from 'react-native-track-player';
-import * as Progress from 'react-native-progress';
 import EventList from "../Components/EventList";
 
 const PracticeMember = props => {
     const { navigation } = props;
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.userObject);
-
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const helpPageIndex = optionData.helps.findIndex(el => el.name === 'practice_guided_empty');
     const helpPageData = {title:optionData.helps[helpPageIndex].title?optionData.helps[helpPageIndex].title:'',id:optionData.helps[helpPageIndex].id};
     const emptyIndex = optionData.helps.findIndex(el => el.name === 'practice_customize_empty_member');
     const emptyData = {title:optionData.helps[emptyIndex].title?optionData.helps[emptyIndex].title:'',id:optionData.helps[emptyIndex].id};
     const [routinesLoading, setRoutinesLoading] = useState(true);
     const [helpModal, setHelpModal] = useState({title:'',id:0});
+    const [messageBarDisplay, setMessageBarDisplay] = useState(false);
+    const [fadeAnim] = useState(new Animated.Value(0));
+    React.useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 500,
+        }).start();
+    }, []);
     const fetchTracks = async () => {
         try {
             const apiSlide = getApi(props.config);
@@ -47,6 +53,7 @@ const PracticeMember = props => {
                 {},
                 false
             ).then(response => {
+
                 dispatch({
                     type: "ONENERGY_ROUTINE_UPDATE",
                     payload: response.data
@@ -77,9 +84,9 @@ const PracticeMember = props => {
     const toggleHelpModal = () => {
         this.cpHelpModal.open();
     }
-    const onAddPressed = () => {
-        TrackPlayer.stop();
-        TrackPlayer.reset();
+    const onAddPressed = async () => {
+        await TrackPlayer.stop();
+        await TrackPlayer.reset();
 
         navigation.dispatch(
             NavigationActions.navigate({
@@ -90,9 +97,9 @@ const PracticeMember = props => {
             })
         );
     }
-    const onEditRoutinePress = (item, index) =>{
-        TrackPlayer.stop();
-        TrackPlayer.reset();
+    const onEditRoutinePress = async (item, index) =>{
+        await TrackPlayer.stop();
+        await TrackPlayer.reset();
 
         navigation.dispatch(
             NavigationActions.navigate({
@@ -105,8 +112,9 @@ const PracticeMember = props => {
         );
     }
     const onRemoveRoutine = async (item) => {
-        TrackPlayer.stop();
-        TrackPlayer.reset();
+        await TrackPlayer.stop();
+        await TrackPlayer.reset();
+
 
         let array = [...props.routines]; // make a separate copy of the array
         let index = array.indexOf(item);
@@ -127,7 +135,11 @@ const PracticeMember = props => {
         removeRoutine(item).then();
     }
     useEffect(() => {
-        fetchTracks().then();
+        if(!props.routines||!props.routines.length) {
+            fetchTracks().then();
+        }else{
+            setRoutinesLoading(false);
+        }
         let helpIndex;
         if(user&&user.membership.length > 0) {
             helpIndex = optionData.helps.findIndex(el => el.name === 'practice_customize_popup_member');
@@ -142,6 +154,14 @@ const PracticeMember = props => {
             onAddPressed: onAddPressed,
         });
     },[]);
+    useEffect(()=>{
+        if(messageBarDisplay)
+        {
+            setTimeout(function () {
+                setMessageBarDisplay(false);
+            }, 3000)
+        }
+    },[messageBarDisplay])
     return (
         <SafeAreaView style={styles.container}>
             {user.hasGuide>0?
@@ -152,12 +172,12 @@ const PracticeMember = props => {
                         <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                             {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
                                 <View style={{marginVertical: verticalScale(5)}}>
-                                    <EventList location={'practice_member'} eventsData={optionData.goals}/>
-                                    <EventList location={'practice_member'} eventsData={optionData.challenges}/>
+                                    <EventList location={'practice_member'} eventsDate={optionData.goals}/>
+                                    <EventList location={'practice_member'} eventsDate={optionData.challenges}/>
                                 </View>
                                 : null
                             }
-                            <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine}/>
+                            <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine} setMessageBarDisplay={setMessageBarDisplay} />
                         </ScrollView>
                     :
                     <View style={{
@@ -242,6 +262,9 @@ const PracticeMember = props => {
                                  {...props} />
                 </View>
             </Modalize>
+            {messageBarDisplay?
+                <Animated.View style={[styles.messageBar, {opacity: fadeAnim}]}><Text style={styles.messageText}>Great! You just gather more qi. Keep it up!</Text></Animated.View>
+                :null}
         </SafeAreaView>
     );
 };
@@ -254,6 +277,19 @@ const styles = StyleSheet.create({
     },
     scroll_view: {
         flexGrow: 1,
+    },
+    messageText:{
+        fontSize:scale(14),
+        color: "white",
+    },
+    messageBar:{
+        position: "absolute",
+        top:10,
+        backgroundColor:"#737373",
+        borderColor:"#404040",
+        borderRadius:9,
+        paddingVertical:scale(5),
+        paddingHorizontal:scale(10),
     }
 });
 PracticeMember.navigationOptions = ({ navigation }) => {
@@ -263,9 +299,9 @@ PracticeMember.navigationOptions = ({ navigation }) => {
         headerTitleStyle: {textAlign:'left'},
         headerLeft:
             <TouchableOpacity
-                onPress={() => {
-                    TrackPlayer.stop();
-                    TrackPlayer.reset();
+                onPress={async () => {
+                    await TrackPlayer.stop();
+                    await TrackPlayer.reset();
                     navigation.goBack()
                 }}
             >
@@ -293,6 +329,6 @@ PracticeMember.navigationOptions = ({ navigation }) => {
 const mapStateToProps = (state) => ({
     config: state.config,
     accessToken: state.auth.token,
-    routines: state.routinesReducer.data
+    routines: state.routinesReducer.routines
 });
 export default connect(mapStateToProps)(withNavigation(PracticeMember));

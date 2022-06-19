@@ -8,13 +8,12 @@ import {withNavigation, NavigationActions} from "react-navigation";
 import {windowWidth} from "../Utils/Dimensions";
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
+import ScalableImage from "./ScalableImage";
 
 const ImageBlock =(props) => {
     const {block, navigation} = props;
 
     const user = useSelector((state) => state.user.userObject);
-    let width;
-    let height;
     const permission = block.data.data.permission?block.data.data.permission:'';
     let showBlock = false;
     switch(permission){
@@ -38,17 +37,6 @@ const ImageBlock =(props) => {
             }
             break;
     }
-    switch(block.data.data.size) {
-        case "fixed":
-            width = parseInt(block.data.data.width);
-            height = parseInt(block.data.data.height);
-            break;
-        case "full":
-            width = windowWidth-scale(30);
-            height = (windowWidth-scale(30))/parseInt(block.data.data.width)*parseInt(block.data.data.height);
-            break
-    }
-
     const OnPress = async () => {
         if(block.data.data.link)
         {
@@ -107,10 +95,21 @@ const ImageBlock =(props) => {
                 onPress={OnPress}
             >
                 <View style={[styles.container,block.data.data.shadow?styles.boxShadow:null]}>
-                    <Image source={{uri:block.data.data.image}} resizeMode={block.data.data.resize} style={[styles.image,{
-                        width:width,
-                        height:height,
-                    }]} />
+                    {block.data.data.size === 'fixed'&&block.data.data.width&&block.data.data.height ?
+                        <Image
+                            source={{uri: block.data.data.image}}
+                            resizeMode={block.data.data.resize}
+                            style={[styles.image, {
+                               width: parseInt(block.data.data.width),
+                               height: parseInt(block.data.data.height),
+                            }]}/>
+                        :
+                        <ScalableImage
+                            width={windowWidth-scale(30)}
+                            source={{uri: block.data.data.image}}
+                            resizeMode={block.data.data.resize}
+                            style={styles.image}/>
+                    }
                 </View>
             </TouchableWithoutFeedback>
         :null

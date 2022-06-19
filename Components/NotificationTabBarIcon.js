@@ -23,8 +23,7 @@ const NotificationTabBarIcon = props => {
             notificationCountRead = notification['posts_read']?notification['posts_read'].length:0;
             notificationCountWatch = notification['posts_watch']?notification['posts_watch'].length:0;
             if(notificationCountRead===0&&notificationCountWatch===0){
-                const language = useSelector((state) => state.languagesReducer.languages);
-                const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+                const optionData = useSelector((state) => state.settings.settings.onenergy_option);
                 if(notification.time){
                     const dateTime= new Date(notification.time);
                     const datePostRead = new Date(optionData.latest_post_read);
@@ -40,8 +39,7 @@ const NotificationTabBarIcon = props => {
         case 'blog_watch':
             notificationCount = notification['posts_watch']?notification['posts_watch'].length:0;
             if(notificationCount===0){
-                const language = useSelector((state) => state.languagesReducer.languages);
-                const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+                const optionData = useSelector((state) => state.settings.settings.onenergy_option);
                 if(notification.time){
                     const dateTime= new Date(notification.time);
                     const datePostWatch = new Date(optionData.latest_post_watch);
@@ -54,8 +52,7 @@ const NotificationTabBarIcon = props => {
         case 'blog_read':
             notificationCount = notification['posts_read']?notification['posts_read'].length:0;
             if(notificationCount===0){
-                const language = useSelector((state) => state.languagesReducer.languages);
-                const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+                const optionData = useSelector((state) => state.settings.settings.onenergy_option);
                 if(notification.time){
                     const dateTime= new Date(notification.time);
                     const datePostRead = new Date(optionData.latest_post_read);

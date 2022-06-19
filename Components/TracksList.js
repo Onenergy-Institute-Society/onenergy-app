@@ -15,12 +15,12 @@ import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-trac
 import {scale, verticalScale} from '../Utils/scale';
 import AudioPlayer from './AudioPlayer';
 import {windowWidth} from "../Utils/Dimensions";
-
 const TracksList = (props) => {
-    const {tracks} = props;
+    const {tracks, setMessageBarDisplay} = props;
     const user = useSelector((state) => state.user.userObject);
     const [selectedTrack, setSelectedTrack] = useState(null);
     const dispatch = useDispatch();
+
     const onTrackItemPress = async (track) => {
         if(!selectedTrack || track.id !== selectedTrack.id) {
             setSelectedTrack(track);
@@ -59,15 +59,23 @@ const TracksList = (props) => {
                         type: 'NOTIFICATION_INCREMENT',
                         payload: 'quest'
                     });
+                    dispatch({
+                        type: 'NOTIFICATION_INCREMENT',
+                        payload: 'progress'
+                    });
+                    dispatch({
+                        type: 'NOTIFICATION_INCREMENT',
+                        payload: 'achievement'
+                    });
                 }
-                dispatch({
-                    type: 'NOTIFICATION_INCREMENT',
-                    payload: 'progress'
-                });
-                dispatch({
-                    type: 'NOTIFICATION_INCREMENT',
-                    payload: 'achievement'
-                });
+                if(response.data.achievements)
+                {
+                    dispatch({
+                        type: 'UPDATE_USER_COMPLETED_ACHIEVEMENTS',
+                        payload:response.data.achievements
+                    });
+                }
+                setMessageBarDisplay(true);
             });
         } catch (e) {
             console.error(e);

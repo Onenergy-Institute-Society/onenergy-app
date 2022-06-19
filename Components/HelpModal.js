@@ -8,8 +8,7 @@ import IconButton from "@src/components/IconButton";
 import MyAppPageScreen from "../Screens/MyAppPageScreen";
 const HelpModal = React.forwardRef((props, ref) => {
     const {pageName} = props;
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const helpIndex = optionData.helps.findIndex(el => el.name === pageName);
     const helpModal = {title:optionData.helps[helpIndex].title,id:optionData.helps[helpIndex].id};
     const [showPage, setShowPage] = useState(false);

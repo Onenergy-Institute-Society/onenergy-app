@@ -8,24 +8,24 @@ import {
 } from "react-native";
 import {NavigationActions} from "react-navigation";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
+import ScalableImage from "../Components/ScalableImage";
 import TouchableScale from "../Components/TouchableScale";
 import IconButton from "@src/components/IconButton";
-import ImageCache from '../Components/ImageCache';
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { Modalize } from 'react-native-modalize';
 import {scale, verticalScale} from "../Utils/scale";
 import EventList from "../Components/EventList";
+import PracticeTipsRow from "../Components/PracticeTipsRow";
 
 const PracticesScreen = props => {
     try {
         const dispatch = useDispatch();
-        const {navigation, screenProps} = props;
+        const {navigation} = props;
         const user = useSelector((state) => state.user.userObject);
         const [helpModal, setHelpModal] = useState({title:'',id:0});
-        const language = useSelector((state) => state.languagesReducer.languages);
-        const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+        const optionData = useSelector((state) => state.settings.settings.onenergy_option);
 
         useEffect(()=>{
             let titleIndex = optionData.titles.findIndex(el => el.id === 'practices_title');
@@ -106,15 +106,16 @@ const PracticesScreen = props => {
                     {user?
                         (optionData.goals&&optionData.goals.length)||(optionData.challenges&&optionData.challenges.length)?
                             <View style={{marginVertical:verticalScale(5)}}>
-                                <EventList location={'practice'} eventsData={optionData.goals} />
-                                <EventList location={'practice'} eventsData={optionData.challenges} />
+                                <EventList location={'practice'} eventsDate={optionData.goals} />
+                                <EventList location={'practice'} eventsDate={optionData.challenges} />
                             </View>
                         :null
                     :null}
                     <TouchableScale
                         onPress={personalPracticePressed}>
                         <View style={[styles.card, styles.boxShadow]}>
-                            <ImageCache
+                            <ScalableImage
+                                width={windowWidth - scale(30)}
                                 source={{uri: optionData.personal_practice ? optionData.personal_practice : null}}
                                 style={styles.image}
                             />
@@ -125,7 +126,8 @@ const PracticesScreen = props => {
                     <TouchableScale
                         onPress={groupPracticePressed}>
                         <View style={[styles.card, styles.boxShadow]}>
-                            <ImageCache
+                            <ScalableImage
+                                width={windowWidth - scale(30)}
                                 source={{uri: optionData.group_practice ? optionData.group_practice : null}}
                                 style={styles.image}
                             />
@@ -135,12 +137,19 @@ const PracticesScreen = props => {
                     <TouchableScale
                         onPress={customPracticePressed}>
                         <View style={[styles.card, styles.boxShadow]}>
-                            <ImageCache
+                            <ScalableImage
+                                width={windowWidth - scale(30)}
                                 source={{uri: optionData.member_practice ? optionData.member_practice : null}}
                                 style={styles.image}
                             />
                         </View>
                     </TouchableScale>
+                    {user?
+                        <View style={styles.eventRow}>
+                            <PracticeTipsRow />
+                        </View>
+                    :null
+                    }
                 </ScrollView>
                 <Modalize
                     ref={(popupPracticeDialog) => { this.popupPracticeDialog = popupPracticeDialog; }}
@@ -187,8 +196,6 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     image: {
-        width: windowWidth - scale(30),
-        height: (windowWidth - scale(30))/9*4,
         borderRadius: 9,
         marginLeft: 0,
         marginTop: 0,
@@ -196,8 +203,6 @@ const styles = StyleSheet.create({
         resizeMode: "contain",
     },
     card: {
-        width: windowWidth - scale(30),
-        height: (windowWidth - scale(30))/9*4,
         backgroundColor: 'white',
         borderRadius: 9,
         paddingVertical: 0,
@@ -211,6 +216,11 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
+    },
+    eventRow: {
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        flexDirection: 'row',
     },
 });
 PracticesScreen.navigationOptions  = ({ navigation }) => {

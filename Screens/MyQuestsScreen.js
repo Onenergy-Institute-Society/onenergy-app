@@ -8,11 +8,12 @@ import Quests from "../Components/Quests";
 import {useSelector} from "react-redux";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import {scale} from "../Utils/scale";
+import DailyQuests from "../Components/DailyQuests";
 
 const QuestsDaily = () => {
     try {
         return (
-            <Quests type="daily" />
+            <DailyQuests />
         )
     } catch (err) {
         console.log(`${err}`);
@@ -37,8 +38,7 @@ const QuestsMonthly = () => {
     }
 }
 const TabTitle = ({tintColor, name}) => {
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     let titleIndex = optionData.titles.findIndex(el => el.id === name);
     return (
         <Text style={{ color: tintColor }}>{optionData.titles[titleIndex].title}</Text>

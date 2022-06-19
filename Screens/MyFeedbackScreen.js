@@ -23,8 +23,7 @@ import Recaptcha from "../Components/Recaptcha";
 import { BlurView } from "@react-native-community/blur";
 
 const MyFeedbackScreen = props => {
-    const language = useSelector((state) => state.languagesReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option[language.abbr]);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [ loading, setLoading ] = useState(false);
     const [content, setContent] = useState('');
     const [subject, setSubject] = useState('Choose a subject');

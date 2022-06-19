@@ -19,7 +19,7 @@ const AudioPlayerRoutine = (props) => {
         playPauseButton,
         stopButton,
     } = styles;
-    const { routine } = props;
+    const { routine, setMessageBarDisplay } = props;
 
     const [playing, setPlaying] = useState(false);
     const [stopped, setStopped] = useState(true)
@@ -61,6 +61,14 @@ const AudioPlayerRoutine = (props) => {
                         payload: 'quest'
                     });
                 }
+                if(response.data.achievements)
+                {
+                    dispatch({
+                        type: 'UPDATE_USER_COMPLETED_ACHIEVEMENTS',
+                        payload:response.data.achievements
+                    });
+                }
+                setMessageBarDisplay(true);
             });
         } catch (e) {
             console.error(e);
@@ -75,7 +83,22 @@ const AudioPlayerRoutine = (props) => {
         await TrackPlayer.removeUpcomingTracks();
         return await TrackPlayer.add(track, -1);
     }
-    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause], (event) => {
+    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.PlaybackQueueEnded], (event) => {
+        console.log(event, State)
+        if ((event.state === State.Stopped) || (event.state === State.None) || (event.type === 'playback-queue-ended')) {
+            if(Platform.OS === 'ios') {
+                if (nextTrack === routine.tracks.length - 1) {
+                    TrackPlayer.stop();
+                    updateProgress().then();
+                }
+            }else{
+                TrackPlayer.stop();
+                updateProgress().then();
+            }
+            setPlaying(false);
+            setStopped(true);
+            deactivateKeepAwake();
+        }
         if (event.state === State.Playing) {
             setPlaying(true);
             setStopped(false);
@@ -86,25 +109,23 @@ const AudioPlayerRoutine = (props) => {
             setStopped(false);
             deactivateKeepAwake();
         }
-        if ((event.state === State.Stopped) || (event.state === State.None)) {
-            setPlaying(false);
-            setStopped(true);
-            deactivateKeepAwake();
-        }
         if (event.type === Event.RemotePlay) {
             TrackPlayer.play();
             setPlaying(true);
             setStopped(false);
+            deactivateKeepAwake();
         }
         if (event.type === Event.RemotePause) {
             TrackPlayer.pause();
             setPlaying(false);
             setStopped(false);
+            deactivateKeepAwake();
         }
         if (event.type === Event.RemoteStop) {
             TrackPlayer.stop();
             setPlaying(false);
             setStopped(true);
+            deactivateKeepAwake();
         }
     });
     useTrackPlayerEvents([Event.PlaybackTrackChanged], ({nextTrack}) => {
@@ -144,8 +165,11 @@ const AudioPlayerRoutine = (props) => {
 
     const onStopPress = async () => {
         const state = await TrackPlayer.getState();
+        console.log(state)
         if ((state === State.Playing) || (state === State.Paused)) {
-            TrackPlayer.stop();
+            await TrackPlayer.stop();
+            setNextTrack(0);
+            setTrackTitle('');
         }
     };
 
@@ -163,7 +187,7 @@ const AudioPlayerRoutine = (props) => {
                             }}
                         />
                     </TouchableOpacity>
-                    {playing || !stopped?(
+                    {!stopped?(
                     <TouchableOpacity onPress={onStopPress} style={stopButton} hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
                         <IconButton
                             icon={require("@src/assets/img/stop.png")}
