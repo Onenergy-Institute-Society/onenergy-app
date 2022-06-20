@@ -26,7 +26,10 @@ const MemberTracksList = (props) => {
 
     // state vars
     const onTrackItemPress = async (routine) => {
+        console.log(routine, selectedRoutine);
+
         if(!selectedRoutine || routine.id !== selectedRoutine.id) {
+
             if(routine.bgm !== 'No Sound') {
                 let index = optionData.routine_bgm.findIndex(el => el.name === routine.bgm);
                 routine.bgm_url = optionData.routine_bgm[index].bgm;
@@ -36,11 +39,9 @@ const MemberTracksList = (props) => {
             setSelectedRoutine(routine);
         }else{
             const state = await TrackPlayer.getState();
-
             if (state === State.Playing) {
                 await TrackPlayer.pause();
             }
-
             if (state === State.Paused) {
                 await TrackPlayer.play();
             }
