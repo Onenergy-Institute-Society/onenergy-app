@@ -22,6 +22,7 @@ const EventList = props => {
     const [alertBody, setAlertBody] = useState('');
     const current_time = new moment.utc();
     let displayGroup = [];
+    //console.log(user);
     const renderItem = () => {
         return eventsDate.map((item) => {
             let showDate = null;
@@ -129,6 +130,7 @@ const EventList = props => {
                         }
                     }
             }
+            //console.log(show, item,  item.image);
             return (
                 show?
                 <TouchableScale
@@ -208,14 +210,6 @@ const EventList = props => {
     return (
         <View style={styles.container}>
             {eventsDate?renderItem():null}
-{/*
-             <FlatList
-                data={eventsData}
-                renderItem={renderItem}
-                showsVerticalScrollIndicator={false}
-                keyExtractor={(item, index) => item.index}
-            />
-*/}
             <AwesomeAlert
                 show={showAlert}
                 showProgress={false}

@@ -75,24 +75,35 @@ const AudioPlayerRoutine = (props) => {
         }
     }
     useEffect(() => {
-        addTrack(routine.tracks).then(()=>{TrackPlayer.play();setPlaying(true);setStopped(false);});
+        addTrack(routine.tracks).then(()=>{
+            TrackPlayer.play().then();
+            setPlaying(true);
+            setStopped(false);
+        });
     }, [routine]);
     async function addTrack(track){
         await TrackPlayer.stop();
         await TrackPlayer.reset();
-        await TrackPlayer.removeUpcomingTracks();
-        return await TrackPlayer.add(track, -1);
+        if(Platform.OS === 'ios') {
+            return await TrackPlayer.add(track, -1);
+        }else{
+            return await TrackPlayer.add(track);
+        }
     }
     useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.PlaybackQueueEnded], (event) => {
         console.log(event, State)
-        if ((event.state === State.Stopped) || (event.state === State.None) || (event.type === 'playback-queue-ended')) {
+        if (((event.type === Event.PlaybackState) && ((event.state === State.Stopped) || (event.state === State.None)))|| (event.type === 'playback-queue-ended')) {
             if(Platform.OS === 'ios') {
                 if (nextTrack === routine.tracks.length - 1) {
                     TrackPlayer.stop();
+                    TrackPlayer.reset();
+                    TrackPlayer.removeUpcomingTracks();
                     updateProgress().then();
                 }
             }else{
                 TrackPlayer.stop();
+                TrackPlayer.reset();
+                TrackPlayer.removeUpcomingTracks();
                 updateProgress().then();
             }
             setPlaying(false);

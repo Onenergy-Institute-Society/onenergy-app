@@ -27,7 +27,6 @@ const AudioPlayer = ({ track }) => {
     async function addTrack(track){
         await TrackPlayer.stop();
         await TrackPlayer.reset();
-        await TrackPlayer.removeUpcomingTracks();
         return await TrackPlayer.add(track, -1);
     }
     useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.PlaybackQueueEnded], (event) => {
