@@ -257,7 +257,7 @@ const MyStatsScreen = (props) => {
                                             <>
                                                 <View style={styles.row}>
                                                     <Text style={[styles.title,{flex:0.6}]}>{item.title}</Text>
-                                                    <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} times</Text>
+                                                    <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} moves</Text>
                                                     <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' hrs':Math.round(item.duration / 60) + ' min'}</Text>
                                                 </View>
                                                 {index<statsData.practices_stats.length-1?
