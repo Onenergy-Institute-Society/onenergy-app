@@ -17,15 +17,7 @@
     "react": "^16.9.0",
     "react-native": "0.61.5"
   },
-  "nativeDependencies": {
-    "react-native-push-notification": "^8.1.1",
-    "react-native-track-player": "^2.1.3"
-  },
-  "podDependencies": {
-    "react-native-track-player": "react-native-track-player"
-  },
-  "dependencies": {
-    "react-native-push-notification": "^8.1.1",
-    "react-native-track-player": "^2.1.3"
-  }
+  "nativeDependencies": {},
+  "podDependencies": {},
+  "dependencies": {}
 }
