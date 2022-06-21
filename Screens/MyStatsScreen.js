@@ -54,7 +54,7 @@ const MyStatsScreen = (props) => {
                     <View style={[styles.boxShadow, styles.card]}>
                         <View style={[styles.header, {backgroundColor: "#d6d3d1"}]}>
                             <Text style={styles.headerText}>
-                                Account
+                                {optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_title_account')].title}
                             </Text>
                         </View>
                         <View>
@@ -85,7 +85,7 @@ const MyStatsScreen = (props) => {
                     <View style={[styles.boxShadow, styles.card]}>
                         <View style={[styles.header, {backgroundColor: "#67e8f9"}]}>
                             <Text style={styles.headerText}>
-                                Overview
+                                {optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_title_overview')].title}
                             </Text>
                         </View>
                         <View>
@@ -113,12 +113,12 @@ const MyStatsScreen = (props) => {
                                 <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
                                 <View style={styles.row}>
                                     <Text style={styles.title}>Today Practice Time:</Text>
-                                    <Text style={styles.text}> {Math.round(statsData.today_duration / 60 )>60?Math.round(statsData.today_duration / 60 /60)+' hrs':Math.round(statsData.today_duration / 60) + ' min'}</Text>
+                                    <Text style={styles.text}> {Math.round(statsData.today_duration / 60 )>60?Math.round(statsData.today_duration / 60 /60)+' hrs':Math.round(statsData.today_duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title}</Text>
                                 </View>
                                 <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
                                 <View style={[styles.row, styles.lastRow]}>
                                     <Text style={styles.title}>Total Practice Time:</Text>
-                                    <Text style={styles.text}> {Math.round(statsData.total_duration / 60 )>60?Math.round(statsData.total_duration / 60 /60)+' hrs':Math.round(statsData.total_duration / 60) + ' min'}</Text>
+                                    <Text style={styles.text}> {Math.round(statsData.total_duration / 60 )>60?Math.round(statsData.total_duration / 60 /60)+' hrs':Math.round(statsData.total_duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title}</Text>
                                 </View>
                             </LinearGradient>
                         </View>
@@ -128,7 +128,7 @@ const MyStatsScreen = (props) => {
                         <View style={[styles.boxShadow, styles.card]}>
                             <View style={[styles.header, {backgroundColor: "#fdba74"}]}>
                                 <Text style={styles.headerText}>
-                                    Membership
+                                    {optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_title_membership')].title}
                                 </Text>
                             </View>
                             <View>
@@ -159,7 +159,7 @@ const MyStatsScreen = (props) => {
                         <View style={[styles.boxShadow, styles.card]}>
                             <View style={[styles.header,{backgroundColor:"#f9a8d4"}]}>
                                 <Text style={styles.headerText}>
-                                    Routine Practice Stats
+                                    {optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_title_routine')].title}
                                 </Text>
                             </View>
                             <View>
@@ -181,13 +181,13 @@ const MyStatsScreen = (props) => {
                                                             alignSelf: "flex-end",
                                                             textAlign: "right",
                                                             alignItems: "flex-end"
-                                                        }]}>{item.count} times</Text>
+                                                        }]}>{item.count} {optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_times')].title}</Text>
                                                         <Text style={[styles.text, {
                                                             flex: 0.2,
                                                             alignSelf: "flex-end",
                                                             textAlign: "right",
                                                             alignItems: "flex-end"
-                                                        }]}>{Math.round(item.duration / 60) > 60 ? Math.round(item.duration / 60 / 60) + ' hrs' : Math.round(item.duration / 60) + ' min'}</Text>
+                                                        }]}>{Math.round(item.duration / 60) > 60 ? Math.round(item.duration / 60 / 60) + ' hrs' : Math.round(item.duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title}</Text>
                                                     </View>
                                                     {index < statsData.routines_stats.length - 1 ?
                                                         <View style={[styles.rowHr, {backgroundColor: "#fdf2f8"}]}/>
@@ -208,7 +208,7 @@ const MyStatsScreen = (props) => {
                     <View style={[styles.boxShadow, styles.card]}>
                         <View style={[styles.header,{backgroundColor:"#c4b5fd"}]}>
                             <Text style={styles.headerText}>
-                                Group Practice Stats
+                                {optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_title_group')].title}
                             </Text>
                         </View>
                         <View>
@@ -224,8 +224,8 @@ const MyStatsScreen = (props) => {
                                         <>
                                             <View style={styles.row}>
                                                 <Text style={[styles.title,{flex:0.6}]}>{item.title}</Text>
-                                                <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} times</Text>
-                                                <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' hrs':Math.round(item.duration / 60) + ' min'}</Text>
+                                                <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} {optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_times')].title}</Text>
+                                                <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' hrs':Math.round(item.duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title}</Text>
                                             </View>
                                             {index<statsData.gp_stats.length-1?
                                                 <View style={[styles.rowHr, {backgroundColor: "#f5f3ff"}]}/>
@@ -240,7 +240,7 @@ const MyStatsScreen = (props) => {
                     <View style={[styles.boxShadow, styles.card, {marginBottom:25}]}>
                         <View style={[styles.header,{backgroundColor:"#6ee7b7"}]}>
                             <Text style={styles.headerText}>
-                                Guided Practice Stats
+                                {optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_title_guided')].title}
                             </Text>
                         </View>
                         <View>
@@ -257,8 +257,8 @@ const MyStatsScreen = (props) => {
                                             <>
                                                 <View style={styles.row}>
                                                     <Text style={[styles.title,{flex:0.6}]}>{item.title}</Text>
-                                                    <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} times</Text>
-                                                    <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' hrs':Math.round(item.duration / 60) + ' min'}</Text>
+                                                    <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} {optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_move_counts')].title}</Text>
+                                                    <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' hrs':Math.round(item.duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title}</Text>
                                                 </View>
                                                 {index<statsData.practices_stats.length-1?
                                                 <View style={[styles.rowHr, {backgroundColor: "#ecfdf5"}]}/>

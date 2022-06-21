@@ -18,6 +18,7 @@ import { Modalize } from 'react-native-modalize';
 import {scale, verticalScale} from "../Utils/scale";
 import EventList from "../Components/EventList";
 import PracticeTipsRow from "../Components/PracticeTipsRow";
+import LoginScreen from "@src/containers/Custom/LoginScreen";
 
 const PracticesScreen = props => {
     try {
@@ -76,7 +77,7 @@ const PracticesScreen = props => {
             }else{
                 let helpIndex = optionData.helps.findIndex(el => el.name === 'all_login_required_popup_guest');
                 setHelpModal({title: optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'', id: optionData.helps[helpIndex].id});
-                this.popupPracticeDialog.open();
+                this.popupLoginDialog.open();
             }
         }
 
@@ -96,7 +97,7 @@ const PracticesScreen = props => {
             }else{
                 let helpIndex = optionData.helps.findIndex(el => el.name === 'all_login_required_popup_guest');
                 setHelpModal({title: optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'', id: optionData.helps[helpIndex].id});
-                this.popupPracticeDialog.open();
+                this.popupLoginDialog.open();
             }
         }
 
@@ -183,6 +184,32 @@ const PracticesScreen = props => {
                                      hideNavigationHeader={true}
                                      {...props} />
                     </View>
+                </Modalize>
+                <Modalize
+                    ref={(popupLoginDialog) => { this.popupLoginDialog = popupLoginDialog; }}
+                    modalHeight = {windowHeight*4/5}
+                    handlePosition = "outside"
+                    childrenStyle = {{backgroundColor:"#f2f2f2"}}
+                    HeaderComponent={
+                        <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
+                            <Text style={{fontSize:24}}>{helpModal.title}</Text>
+                            <IconButton
+                                pressHandler={() => {this.popupLoginDialog.close();}}
+                                icon={require("@src/assets/img/close.png")}
+                                style={{ height: scale(16), width: scale(16) }}
+                                touchableStyle={{
+                                    position:"absolute", top:10, right: 10,
+                                    height: scale(24),
+                                    width: scale(24),
+                                    backgroundColor: "#e6e6e8",
+                                    alignItems: "center",
+                                    borderRadius: 100,
+                                    padding: scale(5),
+                                }}
+                            /></View>
+                    }
+                >
+                    <LoginScreen {...props} />
                 </Modalize>
             </SafeAreaView>
         );
