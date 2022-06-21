@@ -34,7 +34,7 @@ const HomeContent = (props) => {
     const [quotesLoading, setQuotesLoading] = useState(true);
     TrackPlayer.updateOptions({
         stopWithApp: !(user&&user.membership&&user.membership.length), // false=> music continues in background even when app is closed
-        alwaysPauseOnInterruption: true,
+        alwaysPauseOnInterruption: false,
         // Media controls capabilities
         capabilities: [
             Capability.Play,
