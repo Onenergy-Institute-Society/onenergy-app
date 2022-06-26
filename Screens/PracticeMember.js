@@ -86,7 +86,7 @@ const PracticeMember = props => {
     }
     const onAddPressed = async () => {
         await TrackPlayer.stop();
-        await TrackPlayer.reset();
+        //await TrackPlayer.reset();
 
         navigation.dispatch(
             NavigationActions.navigate({
@@ -99,7 +99,7 @@ const PracticeMember = props => {
     }
     const onEditRoutinePress = async (item, index) =>{
         await TrackPlayer.stop();
-        await TrackPlayer.reset();
+        //await TrackPlayer.reset();
 
         navigation.dispatch(
             NavigationActions.navigate({
@@ -113,7 +113,7 @@ const PracticeMember = props => {
     }
     const onRemoveRoutine = async (item) => {
         await TrackPlayer.stop();
-        await TrackPlayer.reset();
+        //await TrackPlayer.reset();
 
 
         let array = [...props.routines]; // make a separate copy of the array
@@ -301,7 +301,7 @@ PracticeMember.navigationOptions = ({ navigation }) => {
             <TouchableOpacity
                 onPress={async () => {
                     await TrackPlayer.stop();
-                    await TrackPlayer.reset();
+                    //await TrackPlayer.reset();
                     navigation.goBack()
                 }}
             >

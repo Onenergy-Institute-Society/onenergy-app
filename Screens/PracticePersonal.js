@@ -191,7 +191,7 @@ PracticePersonal.navigationOptions = ({ navigation }) => {
             <TouchableOpacity
                 onPress={() => {
                     TrackPlayer.stop();
-                    TrackPlayer.reset();
+                    //TrackPlayer.reset();
                     navigation.goBack()
                 }}
             >
