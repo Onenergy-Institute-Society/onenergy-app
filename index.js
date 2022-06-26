@@ -806,8 +806,8 @@ export const applyCustomCode = externalCodeSetup => {
                         <CourseActionButton
                             onPress={()=>{
                                 setVisualGuide(false);
-                                startCourse();
                                 setButtonEnroll('Enrolling, please wait...');
+                                startCourse();
                                 dispatch({
                                     type: 'UPDATE_USER_ENROLLED_COURSES',
                                     payload: {"id": courseVM.id, "date": new Date().getTime() / 1000}
@@ -819,8 +819,8 @@ export const applyCustomCode = externalCodeSetup => {
                             <TouchableWithoutFeedback
                                 onPress={()=>{
                                     setVisualGuide(false);
-                                    startCourse();
                                     setButtonEnroll('Enrolling, please wait...');
+                                    startCourse();
                                     dispatch({
                                         type: 'UPDATE_USER_ENROLLED_COURSES',
                                         payload: {"id": courseVM.id, "date": new Date().getTime() / 1000}
@@ -1196,25 +1196,21 @@ export const applyCustomCode = externalCodeSetup => {
                         routeName: "ProgramsScreen",
                     })
                     return true;
-                    break;
                 case 'practices':
                     navigationService.navigate({
                         routeName: "PracticesScreen",
                     })
                     return true;
-                    break;
                 case 'wisdom':
                     navigationService.navigate({
                         routeName: "BlogsScreen",
                     })
                     return true;
-                    break;
                 case 'QuotesScreen':
                     navigationService.navigate({
                         routeName: "QuotesScreen",
                     })
                     return true;
-                    break;
             }
         }
 /*        if(linkObject.action === "inapp") {
