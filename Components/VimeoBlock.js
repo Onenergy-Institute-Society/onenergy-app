@@ -1,14 +1,27 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
     View, StyleSheet, TouchableOpacity, Image
 } from "react-native";
+import {useSelector} from "react-redux";
 import {NavigationActions, withNavigation} from "react-navigation";
 import {windowWidth, windowHeight} from "../Utils/Dimensions";
+import ImageCache from "./ImageCache";
+import {scale} from "../Utils/scale";
 
 const VimeoBlock = props => {
     const {
         navigation, video, thumbnail, textTracks, no_skip_forward, lesson_video, selectedCCUrl
     } = props;
+    const user = useSelector((state) => state.user.userObject);
+    const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
+    const [visualGuide, setVisualGuide] = useState(false);
+    useEffect(()=>{
+        if(user&&!user.firstCourseCompleted&&lesson_video&&!videoComplete){
+            setTimeout(function () {
+                setVisualGuide(true);
+            }, 5000);
+        }
+    },[])
     return (
         <View
             style={{flex: 1}}>
@@ -33,6 +46,10 @@ const VimeoBlock = props => {
                     source={{uri: thumbnail}}
                     resizeMode={'cover'}
                 />
+                {visualGuide?
+                    <ImageCache style={[styles.tapFinger,{alignSelf:"center", marginTop:scale(60)}]} source={{uri:'https://media.onenergy.institute/images/TapFinger.gif'}} />
+                    :null
+                }
             </TouchableOpacity>
         </View>
     )
@@ -54,6 +71,16 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    tapFinger:{
+        position: "absolute",
+        width:scale(100),
+        height:scale(120),
+        shadowColor: "#000",
+        shadowOffset: {width: -2, height: 4},
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 4,
     },
     play:{
         opacity: 0.6,

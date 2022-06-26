@@ -66,6 +66,7 @@ const ProgramsScreen = props => {
                 :
                 <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                     <View style={{marginVertical:verticalScale(5)}}>
+                        <EventList location={'program'} eventsDate={optionData.goals} />
                         <EventList location={'program'} eventsDate={optionData.webinars} />
                     </View>
                     <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"

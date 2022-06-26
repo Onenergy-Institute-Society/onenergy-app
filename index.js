@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Image, Platform, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native";
 import {NavigationActions} from "react-navigation";
 import {useSelector,useDispatch} from "react-redux";
@@ -260,12 +260,12 @@ export const applyCustomCode = externalCodeSetup => {
         const diffDays = lesson_time.diff(current_time, 'days');
         let diffTime = '';
         if(diffMinutes < 60){
-            diffTime = diffMinutes+' Minutes';
+            diffTime = 'in ' + diffMinutes + ' Minutes';
         }else{
             if(diffHours < 24){
-                diffTime = diffHours+' Hours';
+                diffTime = 'tomorrow';
             }else{
-                diffTime = diffDays+' Days';
+                diffTime = 'in ' + diffDays + ' Days';
             }
         }
         let lessonNote = '';
@@ -280,7 +280,7 @@ export const applyCustomCode = externalCodeSetup => {
             lessonNote = 'Course is expired, no more access';
         }else if(viewModel.hasAccess){
             if(lesson_time>current_time) {
-                lessonNote = 'Next lesson available in ' + diffTime;
+                lessonNote = 'Next lesson will be available ' + diffTime;
             }else {
                 lessonNote = 'Next lesson is available now';
             }
@@ -640,7 +640,7 @@ export const applyCustomCode = externalCodeSetup => {
 
     // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
-        let whiteList = [...props.whitelist, "languagesReducer", "notifyReducer", "routinesReducer"];
+        let whiteList = [...props.whitelist, "languagesReducer", "notifyReducer"];
         let index = whiteList.indexOf('blog');
         if (index !== -1) {
             whiteList.splice(index, 1);
@@ -680,20 +680,29 @@ export const applyCustomCode = externalCodeSetup => {
         const diffHours = lesson_time.diff(current_time, 'hours');
         const diffDays = lesson_time.diff(current_time, 'days');
         const dispatch = useDispatch();
+        const [visualGuide, setVisualGuide] = useState(false);
+
+        useEffect(()=>{
+            if(user&&!user.firstCourseCompleted){
+                setTimeout(function () {
+                    setVisualGuide(true);
+                }, 5000);
+            }
+        },[])
 
         let diffTime = '';
         if(diffMinutes < 60){
-            diffTime = diffMinutes+' Minutes';
+            diffTime = 'in ' + diffMinutes + ' minutes';
         }else{
             if(diffHours < 24){
-                diffTime = diffHours+' Hours';
+                diffTime = 'tomorrow';
             }else{
-                diffTime = diffDays+' Days';
+                diffTime = 'in ' + diffDays + ' days';
             }
         }
         const [buttonEnroll, setButtonEnroll] = useState('Enroll Now');
 
-        const buttonText = "Next lesson available in " + diffTime;
+        const buttonText = "Next lesson will be available " + diffTime;
         if(courseVM.progression === 100){
             let Info = null;
             return [Info,
@@ -796,6 +805,7 @@ export const applyCustomCode = externalCodeSetup => {
                     }}>
                         <CourseActionButton
                             onPress={()=>{
+                                setVisualGuide(false);
                                 startCourse();
                                 setButtonEnroll('Enrolling, please wait...');
                                 dispatch({
@@ -805,6 +815,33 @@ export const applyCustomCode = externalCodeSetup => {
                             }}
                             title={buttonEnroll}
                         />
+                        {visualGuide?
+                            <TouchableWithoutFeedback
+                                onPress={()=>{
+                                    setVisualGuide(false);
+                                    startCourse();
+                                    setButtonEnroll('Enrolling, please wait...');
+                                    dispatch({
+                                        type: 'UPDATE_USER_ENROLLED_COURSES',
+                                        payload: {"id": courseVM.id, "date": new Date().getTime() / 1000}
+                                    });
+                                }}>
+                                <ImageCache style={{
+                                    bottom:scale(-80),
+                                    right:scale(80),
+                                    position: "absolute",
+                                    transform: [{ rotate: '180deg' }],
+                                    width:scale(200),
+                                    height:scale(240),
+                                    shadowColor: "#000",
+                                    shadowOffset: {width: 2, height: -4},
+                                    shadowOpacity: 0.2,
+                                    shadowRadius: 3,
+                                    elevation: 4,
+                                    }} source={{uri:'https://media.onenergy.institute/images/TapFinger.gif'}} />
+                            </TouchableWithoutFeedback>
+                            :null
+                        }
                     </View>
                 ]
             }
@@ -980,7 +1017,7 @@ export const applyCustomCode = externalCodeSetup => {
                             marginBottom:0,
                         }}
                     />
-                    <NotificationTabBarIcon notificationID={'guide_page'}  top={-3} right={-3} size={10} showNumber={false} />
+                    <NotificationTabBarIcon notificationID={'guide_page'}  top={-3} right={-3} size={scale(10)} showNumber={false} />
                 </View>
             case "Wisdom":
                 return <View
@@ -1001,7 +1038,7 @@ export const applyCustomCode = externalCodeSetup => {
                             marginBottom:0,
                         }}
                     />
-                    <NotificationTabBarIcon notificationID={'blog'}  top={-3} right={-3} size={10} showNumber={false} />
+                    <NotificationTabBarIcon notificationID={'blog'}  top={-3} right={-3} size={scale(10)} showNumber={false} />
                 </View>
             default:
                 return icon;
@@ -1151,7 +1188,6 @@ export const applyCustomCode = externalCodeSetup => {
     })
     externalCodeSetup.deeplinksApi.setDeeplinksWithoutEmbeddedReturnValueFilter((defaultValue, linkObject, navigationService) => {
 
-        console.log(linkObject, defaultValue);
         if (linkObject.action === "open_screen") {
             switch(linkObject.item_id)
             {

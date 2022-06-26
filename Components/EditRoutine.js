@@ -231,6 +231,9 @@ const EditRoutine = props => {
         return (
             <Swipeable
                 ref={ref => row[id] = ref}
+                friction={2}
+                leftThreshold={10}
+                rightThreshold={10}
                 renderRightActions={(_, dragX) => rightActions(dragX, itemData, id)}
                 onSwipeableRightWillOpen={handleWillOpen(id)}
                 onSwipeableLeftWillOpen={handleWillOpen(id)}

@@ -109,7 +109,7 @@ const CustomDrawerContentComponent = (props) => {
                                         style={{fontSize:scale(18)}}>
                                         {optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_progress')].title}
                                     </Text>
-                                    <NotificationTabBarIcon notificationID={'progress'}  top={0} right={0} size={10} showNumber={false} />
+                                    <NotificationTabBarIcon notificationID={'progress'}  top={0} right={0} size={scale(10)} showNumber={false} />
                                     <IconButton
                                         icon={require("@src/assets/img/arrow-right.png")}
                                         style={{
@@ -130,7 +130,7 @@ const CustomDrawerContentComponent = (props) => {
                                         style={{fontSize:scale(18)}}>
                                         {optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_quests')].title}
                                     </Text>
-                                    <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={10} showNumber={false} />
+                                    <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
                                     <IconButton
                                         icon={require("@src/assets/img/arrow-right.png")}
                                         style={{
@@ -151,7 +151,7 @@ const CustomDrawerContentComponent = (props) => {
                                         style={{fontSize:scale(18)}}>
                                         {optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_achievements')].title}
                                     </Text>
-                                    <NotificationTabBarIcon notificationID={'achievement'}  top={0} right={0} size={10} showNumber={false} />
+                                    <NotificationTabBarIcon notificationID={'achievement'}  top={0} right={0} size={scale(10)} showNumber={false} />
                                     <IconButton
                                         icon={require("@src/assets/img/arrow-right.png")}
                                         style={{
@@ -172,7 +172,7 @@ const CustomDrawerContentComponent = (props) => {
                                         style={{fontSize:scale(18)}}>
                                         {optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_vouchers')].title}
                                     </Text>
-                                    <NotificationTabBarIcon notificationID={'voucher'}  top={0} right={0} size={10} showNumber={false} />
+                                    <NotificationTabBarIcon notificationID={'voucher'}  top={0} right={0} size={scale(10)} showNumber={false} />
                                     <IconButton
                                         icon={require("@src/assets/img/arrow-right.png")}
                                         style={{

@@ -22,6 +22,7 @@ export default class SortListItem extends Component
 
                 onPanResponderMove: (event, gesture) =>
                 {
+                    if(gesture.dy<=5) return
                     let movement = props.horizontal === true ? gesture.dx : gesture.dy;
                     let maxPos = props.count * this.state.itemSize;
                     let offset = props.horizontal === true ? this.state.offset.x : this.state.offset.y;

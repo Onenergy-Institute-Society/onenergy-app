@@ -15,9 +15,9 @@ import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-trac
 import {scale, verticalScale} from '../Utils/scale';
 import AudioPlayer from './AudioPlayer';
 import {windowWidth} from "../Utils/Dimensions";
+
 const TracksList = (props) => {
     const {tracks, setMessageBarDisplay} = props;
-    const user = useSelector((state) => state.user.userObject);
     const [selectedTrack, setSelectedTrack] = useState(null);
     const dispatch = useDispatch();
 
@@ -106,7 +106,9 @@ const TracksList = (props) => {
                 >
                     <ImageBackground style={[styles.trackItemInner, styles.itemStyle]} source={{uri: bgImage}}>
                         <View style={styles.trackImgBox}>
-                            <Image style={styles.trackImg} source={{ uri: item.artwork }} />
+                            <ImageBackground style={styles.trackImg} imageStyle={{ borderRadius: 9}} source={{ uri: item.artwork }}>
+                                <View style = {styles.overlay_button}><Image style = {styles.play} source = {{uri: "https://media.onenergy.institute/images/audio-play.png"}} /></View>
+                            </ImageBackground>
                         </View>
                         <View style={styles.trackDescBox}>
                             <View style={styles.titleBox}>
@@ -135,7 +137,11 @@ const TracksList = (props) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <FlatList data={tracks} renderItem={renderItem} keyExtractor={item => item.id} />
+            <FlatList
+                data={tracks}
+                renderItem={renderItem}
+                keyExtractor={item => item.id}
+            />
         </SafeAreaView>
     );
 };
@@ -173,15 +179,22 @@ const styles = StyleSheet.create({
     },
     overlay_button:{
         flex: 1,
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        backgroundColor: 'rgba(0,0,0,0.3)',
         position: 'absolute',
-        top:0,
-        left:0,
-        width: scale(70),
         opacity: 1,
-        height: verticalScale(70),
         borderRadius: 9,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    play:{
+        opacity: 0.6,
+        width: 32,
+        height: 32,
+        tintColor: "white"
     },
     playPauseIcon: {
         color: '#000',
@@ -210,7 +223,7 @@ const styles = StyleSheet.create({
     },
     trackImg: {
         width:scale(70),
-        height:verticalScale(70),
+        height:scale(70),
         marginLeft: scale(10),
         borderRadius:9,
     },

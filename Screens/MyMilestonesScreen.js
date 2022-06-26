@@ -42,7 +42,7 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'milestone_uncompleted_tab'} />
-                        <NotificationTabBarIcon notificationID={'milestone_uncompleted'} top={-5} right={-5} size={10} showNumber={false} />
+                        <NotificationTabBarIcon notificationID={'milestone_uncompleted'} top={-5} right={-5} size={scale(10)} showNumber={false} />
                     </View>
                 ),
             }
@@ -53,7 +53,7 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'milestone_completed_tab'} />
-                        <NotificationTabBarIcon notificationID={'milestone_completed'} top={-5} right={-5} size={10} showNumber={false} />
+                        <NotificationTabBarIcon notificationID={'milestone_completed'} top={-5} right={-5} size={scale(10)} showNumber={false} />
                     </View>
                 ),
             }

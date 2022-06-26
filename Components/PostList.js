@@ -149,7 +149,7 @@ const PostList = props => {
                             </View>
                         </View>
                     </View>
-                    <NotificationTabBarIcon notificationID={mode} top={3} right={3} size={15} fontSize={10} showNumber={false} data={item.id} />
+                    <NotificationTabBarIcon notificationID={mode} top={3} right={3} size={15} fontSize={scale(10)} showNumber={false} data={item.id} />
                 </View>
             </TouchableScale>
         );

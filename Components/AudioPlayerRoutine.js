@@ -84,14 +84,9 @@ const AudioPlayerRoutine = (props) => {
     async function addTrack(track){
         await TrackPlayer.stop();
         await TrackPlayer.reset();
-        if(Platform.OS === 'ios') {
             return await TrackPlayer.add(track, -1);
-        }else{
-            return await TrackPlayer.add(track);
-        }
     }
     useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.PlaybackQueueEnded], (event) => {
-        console.log(event, State)
         if (((event.type === Event.PlaybackState) && ((event.state === State.Stopped) || (event.state === State.None)))|| (event.type === 'playback-queue-ended')) {
             if(Platform.OS === 'ios') {
                 if (nextTrack === routine.tracks.length - 1) {

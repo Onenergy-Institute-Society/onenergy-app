@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import {getApi} from "@src/services";
 import {connect, useSelector} from "react-redux";
 import {
     StyleSheet,
     ScrollView,
     View,
-    SafeAreaView, Text, ActivityIndicator, Platform
+    SafeAreaView, Text, ActivityIndicator
 } from "react-native";
 import {windowWidth} from "../Utils/Dimensions";
 import {scale, verticalScale} from '../Utils/scale';
@@ -32,9 +32,11 @@ const HomeContent = (props) => {
     const [ loading, setLoading ] = useState(false);
     const [quotesData, setQuotesData] = useState([]);
     const [quotesLoading, setQuotesLoading] = useState(true);
+    const [visualGuide, setVisualGuide] = useState(false);
+
     TrackPlayer.updateOptions({
         stopWithApp: !(user&&user.membership&&user.membership.length), // false=> music continues in background even when app is closed
-        alwaysPauseOnInterruption: true,
+        alwaysPauseOnInterruption: false,
         // Media controls capabilities
         capabilities: [
             Capability.Play,
@@ -75,6 +77,10 @@ const HomeContent = (props) => {
             showNotification: !!user,
             title: optionData.titles[titleIndex].title,
         });
+        if(user&&!user.firstCourseCompleted)
+            setTimeout(function () {
+                setVisualGuide(true);
+            }, 5000);
     }, []);
     const renderFeaturedPrograms = (item) => {
         return (
@@ -177,8 +183,8 @@ const HomeContent = (props) => {
                 )}
                 {user?
                     <View style={styles.programRow}>
-                        <EventList location={'home'} eventsDate={optionData.webinars} />
                         <EventList location={'home'} eventsDate={optionData.goals} />
+                        <EventList location={'home'} eventsDate={optionData.webinars} />
                     </View>
                 :null}
                 {user && user.firstCourseCompleted && optionData.show.includes('events') && (
@@ -291,6 +297,10 @@ const HomeContent = (props) => {
                                     style={styles.image_intro}
                                 />
                             </View>
+                            {visualGuide?
+                                <ImageCache style={[styles.tapFinger,{alignSelf:"center", marginTop:scale(100)}]} source={{uri:'https://media.onenergy.institute/images/TapFinger.gif'}} />
+                                :null
+                            }
                         </TouchableScale>
                     </View>
                     :null
@@ -350,6 +360,16 @@ const styles = StyleSheet.create({
     },
     scroll_view: {
         flexGrow: 1,
+    },
+    tapFinger:{
+        position: "absolute",
+        width:scale(200),
+        height:scale(240),
+        shadowColor: "#000",
+        shadowOffset: {width: -2, height: 4},
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 4,
     },
     slideRow: {
         marginHorizontal: scale(15),
@@ -524,7 +544,7 @@ HomeContent.navigationOptions = ({navigation}) => {
                         marginLeft: 20,
                     }}
                 />
-                <NotificationTabBarIcon notificationID={'left_menu'}  top={0} right={0} size={10} showNumber={false} />
+                <NotificationTabBarIcon notificationID={'left_menu'}  top={0} right={0} size={scale(10)} showNumber={false} />
             </TouchableScale>,
         headerRight:
             showNotification?

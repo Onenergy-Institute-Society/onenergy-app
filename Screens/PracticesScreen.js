@@ -50,7 +50,7 @@ const PracticesScreen = props => {
             }else{
                 let helpIndex = optionData.helps.findIndex(el => el.name === 'all_login_required_popup_guest');
                 setHelpModal({title: optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'', id: optionData.helps[helpIndex].id});
-                this.popupPracticeDialog.open();
+                this.popupLoginDialog.open();
             }
         }
 
@@ -120,7 +120,7 @@ const PracticesScreen = props => {
                                 source={{uri: optionData.personal_practice ? optionData.personal_practice : null}}
                                 style={styles.image}
                             />
-                            <NotificationTabBarIcon notificationID={'guide_personal'} top={3} right={3} size={15} fontSize={10} showNumber={true} />
+                            <NotificationTabBarIcon notificationID={'guide_personal'} top={3} right={3} size={scale(15)} fontSize={10} showNumber={true} />
                         </View>
                     </TouchableScale>
 
@@ -248,6 +248,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         flexDirection: 'row',
+        marginLeft: 15,
     },
 });
 PracticesScreen.navigationOptions  = ({ navigation }) => {

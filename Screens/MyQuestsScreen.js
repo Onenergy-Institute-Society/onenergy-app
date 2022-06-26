@@ -52,7 +52,7 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'quest_daily_tab'} />
-                        <NotificationTabBarIcon notificationID={'quest_daily'} top={-5} right={-5} size={10} showNumber={false} />
+                        <NotificationTabBarIcon notificationID={'quest_daily'} top={-5} right={-5} size={scale(10)} showNumber={false} />
                     </View>
                 ),
             }
@@ -63,7 +63,7 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'quest_weekly_tab'} />
-                        <NotificationTabBarIcon notificationID={'quest_weekly'} top={-5} right={-5} size={10} showNumber={false} />
+                        <NotificationTabBarIcon notificationID={'quest_weekly'} top={-5} right={-5} size={scale(10)} showNumber={false} />
                     </View>
                 ),
             }
@@ -74,7 +74,7 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'quest_monthly_tab'} />
-                        <NotificationTabBarIcon notificationID={'quest_monthly'} top={-5} right={-5} size={10} showNumber={false} />
+                        <NotificationTabBarIcon notificationID={'quest_monthly'} top={-5} right={-5} size={scale(10)} showNumber={false} />
                     </View>
                 ),
             }
