@@ -83,7 +83,7 @@ const AudioPlayerRoutine = (props) => {
     }, [routine]);
     async function addTrack(track){
         await TrackPlayer.stop();
-        //await TrackPlayer.reset();
+        await TrackPlayer.reset();
         return await TrackPlayer.add(track, -1);
     }
     useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.PlaybackQueueEnded], (event) => {
@@ -91,13 +91,13 @@ const AudioPlayerRoutine = (props) => {
             if(Platform.OS === 'ios') {
                 if (nextTrack === routine.tracks.length - 1) {
                     TrackPlayer.stop();
-                    //TrackPlayer.reset();
+                    TrackPlayer.reset();
                     TrackPlayer.removeUpcomingTracks();
                     updateProgress().then();
                 }
             }else{
                 TrackPlayer.stop();
-                //TrackPlayer.reset();
+                TrackPlayer.reset();
                 TrackPlayer.removeUpcomingTracks();
                 updateProgress().then();
             }

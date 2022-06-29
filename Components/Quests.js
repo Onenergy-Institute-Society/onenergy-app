@@ -60,19 +60,19 @@ const Quests = (props) => {
             <View style={[styles.achievementItemBox, styles.boxShadow]}>
                 <View style={styles.achievementItemBoxImageWrap}>
                     {item.completed ? (
-                            <ImageBackground source={{uri: "https://media.onenergy.institute/images/completed.png"}} style={styles.achievementItemBoxImageWrap} />
+                            <ImageBackground source={{uri: "https://cdn.onenergy.institute/images/completed.png"}} style={styles.achievementItemBoxImageWrap} />
                         ) :
                         type === "daily" ? (
-                            <ImageBackground source={{uri: "https://media.onenergy.institute/images/hoursleft.png"}} style={styles.achievementItemBoxImageWrap}>
+                            <ImageBackground source={{uri: "https://cdn.onenergy.institute/images/hoursleft.png"}} style={styles.achievementItemBoxImageWrap}>
                                 <Text style={{fontSize:scale(32), color:"#0098d9", fontWeight:"700", marginLeft:scale(timeLeft>9?0:11)}}>{timeLeft}</Text>
                             </ImageBackground>
                             ) :
                             type === "weekly" ?
-                                <ImageBackground source={{uri: "https://media.onenergy.institute/images/daysleft.png"}} style={styles.achievementItemBoxImageWrap}>
+                                <ImageBackground source={{uri: "https://cdn.onenergy.institute/images/daysleft.png"}} style={styles.achievementItemBoxImageWrap}>
                                     <Text style={{fontSize:scale(32), color:"#0098d9", fontWeight:"700", marginLeft:scale(timeLeft>9?0:11)}}>{timeLeft}</Text>
                                 </ImageBackground>
                                 : type === "monthly" ?
-                                    <ImageBackground source={{uri: "https://media.onenergy.institute/images/daysleft.png"}} style={styles.achievementItemBoxImageWrap}>
+                                    <ImageBackground source={{uri: "https://cdn.onenergy.institute/images/daysleft.png"}} style={styles.achievementItemBoxImageWrap}>
                                         <Text numberOfLines={1} style={{fontSize:scale(32), color:"#0098d9", fontWeight:"700"}}>{timeLeft}</Text>
                                     </ImageBackground>
                                     : null

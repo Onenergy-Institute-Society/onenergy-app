@@ -33,7 +33,7 @@ const HomeContent = (props) => {
     const [quotesData, setQuotesData] = useState([]);
     const [quotesLoading, setQuotesLoading] = useState(true);
     const [visualGuide, setVisualGuide] = useState(false);
-
+console.log(optionData)
     TrackPlayer.updateOptions({
         stopWithApp: !(user&&user.membership&&user.membership.length), // false=> music continues in background even when app is closed
         alwaysPauseOnInterruption: false,
@@ -298,7 +298,7 @@ const HomeContent = (props) => {
                                 />
                             </View>
                             {visualGuide?
-                                <ImageCache style={[styles.tapFinger,{alignSelf:"center", marginTop:scale(100)}]} source={{uri:'https://media.onenergy.institute/images/TapFinger.gif'}} />
+                                <ImageCache style={[styles.tapFinger,{alignSelf:"center", marginTop:scale(100)}]} source={{uri:'https://cdn.onenergy.institute/images/TapFinger.gif'}} />
                                 :null
                             }
                         </TouchableScale>

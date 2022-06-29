@@ -31,7 +31,7 @@ const Skeleton = () => {
             duration={1000}
             replace={true}
         >
-            <ImageBackground source={{uri: 'https://app.onenergy.institute/wp-content/uploads/2022/01/design-6.png'}} style={[styles.quoteRow, styles.boxShadow]}>
+            <ImageBackground source={{uri: 'https://assets.onenergy.institute/wp-content/uploads/2022/01/design-6.png'}} style={[styles.quoteRow, styles.boxShadow]}>
                 <View style={{flexDirection:"row", height:verticalScale(6), width: "70%", marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
                 <View style={{flexDirection:"row", height:verticalScale(6), width: "70%", marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
                 <View style={{flexDirection:"row", height:verticalScale(6), width: "70%", marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.7}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /></View>

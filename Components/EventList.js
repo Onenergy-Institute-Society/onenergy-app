@@ -224,7 +224,7 @@ const EventList = props => {
                                 shadowOpacity: 0.2,
                                 shadowRadius: 3,
                                 elevation: 4,
-                            }} source={{uri:'https://media.onenergy.institute/images/TapFinger.gif'}} />
+                            }} source={{uri:'https://cdn.onenergy.institute/images/TapFinger.gif'}} />
                             :null
                         }
                     </TouchableScale>

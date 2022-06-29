@@ -148,7 +148,7 @@ export const VideoModal = props => {
                                             height:24,
                                             tintColor:"#FFFFFF",
                                         }}
-                                        source={{uri:screenState.fullScreen?"https://media.onenergy.institute/images/normal-screen_hires.png":"https://media.onenergy.institute/images/full-screen_hires.png"}}
+                                        source={{uri:screenState.fullScreen?"https://cdn.onenergy.institute/images/normal-screen_hires.png":"https://cdn.onenergy.institute/images/full-screen_hires.png"}}
                                     />
                                 </View>
                             </TouchableWithoutFeedback>

@@ -89,11 +89,11 @@ const TracksList = (props) => {
         let highlightColor = {};
         let showPlayer = false;
         if (selectedTrack && selectedTrack.id === item.id) {
-            bgImage = "https://app.onenergy.institute/wp-content/uploads/2021/11/1-scaled.jpg";
+            bgImage = "https://assets.onenergy.institute/wp-content/uploads/2021/11/1-1024x683.jpg";
             highlightColor = {color: "white"};
             showPlayer = true;
         }else{
-            bgImage = "https://app.onenergy.institute/wp-content/uploads/2021/11/7-scaled.jpg";
+            bgImage = "https://assets.onenergy.institute/wp-content/uploads/2021/11/7-1024x683.jpg";
             highlightColor = {color: "black"};
             showPlayer = false;
         }
@@ -107,7 +107,7 @@ const TracksList = (props) => {
                     <ImageBackground style={[styles.trackItemInner, styles.itemStyle]} source={{uri: bgImage}}>
                         <View style={styles.trackImgBox}>
                             <ImageBackground style={styles.trackImg} imageStyle={{ borderRadius: 9}} source={{ uri: item.artwork }}>
-                                <View style = {styles.overlay_button}><Image style = {styles.play} source = {{uri: "https://media.onenergy.institute/images/audio-play.png"}} /></View>
+                                <View style = {styles.overlay_button}><Image style = {styles.play} source = {{uri: "https://cdn.onenergy.institute/images/audio-play.png"}} /></View>
                             </ImageBackground>
                         </View>
                         <View style={styles.trackDescBox}>

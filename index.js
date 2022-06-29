@@ -838,7 +838,7 @@ export const applyCustomCode = externalCodeSetup => {
                                     shadowOpacity: 0.2,
                                     shadowRadius: 3,
                                     elevation: 4,
-                                    }} source={{uri:'https://media.onenergy.institute/images/TapFinger.gif'}} />
+                                    }} source={{uri:'https://cdn.onenergy.institute/images/TapFinger.gif'}} />
                             </TouchableWithoutFeedback>
                             :null
                         }
@@ -1008,7 +1008,7 @@ export const applyCustomCode = externalCodeSetup => {
                         alignItems: 'center',
                     }}>
                     <Image
-                        source={{uri:'https://media.onenergy.institute/images/onenergy.png'}}
+                        source={{uri:'https://cdn.onenergy.institute/images/onenergy.png'}}
                         style={{
                             width: 24,
                             height: 24,
@@ -1029,7 +1029,7 @@ export const applyCustomCode = externalCodeSetup => {
                         alignItems: 'center',
                     }}>
                     <Image
-                        source={{uri:'https://media.onenergy.institute/images/wisdom.png'}}
+                        source={{uri:'https://cdn.onenergy.institute/images/wisdom.png'}}
                         style={{
                             width: 24,
                             height: 24,
