@@ -86,23 +86,11 @@ const AudioPlayerRoutine = (props) => {
         await TrackPlayer.reset();
         return await TrackPlayer.add(track, -1);
     }
-    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.PlaybackQueueEnded], (event) => {
-        if (((event.type === Event.PlaybackState) && ((event.state === State.Stopped) || (event.state === State.None)))|| (event.type === 'playback-queue-ended')) {
-            if(Platform.OS === 'ios') {
-                if (nextTrack === routine.tracks.length - 1) {
-                    TrackPlayer.stop();
-                    TrackPlayer.reset();
-                    TrackPlayer.removeUpcomingTracks();
-                    updateProgress().then();
-                }
-            }else{
-                TrackPlayer.stop();
-                TrackPlayer.reset();
-                TrackPlayer.removeUpcomingTracks();
-                updateProgress().then();
-            }
+    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause], (event) => {
+        if ((event.type === Event.PlaybackState) && ((event.state === State.Stopped) || (event.state === State.None))) {
             setPlaying(false);
             setStopped(true);
+            setTrackTitle('');
             deactivateKeepAwake();
         }
         if (event.state === State.Playing) {
@@ -131,6 +119,7 @@ const AudioPlayerRoutine = (props) => {
             TrackPlayer.stop();
             setPlaying(false);
             setStopped(true);
+            setTrackTitle('');
             deactivateKeepAwake();
         }
     });
@@ -144,14 +133,22 @@ const AudioPlayerRoutine = (props) => {
     });
 
     useTrackPlayerEvents([Event.PlaybackQueueEnded], (event) => {
-        if(Platform.OS === 'ios') {
-            if (nextTrack === routine.tracks.length - 1) {
+        if(event.type === 'playback-queue-ended') {
+            if (Platform.OS === 'ios') {
+                if (nextTrack === routine.tracks.length - 1) {
+                    TrackPlayer.stop();
+                    TrackPlayer.reset();
+                    setTrackTitle('');
+                    TrackPlayer.removeUpcomingTracks();
+                    updateProgress().then();
+                }
+            } else {
                 TrackPlayer.stop();
+                TrackPlayer.reset();
+                setTrackTitle('');
+                TrackPlayer.removeUpcomingTracks();
                 updateProgress().then();
             }
-        }else{
-            TrackPlayer.stop();
-            updateProgress().then();
         }
     });
 
@@ -174,7 +171,6 @@ const AudioPlayerRoutine = (props) => {
         if ((state === State.Playing) || (state === State.Paused)) {
             await TrackPlayer.stop();
             setNextTrack(0);
-            setTrackTitle('');
         }
     };
 
