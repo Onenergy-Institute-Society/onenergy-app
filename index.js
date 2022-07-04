@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Image, Platform, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native";
 import {NavigationActions} from "react-navigation";
-import {useSelector,useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import moment from 'moment';
 import Share from "react-native-share";
 import IconButton from "@src/components/IconButton";
@@ -481,14 +481,13 @@ export const applyCustomCode = externalCodeSetup => {
                     if(state.notification[action.mode]){
                         let addIndex = state.notification[action.mode].indexOf(action.payload);
                         if (addIndex === -1) {
-                            let temp = {
+                            return {
                                 ...state,
                                 notification: {
                                     ...state.notification,
                                     [action.mode]: [...state.notification[action.mode], action.payload]
                                 }
-                            }
-                            return temp;
+                            };
                         }else{
                             return state;
                         }
@@ -510,6 +509,45 @@ export const applyCustomCode = externalCodeSetup => {
                             return {
                                 ...state,
                                 notification: {...state.notification, [action.mode]: arrayTemp}
+                            };
+                        } else {
+                            return state;
+                        }
+                    }else{
+                        return state;
+                    }
+                case "NOTIFICATION_PRACTICE_ADD":
+                    if(state.notification['practice']){
+                        let addIndex = state.notification['practice'].indexOf(action.payload);
+                        if (addIndex === -1) {
+                            return {
+                                ...state,
+                                notification: {
+                                    ...state.notification,
+                                    'practice': [...state.notification['practice'], action.payload]
+                                }
+                            };
+                        }else{
+                            return state;
+                        }
+                    }else{
+                        return {
+                            ...state,
+                            notification: {
+                                ...state.notification,
+                                'practice':[action.payload]
+                            }
+                        };
+                    }
+                case "NOTIFICATION_PRACTICE_REMOVE":
+                    if(state.notification['practice']) {
+                        let arrayTemp = state.notification['practice'];
+                        let index = arrayTemp.indexOf(action.payload);
+                        if (index !== -1) {
+                            arrayTemp.splice(index, 1);
+                            return {
+                                ...state,
+                                notification: {...state.notification, 'practice': arrayTemp}
                             };
                         } else {
                             return state;
@@ -1213,14 +1251,14 @@ export const applyCustomCode = externalCodeSetup => {
                     return true;
             }
         }
-/*        if(linkObject.action === "inapp") {
+        if(linkObject.action === "inapp") {
             if(linkObject.url.includes('QuotesScreen')) {
                 navigationService.navigate({
                     routeName: "QuotesScreen",
                 })
                 return true;
             }
-        }*/
+        }
         return defaultValue;
     });
     const AfterDetailsComponent = ({ user }) => {

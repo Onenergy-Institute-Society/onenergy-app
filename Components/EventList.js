@@ -22,7 +22,6 @@ const EventList = props => {
     const [alertTitle, setAlertTitle] = useState('');
     const [alertBody, setAlertBody] = useState('');
     const [visualGuide, setVisualGuide] = useState(false);
-
     const current_time = new moment.utc();
     let displayGroup = [];
     useEffect(()=>{

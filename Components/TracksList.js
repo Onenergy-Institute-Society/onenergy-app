@@ -15,6 +15,7 @@ import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-trac
 import {scale, verticalScale} from '../Utils/scale';
 import AudioPlayer from './AudioPlayer';
 import {windowWidth} from "../Utils/Dimensions";
+import NotificationTabBarIcon from "./NotificationTabBarIcon";
 
 const TracksList = (props) => {
     const {tracks, setMessageBarDisplay} = props;
@@ -66,6 +67,10 @@ const TracksList = (props) => {
                     dispatch({
                         type: 'NOTIFICATION_INCREMENT',
                         payload: 'achievement'
+                    });
+                    dispatch({
+                        type: 'NOTIFICATION_PRACTICE_REMOVE',
+                        payload: selectedTrack.guide,
                     });
                 }
                 if(response.data.achievements)
@@ -127,6 +132,7 @@ const TracksList = (props) => {
                             </View>
                         </View>
                     </ImageBackground>
+                    <NotificationTabBarIcon notificationID={'practice'} top={3} right={3} size={scale(15)} fontSize={10} showNumber={false} data={item.guide} />
                 </TouchableOpacity>
                 {showPlayer? (
                     <AudioPlayer track={selectedTrack} />

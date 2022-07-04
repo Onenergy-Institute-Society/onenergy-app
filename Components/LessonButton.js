@@ -75,6 +75,12 @@ const LessonButton = (props) => {
                         type: 'NOTIFICATION_INCREMENT',
                         payload: 'guide_personal'
                     });
+                    lesson.settings.guide.map((item) => {
+                        dispatch({
+                            type: 'NOTIFICATION_PRACTICE_ADD',
+                            payload: item,
+                        });
+                    });
                     dispatch({
                         type: 'UPDATE_USER_COMPLETED_LESSONS',
                         payload: {"id": lesson.id, "date": new Date().getTime() / 1000}

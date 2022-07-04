@@ -171,7 +171,6 @@ const AudioPlayerRoutine = (props) => {
 
     const onStopPress = async () => {
         const state = await TrackPlayer.getState();
-        console.log(state)
         if ((state === State.Playing) || (state === State.Paused)) {
             await TrackPlayer.stop();
             setNextTrack(0);

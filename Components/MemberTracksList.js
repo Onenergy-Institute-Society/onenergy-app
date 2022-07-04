@@ -26,8 +26,6 @@ const MemberTracksList = (props) => {
 
     // state vars
     const onTrackItemPress = async (routine) => {
-        console.log(routine, selectedRoutine);
-
         if(!selectedRoutine || routine.id !== selectedRoutine.id) {
 
             if(routine.bgm !== 'No Sound') {

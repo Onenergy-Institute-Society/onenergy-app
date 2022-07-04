@@ -4,11 +4,12 @@ import IconButton from "@src/components/IconButton";
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
 import { withNavigation } from "react-navigation";
-import Quests from "../Components/Quests";
 import {useSelector} from "react-redux";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import {scale} from "../Utils/scale";
-import DailyQuests from "../Components/DailyQuests";
+import DailyQuests from "../Components/QuestsDaily";
+import WeeklyQuests from "../Components/QuestsWeekly";
+import MonthlyQuests from "../Components/QuestsMonthly";
 
 const QuestsDaily = () => {
     try {
@@ -22,7 +23,7 @@ const QuestsDaily = () => {
 const QuestsWeekly = () => {
     try {
         return (
-            <Quests type="weekly" />
+            <WeeklyQuests />
         )
     } catch (err) {
         console.log(`${err}`);
@@ -31,7 +32,7 @@ const QuestsWeekly = () => {
 const QuestsMonthly = () => {
     try {
         return (
-            <Quests type="monthly" />
+            <MonthlyQuests />
         )
     } catch (err) {
         console.log(`${err}`);

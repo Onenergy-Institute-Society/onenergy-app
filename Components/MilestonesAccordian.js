@@ -33,7 +33,7 @@ export default class MilestonesAccordian extends Component{
             <View>
                 <TouchableOpacity style={[styles.row, {borderBottomRightRadius: this.state.expanded?0:9,borderBottomLeftRadius: this.state.expanded?0:9,}]} onPress={()=>this.toggleExpand()}>
                     <Text style={styles.title}>{this.props.item.name}</Text>
-                    <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+                    <View style={{flex: 0.2, flexDirection:"row", justifyContent:"flex-end", alignItems:"center"}}>
                         {
                             this.state.completed?
                                 <>
@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#e6e6e8',
     },
     title:{
+        flex: 0.8,
         paddingLeft:10,
         paddingRight:10,
         fontSize: scale(14),
@@ -117,6 +118,7 @@ const styles = StyleSheet.create({
         color: Colors.DARKGRAY,
     },
     itemActive:{
+        flex:0.9,
         fontSize: scale(12),
     },
     btnActive:{

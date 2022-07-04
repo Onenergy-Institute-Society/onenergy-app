@@ -6,28 +6,23 @@ import {
     Text,
     StyleSheet,
     SafeAreaView,
-    FlatList,
     ActivityIndicator,
-    Image
+    Image, ScrollView
 } from 'react-native';
 import {scale, verticalScale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 
-const Quests = (props) => {
-    const {type} = props;
+const QuestsWeekly = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'achievement_quest_empty');
     const emptyText = optionData.titles[emptyTextIndex].title
     const [questsData, setQuestsData] = useState({});
     const [questsLoading, setQuestsLoading] = useState(true);
-    let date = new Date();
-    let hours = date.getHours();
-    let hourLeft = 23 - hours;
     const fetchQuests = async () => {
         try {
             const apiQuotes = getApi(props.config);
             await apiQuotes.customRequest(
-                "wp-json/onenergy/v1/quests/?type=daily",
+                "wp-json/onenergy/v1/quests/?type=weekly",
                 "get",
                 {},
                 null,
@@ -44,44 +39,30 @@ const Quests = (props) => {
     useEffect(() => {
         fetchQuests().then();
     }, []);
-    const renderItem = ({ item }) => {
-        return (
-            <View style={styles.row} >
-                <Text style={styles.title}>{item.name}</Text>
-                <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
-                    <Text style={{marginRight:10}}>{item.points} {item.points_type.singular_name}</Text>
-                    {
-                        item.completed?
-                            <Image source={require("@src/assets/img/check2.png")} />
-                            :
-                            <Image source={require("@src/assets/img/radio_unchecked_icon.png")} />
-                    }
-                </View>
-            </View>
-        )
-    };
+
     return(
         <SafeAreaView style={styles.container}>
             {!questsLoading?
-                questsData.length?
-                    <FlatList data={questsData} renderItem={renderItem} keyExtractor={item => item.id} />
-                    :
-                    <View style={{
-                        flex: 1,
-                        width: windowWidth
-                    }}>
-                        <View style={[styles.boxShadow, {padding:15,justifyContent: "center",alignSelf:"center",borderRadius: 9,backgroundColor:"#fff", margin:15}]}>
-                            <View style={{marginHorizontal: 0, justifyContent: "center", alignItems: "center"}}>
-                                <Text style={[styles.body, {
-                                    marginHorizontal: 0,
-                                    fontSize:scale(14),
-                                    lineHeight:scale(14*1.47),
-                                    textAlign:"left"
-                                }]}>{emptyText}</Text>
+                <ScrollView style={styles.containerStyle}>
+                    <Text style={styles.titleText}>Practice consecutively for 7 days to unlock this reward. Miss one day will reset the progress.</Text>
+                    {Array(7).fill().map((_, idx) => 1 + idx).map((day,index)=>{
+                        return (
+                            <View style={styles.row} >
+                                <Text style={[styles.title,{color:index===6?"green":null}]}>Day {day} {index===6?'+20 Qi':''}</Text>
+                                <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+                                    <Text style={{marginRight:10}}>{questsData.days[index]}</Text>
+                                    {
+                                        questsData.days[index]?
+                                            <Image source={require("@src/assets/img/check2.png")} />
+                                            :
+                                            <Image source={require("@src/assets/img/radio_unchecked_icon.png")} />
+                                    }
+                                </View>
                             </View>
-                        </View>
-                    </View>
-                :
+                        )
+                    })}
+                </ScrollView>
+            :
                 <ActivityIndicator size="large" />
             }
         </SafeAreaView>
@@ -91,6 +72,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
+        alignItems: 'center',
+    },
+    containerStyle: {
+        flex: 1,
+        justifyContent: 'flex-start',
         alignItems: 'center',
     },
     row:{
@@ -119,7 +105,7 @@ const styles = StyleSheet.create({
         marginRight:25,
     },
     pointText: {
-      fontSize:scale(14),
+        fontSize:scale(14),
     },
     achievementItemBoxInfo: {
         paddingTop:verticalScale(32),
@@ -205,9 +191,10 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 4,
     },
-    title:{
-        paddingLeft:10,
-        paddingRight:10,
+    titleText:{
+        width: windowWidth-scale(60),
+        marginHorizontal:scale(15),
+        marginVertical:scale(10),
         fontSize: scale(14),
         fontWeight:'bold',
         color: "#5E5E5E",
@@ -217,5 +204,5 @@ const mapStateToProps = (state) => ({
     config: state.config,  // not needed if axios or fetch is used
     accessToken: state.auth.token,
 });
-Quests.navigationOptions = {header: null};
-export default connect(mapStateToProps)(Quests);
+QuestsWeekly.navigationOptions = {header: null};
+export default connect(mapStateToProps)(QuestsWeekly);
