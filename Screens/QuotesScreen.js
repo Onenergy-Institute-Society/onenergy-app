@@ -85,27 +85,31 @@ const QuotesScreen = props => {
         // config: To pass the downloading related options
         // fs: Directory path where we want our image to download
         const { config, fs } = RNFetchBlob;
-        let PictureDir = fs.dirs.PictureDir;
+        let PictureDir = Platform.OS === 'ios' ? fs.dirs.DocumentDir : fs.dirs.PictureDir;
         let options = {
             fileCache: true,
             addAndroidDownloads: {
                 // Related to the Android only
                 useDownloadManager: true,
                 notification: true,
-                path:
-                    PictureDir +
-                    '/image_' +
-                    Math.floor(date.getTime() + date.getSeconds() / 2) +
-                    ext,
                 description: 'Image',
             },
+            path:
+                PictureDir +
+                '/image_' +
+                Math.floor(date.getTime() + date.getSeconds() / 2) +
+                ext,
         };
         config(options)
             .fetch('GET', image_URL)
             .then(res => {
-                // Showing alert after successful downloading
-                console.log('res -> ', JSON.stringify(res));
-                Alert.alert('Image Download Notice', 'Quote Image Downloaded Successfully.');
+                if (Platform.OS === "ios") {
+                    RNFetchBlob.ios.openDocument(res.data);
+                }else {
+                    // Showing alert after successful downloading
+                    console.log('res -> ', JSON.stringify(res));
+                    Alert.alert('Thank you', 'Quote Image Downloaded Successfully.');
+                }
             });
     };
     const getExtention = filename => {
