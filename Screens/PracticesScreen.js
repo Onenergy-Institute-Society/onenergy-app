@@ -22,7 +22,6 @@ import LoginScreen from "@src/containers/Custom/LoginScreen";
 
 const PracticesScreen = props => {
     try {
-        const dispatch = useDispatch();
         const {navigation} = props;
         const user = useSelector((state) => state.user.userObject);
         const [helpModal, setHelpModal] = useState({title:'',id:0});
@@ -38,10 +37,6 @@ const PracticesScreen = props => {
         const personalPracticePressed = () => {
             if(user)
             {
-                dispatch({
-                    type: 'NOTIFICATION_CLEAR',
-                    payload: 'guide_personal'
-                });
                 navigation.dispatch(
                     NavigationActions.navigate({
                         routeName: "PracticePersonal",
@@ -106,7 +101,7 @@ const PracticesScreen = props => {
                 <ScrollView showsVerticalScrollIndicator={false}>
                     {user?
                         (optionData.goals&&optionData.goals.length)||(optionData.challenges&&optionData.challenges.length)?
-                            <View style={{marginVertical:verticalScale(5)}}>
+                            <View>
                                 <EventList location={'practice'} eventsDate={optionData.goals} />
                                 <EventList location={'practice'} eventsDate={optionData.challenges} />
                             </View>
@@ -234,7 +229,7 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         paddingVertical: 0,
         paddingHorizontal: 0,
-        marginBottom: verticalScale(15),
+        marginTop: verticalScale(15),
         marginHorizontal: scale(15),
     },
     boxShadow: {

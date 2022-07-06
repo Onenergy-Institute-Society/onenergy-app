@@ -23,7 +23,6 @@ const PracticeTipsRow = props => {
     const [ postLoading, setPostLoading ] = useState(true);
     const [ showTitle, setShowTitle ] = useState(false);
     const { navigation } = props;
-
     const fetchPostsData = async () => {
         try {
             const api = getApi(props.config);
@@ -46,14 +45,14 @@ const PracticeTipsRow = props => {
         fetchPostsData().then();
     }, []);
     const renderItem = ({ item }) => {
-        let show = true;
+        let show = false;
         if(item.meta_box.course)
         {
-            item.meta_box.course.map((item, itemIndex) =>
+            item.meta_box.course.map((course_item, itemIndex) =>
             {
-                show = user.completed_courses.find(course => course.id === parseInt(item));
-                if(show){
-                    setShowTitle(show);
+                if(user.completed_courses.find(course => course.id === parseInt(course_item))){
+                    setShowTitle(true);
+                    show = true;
                 }
             })
         }

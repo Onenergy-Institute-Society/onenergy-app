@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
     },
     viewTopInfo: {
         padding:10,
-        width: windowWidth - 30,
+        width: windowWidth - scale(30),
         height:verticalScale(100),
         alignItems: "center",
         justifyContent: "center",
@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
     },
     viewBottom: {
         height:verticalScale(30),
-        width: windowWidth - 30,
+        width: windowWidth - scale(30),
         justifyContent:"center",
         alignItems: "center",
         padding:10,

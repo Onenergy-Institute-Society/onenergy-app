@@ -6,7 +6,7 @@ import {
     Placeholder,
 } from 'react-native-loading-placeholder';
 import {windowWidth} from "../../Utils/Dimensions";
-import {verticalScale} from "../../Utils/scale";
+import {scale, verticalScale} from "../../Utils/scale";
 
 const Gradient = () => {
     return (
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         paddingVertical: 15,
         paddingHorizontal: 15,
-        width: windowWidth - 30,
+        width: windowWidth - scale(30),
         marginHorizontal: 15,
         marginVertical: verticalScale(10),
         overflow: "hidden",

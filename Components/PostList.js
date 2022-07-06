@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
         backgroundColor:"white",
         borderRadius: 9,
         marginHorizontal: scale(15),
-        marginBottom: scale(15),
+        marginTop: scale(15),
         width: width - scale(30),
         height: scale(150),
     },
@@ -199,7 +199,6 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     scrollView: {
-        paddingTop: scale(15),
         justifyContent: 'flex-start',
         flexWrap: 'wrap',
         paddingBottom: scale(60),

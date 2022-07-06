@@ -50,7 +50,7 @@ export default class MilestonesAccordian extends Component{
                 </TouchableOpacity>
                 {
                     this.state.expanded &&
-                    <View style={{ backgroundColor:"#f2f2f2", borderBottomRightRadius:9, borderBottomLeftRadius:9, paddingBottom:9, width: windowWidth-30, alignItems:"center", justifyContent:"flex-start"}}>
+                    <View style={{ backgroundColor:"#f2f2f2", borderBottomRightRadius:9, borderBottomLeftRadius:9, paddingBottom:9, width: windowWidth-scale(30), alignItems:"center", justifyContent:"flex-start"}}>
                         <FlatList
                             data={this.state.data}
                             numColumns={1}
@@ -134,14 +134,14 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 9,
         alignItems: 'center',
         justifyContent: 'space-between',
-        width: windowWidth-30,
+        width: windowWidth-scale(30),
         flexDirection: 'row',
         backgroundColor: '#e6e6e8',
         marginTop: verticalScale(10),
     },
     childRow:{
         flexDirection: 'row',
-        width: windowWidth - 30,
+        width: windowWidth - scale(30),
         height: verticalScale(32),
         alignItems:'center',
         paddingLeft:15,
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     },
     childHr:{
         height:1,
-        width:windowWidth - 50,
+        width:windowWidth - scale(50),
         backgroundColor: "#c6c6c8",
     },
     colorActive:{

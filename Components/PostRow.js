@@ -110,7 +110,8 @@ const PostRow = props => {
 const styles = StyleSheet.create({
     containerStyle: {
         backgroundColor:"white",
-        marginVertical: 10,
+        marginTop: scale(15),
+        marginBottom: scale(10),
         marginRight: 13,
         marginLeft: 2,
         borderRadius: 9,

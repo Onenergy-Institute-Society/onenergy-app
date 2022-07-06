@@ -20,7 +20,6 @@ const AudioPlayerRoutine = (props) => {
         stopButton,
     } = styles;
     const { routine, setMessageBarDisplay } = props;
-
     const [playing, setPlaying] = useState(false);
     const [stopped, setStopped] = useState(true)
     const [trackTitle, setTrackTitle] = useState('');

@@ -122,7 +122,7 @@ const LessonButton = (props) => {
                             dispatch({ type: "COMPLETE_FIRST_COURSE" });
                         }
                     }
-                    if(lesson.settings.no_video||lesson.settings.no_popup||optionData.testing_mode) {
+                    if(lesson.settings.no_video||lesson.settings.no_popup/*||optionData.testing_mode*/) {
                         if(lesson.settings.open_screen) {
                             switch (lesson.settings.open_screen) {
                                 case "guided-practices":

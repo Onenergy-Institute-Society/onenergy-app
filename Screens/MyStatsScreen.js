@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     },
     card: {
         flex:1,
-        width: windowWidth-30,
+        width: windowWidth-scale(30),
         borderRadius:9,
         marginTop:verticalScale(15),
     },

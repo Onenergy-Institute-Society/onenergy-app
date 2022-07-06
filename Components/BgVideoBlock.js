@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     },
     backgroundVideo: {
         justifyContent: "center",
-        width: windowWidth-30,
+        width: windowWidth-scale(30),
         height: "auto",
         alignItems: "stretch",
     },

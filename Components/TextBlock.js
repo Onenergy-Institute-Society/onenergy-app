@@ -164,7 +164,7 @@ const TextBlock =(props) => {
             <TouchableWithoutFeedback
                 onPress={OnPress}
                 >
-                <View style={[block.data.data.shadow?styles.boxShadow:null, {margin:15, flex:1, width: windowWidth-30}]}>
+                <View style={[block.data.data.shadow?styles.boxShadow:null, {margin:15, flex:1, width: windowWidth-scale(30)}]}>
                     <LinearGradient
                         style={[styles.container,{
                             flexDirection:block.data.data.position==="left"||block.data.data.position==="right"?"row":"column"
@@ -190,7 +190,7 @@ const TextBlock =(props) => {
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        width: windowWidth-30,
+        width: windowWidth-scale(30),
         padding:15,
         justifyContent: "center",
         alignSelf:"center",

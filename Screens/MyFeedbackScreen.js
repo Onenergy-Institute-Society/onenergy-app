@@ -150,7 +150,7 @@ const MyFeedbackScreen = props => {
                 <TouchableOpacity
                     onPress={() => {Keyboard.dismiss();onSendPress();}}
                 >
-                    <View style={{borderRadius:9, width:windowWidth-30, marginTop:15, justifyContent:"center", alignItems:"center", backgroundColor:"#4942e1",paddingVertical:10}}>
+                    <View style={{borderRadius:9, width:windowWidth-scale(30), marginTop:15, justifyContent:"center", alignItems:"center", backgroundColor:"#4942e1",paddingVertical:10}}>
                             <Text style={{
                                 fontWeight: "bold",
                                 fontSize: 16,
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
             ? 'Roboto' : 'Avenir-Roman',
     },
     inputContent:{
-        width: windowWidth - 30,
+        width: windowWidth - scale(30),
         height:160,
         fontSize: 18,
         borderRadius: 9,
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
         textAlignVertical: "top",
     },
     listContainer:{
-        width:windowWidth-30,
+        width:windowWidth-scale(30),
         aspectRatio:8,
         flexDirection:'row',
         marginVertical:15,

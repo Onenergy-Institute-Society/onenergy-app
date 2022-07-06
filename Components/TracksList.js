@@ -20,7 +20,6 @@ import NotificationTabBarIcon from "./NotificationTabBarIcon";
 const TracksList = (props) => {
     const {tracks, setMessageBarDisplay} = props;
     const [selectedTrack, setSelectedTrack] = useState(null);
-    const dispatch = useDispatch();
 
     const onTrackItemPress = async (track) => {
         if(!selectedTrack || track.id !== selectedTrack.id) {
@@ -36,59 +35,7 @@ const TracksList = (props) => {
             }
         }
     };
-    const updateProgress = async () => {
-        try {
-            const apiRequest = getApi(props.config);
-            await apiRequest.customRequest(
-                "wp-json/onenergy/v1/progress",
-                "post",
-                {"id":selectedTrack.guide, "type":"Guide_End"},
-                null,
-                {},
-                false
-            ).then(response => {
-                if(response.data.updated) {
-                    dispatch({
-                        type: "UPDATE_POINTS",
-                        payload: response.data.qi
-                    });
-                    dispatch({
-                        type: "UPDATE_USER_POINTS",
-                        payload: response.data.qi
-                    });
-                    dispatch({
-                        type: 'NOTIFICATION_INCREMENT',
-                        payload: 'quest'
-                    });
-                    dispatch({
-                        type: 'NOTIFICATION_INCREMENT',
-                        payload: 'progress'
-                    });
-                    dispatch({
-                        type: 'NOTIFICATION_INCREMENT',
-                        payload: 'achievement'
-                    });
-                    dispatch({
-                        type: 'NOTIFICATION_PRACTICE_REMOVE',
-                        payload: selectedTrack.guide,
-                    });
-                }
-                if(response.data.achievements)
-                {
-                    dispatch({
-                        type: 'UPDATE_USER_COMPLETED_ACHIEVEMENTS',
-                        payload:response.data.achievements
-                    });
-                }
-                setMessageBarDisplay(true);
-            });
-        } catch (e) {
-            console.error(e);
-        }
-    }
-    useTrackPlayerEvents([Event.PlaybackQueueEnded], (event) => {
-        updateProgress().then();
-    });
+
     const renderItem = ({ item }) => {
         let bgImage = '';
         let highlightColor = {};
@@ -135,7 +82,7 @@ const TracksList = (props) => {
                     <NotificationTabBarIcon notificationID={'practice'} top={3} right={3} size={scale(15)} fontSize={10} showNumber={false} data={item.guide} />
                 </TouchableOpacity>
                 {showPlayer? (
-                    <AudioPlayer track={selectedTrack} />
+                    <AudioPlayer track={selectedTrack} setMessageBarDisplay={setMessageBarDisplay} />
                 ):null}
             </View>
         );
@@ -165,7 +112,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0,
         width: windowWidth - scale(30),
         marginHorizontal: scale(15),
-        marginBottom: verticalScale(15),
+        marginTop: verticalScale(15),
         justifyContent: "flex-start",
     },
     trackItemInner: {
@@ -276,5 +223,6 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
     config: state.config,
     accessToken: state.auth.token,
+    notification: state.notification,
 });
 export default connect(mapStateToProps)(TracksList);

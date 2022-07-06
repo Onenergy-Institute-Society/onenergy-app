@@ -6,6 +6,7 @@ import {
 } from "react-native";
 import VimeoBlock from "./VimeoBlock";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
+import  {scale} from "../Utils/scale";
 
 const VimeoBlockLoader =(props) => {
     const {block} = props;
@@ -79,14 +80,14 @@ const VimeoBlockLoader =(props) => {
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        width: windowWidth-30,
-        height: (windowWidth-30)*9/16,
+        width: windowWidth-scale(30),
+        height: (windowWidth-scale(30))*9/16,
         alignSelf:"center"
     },
     video: {
         position: 'relative',
-        height: (windowWidth-30) * (9 / 16),
-        width: windowWidth-30,
+        height: (windowWidth-scale(30)) * (9 / 16),
+        width: windowWidth-scale(30),
         backgroundColor: 'black',
         alignSelf: "center",
         justifyContent:"center",

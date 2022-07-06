@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         paddingVertical: 20,
         paddingHorizontal: 0,
-        width: windowWidth - 30,
+        width: windowWidth - scale(30),
         marginHorizontal: 15,
         marginVertical: verticalScale(10),
         overflow: "hidden",
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         paddingVertical: 0,
         paddingHorizontal: 0,
-        width: windowWidth - 30,
+        width: windowWidth - scale(30),
         overflow: "hidden",
     },
     itemStyle: {

@@ -31,7 +31,11 @@ const Skeleton = () => {
             duration={1000}
             replace={true}
         >
-            <ImageBackground source={{uri: 'https://assets.onenergy.institute/wp-content/uploads/2022/01/design-6.png'}} style={[styles.quoteRow, styles.boxShadow]}>
+            <ImageBackground source={{uri: 'https://assets.onenergy.institute/wp-content/uploads/2022/01/design-6.png'}} style={[styles.quoteRow, styles.boxShadow]}
+                             imageStyle={{
+                                 resizeMode: "contain",
+                                 alignSelf: "flex-start"
+                             }}>
                 <View style={{flexDirection:"row", height:verticalScale(6), width: "70%", marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
                 <View style={{flexDirection:"row", height:verticalScale(6), width: "70%", marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
                 <View style={{flexDirection:"row", height:verticalScale(6), width: "70%", marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.7}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /></View>
@@ -44,8 +48,9 @@ const Skeleton = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: windowWidth-30,
-        height: (windowWidth-30)/3.75,
+        width: windowWidth-scale(30),
+        height: (windowWidth-scale(30))/3.25,
+        borderRadius: 9,
     },
     boxShadow: {
         shadowColor: "#000",
@@ -55,17 +60,20 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     quoteRow: {
-        backgroundColor: 'rgba(255,255,255,1)',
-        width: windowWidth-30,
-        height: (windowWidth-30)/3.75,
+        width: windowWidth-scale(30),
+        height: (windowWidth-scale(30))/3.25,
         borderRadius: 9,
+        overflow: 'hidden',
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
+        paddingVertical: 0,
+        paddingHorizontal: 0,
     },
     placeholder_desc: {
         height: verticalScale(6),
         marginHorizontal: scale(5),
-        borderRadius:4,
+        borderRadius:9,
         backgroundColor: '#E6E6E8',
     },
 });

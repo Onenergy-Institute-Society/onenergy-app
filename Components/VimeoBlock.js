@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
         left:0,
         right:0,
         zIndex: 1,
-        width: windowWidth-30,
-        height: (windowWidth-30) * (9 / 16),
+        width: windowWidth-scale(30),
+        height: (windowWidth-scale(30)) * (9 / 16),
         opacity: 1,
         borderRadius: 9,
         alignItems: 'center',
@@ -88,8 +88,8 @@ const styles = StyleSheet.create({
         height: 32
     },
     BackGroundImage: {
-        width: windowWidth-30,
-        height: (windowWidth-30) * (9 / 16),
+        width: windowWidth-scale(30),
+        height: (windowWidth-scale(30)) * (9 / 16),
         justifyContent: 'center',
         borderRadius: 9,
     },
@@ -99,8 +99,8 @@ const styles = StyleSheet.create({
     },
     video: {
         position: 'relative',
-        height: (windowWidth-30) * (9 / 16),
-        width: windowWidth-30,
+        height: (windowWidth-scale(30)) * (9 / 16),
+        width: windowWidth-scale(30),
         backgroundColor: 'black',
         justifyContent:"center",
         alignItems: "center"

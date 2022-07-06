@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         alignItems: 'center',
         justifyContent: 'space-between',
-        width: windowWidth-30,
+        width: windowWidth-scale(30),
         flexDirection: 'row',
         backgroundColor: '#e6e6e8',
         marginTop: verticalScale(10),
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     achievementItemBox: {
         marginTop:verticalScale(50),
         marginBottom:verticalScale(20),
-        width:windowWidth-30,
+        width:windowWidth-scale(30),
         borderRadius: 12,
         backgroundColor: "#fff",
         marginHorizontal: 15,

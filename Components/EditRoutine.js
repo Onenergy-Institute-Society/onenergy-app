@@ -397,7 +397,7 @@ const EditRoutine = props => {
                 value={routineDetail?routineDetail.title:''}
             />
             </View>
-            <View style={{width: windowWidth-30, flexDirection:"row", justifyContent: "flex-start", alignItems:"center"}}>
+            <View style={{width: windowWidth-scale(30), flexDirection:"row", justifyContent: "flex-start", alignItems:"center"}}>
                 <Text style={styles.title}>Background Image</Text>
             </View>
             <View>
@@ -405,7 +405,7 @@ const EditRoutine = props => {
                     {renderColor()}
                 </View>
             </View>
-            <View style={{width: windowWidth-30, flexDirection:"row", justifyContent: "flex-start", alignItems:"center"}}>
+            <View style={{width: windowWidth-scale(30), flexDirection:"row", justifyContent: "flex-start", alignItems:"center"}}>
                 <Text style={styles.title}>Background Music</Text>
             </View>
             <View>
@@ -425,7 +425,7 @@ const EditRoutine = props => {
                     </TouchableWithoutFeedback>
                 </View>
             </View>
-            <View style={{width: windowWidth-30, flexDirection:"row", justifyContent: "space-between", alignItems:"center"}}>
+            <View style={{width: windowWidth-scale(30), flexDirection:"row", justifyContent: "space-between", alignItems:"center"}}>
                 <Text style={styles.title}>Practices</Text>
                 <IconButton
                     pressHandler={() => {Keyboard.dismiss();this.addGuideModal.open();}}
@@ -615,14 +615,14 @@ const styles = StyleSheet.create({
         paddingHorizontal:15,
     },
     list:{
-        width: windowWidth-30,
+        width: windowWidth-scale(30),
         flex:1,
         justifyContent:'center',
         alignItems:'flex-start',
         overflow:'scroll',
     },
     contentContainer:{
-        width: windowWidth-30,
+        width: windowWidth-scale(30),
     },
     loading: {
         position: 'absolute',
@@ -636,7 +636,7 @@ const styles = StyleSheet.create({
     index:{
     },
     listContainer:{
-        width:windowWidth-30,
+        width:windowWidth-scale(30),
         aspectRatio:8,
         flexDirection:'row',
         marginBottom:5,
@@ -681,7 +681,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     inputName:{
-        width: windowWidth - 30,
+        width: windowWidth - scale(30),
         height: 50,
         fontSize: 18,
         borderRadius: 9,

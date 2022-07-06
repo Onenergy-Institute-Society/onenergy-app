@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {AppState, Text, TouchableOpacity, View} from 'react-native';
+import {getApi} from "@src/services";
+import {connect, useSelector, useDispatch} from "react-redux";
+import {TouchableOpacity, View} from 'react-native';
 import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
 import IconButton from "@src/components/IconButton";
 import { StyleSheet } from 'react-native';
@@ -7,7 +9,7 @@ import { scale, verticalScale } from '../Utils/scale';
 import TrackSlider from "./TrackSlider";
 import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 
-const AudioPlayer = ({ track }) => {
+const AudioPlayer = (props) => {
     const {
         playerMaxView,
         buttonsSection,
@@ -16,11 +18,58 @@ const AudioPlayer = ({ track }) => {
         playPauseButton,
         stopButton,
     } = styles;
-
+    const { track, setMessageBarDisplay } = props;
+    const notification = useSelector((state) => state.notifyReducer.notification);
     const [playing, setPlaying] = useState(false);
     const [stopped, setStopped] = useState(true)
-    const [trackTitle, setTrackTitle] = useState('');
+    const dispatch = useDispatch();
 
+    const updateProgress = async () => {
+        try {
+            const apiRequest = getApi(props.config);
+            await apiRequest.customRequest(
+                "wp-json/onenergy/v1/progress",
+                "post",
+                {"id":track.guide, "type":"Guide_End"},
+                null,
+                {},
+                false
+            ).then(response => {
+                if(response.data.updated) {
+                    dispatch({
+                        type: "UPDATE_POINTS",
+                        payload: response.data.qi
+                    });
+                    dispatch({
+                        type: "UPDATE_USER_POINTS",
+                        payload: response.data.qi
+                    });
+                    dispatch({
+                        type: 'NOTIFICATION_INCREMENT',
+                        payload: 'quest'
+                    });
+                    dispatch({
+                        type: 'NOTIFICATION_INCREMENT',
+                        payload: 'progress'
+                    });
+                    dispatch({
+                        type: 'NOTIFICATION_INCREMENT',
+                        payload: 'achievement'
+                    });
+                }
+                if(response.data.achievements)
+                {
+                    dispatch({
+                        type: 'UPDATE_USER_COMPLETED_ACHIEVEMENTS',
+                        payload:response.data.achievements
+                    });
+                }
+                setMessageBarDisplay(true);
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
     useEffect(() => {
         addTrack(track).then(()=>{TrackPlayer.play();setPlaying(true);setStopped(false);});
     }, [track]);
@@ -29,7 +78,7 @@ const AudioPlayer = ({ track }) => {
         await TrackPlayer.reset();
         return await TrackPlayer.add(track, -1);
     }
-    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.PlaybackQueueEnded], (event) => {
+    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause], (event) => {
         if (event.state === State.Playing) {
             setPlaying(true);
             setStopped(false);
@@ -40,7 +89,7 @@ const AudioPlayer = ({ track }) => {
             setStopped(false);
             deactivateKeepAwake();
         }
-        if ((event.state === State.Stopped) || (event.state === State.None) || (event.type === 'playback-queue-ended')) {
+        if ((event.state === State.Stopped) || (event.state === State.None)) {
             setPlaying(false);
             setStopped(true);
             deactivateKeepAwake();
@@ -65,14 +114,30 @@ const AudioPlayer = ({ track }) => {
         }
     });
 
-    useTrackPlayerEvents([Event.PlaybackTrackChanged], ({nextTrack}) => {
+/*    useTrackPlayerEvents([Event.PlaybackTrackChanged], ({nextTrack}) => {
         if (nextTrack) setTrackTitle(track[parseInt(nextTrack, 10)].title);
         let index = parseInt(nextTrack, 10);
         if (track[index]) {
             setTrackTitle(track[index].title);
         }
+    });*/
+    useTrackPlayerEvents([Event.PlaybackQueueEnded], (event) => {
+        if(event.type === 'playback-queue-ended') {
+            TrackPlayer.stop();
+            TrackPlayer.reset();
+            updateProgress().then();
+            if(notification['practice'].length === 1){
+                dispatch({
+                    type: 'NOTIFICATION_CLEAR',
+                    payload: 'guide_personal'
+                });
+            }
+            dispatch({
+                type: 'NOTIFICATION_PRACTICE_REMOVE',
+                payload: track.guide,
+            });
+        }
     });
-
     const onPlayPausePress = async () => {
         const state = await TrackPlayer.getState();
         if (state === State.Playing) {
@@ -192,5 +257,8 @@ const styles = StyleSheet.create({
         color: '#3d3d5c',
     },
 });
-
-export default AudioPlayer;
+const mapStateToProps = (state) => ({
+    config: state.config,
+    accessToken: state.auth.token,
+});
+export default connect(mapStateToProps)(AudioPlayer);

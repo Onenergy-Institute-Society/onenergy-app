@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     achievementItemBox: {
         marginTop:verticalScale(50),
         marginBottom:verticalScale(20),
-        width:windowWidth-30,
+        width:windowWidth-scale(30),
         borderRadius: 12,
         backgroundColor: "#fff",
         marginHorizontal: 15,

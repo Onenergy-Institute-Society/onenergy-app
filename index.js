@@ -363,8 +363,8 @@ export const applyCustomCode = externalCodeSetup => {
                 borderRadius: 5,
             },
             image: {
-                width: windowWidth - 30,
-                height: (windowWidth - 30)/9*4,
+                width: windowWidth - scale(30),
+                height: (windowWidth - scale(30))/9*4,
                 borderRadius: 9,
                 marginLeft: 0,
                 marginTop: 0,
@@ -373,8 +373,8 @@ export const applyCustomCode = externalCodeSetup => {
             },
             imageView: {
                 backgroundColor: 'rgba(255,255,255,0.5)',
-                width: windowWidth - 30,
-                height: (windowWidth - 30)/9*4,
+                width: windowWidth - scale(30),
+                height: (windowWidth - scale(30))/9*4,
                 borderRadius: 9,
                 overflow: 'hidden',
             },
@@ -388,8 +388,8 @@ export const applyCustomCode = externalCodeSetup => {
                 alignItems: "flex-end",
             },
             meta: {
-                width: windowWidth - 30,
-                height: (windowWidth - 30)/9*4,
+                width: windowWidth - scale(30),
+                height: (windowWidth - scale(30))/9*4,
                 borderRadius: 9,
                 justifyContent:"flex-start",
                 alignItems: "flex-end",

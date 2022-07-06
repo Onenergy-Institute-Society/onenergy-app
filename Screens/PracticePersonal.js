@@ -56,6 +56,7 @@ const PracticePersonal = props => {
                     type: "ONENERGY_GUIDE_UPDATE",
                     payload: response.data
                 });
+                console.log(response.data)
                 setTracks(response.data);
                 setTracksLoading(false);
             });
@@ -164,7 +165,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#f6f6f8',
-        paddingTop:30,
     },
     scroll_view: {
         flexGrow: 1,
