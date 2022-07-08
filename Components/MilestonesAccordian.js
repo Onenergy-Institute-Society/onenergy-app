@@ -12,7 +12,8 @@ import {
 } from "react-native";
 import IconButton from "@src/components/IconButton";
 import {windowWidth} from "../Utils/Dimensions";
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
+import * as Progress from 'react-native-progress';
 
 export default class MilestonesAccordian extends Component{
     constructor(props) {
@@ -51,30 +52,36 @@ export default class MilestonesAccordian extends Component{
                 {
                     this.state.expanded &&
                     <View style={{ backgroundColor:"#f2f2f2", borderBottomRightRadius:9, borderBottomLeftRadius:9, paddingBottom:9, width: windowWidth-scale(30), alignItems:"center", justifyContent:"flex-start"}}>
-                        <FlatList
-                            data={this.state.data}
-                            numColumns={1}
-                            scrollEnabled={false}
-                            renderItem={({item, index}) =>
-                                <View style={{alignItems:"center"}}>
-                                    <View style={styles.childRow}>
-                                        <Text style={styles.itemActive} >{item.description}</Text>
-                                        {item.completed?
-                                        <IconButton
-                                            icon={require("@src/assets/img/check-simple.png")}
-                                            tintColor={"green"}
-                                            style={{
-                                                height: 18,
-                                                width: 18,
-                                            }}
-                                        />
-                                            :null}
+                        {this.props.item.progress ?
+                            <View style={{marginVertical: 10}}>
+                                <Progress.Bar borderColor={"#4942e1"} color={"#4942e1"} progress={this.props.item.steps.length>1?this.props.item.completed_steps/this.props.item.steps.length:this.props.item.steps[0].progress.current/this.props.item.steps[0].progress.total} width={windowWidth-scale(60)} height={scale(10)} />
+                            </View>
+                            :
+                            <FlatList
+                                data={this.state.data}
+                                numColumns={1}
+                                scrollEnabled={false}
+                                renderItem={({item, index}) =>
+                                    <View style={{alignItems: "center"}}>
+                                        <View style={styles.childRow}>
+                                            <Text style={styles.itemActive}>{item.description}</Text>
+                                            {item.completed ?
+                                                <IconButton
+                                                    icon={require("@src/assets/img/check-simple.png")}
+                                                    tintColor={"green"}
+                                                    style={{
+                                                        height: 18,
+                                                        width: 18,
+                                                    }}
+                                                />
+                                                : null}
+                                        </View>
+                                        {index < this.state.data.length - 1 ?
+                                            <View style={styles.childHr}/>
+                                            : null}
                                     </View>
-                                    {index < this.state.data.length-1?
-                                    <View style={styles.childHr}/>
-                                        :null}
-                                </View>
-                            }/>
+                                }/>
+                        }
                     </View>
                 }
             </View>
@@ -129,7 +136,7 @@ const styles = StyleSheet.create({
     },
     row:{
         paddingHorizontal:scale(10),
-        paddingVertical:verticalScale(10),
+        paddingVertical:scale(10),
         borderTopRightRadius: 9,
         borderTopLeftRadius: 9,
         alignItems: 'center',
@@ -137,12 +144,12 @@ const styles = StyleSheet.create({
         width: windowWidth-scale(30),
         flexDirection: 'row',
         backgroundColor: '#e6e6e8',
-        marginTop: verticalScale(10),
+        marginTop: scale(10),
     },
     childRow:{
         flexDirection: 'row',
         width: windowWidth - scale(30),
-        height: verticalScale(32),
+        height: scale(32),
         alignItems:'center',
         paddingLeft:15,
         paddingRight:15,

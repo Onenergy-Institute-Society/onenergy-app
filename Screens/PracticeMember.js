@@ -19,7 +19,7 @@ import externalCodeDependencies from "@src/externalCode/externalRepo/externalCod
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {NavigationActions, withNavigation} from "react-navigation";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import TrackPlayer from 'react-native-track-player';
 import EventList from "../Components/EventList";
 
@@ -171,7 +171,7 @@ const PracticeMember = props => {
                         :
                         <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                             {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
-                                <View style={{marginVertical:verticalScale(5)}}>
+                                <View style={{marginVertical:scale(5)}}>
                                     <EventList location={'practice_member'} eventsDate={optionData.goals}/>
                                     <EventList location={'practice_member'} eventsDate={optionData.challenges}/>
                                 </View>
@@ -183,7 +183,7 @@ const PracticeMember = props => {
                     <View style={{
                         flex: 1,
                         width: windowWidth,
-                        marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0
+                        marginTop: Platform.OS === 'android' ? scale(-100) : 0
                     }}>
                         <BlockScreen pageId={emptyData.id}
                                      contentInsetTop={0}
@@ -196,7 +196,7 @@ const PracticeMember = props => {
                 <View style={{
                     flex: 1,
                     width: windowWidth,
-                    marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0
+                    marginTop: Platform.OS === 'android' ? scale(-100) : 0
                 }}>
                     <BlockScreen pageId={helpPageData.id}
                                  contentInsetTop={0}
@@ -253,7 +253,7 @@ const PracticeMember = props => {
                     /></View>
                 }
             >
-                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?verticalScale(-100):0}} >
+                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?scale(-100):0}} >
                     <BlockScreen pageId={helpModal.id}
                                  contentInsetTop={0}
                                  contentOffsetY={0}

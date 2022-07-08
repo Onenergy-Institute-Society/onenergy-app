@@ -8,7 +8,7 @@ import {
     SafeAreaView, Text, ActivityIndicator
 } from "react-native";
 import {windowWidth} from "../Utils/Dimensions";
-import {scale, verticalScale} from '../Utils/scale';
+import {scale} from '../Utils/scale';
 import IconButton from "@src/components/IconButton";
 import TouchableScale from "../Components/TouchableScale";
 import TopSlider from '../Components/TopSlider';

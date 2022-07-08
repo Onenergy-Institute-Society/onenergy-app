@@ -85,7 +85,7 @@ const AudioPlayerRoutine = (props) => {
         await TrackPlayer.reset();
         return await TrackPlayer.add(track, -1);
     }
-    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause], (event) => {
+    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.RemoteStop], (event) => {
         if ((event.type === Event.PlaybackState) && ((event.state === State.Stopped) || (event.state === State.None))) {
             setPlaying(false);
             setStopped(true);
@@ -135,15 +135,15 @@ const AudioPlayerRoutine = (props) => {
         if(event.type === 'playback-queue-ended') {
             if (Platform.OS === 'ios') {
                 if (nextTrack === routine.tracks.length - 1) {
-                    TrackPlayer.stop();
-                    TrackPlayer.reset();
+                    setPlaying(false);
+                    setStopped(true);
                     setTrackTitle('');
                     TrackPlayer.removeUpcomingTracks();
                     updateProgress().then();
                 }
             } else {
-                TrackPlayer.stop();
-                TrackPlayer.reset();
+                setPlaying(false);
+                setStopped(true);
                 setTrackTitle('');
                 TrackPlayer.removeUpcomingTracks();
                 updateProgress().then();
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
         ...flexStyles,
         overflow:"hidden",
         paddingHorizontal: 5,
-        height: verticalScale(50),
+        height: scale(50),
         flexDirection: "row",
     },
     progressBarSection: {

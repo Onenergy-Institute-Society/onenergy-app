@@ -6,7 +6,7 @@ import {
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import IconButton from "@src/components/IconButton";
 import {Modalize} from 'react-native-modalize';
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 
 const ChooseSubtitle =(props) => {
     const {textTracks, setSelectedCCUrl} = props;
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
         borderRadius:4,
         zIndex:999,
         position:"absolute",
-        top:verticalScale(20),
+        top:scale(20),
         left:scale(20),
     }
 });

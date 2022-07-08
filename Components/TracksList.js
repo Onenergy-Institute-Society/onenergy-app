@@ -12,7 +12,7 @@ import {
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
 import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
-import {scale, verticalScale} from '../Utils/scale';
+import {scale} from '../Utils/scale';
 import AudioPlayer from './AudioPlayer';
 import {windowWidth} from "../Utils/Dimensions";
 import NotificationTabBarIcon from "./NotificationTabBarIcon";
@@ -50,7 +50,7 @@ const TracksList = (props) => {
             showPlayer = false;
         }
         return (
-            <View style={[styles.trackItem, styles.boxShadow, { height: showPlayer?verticalScale(120):verticalScale(80)}]} key={'practice-'+item.index}>
+            <View style={[styles.trackItem, styles.boxShadow, { height: showPlayer?scale(120):scale(80)}]} key={'practice-'+item.index}>
                 <TouchableOpacity
                     onPress={() => {
                         onTrackItemPress(item).then();
@@ -91,6 +91,7 @@ const TracksList = (props) => {
     return (
         <SafeAreaView style={styles.container}>
             <FlatList
+                style={styles.trackList}
                 data={tracks}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
@@ -105,6 +106,9 @@ const styles = StyleSheet.create({
         justifyContent:"center",
         alignItems:"center",
     },
+    trackList:{
+      paddingTop:scale(5),
+    },
     trackItem: {
         backgroundColor: "white",
         borderRadius: 9,
@@ -112,7 +116,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0,
         width: windowWidth - scale(30),
         marginHorizontal: scale(15),
-        marginTop: verticalScale(15),
+        marginTop: scale(10),
+        marginBottom: scale(5),
         justifyContent: "flex-start",
     },
     trackItemInner: {
@@ -158,7 +163,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'stretch',
-        height: verticalScale(80),
+        height: scale(80),
         borderBottomColor: '#333',
         borderWidth: 0,
     },
@@ -185,7 +190,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: 'flex-start',
-        marginTop: verticalScale(5),
+        marginTop: scale(5),
     },
     subTitleBox: {
         flex: 2,
@@ -211,12 +216,12 @@ const styles = StyleSheet.create({
         height: '100%',
         justifyContent: "flex-start",
         alignItems: "center",
-        paddingTop: verticalScale(10),
+        paddingTop: scale(10),
     },
     playerBox: {
         position: 'absolute',
         zIndex: 10,
-        height: verticalScale(200),
+        height: scale(200),
         width: '100%',
     },
 });

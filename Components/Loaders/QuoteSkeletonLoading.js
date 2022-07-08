@@ -36,10 +36,10 @@ const Skeleton = () => {
                                  resizeMode: "contain",
                                  alignSelf: "flex-start"
                              }}>
-                <View style={{flexDirection:"row", height:verticalScale(6), width: "70%", marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
-                <View style={{flexDirection:"row", height:verticalScale(6), width: "70%", marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
-                <View style={{flexDirection:"row", height:verticalScale(6), width: "70%", marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.7}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /></View>
-                <View style={{flexDirection:"row", height:verticalScale(6), width: "70%", marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
+                <View style={{flexDirection:"row", height:scale(6), width: "70%", marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
+                <View style={{flexDirection:"row", height:scale(6), width: "70%", marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
+                <View style={{flexDirection:"row", height:scale(6), width: "70%", marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.7}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /></View>
+                <View style={{flexDirection:"row", height:scale(6), width: "70%", marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
             </ImageBackground>
         </PlaceholderContainer>
     );
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0,
     },
     placeholder_desc: {
-        height: verticalScale(6),
+        height: scale(6),
         marginHorizontal: scale(5),
         borderRadius:9,
         backgroundColor: '#E6E6E8',

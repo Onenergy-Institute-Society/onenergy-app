@@ -16,7 +16,7 @@ const {width} = Dimensions.get('window')
 import Skeleton from './Loaders/PostsSkeletonLoading';
 import ImageCache from './ImageCache';
 import TouchableScale from './TouchableScale';
-import { scale, verticalScale } from '../Utils/scale';
+import { scale } from '../Utils/scale';
 import NotificationTabBarIcon from "./NotificationTabBarIcon";
 
 const PostList = props => {

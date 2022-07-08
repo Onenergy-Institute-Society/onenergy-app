@@ -8,7 +8,7 @@ import {
     Image,
 } from "react-native";
 import {windowWidth} from "../Utils/Dimensions";
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 
 export default class QuestsAccordian extends Component{
     constructor(props) {
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     },
     row:{
         paddingHorizontal:scale(10),
-        paddingVertical:verticalScale(10),
+        paddingVertical:scale(10),
         borderTopRightRadius: 9,
         borderTopLeftRadius: 9,
         alignItems: 'center',
@@ -84,12 +84,12 @@ const styles = StyleSheet.create({
         width: windowWidth-scale(30),
         flexDirection: 'row',
         backgroundColor: '#e6e6e8',
-        marginTop: verticalScale(10),
+        marginTop: scale(10),
     },
     childRow:{
         flexDirection: 'row',
         width: windowWidth - scale(30),
-        height: verticalScale(32),
+        height: scale(32),
         alignItems:'center',
         paddingLeft:15,
         paddingRight:15,

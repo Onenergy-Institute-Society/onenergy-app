@@ -3,7 +3,7 @@ import {
     StyleSheet, Image, Text, View, TouchableWithoutFeedback
 } from "react-native";
 import { useSelector } from "react-redux";
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import {withNavigation, NavigationActions} from "react-navigation";
 import LinearGradient from 'react-native-linear-gradient';
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
         borderRadius: 9,
     },
     title:{
-        marginBottom:verticalScale(20),
+        marginBottom:scale(20),
         fontWeight: "500",
     },
     image:{

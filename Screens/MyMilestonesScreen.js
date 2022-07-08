@@ -60,7 +60,7 @@ const Tabs = createMaterialTopTabNavigator(
         },
     },
     {
-        initialRouteName: 'Completed',
+        initialRouteName: 'Uncompleted',
         swipeEnabled: true,
         lazy: true,
         optimizationsEnabled: true,

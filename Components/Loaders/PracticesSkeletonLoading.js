@@ -6,7 +6,7 @@ import {
     Placeholder,
 } from 'react-native-loading-placeholder';
 import {windowWidth} from "../../Utils/Dimensions";
-import {scale, verticalScale} from "../../Utils/scale";
+import {scale} from "../../Utils/scale";
 const Gradient = () => {
     return (
         <LinearGradient
@@ -48,9 +48,9 @@ const styles = StyleSheet.create({
         paddingVertical: 0,
         paddingHorizontal: 0,
         width: windowWidth - scale(30),
-        height: verticalScale(80),
+        height: scale(80),
         marginHorizontal: 15,
-        marginVertical: verticalScale(10),
+        marginVertical: scale(10),
         overflow: "hidden",
     },
     trackItemInner: {

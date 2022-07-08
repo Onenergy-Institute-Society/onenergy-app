@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {getApi} from "@src/services";
 import {connect, useSelector} from "react-redux";
 import {View, Text, StyleSheet, SafeAreaView, FlatList, ActivityIndicator} from 'react-native';
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import MilestonesAccordian from "./MilestonesAccordian";
 
@@ -74,8 +74,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#ffffff",
     },
     achievementItemBox: {
-        marginTop:verticalScale(50),
-        marginBottom:verticalScale(20),
+        marginTop:scale(50),
+        marginBottom:scale(20),
         width:windowWidth-scale(30),
         borderRadius: 12,
         backgroundColor: "#fff",
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
         fontSize:scale(14),
     },
     achievementItemBoxInfo: {
-        paddingTop:verticalScale(32),
+        paddingTop:scale(32),
         display: "flex",
         flexDirection:"column",
         alignItems:"center",
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     },
     achievementItemBoxImageWrap: {
         position:"absolute",
-        top:verticalScale(-40),
+        top:scale(-40),
         justifyContent:"center",
         alignItems:"center",
         width: scale(86),
@@ -123,20 +123,20 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     achievementItemBoxTitle: {
-        marginTop:verticalScale(20),
+        marginTop:scale(20),
         fontSize:scale(18),
         fontWeight:'700',
         textAlign:"center"
     },
     achievementItemBoxText: {
-        marginVertical:verticalScale(10),
+        marginVertical:scale(10),
         fontSize:scale(14),
         fontWeight:'500',
         lineHeight:scale(24),
         textAlign:"center"
     },
     achievementItemBoxRequirements: {
-        marginTop:verticalScale(10),
+        marginTop:scale(10),
     },
     achievementItemBoxSubtitle: {
         flexDirection: "row",
@@ -148,9 +148,9 @@ const styles = StyleSheet.create({
         fontSize: scale(12),
     },
     checklistItems: {
-        marginTop:verticalScale(12),
+        marginTop:scale(12),
         paddingRight:scale(12),
-        maxHeight:verticalScale(80),
+        maxHeight:scale(80),
         flexDirection:"row",
     },
     boxShadow: {

@@ -28,7 +28,7 @@ import MyProgressScreen from './Screens/MyProgressScreen';
 import MyVouchersScreen from './Screens/MyVouchersScreen';
 import MyStatsScreen from './Screens/MyStatsScreen';
 import MyMembership from './Screens/MyMembership';
-import {scale, verticalScale} from './Utils/scale';
+import {scale} from './Utils/scale';
 import ImageCache from "./Components/ImageCache";
 import {windowWidth} from "./Utils/Dimensions";
 import ProgramsScreen from "./Screens/ProgramsScreen";
@@ -318,7 +318,7 @@ export const applyCustomCode = externalCodeSetup => {
                 backgroundColor: 'transparent',
             },
             statusBar:{
-                height: verticalScale(25),
+                height: scale(25),
                 position:'absolute',
                 top:10,
                 flexDirection: "row",
@@ -413,7 +413,7 @@ export const applyCustomCode = externalCodeSetup => {
                 paddingVertical: 0,
                 paddingHorizontal: 0,
                 width: '100%',
-                marginBottom: verticalScale(15),
+                marginTop: scale(15),
             },
             boxShadow: {
                 shadowColor: "#000",

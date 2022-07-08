@@ -11,7 +11,7 @@ import {
     ActivityIndicator,
     Image, TouchableOpacity, ScrollView
 } from 'react-native';
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -119,6 +119,10 @@ const MyStatsScreen = (props) => {
                                 <View style={[styles.row, styles.lastRow]}>
                                     <Text style={styles.title}>Total Practice Time:</Text>
                                     <Text style={styles.text}> {Math.round(statsData.total_duration / 60 )>60?Math.round(statsData.total_duration / 60 /60)+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_hours')].title:Math.round(statsData.total_duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title}</Text>
+                                </View>
+                                <View style={[styles.row, styles.lastRow]}>
+                                    <Text style={styles.title}>Total Practice Days:</Text>
+                                    <Text style={styles.text}> {statsData.total_days+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_days')].title}</Text>
                                 </View>
                             </LinearGradient>
                         </View>
@@ -298,10 +302,10 @@ const styles = StyleSheet.create({
         flex:1,
         width: windowWidth-scale(30),
         borderRadius:9,
-        marginTop:verticalScale(15),
+        marginTop:scale(15),
     },
     header:{
-        height: verticalScale(40),
+        height: scale(40),
         paddingTop: 15,
         paddingHorizontal:15,
         borderTopRightRadius: 9,
@@ -341,7 +345,7 @@ const styles = StyleSheet.create({
         marginBottom:scale(10)
     },
     bottom: {
-        height:verticalScale(15),
+        height:scale(15),
         borderBottomRightRadius: 9,
         borderBottomLeftRadius:9,
     },

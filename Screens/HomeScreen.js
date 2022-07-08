@@ -15,7 +15,7 @@ import FastImage from 'react-native-fast-image';
 import { createStackNavigator } from 'react-navigation-stack';
 import HomeContent from './HomeContent';
 import IconButton from "@src/components/IconButton";
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 
 const CustomDrawerContentComponent = (props) => {
@@ -28,7 +28,7 @@ const CustomDrawerContentComponent = (props) => {
         <SafeAreaView style={{flex:1, backgroundColor: colors.bodyBg}}>
             <ImageBackground
                 source={{uri: 'https://assets.onenergy.institute/wp-content/uploads/2021/11/1-1024x683.jpg'}}
-                style={{height:verticalScale(140), justifyContent:"center", alignItems:"center"}}>
+                style={{height:scale(140), justifyContent:"center", alignItems:"center"}}>
                 {user?
                     <>
                         <View style={{flexDirection:'row', justifyContent:"space-between"}}>
@@ -38,7 +38,7 @@ const CustomDrawerContentComponent = (props) => {
                                 >
                                     <FastImage
                                         source={{uri: user.avatar_urls['full']?user.avatar_urls['full']:user.avatar_urls['96']}}
-                                        style={{height: scale(80), width: scale(80), borderRadius: 100, margin: verticalScale(10)}}
+                                        style={{height: scale(80), width: scale(80), borderRadius: 100, margin: scale(10)}}
                                     />
                                 </TouchableOpacity>
                             </View>
@@ -219,7 +219,7 @@ const CustomDrawerContentComponent = (props) => {
                     }
                 </View>
             ):null}
-            <View style={{flex:1,justifyContent:"flex-end", marginBottom:verticalScale(30),padding: 15, borderTopWidth: 1, borderTopColor: '#ccc'}}>
+            <View style={{flex:1,justifyContent:"flex-end", marginBottom:scale(30),padding: 15, borderTopWidth: 1, borderTopColor: '#ccc'}}>
                 {user?
                     <TouchableOpacity
                         onPress={() => navigation.navigate("MyFeedbackScreen")}

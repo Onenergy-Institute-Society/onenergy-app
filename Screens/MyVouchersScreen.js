@@ -12,7 +12,7 @@ import {
     Alert,
     ActivityIndicator,
 } from 'react-native';
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import moment from 'moment';
 import RNRestart from 'react-native-restart';
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
         fontSize:scale(24),
     },
     voucherItem:{
-        marginTop:verticalScale(20),
+        marginTop:scale(20),
         marginHorizontal:scale(15),
         backgroundColor: 'white',
         borderRadius: 9,

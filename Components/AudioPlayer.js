@@ -5,7 +5,7 @@ import {TouchableOpacity, View} from 'react-native';
 import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
 import IconButton from "@src/components/IconButton";
 import { StyleSheet } from 'react-native';
-import { scale, verticalScale } from '../Utils/scale';
+import { scale } from '../Utils/scale';
 import TrackSlider from "./TrackSlider";
 import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 
@@ -78,7 +78,7 @@ const AudioPlayer = (props) => {
         await TrackPlayer.reset();
         return await TrackPlayer.add(track, -1);
     }
-    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause], (event) => {
+    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.RemoteStop, Event.PlaybackQueueEnded], (event) => {
         if (event.state === State.Playing) {
             setPlaying(true);
             setStopped(false);
@@ -112,32 +112,27 @@ const AudioPlayer = (props) => {
             setStopped(true);
             deactivateKeepAwake();
         }
-    });
-
-/*    useTrackPlayerEvents([Event.PlaybackTrackChanged], ({nextTrack}) => {
-        if (nextTrack) setTrackTitle(track[parseInt(nextTrack, 10)].title);
-        let index = parseInt(nextTrack, 10);
-        if (track[index]) {
-            setTrackTitle(track[index].title);
-        }
-    });*/
-    useTrackPlayerEvents([Event.PlaybackQueueEnded], (event) => {
         if(event.type === 'playback-queue-ended') {
             TrackPlayer.stop();
             TrackPlayer.reset();
             updateProgress().then();
-            if(notification['practice'].length === 1){
-                dispatch({
-                    type: 'NOTIFICATION_CLEAR',
-                    payload: 'guide_personal'
-                });
+            if(notification) {
+                if (notification['practice']){
+                    if(notification['practice'].length >= 1) {
+                        dispatch({
+                            type: 'NOTIFICATION_CLEAR',
+                            payload: 'guide_personal'
+                        });
+                    }
+                    dispatch({
+                        type: 'NOTIFICATION_PRACTICE_REMOVE',
+                        payload: track.guide,
+                    });
+                }
             }
-            dispatch({
-                type: 'NOTIFICATION_PRACTICE_REMOVE',
-                payload: track.guide,
-            });
         }
     });
+
     const onPlayPausePress = async () => {
         const state = await TrackPlayer.getState();
         if (state === State.Playing) {
@@ -207,7 +202,7 @@ const styles = StyleSheet.create({
         ...flexStyles,
         overflow:"hidden",
         paddingHorizontal: 5,
-        height: verticalScale(50),
+        height: scale(50),
         flexDirection: "row",
     },
     progressBarSection: {

@@ -15,7 +15,7 @@ import {connect, useSelector} from "react-redux";
 import {getApi} from "@src/services";
 import {windowWidth, windowHeight} from "../Utils/Dimensions";
 import IconButton from "@src/components/IconButton";
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import { BlurView } from "@react-native-community/blur";
 import ScalableImage from "../Components/ScalableImage";
 import RNFetchBlob from 'rn-fetch-blob';
@@ -93,12 +93,12 @@ const QuotesScreen = props => {
                 useDownloadManager: true,
                 notification: true,
                 description: 'Image',
+                path:
+                    PictureDir +
+                    '/image_' +
+                    Math.floor(date.getTime() + date.getSeconds() / 2) +
+                    ext,
             },
-            path:
-                PictureDir +
-                '/image_' +
-                Math.floor(date.getTime() + date.getSeconds() / 2) +
-                ext,
         };
         config(options)
             .fetch('GET', image_URL)
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
         width: windowWidth,
     },
     title: {
-        marginBottom:verticalScale(25),
+        marginBottom:scale(25),
         fontSize: scale(14),
         textAlign: 'center',
         color: '#000',

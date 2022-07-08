@@ -9,7 +9,7 @@ import {
     ActivityIndicator,
     Image, ScrollView
 } from 'react-native';
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 
 const QuestsMonthly = (props) => {
@@ -88,17 +88,17 @@ const styles = StyleSheet.create({
     },
     row:{
         paddingHorizontal:scale(10),
-        paddingVertical:verticalScale(10),
+        paddingVertical:scale(10),
         borderRadius: 9,
         alignItems: 'center',
         justifyContent: 'center',
         width: (windowWidth-46)/5,
         backgroundColor: '#e6e6e8',
-        marginTop: verticalScale(2),
+        marginTop: scale(2),
     },
     achievementItemBox: {
-        marginTop:verticalScale(50),
-        marginBottom:verticalScale(20),
+        marginTop:scale(50),
+        marginBottom:scale(20),
         width:windowWidth-scale(30),
         borderRadius: 12,
         backgroundColor: "#fff",
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
         fontSize:scale(14),
     },
     achievementItemBoxInfo: {
-        paddingTop:verticalScale(32),
+        paddingTop:scale(32),
         display: "flex",
         flexDirection:"column",
         alignItems:"center",
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     achievementItemBoxImageWrap: {
         position:"absolute",
         left: 10,
-        top:verticalScale(-30),
+        top:scale(-30),
         justifyContent:"center",
         paddingLeft:scale(16),
         paddingBottom:scale(17),
@@ -140,13 +140,13 @@ const styles = StyleSheet.create({
         borderRadius:scale(43),
     },
     achievementItemBoxTitle: {
-        marginTop:verticalScale(20),
+        marginTop:scale(20),
         fontSize:scale(18),
         fontWeight:'700',
         textAlign:"center"
     },
     achievementItemBoxText: {
-        marginVertical:verticalScale(10),
+        marginVertical:scale(10),
         fontSize:scale(14),
         fontWeight:'500',
         lineHeight:scale(24),
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
         fontSize: scale(12),
     },
     achievementItemBoxRequirements: {
-        marginTop:verticalScale(10),
+        marginTop:scale(10),
     },
     achievementItemBoxSubtitle: {
         flexDirection: "row",
@@ -174,9 +174,9 @@ const styles = StyleSheet.create({
         fontSize: scale(12),
     },
     checklistItems: {
-        marginTop:verticalScale(12),
+        marginTop:scale(12),
         paddingRight:scale(12),
-        maxHeight:verticalScale(80),
+        maxHeight:scale(80),
         flexDirection:"row",
     },
     calendarItems:{

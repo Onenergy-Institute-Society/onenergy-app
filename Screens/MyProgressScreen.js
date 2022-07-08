@@ -10,7 +10,7 @@ import {
     Text,
     ActivityIndicator
 } from 'react-native';
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import Timeline from "../Components/Timeline";
 

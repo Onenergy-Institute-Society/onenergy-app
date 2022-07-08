@@ -65,7 +65,7 @@ const ProgramsScreen = props => {
                 </View>
                 :
                 <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                    <View style={{marginVertical:verticalScale(5)}}>
+                    <View style={{marginVertical:scale(5)}}>
                         <EventList location={'program'} eventsDate={optionData.goals} />
                         <EventList location={'program'} eventsDate={optionData.webinars} />
                     </View>
@@ -97,7 +97,7 @@ const ProgramsScreen = props => {
                         /></View>
                 }
             >
-                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?verticalScale(-100):0}} >
+                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?scale(-100):0}} >
                     <BlockScreen pageId={helpModal.id}
                                  contentInsetTop={0}
                                  contentOffsetY={0}
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
         width: (windowWidth - scale(50)) / 2,
         height: (windowWidth - scale(30)) / 2,
         marginRight: 20,
-        marginVertical:verticalScale(15),
+        marginVertical:scale(15),
         backgroundColor: 'white',
         borderRadius: 9,
         paddingVertical: 0,

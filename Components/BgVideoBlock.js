@@ -2,7 +2,7 @@ import React, {useRef} from "react";
 import {
     StyleSheet, Image, View, TouchableWithoutFeedback, Text
 } from "react-native";
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import Video from "react-native-video";
 

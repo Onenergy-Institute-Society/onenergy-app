@@ -18,7 +18,7 @@ import {getApi} from "@src/services";
 import IconButton from "@src/components/IconButton";
 import {NavigationActions, withNavigation} from "react-navigation";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import HTML from "react-native-render-html";
 import moment from 'moment';
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
@@ -139,7 +139,6 @@ const PracticeGroup = props => {
         },
     };
     const renderItem = ({ item }) => {
-        console.log(item)
         let detail = item.content.rendered;
         const conditionLessons  = item.meta_box.lessons.every(value => user.completed_lessons.some(lesson=>(lesson.id===value)));
         user.completed_lessons.map((lesson) => {
@@ -168,8 +167,8 @@ const PracticeGroup = props => {
             }
         })
         return (
-            <View style={[styles.containerStyle, styles.boxShadow, {height: verticalScale(200)}]} key={'gp-' + item.id}>
-                <ImageBackground style={[styles.imageView, {height: verticalScale(200)}]} source={{uri: item.meta_box.bg_image.full_url}}>
+            <View style={[styles.containerStyle, styles.boxShadow, {height: scale(200)}]} key={'gp-' + item.id}>
+                <ImageBackground style={[styles.imageView, {height: scale(200)}]} source={{uri: item.meta_box.bg_image.full_url}}>
                     <View style={{height:scale(60), justifyContent:"center", alignItems:"center", width:windowWidth-scale(30)}}>
                         <Text style={styles.title}>{item.title.rendered}</Text>
                     </View>
@@ -257,7 +256,7 @@ const PracticeGroup = props => {
             ):(
                 <ScrollView nestedScrollEnabled={true} styles={styles.scrollView} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
-                        <View style={{marginVertical: verticalScale(5)}}>
+                        <View>
                             <EventList location={'practice_group'} eventsDate={optionData.goals} />
                             <EventList location={'practice_group'} eventsDate={optionData.challenges} />
                         </View>
@@ -339,7 +338,7 @@ const PracticeGroup = props => {
                     </View>
                 }
             >
-                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?verticalScale(-100):0}} >
+                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?scale(-100):0}} >
                     <BlockScreen pageId={helpData.id}
                                  contentInsetTop={0}
                                  contentOffsetY={0}
@@ -374,7 +373,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f6f6f8',
         width: windowWidth - scale(30),
         marginHorizontal: scale(15),
-        marginBottom: verticalScale(15),
+        marginBottom: scale(15),
         borderRadius: 9,
     },
     boxShadow: {
@@ -433,7 +432,7 @@ const styles = StyleSheet.create({
     viewTop: {
         padding:10,
         width: windowWidth - scale(30),
-        height:verticalScale(100),
+        height:scale(100),
         alignItems: "center",
         justifyContent: "space-around",
 
@@ -441,17 +440,17 @@ const styles = StyleSheet.create({
     viewTopInfo: {
         padding:10,
         width: windowWidth - scale(30),
-        height:verticalScale(100),
+        height:scale(100),
         alignItems: "center",
         justifyContent: "center",
     },
     viewDetail:{
         justifyContent:"center",
         alignItems:"center",
-        height:verticalScale(30),
+        height:scale(30),
     },
     viewBottom: {
-        height:verticalScale(30),
+        height:scale(30),
         width: windowWidth - scale(30),
         justifyContent:"center",
         alignItems: "center",
@@ -470,7 +469,7 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         alignSelf:"center",
         textAlign:"center",
-        marginVertical:verticalScale(5),
+        marginVertical:scale(5),
     },
     btnJoin: {
         fontSize: scale(20),
@@ -478,7 +477,7 @@ const styles = StyleSheet.create({
         borderRadius:9,
         backgroundColor:"#4942e1",
         padding:10,
-        marginBottom:verticalScale(10),
+        marginBottom:scale(10),
     }
 });
 const mapStateToProps = (state) => ({

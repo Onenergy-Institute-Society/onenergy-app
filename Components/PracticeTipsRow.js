@@ -86,32 +86,31 @@ const PracticeTipsRow = props => {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            {postLoading?(
-                <View style={{height:150, justifyContent:"center", alignItems:"flex-start"}}>
-                    <ActivityIndicator size="large"/>
+        postLoading?(
+            <View style={{height:150, justifyContent:"center", alignItems:"center"}}>
+                <ActivityIndicator size="large"/>
+            </View>
+        ):(
+            dataPosts?
+                <View style={styles.ScrollView}>
+                    {showTitle?
+                        <View style={styles.view_blog_title}>
+                            <Text style={styles.heading}>Practice Tips</Text>
+                        </View>
+                        :null
+                    }
+                    <FlatList
+                        style = {styles.postsTips}
+                        data={dataPosts}
+                        renderItem={renderItem}
+                        extraData={this.props}
+                        keyExtractor={item => item.id}
+                        showsHorizontalScrollIndicator={false}
+                        horizontal
+                    />
                 </View>
-            ):(
-                dataPosts?
-                    <View style={styles.ScrollView}>
-                        {showTitle?
-                            <View style={styles.view_blog_title}>
-                                <Text style={styles.heading}>Practice Tips</Text>
-                            </View>
-                            :null
-                        }
-                        <FlatList
-                            data={dataPosts}
-                            renderItem={renderItem}
-                            extraData={this.props}
-                            keyExtractor={item => item.id}
-                            showsHorizontalScrollIndicator={false}
-                            horizontal
-                        />
-                    </View>
-                :null
-            )}
-        </SafeAreaView>
+            :null
+        )
     );
 };
 
@@ -210,6 +209,7 @@ const styles = StyleSheet.create({
         width: windowWidth - scale(30),
         justifyContent: "flex-start",
         marginVertical: 10,
+        marginLeft:scale(15),
     },
     heading: {
         fontSize: scale(18),
@@ -217,6 +217,9 @@ const styles = StyleSheet.create({
         fontWeight: "normal",
         alignSelf: "baseline",
     },
+    postsTips:{
+        paddingLeft:scale(15),
+    }
 });
 
 const mapStateToProps = (state) => ({

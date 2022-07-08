@@ -12,7 +12,7 @@ import VideoPlayer from 'react-native-video-player';
 import Orientation from 'react-native-orientation';
 import InteractiveTranscripts from './InteractiveTranscripts';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import ChooseSubtitle from "./ChooseSubtitle";
 
 export const VideoModal = props => {
@@ -392,6 +392,6 @@ const styles = StyleSheet.create({
         borderRadius:4,
         zIndex:999,
         position:"absolute",
-        top:verticalScale(10),
+        top:scale(10),
     }
 });

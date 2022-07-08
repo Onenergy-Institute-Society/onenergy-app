@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     containerStyle: {
         backgroundColor:"white",
         borderRadius: 9,
-        marginTop: verticalScale(15),
+        marginTop: scale(15),
         marginHorizontal: scale(15),
         width: windowWidth - scale(30),
     },

@@ -6,7 +6,7 @@ import {
     Placeholder,
 } from 'react-native-loading-placeholder';
 import {windowWidth} from "../../Utils/Dimensions";
-import {scale, verticalScale} from "../../Utils/scale";
+import {scale} from "../../Utils/scale";
 
 const { height, width } = Dimensions.get('window');
 
@@ -36,10 +36,10 @@ const Skeleton = () => {
                     <Placeholder style={styles.placeholder_image} />
                 </View>
                 <View style={styles.overlay}>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /></View>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /></View>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
                     <View style={styles.metaRow}>
                         <Placeholder style={styles.placeholder_avatar} /><Placeholder style={styles.placeholder_author} />
                     </View>
@@ -50,10 +50,10 @@ const Skeleton = () => {
                     <Placeholder style={styles.placeholder_image} />
                 </View>
                 <View style={styles.overlay}>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /></View>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /></View>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
                     <View style={styles.metaRow}>
                         <Placeholder style={styles.placeholder_avatar} /><Placeholder style={styles.placeholder_author} />
                     </View>
@@ -64,10 +64,10 @@ const Skeleton = () => {
                     <Placeholder style={styles.placeholder_image} />
                 </View>
                 <View style={styles.overlay}>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /></View>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /></View>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
                     <View style={styles.metaRow}>
                         <Placeholder style={styles.placeholder_avatar} /><Placeholder style={styles.placeholder_author} />
                     </View>
@@ -78,10 +78,10 @@ const Skeleton = () => {
                     <Placeholder style={styles.placeholder_image} />
                 </View>
                 <View style={styles.overlay}>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /></View>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /></View>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
                     <View style={styles.metaRow}>
                         <Placeholder style={styles.placeholder_avatar} /><Placeholder style={styles.placeholder_author} />
                     </View>
@@ -92,10 +92,10 @@ const Skeleton = () => {
                     <Placeholder style={styles.placeholder_image} />
                 </View>
                 <View style={styles.overlay}>
-                    <View style={{flexDirection:"row", height:verticalScale(16), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /></View>
-                    <View style={{flexDirection:"row", height:verticalScale(16), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /></View>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
-                    <View style={{flexDirection:"row", height:verticalScale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(16), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(16), width: "90%", marginVertical:5}}><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
+                    <View style={{flexDirection:"row", height:scale(10), width: "90%", marginVertical:2}}><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /></View>
                     <View style={styles.metaRow}>
                         <Placeholder style={styles.placeholder_avatar} /><Placeholder style={styles.placeholder_author} />
                     </View>
@@ -157,13 +157,13 @@ const styles = StyleSheet.create({
         borderRadius: 9,
     },
     placeholder_title: {
-        height: verticalScale(16),
+        height: scale(16),
         marginHorizontal: scale(5),
         borderRadius:4,
         backgroundColor: '#E6E6E8',
     },
     placeholder_desc: {
-        height: verticalScale(10),
+        height: scale(10),
         marginHorizontal: scale(5),
         borderRadius:4,
         backgroundColor: '#E6E6E8',
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     },
     placeholder_author: {
         width: scale(80),
-        height: verticalScale(15),
+        height: scale(15),
         borderRadius:4,
         backgroundColor: '#E6E6E8',
     },
