@@ -7,7 +7,7 @@ import {windowWidth} from "../Utils/Dimensions";
 import MilestonesAccordian from "./MilestonesAccordian";
 
 const Milestones = (props) => {
-    const {completed} = props;
+    const {type} = props;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'achievement_milestone_empty');
     const emptyText = optionData.titles[emptyTextIndex].title
@@ -17,7 +17,7 @@ const Milestones = (props) => {
         try {
             const apiQuotes = getApi(props.config);
             await apiQuotes.customRequest(
-                "wp-json/onenergy/v1/milestones/?completed="+completed,
+                "wp-json/onenergy/v1/milestones/?category="+type,
                 "get",
                 {},
                 null,
@@ -36,7 +36,7 @@ const Milestones = (props) => {
     }, []);
     const renderItem = ({ item }) => {
         return (
-            <MilestonesAccordian item={item} completed={completed} />
+            <MilestonesAccordian item={item} />
         );
     };
     return(
