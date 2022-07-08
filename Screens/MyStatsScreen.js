@@ -120,6 +120,7 @@ const MyStatsScreen = (props) => {
                                     <Text style={styles.title}>Total Practice Time:</Text>
                                     <Text style={styles.text}> {Math.round(statsData.total_duration / 60 )>60?Math.round(statsData.total_duration / 60 /60)+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_hours')].title:Math.round(statsData.total_duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title}</Text>
                                 </View>
+                                <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
                                 <View style={[styles.row, styles.lastRow]}>
                                     <Text style={styles.title}>Total Practice Days:</Text>
                                     <Text style={styles.text}> {statsData.total_days+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_days')].title}</Text>
