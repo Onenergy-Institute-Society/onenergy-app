@@ -16,7 +16,7 @@ import {Swipeable, GestureHandlerRootView} from "react-native-gesture-handler";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import SortList from "./SortList";
 import { Modalize } from 'react-native-modalize';
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { BlurView } from "@react-native-community/blur";
@@ -231,6 +231,9 @@ const EditRoutine = props => {
         return (
             <Swipeable
                 ref={ref => row[id] = ref}
+                friction={2}
+                leftThreshold={10}
+                rightThreshold={10}
                 renderRightActions={(_, dragX) => rightActions(dragX, itemData, id)}
                 onSwipeableRightWillOpen={handleWillOpen(id)}
                 onSwipeableLeftWillOpen={handleWillOpen(id)}
@@ -394,7 +397,7 @@ const EditRoutine = props => {
                 value={routineDetail?routineDetail.title:''}
             />
             </View>
-            <View style={{width: windowWidth-30, flexDirection:"row", justifyContent: "flex-start", alignItems:"center"}}>
+            <View style={{width: windowWidth-scale(30), flexDirection:"row", justifyContent: "flex-start", alignItems:"center"}}>
                 <Text style={styles.title}>Background Image</Text>
             </View>
             <View>
@@ -402,7 +405,7 @@ const EditRoutine = props => {
                     {renderColor()}
                 </View>
             </View>
-            <View style={{width: windowWidth-30, flexDirection:"row", justifyContent: "flex-start", alignItems:"center"}}>
+            <View style={{width: windowWidth-scale(30), flexDirection:"row", justifyContent: "flex-start", alignItems:"center"}}>
                 <Text style={styles.title}>Background Music</Text>
             </View>
             <View>
@@ -422,7 +425,7 @@ const EditRoutine = props => {
                     </TouchableWithoutFeedback>
                 </View>
             </View>
-            <View style={{width: windowWidth-30, flexDirection:"row", justifyContent: "space-between", alignItems:"center"}}>
+            <View style={{width: windowWidth-scale(30), flexDirection:"row", justifyContent: "space-between", alignItems:"center"}}>
                 <Text style={styles.title}>Practices</Text>
                 <IconButton
                     pressHandler={() => {Keyboard.dismiss();this.addGuideModal.open();}}
@@ -486,7 +489,7 @@ const EditRoutine = props => {
                     /></View>
                 }
             >
-                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?verticalScale(-100):0}} >
+                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?scale(-100):0}} >
                     <BlockScreen pageId={routineHelpModal.id}
                                  contentInsetTop={0}
                                  contentOffsetY={0}
@@ -612,14 +615,14 @@ const styles = StyleSheet.create({
         paddingHorizontal:15,
     },
     list:{
-        width: windowWidth-30,
+        width: windowWidth-scale(30),
         flex:1,
         justifyContent:'center',
         alignItems:'flex-start',
         overflow:'scroll',
     },
     contentContainer:{
-        width: windowWidth-30,
+        width: windowWidth-scale(30),
     },
     loading: {
         position: 'absolute',
@@ -633,7 +636,7 @@ const styles = StyleSheet.create({
     index:{
     },
     listContainer:{
-        width:windowWidth-30,
+        width:windowWidth-scale(30),
         aspectRatio:8,
         flexDirection:'row',
         marginBottom:5,
@@ -678,7 +681,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     inputName:{
-        width: windowWidth - 30,
+        width: windowWidth - scale(30),
         height: 50,
         fontSize: 18,
         borderRadius: 9,

@@ -65,7 +65,8 @@ const ProgramsScreen = props => {
                 </View>
                 :
                 <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                    <View style={{marginVertical:verticalScale(5)}}>
+                    <View style={{marginVertical:scale(5)}}>
+                        <EventList location={'program'} eventsDate={optionData.goals} />
                         <EventList location={'program'} eventsDate={optionData.webinars} />
                     </View>
                     <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
@@ -96,7 +97,7 @@ const ProgramsScreen = props => {
                         /></View>
                 }
             >
-                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?verticalScale(-100):0}} >
+                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?scale(-100):0}} >
                     <BlockScreen pageId={helpModal.id}
                                  contentInsetTop={0}
                                  contentOffsetY={0}
@@ -130,18 +131,18 @@ const styles = StyleSheet.create({
         alignSelf: "baseline",
     },
     block_half: {
-        width: (windowWidth - 50) / 2,
-        height: (windowWidth - 30) / 2,
+        width: (windowWidth - scale(50)) / 2,
+        height: (windowWidth - scale(30)) / 2,
         backgroundColor: 'white',
         borderRadius: 9,
         paddingVertical: 0,
         paddingHorizontal: 0,
     },
     block_half_left: {
-        width: (windowWidth - 50) / 2,
-        height: (windowWidth - 30) / 2,
+        width: (windowWidth - scale(50)) / 2,
+        height: (windowWidth - scale(30)) / 2,
         marginRight: 20,
-        marginVertical:verticalScale(15),
+        marginVertical:scale(15),
         backgroundColor: 'white',
         borderRadius: 9,
         paddingVertical: 0,
@@ -152,20 +153,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     view_intro: {
-        marginVertical:10,
-        marginHorizontal:15,
-        width:windowWidth-30,
-        height:windowWidth-30,
+        marginTop:scale(15),
+        marginHorizontal:scale(15),
+        width:windowWidth-scale(30),
+        height:windowWidth-scale(30),
         borderRadius: 9,
     },
     image_intro: {
-        width:windowWidth-30,
-        height:windowWidth-30,
+        width:windowWidth-scale(30),
+        height:windowWidth-scale(30),
         borderRadius: 9,
     },
     image_half: {
-        width: (windowWidth - 50) / 2,
-        height: (windowWidth - 30) / 2,
+        width: (windowWidth - scale(50)) / 2,
+        height: (windowWidth - scale(30)) / 2,
         flex: 1,
         borderRadius: 9,
         overflow: 'hidden',

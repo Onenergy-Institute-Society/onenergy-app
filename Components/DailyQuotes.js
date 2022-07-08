@@ -25,7 +25,7 @@ const DailyQuotes = (props) => {
                     console.log(`${err}`);
                 }
             }}>
-            <ImageBackground source={{uri: 'https://app.onenergy.institute/wp-content/uploads/2022/01/design-6.png'}} style={[styles.imageView, styles.boxShadow]}
+            <ImageBackground source={{uri: 'https://assets.onenergy.institute/wp-content/uploads/2022/01/design-6.png'}} style={[styles.imageView, styles.boxShadow]}
                              imageStyle={{
                                 resizeMode: "contain",
                                 alignSelf: "flex-start"
@@ -38,7 +38,7 @@ const DailyQuotes = (props) => {
 const styles = StyleSheet.create({
     image: {
         width: windowWidth-scale(30),
-        height: (windowWidth-30)/3.25,
+        height: (windowWidth-scale(30))/3.25,
         borderRadius: 9,
         overflow: 'hidden',
     },

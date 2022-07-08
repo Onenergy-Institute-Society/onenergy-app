@@ -51,8 +51,8 @@ const CategoryScreen = props => {
 };
 const styles = StyleSheet.create({
     image: {
-        width: windowWidth - 30,
-        height: (windowWidth - 30) / 2.5,
+        width: windowWidth - scale(30),
+        height: (windowWidth - scale(30)) / 2.5,
         borderRadius: 9,
         overflow: 'hidden',
         marginHorizontal:15,

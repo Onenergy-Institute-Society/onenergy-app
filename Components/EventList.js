@@ -13,6 +13,7 @@ import AwesomeAlert from "../Components/AwesomeAlert";
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import moment from 'moment';
+import ImageCache from "./ImageCache";
 
 const EventList = props => {
     const {navigation, location, eventsDate} = props;
@@ -20,9 +21,16 @@ const EventList = props => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertTitle, setAlertTitle] = useState('');
     const [alertBody, setAlertBody] = useState('');
+    const [visualGuide, setVisualGuide] = useState(false);
     const current_time = new moment.utc();
     let displayGroup = [];
-    //console.log(user);
+    useEffect(()=>{
+        if(user){
+            setTimeout(function () {
+                setVisualGuide(true);
+            }, 10000);
+        }
+    },[])
     const renderItem = () => {
         return eventsDate.map((item) => {
             let showDate = null;
@@ -121,111 +129,126 @@ const EventList = props => {
                             break;
                     }
                 }
-                if(show)
-                    if(item.group) {
+                if(show) {
+                    if (item.group) {
                         if (displayGroup.includes(item.group)) {
                             show = false;
                         } else {
                             displayGroup = [...displayGroup, item.group];
                         }
                     }
+                }
             }
-            //console.log(show, item,  item.image);
             return (
                 show?
-                <TouchableScale
-                    onPress={async () => {
-                        try {
-                            if(item.link)
-                            {
-                                switch(item.link)
+                    <View style={styles.container}>
+                        <TouchableScale
+                        onPress={async () => {
+                            try {
+                                if(item.link)
                                 {
-                                    case 'alert':
-                                        setAlertTitle('Notice');
-                                        setAlertBody(item.param);
-                                        setShowAlert(true);
-                                        break;
-                                    case 'app':
-                                        navigation.dispatch(
-                                            NavigationActions.navigate({
-                                                routeName: "MyAppPageScreen",
-                                                params: {
-                                                    pageId: item.param,
-                                                    title: ''
-                                                }
-                                            })
-                                        )
-                                        break;
-                                    case 'blog':
-                                        navigation.dispatch(
-                                            NavigationActions.navigate({
-                                                routeName: "MyBlogScreen",
-                                                params: {
-                                                    blogId: item.param,
-                                                    title: ''
-                                                }
-                                            })
-                                        )
-                                        break;
-                                    case 'course':
-                                        navigation.dispatch(
-                                            NavigationActions.navigate({
-                                                routeName: "MyCourseScreen",
-                                                params: {
-                                                    courseId: parseInt(item.param),
-                                                }
-                                            })
-                                        )
-                                        break;
-                                    case 'link':
-                                        await props.attemptDeepLink(false)(null, item.param);
-                                        break;
-                                    case 'screen':
-                                        navigation.dispatch(
-                                            NavigationActions.navigate({
-                                                routeName: item.param
-                                            })
-                                        )
-                                        break;
-                                    default:
-                                        break;
+                                    switch(item.link)
+                                    {
+                                        case 'alert':
+                                            setAlertTitle('Notice');
+                                            setAlertBody(item.param);
+                                            setShowAlert(true);
+                                            break;
+                                        case 'app':
+                                            navigation.dispatch(
+                                                NavigationActions.navigate({
+                                                    routeName: "MyAppPageScreen",
+                                                    params: {
+                                                        pageId: item.param,
+                                                        title: ''
+                                                    }
+                                                })
+                                            )
+                                            break;
+                                        case 'blog':
+                                            navigation.dispatch(
+                                                NavigationActions.navigate({
+                                                    routeName: "MyBlogScreen",
+                                                    params: {
+                                                        blogId: item.param,
+                                                        title: ''
+                                                    }
+                                                })
+                                            )
+                                            break;
+                                        case 'course':
+                                            navigation.dispatch(
+                                                NavigationActions.navigate({
+                                                    routeName: "MyCourseScreen",
+                                                    params: {
+                                                        courseId: parseInt(item.param),
+                                                    }
+                                                })
+                                            )
+                                            break;
+                                        case 'link':
+                                            await props.attemptDeepLink(false)(null, item.param);
+                                            break;
+                                        case 'screen':
+                                            navigation.dispatch(
+                                                NavigationActions.navigate({
+                                                    routeName: item.param
+                                                })
+                                            )
+                                            break;
+                                        default:
+                                            break;
+                                    }
                                 }
+                            } catch (err) {
+                                console.log(`${err}`);
                             }
-                        } catch (err) {
-                            console.log(`${err}`);
                         }
-                    }
-                    }>
-                    <View style={[styles.containerStyle, styles.boxShadow]}>
-                        <ScalableImage
-                            width={windowWidth - scale(30)}
-                            style={styles.image}
-                            source={{uri: item.image ? item.image : ''}}/>
-                    </View>
-                </TouchableScale>
-                    :null
+                        }>
+                        <View style={[styles.containerStyle, styles.boxShadow]}>
+                            <ScalableImage
+                                width={windowWidth - scale(30)}
+                                style={styles.image}
+                                source={{uri: item.image ? item.image : ''}}/>
+                        </View>
+                        {visualGuide&&item.showGuide==="1"?
+                            <ImageCache style={{
+                                bottom:5,
+                                alignSelf:"center",
+                                position: "absolute",
+                                width:scale(200),
+                                height:scale(240),
+                                shadowColor: "#000",
+                                shadowOffset: {width: -2, height: 4},
+                                shadowOpacity: 0.2,
+                                shadowRadius: 3,
+                                elevation: 4,
+                            }} source={{uri:'https://cdn.onenergy.institute/images/TapFinger.gif'}} />
+                            :null
+                        }
+                    </TouchableScale>
+                    <AwesomeAlert
+                        show={showAlert}
+                        showProgress={false}
+                        title={alertTitle}
+                        message={alertBody}
+                        closeOnTouchOutside={true}
+                        closeOnHardwareBackPress={true}
+                        showCancelButton={false}
+                        showConfirmButton={true}
+                        confirmText={'Great!'}
+                        confirmButtonColor="#4942E1"
+                        onConfirmPressed={() => {
+                            setShowAlert(false);
+                        }}
+                    />
+                </View>
+                :null
             );
         })
     }
     return (
-        <View style={styles.container}>
-            {eventsDate?renderItem():null}
-            <AwesomeAlert
-                show={showAlert}
-                showProgress={false}
-                title={alertTitle}
-                message={alertBody}
-                closeOnTouchOutside={true}
-                closeOnHardwareBackPress={true}
-                showCancelButton={false}
-                showConfirmButton={true}
-                confirmText={'Great!'}
-                confirmButtonColor="#4942E1"
-                onConfirmPressed={() => {
-                    setShowAlert(false);
-                }}
-            />
-        </View>
+        eventsDate?renderItem():null
     );
 };
 
@@ -238,7 +261,7 @@ const styles = StyleSheet.create({
     containerStyle: {
         backgroundColor:"white",
         borderRadius: 9,
-        marginVertical: verticalScale(10),
+        marginTop: scale(15),
         marginHorizontal: scale(15),
         width: windowWidth - scale(30),
     },

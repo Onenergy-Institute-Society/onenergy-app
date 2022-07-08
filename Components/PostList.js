@@ -16,7 +16,7 @@ const {width} = Dimensions.get('window')
 import Skeleton from './Loaders/PostsSkeletonLoading';
 import ImageCache from './ImageCache';
 import TouchableScale from './TouchableScale';
-import { scale, verticalScale } from '../Utils/scale';
+import { scale } from '../Utils/scale';
 import NotificationTabBarIcon from "./NotificationTabBarIcon";
 
 const PostList = props => {
@@ -71,9 +71,9 @@ const PostList = props => {
     const renderOverlayImage = (format) => {
         switch(format) {
             case 'video':
-                return <View style = {styles.overlay_button}><Image style = {styles.play} source = {{uri: "https://app.onenergy.institute/wp-content/uploads/2021/11/arrow_right-1.png"}} /></View>;
+                return <View style = {styles.overlay_button}><Image style = {styles.play} source = {{uri: "https://assets.onenergy.institute/wp-content/uploads/2021/11/arrow_right-1.png"}} /></View>;
             case 'audio':
-                return <View style = {styles.overlay_button}><Image style = {styles.play} source = {{uri: "https://app.onenergy.institute/wp-content/uploads/2021/11/arrow_right-1.png"}} /></View>;
+                return <View style = {styles.overlay_button}><Image style = {styles.play} source = {{uri: "https://assets.onenergy.institute/wp-content/uploads/2021/11/arrow_right-1.png"}} /></View>;
             default:
                 return null;
         }
@@ -133,7 +133,7 @@ const PostList = props => {
                     <View style={styles.rowStyle}>
                         <View style={styles.imageView}>
                             <ImageCache style={styles.image}
-                                        source={{uri: item._embedded['wp:featuredmedia'][0].source_url ? item._embedded['wp:featuredmedia'][0].source_url : ''}}/>
+                                        source={{uri: item._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url ? item._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url : ''}}/>
                             {renderOverlayImage(item.format)}
                         </View>
                         <View style={styles.overlay}>
@@ -149,7 +149,7 @@ const PostList = props => {
                             </View>
                         </View>
                     </View>
-                    <NotificationTabBarIcon notificationID={mode} top={3} right={3} size={15} fontSize={10} showNumber={false} data={item.id} />
+                    <NotificationTabBarIcon notificationID={mode} top={3} right={3} size={15} fontSize={scale(10)} showNumber={false} data={item.id} />
                 </View>
             </TouchableScale>
         );
@@ -173,7 +173,7 @@ const PostList = props => {
                 />
             )}
             {loadMore ? (
-                <ActivityIndicator style={styles.loading} size="small"/>
+                <ActivityIndicator style={styles.loading} size="large"/>
             ):null}
         </SafeAreaView>
     );
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
         backgroundColor:"white",
         borderRadius: 9,
         marginHorizontal: scale(15),
-        marginBottom: scale(15),
+        marginTop: scale(15),
         width: width - scale(30),
         height: scale(150),
     },
@@ -199,7 +199,6 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     scrollView: {
-        paddingTop: scale(15),
         justifyContent: 'flex-start',
         flexWrap: 'wrap',
         paddingBottom: scale(60),
@@ -264,7 +263,8 @@ const styles = StyleSheet.create({
     },
     loading:{
         textAlign: 'center',
-        padding:5
+        height:scale(70),
+        marginBottom:scale(35),
     },
     overlay_button:{
         flex: 1,

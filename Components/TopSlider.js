@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import Indicator from './Indicator';
 import TopSliderItem from './TopSliderItem';
+import {scale} from "../Utils/scale";
 
 export default class TopSlider extends Component {
     slider = createRef();
@@ -19,8 +20,8 @@ export default class TopSlider extends Component {
         initialScrollIndex: 0,
         imageKey: 'image',
         local: false,
-        width: Math.round(Dimensions.get('window').width-30),
-        height: Math.round((Dimensions.get('window').width-30)/2.5),
+        width: Math.round(Dimensions.get('window').width-scale(30)),
+        height: Math.round((Dimensions.get('window').width-scale(30))/2.5),
         separatorWidth: 0,
         loop: true,
         indicator: true,
@@ -74,7 +75,7 @@ export default class TopSlider extends Component {
 
         return (
             <View>
-                <FlatList style={{maxHeight:Math.round((Dimensions.get('window').width-30)/2.5-10)}}
+                <FlatList style={{maxHeight:Math.round((Dimensions.get('window').width-scale(30))/2.5-scale(10))}}
                     ref={this.slider}
                     windowSize={1}
                     initialNumToRender={1}

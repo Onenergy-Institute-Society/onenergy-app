@@ -15,7 +15,7 @@ import FastImage from 'react-native-fast-image';
 import { createStackNavigator } from 'react-navigation-stack';
 import HomeContent from './HomeContent';
 import IconButton from "@src/components/IconButton";
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 
 const CustomDrawerContentComponent = (props) => {
@@ -27,8 +27,8 @@ const CustomDrawerContentComponent = (props) => {
     return (
         <SafeAreaView style={{flex:1, backgroundColor: colors.bodyBg}}>
             <ImageBackground
-                source={{uri: 'https://app.onenergy.institute/wp-content/uploads/2021/11/1-scaled.jpg'}}
-                style={{height:verticalScale(140), justifyContent:"center", alignItems:"center"}}>
+                source={{uri: 'https://assets.onenergy.institute/wp-content/uploads/2021/11/1-1024x683.jpg'}}
+                style={{height:scale(140), justifyContent:"center", alignItems:"center"}}>
                 {user?
                     <>
                         <View style={{flexDirection:'row', justifyContent:"space-between"}}>
@@ -38,7 +38,7 @@ const CustomDrawerContentComponent = (props) => {
                                 >
                                     <FastImage
                                         source={{uri: user.avatar_urls['full']?user.avatar_urls['full']:user.avatar_urls['96']}}
-                                        style={{height: scale(80), width: scale(80), borderRadius: 100, margin: verticalScale(10)}}
+                                        style={{height: scale(80), width: scale(80), borderRadius: 100, margin: scale(10)}}
                                     />
                                 </TouchableOpacity>
                             </View>
@@ -109,7 +109,7 @@ const CustomDrawerContentComponent = (props) => {
                                         style={{fontSize:scale(18)}}>
                                         {optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_progress')].title}
                                     </Text>
-                                    <NotificationTabBarIcon notificationID={'progress'}  top={0} right={0} size={10} showNumber={false} />
+                                    <NotificationTabBarIcon notificationID={'progress'}  top={0} right={0} size={scale(10)} showNumber={false} />
                                     <IconButton
                                         icon={require("@src/assets/img/arrow-right.png")}
                                         style={{
@@ -130,7 +130,7 @@ const CustomDrawerContentComponent = (props) => {
                                         style={{fontSize:scale(18)}}>
                                         {optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_quests')].title}
                                     </Text>
-                                    <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={10} showNumber={false} />
+                                    <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
                                     <IconButton
                                         icon={require("@src/assets/img/arrow-right.png")}
                                         style={{
@@ -151,7 +151,7 @@ const CustomDrawerContentComponent = (props) => {
                                         style={{fontSize:scale(18)}}>
                                         {optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_achievements')].title}
                                     </Text>
-                                    <NotificationTabBarIcon notificationID={'achievement'}  top={0} right={0} size={10} showNumber={false} />
+                                    <NotificationTabBarIcon notificationID={'achievement'}  top={0} right={0} size={scale(10)} showNumber={false} />
                                     <IconButton
                                         icon={require("@src/assets/img/arrow-right.png")}
                                         style={{
@@ -172,7 +172,7 @@ const CustomDrawerContentComponent = (props) => {
                                         style={{fontSize:scale(18)}}>
                                         {optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_vouchers')].title}
                                     </Text>
-                                    <NotificationTabBarIcon notificationID={'voucher'}  top={0} right={0} size={10} showNumber={false} />
+                                    <NotificationTabBarIcon notificationID={'voucher'}  top={0} right={0} size={scale(10)} showNumber={false} />
                                     <IconButton
                                         icon={require("@src/assets/img/arrow-right.png")}
                                         style={{
@@ -219,7 +219,7 @@ const CustomDrawerContentComponent = (props) => {
                     }
                 </View>
             ):null}
-            <View style={{flex:1,justifyContent:"flex-end", marginBottom:verticalScale(30),padding: 15, borderTopWidth: 1, borderTopColor: '#ccc'}}>
+            <View style={{flex:1,justifyContent:"flex-end", marginBottom:scale(30),padding: 15, borderTopWidth: 1, borderTopColor: '#ccc'}}>
                 {user?
                     <TouchableOpacity
                         onPress={() => navigation.navigate("MyFeedbackScreen")}

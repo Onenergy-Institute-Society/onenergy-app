@@ -9,19 +9,37 @@ import {useSelector} from "react-redux";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import {scale} from "../Utils/scale";
 
-const MilestonesCompleted = () => {
+const MilestonesLearn = () => {
     try {
         return (
-            <Milestones completed={true} />
+            <Milestones type={'learn'} />
         )
     } catch (err) {
         console.log(`${err}`);
     }
 }
-const MilestonesUncompleted = () => {
+const MilestonesPractice = () => {
     try {
         return (
-            <Milestones completed={false} />
+            <Milestones type={'practice'} />
+        )
+    } catch (err) {
+        console.log(`${err}`);
+    }
+}
+const MilestonesStartup = () => {
+    try {
+        return (
+            <Milestones type={'startup'} />
+        )
+    } catch (err) {
+        console.log(`${err}`);
+    }
+}
+const MilestonesStamina = () => {
+    try {
+        return (
+            <Milestones type={'stamina'} />
         )
     } catch (err) {
         console.log(`${err}`);
@@ -36,31 +54,42 @@ const TabTitle = ({tintColor, name}) => {
 }
 const Tabs = createMaterialTopTabNavigator(
     {
-        Uncompleted: {
-            screen: MilestonesUncompleted,
+        Learn: {
+            screen: MilestonesLearn,
             navigationOptions: {
                 tabBarLabel: ({ tintColor }) => (
                     <View>
-                        <TabTitle tintColor={tintColor} name={'milestone_uncompleted_tab'} />
-                        <NotificationTabBarIcon notificationID={'milestone_uncompleted'} top={-5} right={-5} size={10} showNumber={false} />
+                        <TabTitle tintColor={tintColor} name={'milestone_learn_tab'} />
+                        <NotificationTabBarIcon notificationID={'milestone_uncompleted'} top={-5} right={-5} size={scale(10)} showNumber={false} />
                     </View>
                 ),
             }
         },
-        Completed: {
-            screen: MilestonesCompleted,
+        Startup: {
+            screen: MilestonesStartup,
             navigationOptions: {
                 tabBarLabel: ({ tintColor }) => (
                     <View>
-                        <TabTitle tintColor={tintColor} name={'milestone_completed_tab'} />
-                        <NotificationTabBarIcon notificationID={'milestone_completed'} top={-5} right={-5} size={10} showNumber={false} />
+                        <TabTitle tintColor={tintColor} name={'milestone_startup_tab'} />
+                        <NotificationTabBarIcon notificationID={'milestone_completed'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                    </View>
+                ),
+            }
+        },
+        Stamina: {
+            screen: MilestonesStamina,
+            navigationOptions: {
+                tabBarLabel: ({ tintColor }) => (
+                    <View>
+                        <TabTitle tintColor={tintColor} name={'milestone_stamina_tab'} />
+                        <NotificationTabBarIcon notificationID={'milestone_completed'} top={-5} right={-5} size={scale(10)} showNumber={false} />
                     </View>
                 ),
             }
         },
     },
     {
-        initialRouteName: 'Completed',
+        initialRouteName: 'Learn',
         swipeEnabled: true,
         lazy: true,
         optimizationsEnabled: true,

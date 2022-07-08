@@ -6,8 +6,7 @@ import {
     Placeholder,
 } from 'react-native-loading-placeholder';
 import {windowWidth} from "../../Utils/Dimensions";
-
-const { height, width } = Dimensions.get('window');
+import {scale} from "../../Utils/scale";
 
 const Gradient = () => {
     return (
@@ -101,7 +100,7 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     view: {
-        width:windowWidth-30,
+        width:windowWidth-scale(30),
         marginBottom:30,
         minHeight:100,
         alignItems: 'center',
@@ -110,8 +109,8 @@ const styles = StyleSheet.create({
     },
     slideRow: {
         backgroundColor: 'rgba(255,255,255,1)',
-        width:windowWidth-30,
-        height:(windowWidth - 30) / 2.5,
+        width:windowWidth-scale(30),
+        height:(windowWidth - scale(30)) / 2.5,
         borderRadius: 9,
         marginBottom:15,
         alignItems: 'center',
@@ -119,15 +118,15 @@ const styles = StyleSheet.create({
     },
     quoteRow: {
         backgroundColor: 'rgba(255,255,255,1)',
-        width: windowWidth-30,
-        height: (windowWidth-30)/3.75+10,
+        width: windowWidth-scale(30),
+        height: (windowWidth-scale(30))/3.75+10,
         borderRadius: 9,
         marginBottom:15,
         alignItems: 'center',
         justifyContent: 'center',
     },
     eventRow: {
-        width:windowWidth-30,
+        width:windowWidth-scale(30),
         borderRadius: 9,
         marginBottom:20,
         minHeight:100,
@@ -138,7 +137,7 @@ const styles = StyleSheet.create({
     eventRowLeft:{
         backgroundColor: 'rgba(255,255,255,1)',
         width: (windowWidth-50)/3*2,
-        height: (windowWidth-30)/2,
+        height: (windowWidth-scale(30))/2,
         borderRadius: 9,
         alignItems: 'center',
         justifyContent: 'center',
@@ -147,7 +146,7 @@ const styles = StyleSheet.create({
     eventRowRight:{
         backgroundColor: 'rgba(255,255,255,1)',
         width: (windowWidth-50)/3,
-        height: (windowWidth-30)/2,
+        height: (windowWidth-scale(30))/2,
         borderRadius: 9,
         alignItems: 'center',
         justifyContent: 'center',
@@ -155,7 +154,7 @@ const styles = StyleSheet.create({
     halfRowLeft:{
         backgroundColor: 'rgba(255,255,255,1)',
         width: (windowWidth-50)/2,
-        height: (windowWidth-30)/2,
+        height: (windowWidth-scale(30))/2,
         borderRadius: 9,
         alignItems: 'center',
         justifyContent: 'center',
@@ -164,7 +163,7 @@ const styles = StyleSheet.create({
     halfRowRight:{
         backgroundColor: 'rgba(255,255,255,1)',
         width: (windowWidth-50)/2,
-        height: (windowWidth-30)/2,
+        height: (windowWidth-scale(30))/2,
         borderRadius: 9,
         alignItems: 'center',
         justifyContent: 'center',

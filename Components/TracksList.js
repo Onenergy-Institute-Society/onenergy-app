@@ -12,14 +12,14 @@ import {
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
 import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
-import {scale, verticalScale} from '../Utils/scale';
+import {scale} from '../Utils/scale';
 import AudioPlayer from './AudioPlayer';
 import {windowWidth} from "../Utils/Dimensions";
+import NotificationTabBarIcon from "./NotificationTabBarIcon";
+
 const TracksList = (props) => {
     const {tracks, setMessageBarDisplay} = props;
-    const user = useSelector((state) => state.user.userObject);
     const [selectedTrack, setSelectedTrack] = useState(null);
-    const dispatch = useDispatch();
 
     const onTrackItemPress = async (track) => {
         if(!selectedTrack || track.id !== selectedTrack.id) {
@@ -35,70 +35,22 @@ const TracksList = (props) => {
             }
         }
     };
-    const updateProgress = async () => {
-        try {
-            const apiRequest = getApi(props.config);
-            await apiRequest.customRequest(
-                "wp-json/onenergy/v1/progress",
-                "post",
-                {"id":selectedTrack.guide, "type":"Guide_End"},
-                null,
-                {},
-                false
-            ).then(response => {
-                if(response.data.updated) {
-                    dispatch({
-                        type: "UPDATE_POINTS",
-                        payload: response.data.qi
-                    });
-                    dispatch({
-                        type: "UPDATE_USER_POINTS",
-                        payload: response.data.qi
-                    });
-                    dispatch({
-                        type: 'NOTIFICATION_INCREMENT',
-                        payload: 'quest'
-                    });
-                    dispatch({
-                        type: 'NOTIFICATION_INCREMENT',
-                        payload: 'progress'
-                    });
-                    dispatch({
-                        type: 'NOTIFICATION_INCREMENT',
-                        payload: 'achievement'
-                    });
-                }
-                if(response.data.achievements)
-                {
-                    dispatch({
-                        type: 'UPDATE_USER_COMPLETED_ACHIEVEMENTS',
-                        payload:response.data.achievements
-                    });
-                }
-                setMessageBarDisplay(true);
-            });
-        } catch (e) {
-            console.error(e);
-        }
-    }
-    useTrackPlayerEvents([Event.PlaybackQueueEnded], (event) => {
-        updateProgress().then();
-    });
+
     const renderItem = ({ item }) => {
         let bgImage = '';
         let highlightColor = {};
         let showPlayer = false;
         if (selectedTrack && selectedTrack.id === item.id) {
-            bgImage = "https://app.onenergy.institute/wp-content/uploads/2021/11/1-scaled.jpg";
+            bgImage = "https://assets.onenergy.institute/wp-content/uploads/2021/11/1-1024x683.jpg";
             highlightColor = {color: "white"};
             showPlayer = true;
         }else{
-            bgImage = "https://app.onenergy.institute/wp-content/uploads/2021/11/7-scaled.jpg";
+            bgImage = "https://assets.onenergy.institute/wp-content/uploads/2021/11/7-1024x683.jpg";
             highlightColor = {color: "black"};
             showPlayer = false;
         }
         return (
-            <View style={[styles.trackItem, styles.boxShadow, { height: showPlayer?verticalScale(120):verticalScale(80)}]} key={'practice-'+item.index}>
+            <View style={[styles.trackItem, styles.boxShadow, { height: showPlayer?scale(120):scale(80)}]} key={'practice-'+item.index}>
                 <TouchableOpacity
                     onPress={() => {
                         onTrackItemPress(item).then();
@@ -106,7 +58,9 @@ const TracksList = (props) => {
                 >
                     <ImageBackground style={[styles.trackItemInner, styles.itemStyle]} source={{uri: bgImage}}>
                         <View style={styles.trackImgBox}>
-                            <Image style={styles.trackImg} source={{ uri: item.artwork }} />
+                            <ImageBackground style={styles.trackImg} imageStyle={{ borderRadius: 9}} source={{ uri: item.artwork }}>
+                                <View style = {styles.overlay_button}><Image style = {styles.play} source = {{uri: "https://cdn.onenergy.institute/images/audio-play.png"}} /></View>
+                            </ImageBackground>
                         </View>
                         <View style={styles.trackDescBox}>
                             <View style={styles.titleBox}>
@@ -125,9 +79,10 @@ const TracksList = (props) => {
                             </View>
                         </View>
                     </ImageBackground>
+                    <NotificationTabBarIcon notificationID={'practice'} top={3} right={3} size={scale(15)} fontSize={10} showNumber={false} data={item.guide} />
                 </TouchableOpacity>
                 {showPlayer? (
-                    <AudioPlayer track={selectedTrack} />
+                    <AudioPlayer track={selectedTrack} setMessageBarDisplay={setMessageBarDisplay} />
                 ):null}
             </View>
         );
@@ -135,7 +90,12 @@ const TracksList = (props) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <FlatList data={tracks} renderItem={renderItem} keyExtractor={item => item.id} />
+            <FlatList
+                style={styles.trackList}
+                data={tracks}
+                renderItem={renderItem}
+                keyExtractor={item => item.id}
+            />
         </SafeAreaView>
     );
 };
@@ -146,6 +106,9 @@ const styles = StyleSheet.create({
         justifyContent:"center",
         alignItems:"center",
     },
+    trackList:{
+      paddingTop:scale(5),
+    },
     trackItem: {
         backgroundColor: "white",
         borderRadius: 9,
@@ -153,7 +116,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0,
         width: windowWidth - scale(30),
         marginHorizontal: scale(15),
-        marginBottom: verticalScale(15),
+        marginTop: scale(10),
+        marginBottom: scale(5),
         justifyContent: "flex-start",
     },
     trackItemInner: {
@@ -173,15 +137,22 @@ const styles = StyleSheet.create({
     },
     overlay_button:{
         flex: 1,
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        backgroundColor: 'rgba(0,0,0,0.3)',
         position: 'absolute',
-        top:0,
-        left:0,
-        width: scale(70),
         opacity: 1,
-        height: verticalScale(70),
         borderRadius: 9,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    play:{
+        opacity: 0.6,
+        width: 32,
+        height: 32,
+        tintColor: "white"
     },
     playPauseIcon: {
         color: '#000',
@@ -192,7 +163,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'stretch',
-        height: verticalScale(80),
+        height: scale(80),
         borderBottomColor: '#333',
         borderWidth: 0,
     },
@@ -210,7 +181,7 @@ const styles = StyleSheet.create({
     },
     trackImg: {
         width:scale(70),
-        height:verticalScale(70),
+        height:scale(70),
         marginLeft: scale(10),
         borderRadius:9,
     },
@@ -219,7 +190,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: 'flex-start',
-        marginTop: verticalScale(5),
+        marginTop: scale(5),
     },
     subTitleBox: {
         flex: 2,
@@ -245,17 +216,18 @@ const styles = StyleSheet.create({
         height: '100%',
         justifyContent: "flex-start",
         alignItems: "center",
-        paddingTop: verticalScale(10),
+        paddingTop: scale(10),
     },
     playerBox: {
         position: 'absolute',
         zIndex: 10,
-        height: verticalScale(200),
+        height: scale(200),
         width: '100%',
     },
 });
 const mapStateToProps = (state) => ({
     config: state.config,
     accessToken: state.auth.token,
+    notification: state.notification,
 });
 export default connect(mapStateToProps)(TracksList);

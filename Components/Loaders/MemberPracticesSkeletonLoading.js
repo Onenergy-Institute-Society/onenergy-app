@@ -6,7 +6,7 @@ import {
     Placeholder,
 } from 'react-native-loading-placeholder';
 import {windowWidth} from "../../Utils/Dimensions";
-import {verticalScale} from "../../Utils/scale";
+import {scale} from "../../Utils/scale";
 
 const Gradient = () => {
     return (
@@ -45,13 +45,13 @@ const styles = StyleSheet.create({
     },
     trackItem: {
         backgroundColor: '#C6C6C6',
-        height:verticalScale(80),
+        height:scale(80),
         borderRadius: 9,
         paddingVertical: 15,
         paddingHorizontal: 15,
-        width: windowWidth - 30,
+        width: windowWidth - scale(30),
         marginHorizontal: 15,
-        marginVertical: verticalScale(10),
+        marginVertical: scale(10),
         overflow: "hidden",
     },
     boxShadow: {

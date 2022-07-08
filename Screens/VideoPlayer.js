@@ -107,7 +107,7 @@ export default class VideoPlayer extends Component {
                     onLoad={this.onVideoLoad.bind(this)}
                     onProgress={this.onProgress.bind(this)}
                     audioOnly={false}
-                    source={{uri: "https://media.onenergy.institute/videos/preparatory_practices/Preperatory_Quide_Group.mp4"}}   // Can be a URL or a local file.
+                    source={{uri: "https://assets.onenergy.institute/videos/preparatory_practices/Preperatory_Quide_Group.mp4"}}   // Can be a URL or a local file.
                     paused={paused}
 /*                    volume={Math.max(Math.min(1, volume), 0)}*/
                     resizeMode="contain"

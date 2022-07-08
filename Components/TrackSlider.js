@@ -1,4 +1,5 @@
 import React from 'react';
+import {useSelector} from "react-redux";
 import {useProgress} from 'react-native-track-player';
 import { Text } from 'react-native';
 import Slider from 'react-native-slider';
@@ -6,6 +7,7 @@ import {scale} from "../Utils/scale";
 import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
 const TrackSlider = () => {
     const { position, duration } = useProgress()
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const secondsToHHMMSS = (seconds: number | string) => {
         seconds = Number(seconds);
         const h = Math.floor(seconds / 3600);
@@ -30,20 +32,18 @@ const TrackSlider = () => {
                 maximumValue={duration}
                 minimumTrackTintColor={'#4942E1'}
                 maximumTrackTintColor={'#7DE7FA'}
-                disabled={true}
+                disabled={!optionData.testing_mode}
                 onValueChange={val => {
                     TrackPlayer.pause();
-                    this.setState({ isSeeking: true, seek: val, position: val, });
                 }}
-/*                onSlidingComplete={val => {
+                onSlidingComplete={val => {
                     try {
                         TrackPlayer.seekTo(val);
                         TrackPlayer.play();
-                        this.setState({isSeeking: false, value: val});
                     }catch(e){
                         console.log(e);
                     }
-                }}*/
+                }}
             />
             <Text style={{marginLeft:5,fontSize: scale(12),}}>{secondsToHHMMSS(duration || 0)}</Text>
 </>

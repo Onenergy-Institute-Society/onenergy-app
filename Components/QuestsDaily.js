@@ -1,23 +1,33 @@
 import React, {useEffect, useState} from 'react';
 import {getApi} from "@src/services";
 import {connect, useSelector} from "react-redux";
-import {View, Text, StyleSheet, SafeAreaView, FlatList, ActivityIndicator} from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    SafeAreaView,
+    FlatList,
+    ActivityIndicator,
+    Image
+} from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
-import MilestonesAccordian from "./MilestonesAccordian";
 
-const Milestones = (props) => {
+const QuestsDaily = (props) => {
     const {type} = props;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'achievement_milestone_empty');
+    const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'achievement_quest_empty');
     const emptyText = optionData.titles[emptyTextIndex].title
     const [questsData, setQuestsData] = useState({});
     const [questsLoading, setQuestsLoading] = useState(true);
+    let date = new Date();
+    let hours = date.getHours();
+    let hourLeft = 23 - hours;
     const fetchQuests = async () => {
         try {
             const apiQuotes = getApi(props.config);
             await apiQuotes.customRequest(
-                "wp-json/onenergy/v1/milestones/?category="+type,
+                "wp-json/onenergy/v1/quests/?type=daily",
                 "get",
                 {},
                 null,
@@ -36,14 +46,25 @@ const Milestones = (props) => {
     }, []);
     const renderItem = ({ item }) => {
         return (
-            <MilestonesAccordian item={item} />
-        );
+            <View style={styles.row} >
+                <Text style={styles.title}>{item.name}</Text>
+                <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+                    <Text style={{marginRight:10}}>{item.points} {item.points_type.singular_name}</Text>
+                    {
+                        item.completed?
+                            <Image source={require("@src/assets/img/check2.png")} />
+                            :
+                            <Image source={require("@src/assets/img/radio_unchecked_icon.png")} />
+                    }
+                </View>
+            </View>
+        )
     };
     return(
         <SafeAreaView style={styles.container}>
             {!questsLoading?
                 questsData.length?
-                    <FlatList showsVerticalScrollIndicator={false} data={questsData} renderItem={renderItem} keyExtractor={item => item.id} />
+                    <FlatList data={questsData} renderItem={renderItem} keyExtractor={item => item.id} />
                     :
                     <View style={{
                         flex: 1,
@@ -61,7 +82,7 @@ const Milestones = (props) => {
                         </View>
                     </View>
                 :
-                <ActivityIndicator size="large"/>
+                <ActivityIndicator size="large" />
             }
         </SafeAreaView>
     )
@@ -71,7 +92,17 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: "#ffffff",
+    },
+    row:{
+        paddingHorizontal:scale(10),
+        paddingVertical:scale(10),
+        borderRadius: 9,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: windowWidth-scale(30),
+        flexDirection: 'row',
+        backgroundColor: '#e6e6e8',
+        marginTop: scale(10),
     },
     achievementItemBox: {
         marginTop:scale(50),
@@ -82,10 +113,13 @@ const styles = StyleSheet.create({
         marginHorizontal: 15,
     },
     textSticker: {
+        width:"100%",
         flexDirection: "row",
+        justifyContent:"flex-end",
+        marginRight:25,
     },
     pointText: {
-        fontSize:scale(14),
+      fontSize:scale(14),
     },
     achievementItemBoxInfo: {
         paddingTop:scale(32),
@@ -95,32 +129,23 @@ const styles = StyleSheet.create({
         justifyContent:"space-between",
     } ,
     achievementItemBoxInfoTop: {
-        paddingHorizontal:scale(20),
-        paddingBottom:scale(20),
+        paddingHorizontal:scale(40),
+        paddingBottom:scale(40),
     },
     achievementItemBoxInfoBottom: {
-        justifyContent:"center",
-        alignItems:"center",
-        paddingBottom:scale(20),
+
     },
     achievementItemBoxImageWrap: {
         position:"absolute",
-        top:scale(-40),
+        left: 10,
+        top:scale(-30),
         justifyContent:"center",
-        alignItems:"center",
-        width: scale(86),
-        height: scale(86),
+        paddingLeft:scale(16),
+        paddingBottom:scale(17),
+        alignItems:"flex-start",
+        width: scale(150),
+        height: scale(150),
         borderRadius:scale(43),
-        backgroundColor: "#fff",
-        shadowColor: "#5e5c9a",
-        shadowOffset: {width: 3, height: 5},
-        shadowOpacity: 0.12,
-        shadowRadius: 3,
-        elevation: 3,
-    },
-    achievementItemBoxImage: {
-        width:scale(46),
-        flex: 1,
     },
     achievementItemBoxTitle: {
         marginTop:scale(20),
@@ -134,6 +159,15 @@ const styles = StyleSheet.create({
         fontWeight:'500',
         lineHeight:scale(24),
         textAlign:"center"
+    },
+    achievementItemBoxDescription: {
+        flexDirection: "row",
+        justifyContent:"flex-start",
+    },
+    achievementItemBoxDescriptionText: {
+        textTransform: "uppercase",
+        fontWeight: "700",
+        fontSize: scale(12),
     },
     achievementItemBoxRequirements: {
         marginTop:scale(10),
@@ -153,6 +187,17 @@ const styles = StyleSheet.create({
         maxHeight:scale(80),
         flexDirection:"row",
     },
+    calendarItems:{
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 9,
+        borderWidth: 1,
+        borderColor: "blue",
+        marginBottom: 5,
+        height:scale(45),
+        width:scale(45),
+    },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
@@ -160,10 +205,17 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 4,
     },
+    title:{
+        paddingLeft:10,
+        paddingRight:10,
+        fontSize: scale(14),
+        fontWeight:'bold',
+        color: "#5E5E5E",
+    },
 });
 const mapStateToProps = (state) => ({
     config: state.config,  // not needed if axios or fetch is used
     accessToken: state.auth.token,
 });
-Milestones.navigationOptions = {header: null};
-export default connect(mapStateToProps)(Milestones);
+QuestsDaily.navigationOptions = {header: null};
+export default connect(mapStateToProps)(QuestsDaily);

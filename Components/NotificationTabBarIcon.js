@@ -74,6 +74,9 @@ const NotificationTabBarIcon = props => {
         case 'left_menu':
             notificationCount = notification.progress?notification.progress:0 + notification.quest?notification.quest:0 + notification.achievement?notification.achievement:0;
             break;
+        case 'practice':
+            notificationCount = notification['practice']?notification['practice'].includes(data):0;
+            break;
         default:
             notificationCount = notification[notificationID];
     }

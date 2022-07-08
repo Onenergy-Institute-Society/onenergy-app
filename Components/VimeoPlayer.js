@@ -16,7 +16,7 @@ import {connect} from "react-redux";
 import Video from "react-native-video";
 import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import ChooseSubtitle from "./ChooseSubtitle";
 import * as Progress from 'react-native-progress';
 import InteractiveTranscripts from "./InteractiveTranscripts";
@@ -148,7 +148,7 @@ class VimeoPlayer extends Component {
                                                     tintColor:"#FFFFFF",
                                                     opacity: 0.5
                                                 }}
-                                                source={{uri:"https://media.onenergy.institute/images/skipback10.png"}}
+                                                source={{uri:"https://cdn.onenergy.institute/images/skipback10.png"}}
                                             />
                                         </View>
                                     </TouchableWithoutFeedback>
@@ -166,7 +166,7 @@ class VimeoPlayer extends Component {
                                                     tintColor:"#FFFFFF",
                                                     opacity: 0.5
                                                 }}
-                                                source={{uri:"https://app.onenergy.institute/wp-content/uploads/2021/11/arrow_right-1.png"}}
+                                                source={{uri:"https://assets.onenergy.institute/wp-content/uploads/2021/11/arrow_right-1.png"}}
                                             />
                                         </View>
                                     </TouchableWithoutFeedback>
@@ -195,7 +195,7 @@ class VimeoPlayer extends Component {
                                                     tintColor:"#FFFFFF",
                                                     opacity: 0.5
                                                 }}
-                                                source={{uri:"https://media.onenergy.institute/images/skip10.png"}}
+                                                source={{uri:"https://cdn.onenergy.institute/images/skip10.png"}}
                                             />
                                         </View>
                                     </TouchableWithoutFeedback>
@@ -204,7 +204,7 @@ class VimeoPlayer extends Component {
                                     }
                                 </View>
                                 <View style={styles.progressView}>
-                                    <Progress.Bar borderColor={"rgba(255,255,255,0.5)"} color={"rgba(255,255,255,0.5)"} progress={this.state.currentTime/this.state.seekableDuration} width={windowHeight/2} height={verticalScale(10)} />
+                                    <Progress.Bar borderColor={"rgba(255,255,255,0.5)"} color={"rgba(255,255,255,0.5)"} progress={this.state.currentTime/this.state.seekableDuration} width={windowHeight/2} height={scale(10)} />
                                 </View>
                                 </>
                             :null}
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
         borderRadius:4,
         zIndex:999,
         position:"absolute",
-        top:verticalScale(20),
+        top:scale(20),
     }
 });
 function mapDispatchToProps(dispatch) {

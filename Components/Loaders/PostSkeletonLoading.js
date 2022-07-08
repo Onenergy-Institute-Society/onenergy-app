@@ -6,7 +6,7 @@ import {
     Placeholder,
 } from 'react-native-loading-placeholder';
 import {windowWidth} from "../../Utils/Dimensions";
-import {scale, verticalScale} from "../../Utils/scale";
+import {scale} from "../../Utils/scale";
 
 const { height, width } = Dimensions.get('window');
 
@@ -32,16 +32,16 @@ const Skeleton = () => {
             replace={true}
         >
             <View style={styles.contentView}>
-                <View style={{flexDirection:"row", height:verticalScale(40), width: width-scale(50), marginVertical:10}}><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /></View>
-                <View style={{flexDirection:"row", height:verticalScale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
-                <View style={{flexDirection:"row", height:verticalScale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /></View>
-                <View style={{flexDirection:"row", height:verticalScale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /></View>
-                <View style={{flexDirection:"row", height:verticalScale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
-                <View style={{flexDirection:"row", height:verticalScale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /></View>
-                <View style={{flexDirection:"row", height:verticalScale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /></View>
-                <View style={{flexDirection:"row", height:verticalScale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
-                <View style={{flexDirection:"row", height:verticalScale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /></View>
-                <View style={{flexDirection:"row", height:verticalScale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /></View>
+                <View style={{flexDirection:"row", height:scale(40), width: width-scale(50), marginVertical:10}}><Placeholder style={[styles.placeholder_title,{flex:0.4}]} /><Placeholder style={[styles.placeholder_title,{flex:0.6}]} /></View>
+                <View style={{flexDirection:"row", height:scale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
+                <View style={{flexDirection:"row", height:scale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /></View>
+                <View style={{flexDirection:"row", height:scale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /></View>
+                <View style={{flexDirection:"row", height:scale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
+                <View style={{flexDirection:"row", height:scale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /></View>
+                <View style={{flexDirection:"row", height:scale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /></View>
+                <View style={{flexDirection:"row", height:scale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.4}]} /></View>
+                <View style={{flexDirection:"row", height:scale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.6}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.1}]} /></View>
+                <View style={{flexDirection:"row", height:scale(15), width: width-scale(50), marginVertical:5}}><Placeholder style={[styles.placeholder_desc,{flex:0.2}]} /><Placeholder style={[styles.placeholder_desc,{flex:0.3}]} /></View>
             </View>
         </PlaceholderContainer>
     );
@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
     },
     placeholder_title: {
-        height: verticalScale(40),
+        height: scale(40),
         marginHorizontal: scale(5),
         backgroundColor: '#F1F1F1',
         borderRadius:4,
     },
     placeholder_desc: {
-        height: verticalScale(15),
+        height: scale(15),
         marginHorizontal: scale(5),
         backgroundColor: '#E6E6E6',
         borderRadius:4,

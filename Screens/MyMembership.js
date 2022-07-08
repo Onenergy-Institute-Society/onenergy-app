@@ -8,7 +8,7 @@ import {
     View,
     Text, Linking,
 } from 'react-native';
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import moment from 'moment';
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         alignSelf: 'center',
         width: windowWidth-scale(30),
-        marginTop:verticalScale(15),
+        marginTop:scale(15),
     },
     title: {
         color: '#000',
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
         borderRadius:9,
         backgroundColor:"#4942e1",
         padding:10,
-        marginBottom:verticalScale(10),
+        marginBottom:scale(10),
     }
 });
 MyMembership.navigationOptions = ({navigation}) => ({

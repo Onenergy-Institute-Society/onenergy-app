@@ -4,11 +4,12 @@ import IconButton from "@src/components/IconButton";
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
 import { withNavigation } from "react-navigation";
-import Quests from "../Components/Quests";
 import {useSelector} from "react-redux";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import {scale} from "../Utils/scale";
-import DailyQuests from "../Components/DailyQuests";
+import DailyQuests from "../Components/QuestsDaily";
+import WeeklyQuests from "../Components/QuestsWeekly";
+import MonthlyQuests from "../Components/QuestsMonthly";
 
 const QuestsDaily = () => {
     try {
@@ -22,7 +23,7 @@ const QuestsDaily = () => {
 const QuestsWeekly = () => {
     try {
         return (
-            <Quests type="weekly" />
+            <WeeklyQuests />
         )
     } catch (err) {
         console.log(`${err}`);
@@ -31,7 +32,7 @@ const QuestsWeekly = () => {
 const QuestsMonthly = () => {
     try {
         return (
-            <Quests type="monthly" />
+            <MonthlyQuests />
         )
     } catch (err) {
         console.log(`${err}`);
@@ -52,7 +53,7 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'quest_daily_tab'} />
-                        <NotificationTabBarIcon notificationID={'quest_daily'} top={-5} right={-5} size={10} showNumber={false} />
+                        <NotificationTabBarIcon notificationID={'quest_daily'} top={-5} right={-5} size={scale(10)} showNumber={false} />
                     </View>
                 ),
             }
@@ -63,7 +64,7 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'quest_weekly_tab'} />
-                        <NotificationTabBarIcon notificationID={'quest_weekly'} top={-5} right={-5} size={10} showNumber={false} />
+                        <NotificationTabBarIcon notificationID={'quest_weekly'} top={-5} right={-5} size={scale(10)} showNumber={false} />
                     </View>
                 ),
             }
@@ -74,7 +75,7 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'quest_monthly_tab'} />
-                        <NotificationTabBarIcon notificationID={'quest_monthly'} top={-5} right={-5} size={10} showNumber={false} />
+                        <NotificationTabBarIcon notificationID={'quest_monthly'} top={-5} right={-5} size={scale(10)} showNumber={false} />
                     </View>
                 ),
             }

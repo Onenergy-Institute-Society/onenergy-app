@@ -6,7 +6,7 @@ import {
     Placeholder,
 } from 'react-native-loading-placeholder';
 import {windowWidth} from "../../Utils/Dimensions";
-import {scale, verticalScale} from "../../Utils/scale";
+import {scale} from "../../Utils/scale";
 
 const { height, width } = Dimensions.get('window');
 
@@ -70,11 +70,11 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         paddingVertical: 20,
         paddingHorizontal: 0,
-        width: windowWidth - 30,
+        width: windowWidth - scale(30),
         marginHorizontal: 15,
-        marginVertical: verticalScale(10),
+        marginVertical: scale(10),
         overflow: "hidden",
-        height: verticalScale(150),
+        height: scale(150),
         justifyContent: "flex-start",
     },
     trackItemInner: {
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         paddingVertical: 0,
         paddingHorizontal: 0,
-        width: windowWidth - 30,
+        width: windowWidth - scale(30),
         overflow: "hidden",
     },
     itemStyle: {
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'stretch',
-        height: verticalScale(80),
+        height: scale(80),
         borderBottomColor: '#333',
         borderWidth: 0,
     },
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: 'flex-start',
-        marginTop: verticalScale(5),
+        marginTop: scale(5),
     },
     subTitleBox: {
         flex: 2,
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     },
     placeholder_image: {
         width:scale(70),
-        height:verticalScale(70),
+        height:scale(70),
         marginLeft: scale(10),
         backgroundColor: '#E6E6E8',
         borderRadius: 9,

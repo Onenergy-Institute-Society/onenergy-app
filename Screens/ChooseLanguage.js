@@ -70,7 +70,7 @@ const ChooseLanguage = (props) => {
         )
     }
     return (
-        <ImageBackground source={{uri:"https://app.onenergy.institute/wp-content/uploads/2021/11/4-scaled.jpg"}} resizeMode="cover" style={styles.container}>
+        <ImageBackground source={{uri:"https://assets.onenergy.institute/wp-content/uploads/2021/11/4-1024x683.jpg"}} resizeMode="cover" style={styles.container}>
             <View>
                 <Text style={styles.heading}>Please Choose Language</Text>
             </View>

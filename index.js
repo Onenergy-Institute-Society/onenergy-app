@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Image, Platform, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native";
 import {NavigationActions} from "react-navigation";
-import {useSelector,useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import moment from 'moment';
 import Share from "react-native-share";
 import IconButton from "@src/components/IconButton";
@@ -28,7 +28,7 @@ import MyProgressScreen from './Screens/MyProgressScreen';
 import MyVouchersScreen from './Screens/MyVouchersScreen';
 import MyStatsScreen from './Screens/MyStatsScreen';
 import MyMembership from './Screens/MyMembership';
-import {scale, verticalScale} from './Utils/scale';
+import {scale} from './Utils/scale';
 import ImageCache from "./Components/ImageCache";
 import {windowWidth} from "./Utils/Dimensions";
 import ProgramsScreen from "./Screens/ProgramsScreen";
@@ -260,12 +260,12 @@ export const applyCustomCode = externalCodeSetup => {
         const diffDays = lesson_time.diff(current_time, 'days');
         let diffTime = '';
         if(diffMinutes < 60){
-            diffTime = diffMinutes+' Minutes';
+            diffTime = 'in ' + diffMinutes + ' Minutes';
         }else{
             if(diffHours < 24){
-                diffTime = diffHours+' Hours';
+                diffTime = 'tomorrow';
             }else{
-                diffTime = diffDays+' Days';
+                diffTime = 'in ' + diffDays + ' Days';
             }
         }
         let lessonNote = '';
@@ -280,7 +280,7 @@ export const applyCustomCode = externalCodeSetup => {
             lessonNote = 'Course is expired, no more access';
         }else if(viewModel.hasAccess){
             if(lesson_time>current_time) {
-                lessonNote = 'Next lesson available in ' + diffTime;
+                lessonNote = 'Next lesson will be available ' + diffTime;
             }else {
                 lessonNote = 'Next lesson is available now';
             }
@@ -318,7 +318,7 @@ export const applyCustomCode = externalCodeSetup => {
                 backgroundColor: 'transparent',
             },
             statusBar:{
-                height: verticalScale(25),
+                height: scale(25),
                 position:'absolute',
                 top:10,
                 flexDirection: "row",
@@ -363,8 +363,8 @@ export const applyCustomCode = externalCodeSetup => {
                 borderRadius: 5,
             },
             image: {
-                width: windowWidth - 30,
-                height: (windowWidth - 30)/9*4,
+                width: windowWidth - scale(30),
+                height: (windowWidth - scale(30))/9*4,
                 borderRadius: 9,
                 marginLeft: 0,
                 marginTop: 0,
@@ -373,8 +373,8 @@ export const applyCustomCode = externalCodeSetup => {
             },
             imageView: {
                 backgroundColor: 'rgba(255,255,255,0.5)',
-                width: windowWidth - 30,
-                height: (windowWidth - 30)/9*4,
+                width: windowWidth - scale(30),
+                height: (windowWidth - scale(30))/9*4,
                 borderRadius: 9,
                 overflow: 'hidden',
             },
@@ -388,8 +388,8 @@ export const applyCustomCode = externalCodeSetup => {
                 alignItems: "flex-end",
             },
             meta: {
-                width: windowWidth - 30,
-                height: (windowWidth - 30)/9*4,
+                width: windowWidth - scale(30),
+                height: (windowWidth - scale(30))/9*4,
                 borderRadius: 9,
                 justifyContent:"flex-start",
                 alignItems: "flex-end",
@@ -413,7 +413,7 @@ export const applyCustomCode = externalCodeSetup => {
                 paddingVertical: 0,
                 paddingHorizontal: 0,
                 width: '100%',
-                marginBottom: verticalScale(15),
+                marginTop: scale(15),
             },
             boxShadow: {
                 shadowColor: "#000",
@@ -481,14 +481,13 @@ export const applyCustomCode = externalCodeSetup => {
                     if(state.notification[action.mode]){
                         let addIndex = state.notification[action.mode].indexOf(action.payload);
                         if (addIndex === -1) {
-                            let temp = {
+                            return {
                                 ...state,
                                 notification: {
                                     ...state.notification,
                                     [action.mode]: [...state.notification[action.mode], action.payload]
                                 }
-                            }
-                            return temp;
+                            };
                         }else{
                             return state;
                         }
@@ -510,6 +509,45 @@ export const applyCustomCode = externalCodeSetup => {
                             return {
                                 ...state,
                                 notification: {...state.notification, [action.mode]: arrayTemp}
+                            };
+                        } else {
+                            return state;
+                        }
+                    }else{
+                        return state;
+                    }
+                case "NOTIFICATION_PRACTICE_ADD":
+                    if(state.notification['practice']){
+                        let addIndex = state.notification['practice'].indexOf(action.payload);
+                        if (addIndex === -1) {
+                            return {
+                                ...state,
+                                notification: {
+                                    ...state.notification,
+                                    'practice': [...state.notification['practice'], action.payload]
+                                }
+                            };
+                        }else{
+                            return state;
+                        }
+                    }else{
+                        return {
+                            ...state,
+                            notification: {
+                                ...state.notification,
+                                'practice':[action.payload]
+                            }
+                        };
+                    }
+                case "NOTIFICATION_PRACTICE_REMOVE":
+                    if(state.notification['practice']) {
+                        let arrayTemp = state.notification['practice'];
+                        let index = arrayTemp.indexOf(action.payload);
+                        if (index !== -1) {
+                            arrayTemp.splice(index, 1);
+                            return {
+                                ...state,
+                                notification: {...state.notification, 'practice': arrayTemp}
                             };
                         } else {
                             return state;
@@ -640,7 +678,7 @@ export const applyCustomCode = externalCodeSetup => {
 
     // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
-        let whiteList = [...props.whitelist, "languagesReducer", "notifyReducer", "routinesReducer"];
+        let whiteList = [...props.whitelist, "languagesReducer", "notifyReducer"];
         let index = whiteList.indexOf('blog');
         if (index !== -1) {
             whiteList.splice(index, 1);
@@ -680,20 +718,29 @@ export const applyCustomCode = externalCodeSetup => {
         const diffHours = lesson_time.diff(current_time, 'hours');
         const diffDays = lesson_time.diff(current_time, 'days');
         const dispatch = useDispatch();
+        const [visualGuide, setVisualGuide] = useState(false);
+
+        useEffect(()=>{
+            if(user&&!user.firstCourseCompleted){
+                setTimeout(function () {
+                    setVisualGuide(true);
+                }, 5000);
+            }
+        },[])
 
         let diffTime = '';
         if(diffMinutes < 60){
-            diffTime = diffMinutes+' Minutes';
+            diffTime = 'in ' + diffMinutes + ' minutes';
         }else{
             if(diffHours < 24){
-                diffTime = diffHours+' Hours';
+                diffTime = 'tomorrow';
             }else{
-                diffTime = diffDays+' Days';
+                diffTime = 'in ' + diffDays + ' days';
             }
         }
         const [buttonEnroll, setButtonEnroll] = useState('Enroll Now');
 
-        const buttonText = "Next lesson available in " + diffTime;
+        const buttonText = "Next lesson will be available " + diffTime;
         if(courseVM.progression === 100){
             let Info = null;
             return [Info,
@@ -796,6 +843,7 @@ export const applyCustomCode = externalCodeSetup => {
                     }}>
                         <CourseActionButton
                             onPress={()=>{
+                                setVisualGuide(false);
                                 setButtonEnroll('Enrolling, please wait...');
                                 startCourse();
                                 dispatch({
@@ -805,6 +853,33 @@ export const applyCustomCode = externalCodeSetup => {
                             }}
                             title={buttonEnroll}
                         />
+                        {visualGuide?
+                            <TouchableWithoutFeedback
+                                onPress={()=>{
+                                    setVisualGuide(false);
+                                    setButtonEnroll('Enrolling, please wait...');
+                                    startCourse();
+                                    dispatch({
+                                        type: 'UPDATE_USER_ENROLLED_COURSES',
+                                        payload: {"id": courseVM.id, "date": new Date().getTime() / 1000}
+                                    });
+                                }}>
+                                <ImageCache style={{
+                                    bottom:scale(-80),
+                                    right:scale(80),
+                                    position: "absolute",
+                                    transform: [{ rotate: '180deg' }],
+                                    width:scale(200),
+                                    height:scale(240),
+                                    shadowColor: "#000",
+                                    shadowOffset: {width: 2, height: -4},
+                                    shadowOpacity: 0.2,
+                                    shadowRadius: 3,
+                                    elevation: 4,
+                                    }} source={{uri:'https://cdn.onenergy.institute/images/TapFinger.gif'}} />
+                            </TouchableWithoutFeedback>
+                            :null
+                        }
                     </View>
                 ]
             }
@@ -971,7 +1046,7 @@ export const applyCustomCode = externalCodeSetup => {
                         alignItems: 'center',
                     }}>
                     <Image
-                        source={{uri:'https://media.onenergy.institute/images/onenergy.png'}}
+                        source={{uri:'https://cdn.onenergy.institute/images/onenergy.png'}}
                         style={{
                             width: 24,
                             height: 24,
@@ -980,7 +1055,7 @@ export const applyCustomCode = externalCodeSetup => {
                             marginBottom:0,
                         }}
                     />
-                    <NotificationTabBarIcon notificationID={'guide_page'}  top={-3} right={-3} size={10} showNumber={false} />
+                    <NotificationTabBarIcon notificationID={'guide_page'}  top={-3} right={-3} size={scale(10)} showNumber={false} />
                 </View>
             case "Wisdom":
                 return <View
@@ -992,7 +1067,7 @@ export const applyCustomCode = externalCodeSetup => {
                         alignItems: 'center',
                     }}>
                     <Image
-                        source={{uri:'https://media.onenergy.institute/images/wisdom.png'}}
+                        source={{uri:'https://cdn.onenergy.institute/images/wisdom.png'}}
                         style={{
                             width: 24,
                             height: 24,
@@ -1001,7 +1076,7 @@ export const applyCustomCode = externalCodeSetup => {
                             marginBottom:0,
                         }}
                     />
-                    <NotificationTabBarIcon notificationID={'blog'}  top={-3} right={-3} size={10} showNumber={false} />
+                    <NotificationTabBarIcon notificationID={'blog'}  top={-3} right={-3} size={scale(10)} showNumber={false} />
                 </View>
             default:
                 return icon;
@@ -1151,7 +1226,6 @@ export const applyCustomCode = externalCodeSetup => {
     })
     externalCodeSetup.deeplinksApi.setDeeplinksWithoutEmbeddedReturnValueFilter((defaultValue, linkObject, navigationService) => {
 
-        console.log(linkObject, defaultValue);
         if (linkObject.action === "open_screen") {
             switch(linkObject.item_id)
             {
@@ -1177,14 +1251,14 @@ export const applyCustomCode = externalCodeSetup => {
                     return true;
             }
         }
-/*        if(linkObject.action === "inapp") {
+        if(linkObject.action === "inapp") {
             if(linkObject.url.includes('QuotesScreen')) {
                 navigationService.navigate({
                     routeName: "QuotesScreen",
                 })
                 return true;
             }
-        }*/
+        }
         return defaultValue;
     });
     const AfterDetailsComponent = ({ user }) => {

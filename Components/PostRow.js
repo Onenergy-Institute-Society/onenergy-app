@@ -45,9 +45,9 @@ const PostRow = props => {
     const renderOverlayImage = (format) => {
         switch(format) {
             case 'video':
-                return <View style = {styles.overlay_button}><Image style = {styles.play} source = {{uri: "https://app.onenergy.institute/wp-content/uploads/2021/11/arrow_right-1.png"}} /></View>;
+                return <View style = {styles.overlay_button}><Image style = {styles.play} source = {{uri: "https://assets.onenergy.institute/wp-content/uploads/2021/11/arrow_right-1.png"}} /></View>;
             case 'audio':
-                return <View style = {styles.overlay_button}><Image style = {styles.play} source = {{uri: "https://app.onenergy.institute/wp-content/uploads/2021/11/arrow_right-1.png"}} /></View>;
+                return <View style = {styles.overlay_button}><Image style = {styles.play} source = {{uri: "https://assets.onenergy.institute/wp-content/uploads/2021/11/arrow_right-1.png"}} /></View>;
             default:
                 return null;
         }
@@ -110,7 +110,8 @@ const PostRow = props => {
 const styles = StyleSheet.create({
     containerStyle: {
         backgroundColor:"white",
-        marginVertical: 10,
+        marginTop: scale(15),
+        marginBottom: scale(10),
         marginRight: 13,
         marginLeft: 2,
         borderRadius: 9,

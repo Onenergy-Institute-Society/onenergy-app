@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useSelector } from "react-redux";
 import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
-import {scale, verticalScale} from '../Utils/scale';
+import {scale} from '../Utils/scale';
 import AudioPlayerRoutine from './AudioPlayerRoutine';
 import {windowWidth} from "../Utils/Dimensions";
 import {Swipeable} from "react-native-gesture-handler";
@@ -26,8 +26,6 @@ const MemberTracksList = (props) => {
 
     // state vars
     const onTrackItemPress = async (routine) => {
-        console.log(routine, selectedRoutine);
-
         if(!selectedRoutine || routine.id !== selectedRoutine.id) {
 
             if(routine.bgm !== 'No Sound') {
@@ -85,7 +83,7 @@ const MemberTracksList = (props) => {
                     onSwipeableLeftWillOpen={handleWillOpen(index)}
                     onSwipeableOpen={handleOpen(index)}
                 >
-                    <View style={[styles.trackItem, styles.boxShadow, { height: showPlayer?verticalScale(120):verticalScale(80)}]}>
+                    <View style={[styles.trackItem, styles.boxShadow, { height: showPlayer?scale(120):scale(80)}]}>
                         <TouchableScale
                             onPress={() => {
                                 onTrackItemPress(item).then();
@@ -145,7 +143,7 @@ const MemberTracksList = (props) => {
     }
     return (
         <SafeAreaView style={styles.container}>
-            <FlatList data={routines} renderItem={renderItem} keyExtractor={item => item.id} />
+            <FlatList style={styles.trackList} data={routines} renderItem={renderItem} keyExtractor={item => item.id} />
         </SafeAreaView>
     );
 };
@@ -156,6 +154,9 @@ const styles = StyleSheet.create({
         justifyContent:"center",
         alignItems:"center",
     },
+    trackList:{
+        paddingTop:scale(5),
+    },
     trackItem: {
         backgroundColor: 'white',
         borderRadius: 9,
@@ -163,7 +164,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0,
         width: windowWidth - scale(30),
         marginHorizontal: scale(15),
-        marginBottom: verticalScale(15),
+        marginTop: scale(10),
+        marginBottom: scale(5),
         justifyContent: "flex-start",
     },
     trackItemInner: {
@@ -187,7 +189,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'stretch',
-        height: verticalScale(80),
+        height: scale(80),
         borderBottomColor: '#333',
         borderWidth: 0,
     },
@@ -205,7 +207,7 @@ const styles = StyleSheet.create({
     },
     trackImg: {
         width:scale(70),
-        height:verticalScale(70),
+        height:scale(70),
         marginLeft: scale(10),
         borderRadius:9,
     },
@@ -214,7 +216,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "flex-start",
         alignItems: 'flex-start',
-        marginTop: verticalScale(5),
+        marginTop: scale(5),
     },
     subTitleBox: {
         flex: 2,
@@ -252,7 +254,7 @@ const styles = StyleSheet.create({
         height: '100%',
         justifyContent: "center",
         alignItems: "center",
-        paddingTop: verticalScale(10),
+        paddingTop: scale(10),
     },
     editButton:{
         flex:1,
@@ -261,7 +263,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#4942e1",
         justifyContent: "center",
         alignItems: "center",
-        height: verticalScale(30),
+        height: scale(30),
         padding:15,
         borderRadius:6
     },

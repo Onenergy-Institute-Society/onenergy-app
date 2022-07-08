@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import {getApi} from "@src/services";
 import {connect, useSelector} from "react-redux";
 import {
     StyleSheet,
     ScrollView,
     View,
-    SafeAreaView, Text, ActivityIndicator, Platform
+    SafeAreaView, Text, ActivityIndicator
 } from "react-native";
 import {windowWidth} from "../Utils/Dimensions";
-import {scale, verticalScale} from '../Utils/scale';
+import {scale} from '../Utils/scale';
 import IconButton from "@src/components/IconButton";
 import TouchableScale from "../Components/TouchableScale";
 import TopSlider from '../Components/TopSlider';
@@ -32,6 +32,7 @@ const HomeContent = (props) => {
     const [ loading, setLoading ] = useState(false);
     const [quotesData, setQuotesData] = useState([]);
     const [quotesLoading, setQuotesLoading] = useState(true);
+    const [visualGuide, setVisualGuide] = useState(false);
     TrackPlayer.updateOptions({
         stopWithApp: !(user&&user.membership&&user.membership.length), // false=> music continues in background even when app is closed
         alwaysPauseOnInterruption: false,
@@ -75,6 +76,10 @@ const HomeContent = (props) => {
             showNotification: !!user,
             title: optionData.titles[titleIndex].title,
         });
+        if(user&&!user.firstCourseCompleted)
+            setTimeout(function () {
+                setVisualGuide(true);
+            }, 5000);
     }, []);
     const renderFeaturedPrograms = (item) => {
         return (
@@ -291,6 +296,10 @@ const HomeContent = (props) => {
                                     style={styles.image_intro}
                                 />
                             </View>
+                            {visualGuide?
+                                <ImageCache style={[styles.tapFinger,{alignSelf:"center", marginTop:scale(100)}]} source={{uri:'https://cdn.onenergy.institute/images/TapFinger.gif'}} />
+                                :null
+                            }
                         </TouchableScale>
                     </View>
                     :null
@@ -351,10 +360,19 @@ const styles = StyleSheet.create({
     scroll_view: {
         flexGrow: 1,
     },
+    tapFinger:{
+        position: "absolute",
+        width:scale(200),
+        height:scale(240),
+        shadowColor: "#000",
+        shadowOffset: {width: -2, height: 4},
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 4,
+    },
     slideRow: {
         marginHorizontal: scale(15),
-        marginTop: 20,
-        marginBottom: 10,
+        marginTop: scale(15),
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 9,
@@ -362,10 +380,10 @@ const styles = StyleSheet.create({
     },
     quoteRow: {
         marginHorizontal: scale(15),
-        marginVertical: 10,
+        marginTop: scale(15),
         alignItems: 'center',
         justifyContent: 'center',
-        height: (windowWidth-30)/3.25,
+        height: (windowWidth-scale(30))/3.25,
     },
     eventRow: {
         alignItems: 'center',
@@ -380,7 +398,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         paddingLeft: 15,
-        marginVertical: 10,
+        marginTop: scale(10),
         flex:1,
     },
     bottomRow: {
@@ -390,15 +408,15 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection: "row",
         justifyContent: "flex-start",
-        marginVertical: 10,
+        marginTop: scale(15),
     },
     view_blog_title: {
         flexDirection: 'row',
         left: 0,
         right: 0,
-        width: windowWidth - 30,
+        width: windowWidth - scale(30),
         justifyContent: "space-between",
-        marginVertical: 10,
+        marginTop: scale(15),
     },
     heading: {
         fontSize: scale(18),
@@ -413,36 +431,36 @@ const styles = StyleSheet.create({
         color: "#4942e1",
     },
     block_event: {
-        width: (windowWidth - 50) / 3 * 2,
-        height: (windowWidth - 30) / 2,
-        marginVertical: 10,
+        width: (windowWidth - scale(50)) / 3 * 2,
+        height: (windowWidth - scale(30)) / 2,
+        marginTop: scale(15),
         marginLeft: 15,
         marginRight: 10,
         borderRadius: 9,
         backgroundColor: 'white',
     },
     block_season: {
-        width: (windowWidth - 50) / 3,
-        height: (windowWidth - 30) / 2,
-        marginVertical: 10,
+        width: (windowWidth - scale(50)) / 3,
+        height: (windowWidth - scale(30)) / 2,
+        marginTop: scale(15),
         marginLeft: 10,
         marginRight: 15,
         borderRadius: 9,
         backgroundColor: 'white',
     },
     block_half_left: {
-        width: (windowWidth - 50) / 2,
-        height: (windowWidth - 30) / 2,
-        marginVertical: 10,
+        width: (windowWidth - scale(50)) / 2,
+        height: (windowWidth - scale(30)) / 2,
+        marginTop: scale(15),
         marginLeft: 15,
         marginRight: 10,
         borderRadius: 9,
         backgroundColor: 'white',
     },
     block_half: {
-        width: (windowWidth - 50) / 2,
-        height: (windowWidth - 30) / 2,
-        marginVertical: 10,
+        width: (windowWidth - scale(50)) / 2,
+        height: (windowWidth - scale(30)) / 2,
+        marginTop: scale(15),
         marginLeft: 10,
         marginRight: 15,
         borderRadius: 9,
@@ -453,34 +471,34 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     view_intro: {
-        marginVertical:10,
+        marginTop:scale(15),
         marginHorizontal:scale(15),
-        width:windowWidth-30,
-        height:windowWidth-30,
+        width:windowWidth-scale(30),
+        height:windowWidth-scale(30),
         borderRadius: 9,
     },
     image_intro: {
-        width:windowWidth-30,
-        height:windowWidth-30,
+        width:windowWidth-scale(30),
+        height:windowWidth-scale(30),
         borderRadius: 9,
     },
     image_event: {
-        width: (windowWidth - 50) / 3 * 2,
-        height: (windowWidth - 30) / 2,
+        width: (windowWidth - scale(50)) / 3 * 2,
+        height: (windowWidth - scale(30)) / 2,
         flex: 1,
         borderRadius: 9,
         overflow: 'hidden',
     },
     image_season: {
-        width: (windowWidth - 50) / 3,
-        height: (windowWidth - 30) / 2,
+        width: (windowWidth - scale(50)) / 3,
+        height: (windowWidth - scale(30)) / 2,
         flex: 1,
         borderRadius: 9,
         overflow: 'hidden',
     },
     image_half: {
-        width: (windowWidth - 50) / 2,
-        height: (windowWidth - 30) / 2,
+        width: (windowWidth - scale(50)) / 2,
+        height: (windowWidth - scale(30)) / 2,
         flex: 1,
         borderRadius: 9,
         overflow: 'hidden',
@@ -524,7 +542,7 @@ HomeContent.navigationOptions = ({navigation}) => {
                         marginLeft: 20,
                     }}
                 />
-                <NotificationTabBarIcon notificationID={'left_menu'}  top={0} right={0} size={10} showNumber={false} />
+                <NotificationTabBarIcon notificationID={'left_menu'}  top={0} right={0} size={scale(10)} showNumber={false} />
             </TouchableScale>,
         headerRight:
             showNotification?

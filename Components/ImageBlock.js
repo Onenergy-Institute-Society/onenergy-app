@@ -3,7 +3,7 @@ import {
     StyleSheet, Image, View, TouchableWithoutFeedback, Text
 } from "react-native";
 import { useSelector } from "react-redux";
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import {withNavigation, NavigationActions} from "react-navigation";
 import {windowWidth} from "../Utils/Dimensions";
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error

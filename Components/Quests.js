@@ -12,7 +12,7 @@ import {
     ActivityIndicator,
     ImageBackground
 } from 'react-native';
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 
 const Quests = (props) => {
@@ -60,19 +60,19 @@ const Quests = (props) => {
             <View style={[styles.achievementItemBox, styles.boxShadow]}>
                 <View style={styles.achievementItemBoxImageWrap}>
                     {item.completed ? (
-                            <ImageBackground source={{uri: "https://media.onenergy.institute/images/completed.png"}} style={styles.achievementItemBoxImageWrap} />
+                            <ImageBackground source={{uri: "https://cdn.onenergy.institute/images/completed.png"}} style={styles.achievementItemBoxImageWrap} />
                         ) :
                         type === "daily" ? (
-                            <ImageBackground source={{uri: "https://media.onenergy.institute/images/hoursleft.png"}} style={styles.achievementItemBoxImageWrap}>
+                            <ImageBackground source={{uri: "https://cdn.onenergy.institute/images/hoursleft.png"}} style={styles.achievementItemBoxImageWrap}>
                                 <Text style={{fontSize:scale(32), color:"#0098d9", fontWeight:"700", marginLeft:scale(timeLeft>9?0:11)}}>{timeLeft}</Text>
                             </ImageBackground>
                             ) :
                             type === "weekly" ?
-                                <ImageBackground source={{uri: "https://media.onenergy.institute/images/daysleft.png"}} style={styles.achievementItemBoxImageWrap}>
+                                <ImageBackground source={{uri: "https://cdn.onenergy.institute/images/daysleft.png"}} style={styles.achievementItemBoxImageWrap}>
                                     <Text style={{fontSize:scale(32), color:"#0098d9", fontWeight:"700", marginLeft:scale(timeLeft>9?0:11)}}>{timeLeft}</Text>
                                 </ImageBackground>
                                 : type === "monthly" ?
-                                    <ImageBackground source={{uri: "https://media.onenergy.institute/images/daysleft.png"}} style={styles.achievementItemBoxImageWrap}>
+                                    <ImageBackground source={{uri: "https://cdn.onenergy.institute/images/daysleft.png"}} style={styles.achievementItemBoxImageWrap}>
                                         <Text numberOfLines={1} style={{fontSize:scale(32), color:"#0098d9", fontWeight:"700"}}>{timeLeft}</Text>
                                     </ImageBackground>
                                     : null
@@ -185,9 +185,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     achievementItemBox: {
-        marginTop:verticalScale(50),
-        marginBottom:verticalScale(20),
-        width:windowWidth-30,
+        marginTop:scale(50),
+        marginBottom:scale(20),
+        width:windowWidth-scale(30),
         borderRadius: 12,
         backgroundColor: "#fff",
         marginHorizontal: 15,
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
       fontSize:scale(14),
     },
     achievementItemBoxInfo: {
-        paddingTop:verticalScale(32),
+        paddingTop:scale(32),
         display: "flex",
         flexDirection:"column",
         alignItems:"center",
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     achievementItemBoxImageWrap: {
         position:"absolute",
         left: 10,
-        top:verticalScale(-30),
+        top:scale(-30),
         justifyContent:"center",
         paddingLeft:scale(16),
         paddingBottom:scale(17),
@@ -228,13 +228,13 @@ const styles = StyleSheet.create({
         borderRadius:scale(43),
     },
     achievementItemBoxTitle: {
-        marginTop:verticalScale(20),
+        marginTop:scale(20),
         fontSize:scale(18),
         fontWeight:'700',
         textAlign:"center"
     },
     achievementItemBoxText: {
-        marginVertical:verticalScale(10),
+        marginVertical:scale(10),
         fontSize:scale(14),
         fontWeight:'500',
         lineHeight:scale(24),
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
         fontSize: scale(12),
     },
     achievementItemBoxRequirements: {
-        marginTop:verticalScale(10),
+        marginTop:scale(10),
     },
     achievementItemBoxSubtitle: {
         flexDirection: "row",
@@ -262,9 +262,9 @@ const styles = StyleSheet.create({
         fontSize: scale(12),
     },
     checklistItems: {
-        marginTop:verticalScale(12),
+        marginTop:scale(12),
         paddingRight:scale(12),
-        maxHeight:verticalScale(80),
+        maxHeight:scale(80),
         flexDirection:"row",
     },
     calendarItems:{
