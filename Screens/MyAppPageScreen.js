@@ -8,7 +8,7 @@ import externalCodeDependencies from "@src/externalCode/externalRepo/externalCod
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {windowWidth} from "../Utils/Dimensions";
 import IconButton from "@src/components/IconButton";
-import {scale} from "../Utils/scale";
+import {scale,verticalScale} from "../Utils/scale";
 
 const MyAppPageScreen = (props) => {
     if (!props.isFocused)
@@ -18,7 +18,7 @@ const MyAppPageScreen = (props) => {
         <View style={{
             flex: 1,
             width:windowWidth,
-            marginTop: Platform.OS === 'android' ? scale(-100) : 0}} >
+            marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0}} >
             <BlockScreen pageId={navigation.getParam('pageId')}
                          contentInsetTop={0}
                          contentOffsetY={0}

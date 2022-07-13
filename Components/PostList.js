@@ -137,7 +137,7 @@ const PostList = props => {
                             {renderOverlayImage(item.format)}
                         </View>
                         <View style={styles.overlay}>
-                            <Text style={styles.title}>{item.title.rendered}</Text>
+                            <Text numberOfLines={2} style={styles.title}>{item.title.rendered}</Text>
                             {item.excerpt.rendered.length > 0 && (
                                 <Text numberOfLines={2} style={styles.description}>
                                     {item.excerpt.rendered.replace(regex, '')}

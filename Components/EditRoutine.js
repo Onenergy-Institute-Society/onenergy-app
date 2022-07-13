@@ -16,7 +16,7 @@ import {Swipeable, GestureHandlerRootView} from "react-native-gesture-handler";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import SortList from "./SortList";
 import { Modalize } from 'react-native-modalize';
-import {scale} from "../Utils/scale";
+import {scale, verticalScale} from "../Utils/scale";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { BlurView } from "@react-native-community/blur";
@@ -489,7 +489,7 @@ const EditRoutine = props => {
                     /></View>
                 }
             >
-                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?scale(-100):0}} >
+                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?verticalScale(-100):0}} >
                     <BlockScreen pageId={routineHelpModal.id}
                                  contentInsetTop={0}
                                  contentOffsetY={0}

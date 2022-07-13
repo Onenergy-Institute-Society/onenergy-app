@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet, Image, useWindowDimensions,} from 'react-native';
 import Video from "react-native-video";
 import {windowWidth} from "../Utils/Dimensions";
-import { scale, verticalScale } from '../Utils/scale';
+import { scale } from '../Utils/scale';
 
 const OnBoardingItem = ({item}) => {
     const {width} = useWindowDimensions();
