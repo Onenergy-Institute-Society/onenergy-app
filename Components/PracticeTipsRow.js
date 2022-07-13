@@ -14,7 +14,7 @@ import {getApi} from "@src/services";
 import {NavigationActions, withNavigation} from "react-navigation";
 import ImageCache from './ImageCache';
 import TouchableScale from './TouchableScale';
-import { scale, verticalScale } from '../Utils/scale';
+import { scale } from '../Utils/scale';
 import {windowWidth} from "../Utils/Dimensions";
 
 const PracticeTipsRow = props => {

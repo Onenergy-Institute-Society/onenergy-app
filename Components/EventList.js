@@ -13,7 +13,7 @@ import AwesomeAlert from "../Components/AwesomeAlert";
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import moment from 'moment';
-import ImageCache from "./ImageCache";
+import FastImage from "react-native-fast-image";
 
 const EventList = props => {
     const {navigation, location, eventsDate} = props;
@@ -208,11 +208,12 @@ const EventList = props => {
                         <View style={[styles.containerStyle, styles.boxShadow]}>
                             <ScalableImage
                                 width={windowWidth - scale(30)}
+                                source={{uri: item.image ? item.image : null}}
                                 style={styles.image}
-                                source={{uri: item.image ? item.image : ''}}/>
+                            />
                         </View>
                         {visualGuide&&item.showGuide==="1"?
-                            <ImageCache style={{
+                            <FastImage style={{
                                 bottom:5,
                                 alignSelf:"center",
                                 position: "absolute",
@@ -271,8 +272,12 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     image: {
+        width:200,
         borderRadius: 9,
+        marginLeft: 0,
+        marginTop: 0,
         overflow: 'hidden',
+        resizeMode: "contain",
     },
     boxShadow: {
         shadowColor: "#000",

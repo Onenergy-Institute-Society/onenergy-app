@@ -15,7 +15,7 @@ import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { Modalize } from 'react-native-modalize';
-import {scale} from "../Utils/scale";
+import {scale,verticalScale} from "../Utils/scale";
 import EventList from "../Components/EventList";
 import PracticeTipsRow from "../Components/PracticeTipsRow";
 import LoginScreen from "@src/containers/Custom/LoginScreen";
@@ -169,7 +169,7 @@ const PracticesScreen = props => {
                             /></View>
                     }
                 >
-                    <View style={{flex: 1, backgroundColor:'#fff', width:windowWidth, marginTop:Platform.OS === 'android'?scale(-100):0}} >
+                    <View style={{flex: 1, backgroundColor:'#fff', width:windowWidth, marginTop:Platform.OS === 'android'?verticalScale(-100):0}} >
                         <BlockScreen pageId={helpModal.id}
                                      contentInsetTop={0}
                                      contentOffsetY={0}

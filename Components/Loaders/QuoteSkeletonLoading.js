@@ -6,7 +6,7 @@ import {
     Placeholder,
 } from 'react-native-loading-placeholder';
 import {windowWidth} from "../../Utils/Dimensions";
-import {verticalScale, scale} from "../../Utils/scale";
+import {scale} from "../../Utils/scale";
 
 const { height, width } = Dimensions.get('window');
 

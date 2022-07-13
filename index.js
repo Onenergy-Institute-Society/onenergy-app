@@ -864,7 +864,7 @@ export const applyCustomCode = externalCodeSetup => {
                                         payload: {"id": courseVM.id, "date": new Date().getTime() / 1000}
                                     });
                                 }}>
-                                <ImageCache style={{
+                                <FastImage style={{
                                     bottom:scale(-80),
                                     right:scale(80),
                                     position: "absolute",

@@ -18,7 +18,7 @@ import {getApi} from "@src/services";
 import IconButton from "@src/components/IconButton";
 import {NavigationActions, withNavigation} from "react-navigation";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import {scale} from "../Utils/scale";
+import {scale, verticalScale} from "../Utils/scale";
 import HTML from "react-native-render-html";
 import moment from 'moment';
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
@@ -263,6 +263,7 @@ const PracticeGroup = props => {
                         : null
                     }
                     <FlatList
+                        style={{paddingTop:15}}
                         data={groupPractice}
                         renderItem={renderItem}
                         extraData={this.props}
@@ -338,7 +339,7 @@ const PracticeGroup = props => {
                     </View>
                 }
             >
-                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?scale(-100):0}} >
+                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?verticalScale(-100):0}} >
                     <BlockScreen pageId={helpData.id}
                                  contentInsetTop={0}
                                  contentOffsetY={0}
