@@ -166,7 +166,7 @@ const TextBlock =(props) => {
                 >
                 <View style={[block.data.data.shadow?styles.boxShadow:null, {margin:15, flex:1, width: windowWidth-scale(30)}]}>
                     <LinearGradient
-                        style={[styles.container,{
+                        style={[block.data.data.shadow?styles.boxShadow:null, styles.container,{
                             flexDirection:block.data.data.position==="left"||block.data.data.position==="right"?"row":"column"
                         }]}
                         colors={[block.data.data.backgroundColor1?block.data.data.backgroundColor1:'#ffffff', block.data.data.backgroundColor2?block.data.data.backgroundColor2:'#ffffff']}>

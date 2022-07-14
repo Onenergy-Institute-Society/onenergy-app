@@ -339,7 +339,7 @@ const PracticeGroup = props => {
                     </View>
                 }
             >
-                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?verticalScale(-100):0}} >
+                <View style={{flex: 1, width:windowWidth}} >
                     <BlockScreen pageId={helpData.id}
                                  contentInsetTop={0}
                                  contentOffsetY={0}

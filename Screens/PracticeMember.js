@@ -182,8 +182,7 @@ const PracticeMember = props => {
                     :
                     <View style={{
                         flex: 1,
-                        width: windowWidth,
-                        marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0
+                        width: windowWidth
                     }}>
                         <BlockScreen pageId={emptyData.id}
                                      contentInsetTop={0}
@@ -195,8 +194,7 @@ const PracticeMember = props => {
                 :
                 <View style={{
                     flex: 1,
-                    width: windowWidth,
-                    marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0
+                    width: windowWidth
                 }}>
                     <BlockScreen pageId={helpPageData.id}
                                  contentInsetTop={0}
@@ -253,7 +251,7 @@ const PracticeMember = props => {
                     /></View>
                 }
             >
-                <View style={{flex: 1, width:windowWidth, marginTop:Platform.OS === 'android'?verticalScale(-100):0}} >
+                <View style={{flex: 1, width:windowWidth}} >
                     <BlockScreen pageId={helpModal.id}
                                  contentInsetTop={0}
                                  contentOffsetY={0}

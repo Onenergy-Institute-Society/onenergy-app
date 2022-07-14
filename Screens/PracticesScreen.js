@@ -169,7 +169,7 @@ const PracticesScreen = props => {
                             /></View>
                     }
                 >
-                    <View style={{flex: 1, backgroundColor:'#fff', width:windowWidth, marginTop:Platform.OS === 'android'?verticalScale(-100):0}} >
+                    <View style={{flex: 1, backgroundColor:'#fff'}} >
                         <BlockScreen pageId={helpModal.id}
                                      contentInsetTop={0}
                                      contentOffsetY={0}

@@ -17,8 +17,7 @@ const MyAppPageScreen = (props) => {
     return (
         <View style={{
             flex: 1,
-            width:windowWidth,
-            marginTop: Platform.OS === 'android' ? verticalScale(-100) : 0}} >
+            width:windowWidth}} >
             <BlockScreen pageId={navigation.getParam('pageId')}
                          contentInsetTop={0}
                          contentOffsetY={0}
