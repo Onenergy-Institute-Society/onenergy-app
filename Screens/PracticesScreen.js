@@ -116,7 +116,7 @@ const PracticesScreen = props => {
                         <View style={[styles.card, styles.boxShadow]}>
                             <ScalableImage
                                 width={windowWidth - scale(30)}
-                                source={{uri: optionData.personal_practice ? optionData.personal_practice : null}}
+                                source={require('../assets/images/guided-practice-banner.png')}
                                 style={styles.image}
                             />
                             <NotificationTabBarIcon notificationID={'guide_personal'} top={3} right={3} size={scale(15)} fontSize={10} showNumber={true} />
@@ -128,7 +128,7 @@ const PracticesScreen = props => {
                         <View style={[styles.card, styles.boxShadow]}>
                             <ScalableImage
                                 width={windowWidth - scale(30)}
-                                source={{uri: optionData.group_practice ? optionData.group_practice : null}}
+                                source={require('../assets/images/group-practice-banner.png')}
                                 style={styles.image}
                             />
                         </View>
@@ -139,7 +139,7 @@ const PracticesScreen = props => {
                         <View style={[styles.card, styles.boxShadow, {marginBottom:scale(15)}]}>
                             <ScalableImage
                                 width={windowWidth - scale(30)}
-                                source={{uri: optionData.member_practice ? optionData.member_practice : null}}
+                                source={require('../assets/images/member-practice-banner.png')}
                                 style={styles.image}
                             />
                         </View>

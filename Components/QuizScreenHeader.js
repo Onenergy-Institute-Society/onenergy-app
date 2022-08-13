@@ -4,6 +4,7 @@ import Animated from "react-native-reanimated";
 import {DEVICE_WIDTH} from "@src/styles/global";
 import IconButton from "@src/components/IconButton";
 import {scale} from "../Utils/scale";
+import AuthWrapper from "@src/components/AuthWrapper";
 
 const QuizScreenHeader = (props) => {
     const {

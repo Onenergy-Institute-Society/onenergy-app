@@ -10,8 +10,7 @@ import {
     FlatList,
     ImageBackground,
     ScrollView,
-    ActivityIndicator,
-    Switch
+    ActivityIndicator
 } from "react-native";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {getApi} from "@src/services";

@@ -31,7 +31,7 @@ const Skeleton = () => {
             duration={1000}
             replace={true}
         >
-            <ImageBackground source={{uri: 'https://assets.onenergy.institute/wp-content/uploads/2022/01/design-6.png'}} style={[styles.quoteRow, styles.boxShadow]}
+            <ImageBackground source={require('../../assets/images/design-6.png')} style={[styles.quoteRow, styles.boxShadow]}
                              imageStyle={{
                                  resizeMode: "contain",
                                  alignSelf: "flex-start"

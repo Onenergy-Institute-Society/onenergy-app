@@ -15,7 +15,7 @@ export default (FeatureSliderItem = ({
     return (
         <View style={styles.innerContainer}>
             <ImageBackground style={styles.innerContainer}
-                             source={{uri: 'https://assets.onenergy.institute/wp-content/uploads/2021/11/4-1024x683.jpg'}}
+                             source={require('../assets/images/4-1024x683.jpg')}
             >
 {/*                <LinearGradient colors={['#ffffff', '#3b5998', '#192f6a']} style={{
                     position: 'absolute',

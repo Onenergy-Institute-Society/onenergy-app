@@ -148,7 +148,7 @@ class VimeoPlayer extends Component {
                                                     tintColor:"#FFFFFF",
                                                     opacity: 0.5
                                                 }}
-                                                source={{uri:"https://cdn.onenergy.institute/images/skipback10.png"}}
+                                                source={require('../assets/images/skipback10.png')}
                                             />
                                         </View>
                                     </TouchableWithoutFeedback>
@@ -166,7 +166,7 @@ class VimeoPlayer extends Component {
                                                     tintColor:"#FFFFFF",
                                                     opacity: 0.5
                                                 }}
-                                                source={{uri:"https://assets.onenergy.institute/wp-content/uploads/2021/11/arrow_right-1.png"}}
+                                                source={require('../assets/images/arrow_right-1.png')}
                                             />
                                         </View>
                                     </TouchableWithoutFeedback>
@@ -195,12 +195,12 @@ class VimeoPlayer extends Component {
                                                     tintColor:"#FFFFFF",
                                                     opacity: 0.5
                                                 }}
-                                                source={{uri:"https://cdn.onenergy.institute/images/skip10.png"}}
+                                                source={require('../assets/images/skip10.png')}
                                             />
                                         </View>
                                     </TouchableWithoutFeedback>
                                     :
-                                        <View style={{width:72, height:72}}></View>
+                                        <View style={{width: 72, height: 72}}/>
                                     }
                                 </View>
                                 <View style={styles.progressView}>

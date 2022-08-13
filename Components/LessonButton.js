@@ -264,7 +264,7 @@ const LessonButton = (props) => {
                                 shadowOpacity: 0.2,
                                 shadowRadius: 3,
                                 elevation: 4,
-                            }} source={{uri:'https://cdn.onenergy.institute/images/TapFinger.gif'}} />
+                            }} source={require('../assets/images/tapFinger.gif')} />
                             :null
                         }
                     </TouchableOpacity>

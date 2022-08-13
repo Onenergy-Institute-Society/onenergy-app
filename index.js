@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from "react";
-import {Image, Platform, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native";
+import {Image, Platform, StyleSheet, Text, TouchableWithoutFeedback, View, ActivityIndicator, Alert} from "react-native";
+import Icon from "@src/components/Icon";
+import AppTouchableOpacity from "@src/components/AppTouchableOpacity";
 import {NavigationActions} from "react-navigation";
 import {useDispatch, useSelector} from "react-redux";
 import moment from 'moment';
@@ -876,7 +878,7 @@ export const applyCustomCode = externalCodeSetup => {
                                     shadowOpacity: 0.2,
                                     shadowRadius: 3,
                                     elevation: 4,
-                                    }} source={{uri:'https://cdn.onenergy.institute/images/TapFinger.gif'}} />
+                                    }} source={require('./assets/images/tapFinger.gif')} />
                             </TouchableWithoutFeedback>
                             :null
                         }
@@ -1046,7 +1048,7 @@ export const applyCustomCode = externalCodeSetup => {
                         alignItems: 'center',
                     }}>
                     <Image
-                        source={{uri:'https://cdn.onenergy.institute/images/onenergy.png'}}
+                        source={require('./assets/images/onenergy.png')}
                         style={{
                             width: 24,
                             height: 24,
@@ -1067,7 +1069,7 @@ export const applyCustomCode = externalCodeSetup => {
                         alignItems: 'center',
                     }}>
                     <Image
-                        source={{uri:'https://cdn.onenergy.institute/images/wisdom.png'}}
+                        source={require('./assets/images/wisdom.png')}
                         style={{
                             width: 24,
                             height: 24,
@@ -1271,6 +1273,56 @@ export const applyCustomCode = externalCodeSetup => {
     }
     externalCodeSetup.profileScreenHooksApi.setAfterDetailsComponent(AfterDetailsComponent);
     externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "videoPlayer", "vimeoPlayer"])
+    externalCodeSetup.settingsScreenApi.setLogoutComponent(({
+                                                                global,
+                                                                t,
+                                                                isLoggingOut,
+                                                                logout
+                                                            }) => {
+        return <View style={global.tabLinksContainer}>
+            <AppTouchableOpacity
+                style={global.logout}
+                onPress={() => {
+                    if (!isLoggingOut) {
+                        Alert.alert('Logout', 'Are you sure you want to logout?',
+                            [
+                                {
+                                    text: "Cancel",
+                                    style: "cancel"
+                                },
+                                { text: "OK", onPress: () => {
+
+                                    logout();
+                                }}
+                            ]
+                        )
+                    }
+                }}
+            >
+                {isLoggingOut ? (
+                    <ActivityIndicator animating={true} size="small" />
+                ) : (
+                    <View style={[global.row]}>
+                        <Icon
+                            webIcon={"IconFeedSettings"}
+                            icon={require("@src/assets/img/logout.png")}
+                            styles={[global.settingsItemIcon]}
+                        />
+                        <Text
+                            style={[
+                                global.settingsItemTitle,
+                                global.logoutInner,
+                                { marginLeft: 5 }
+                            ]}
+                        >
+                            {t("settings:logout")}
+                        </Text>
+                    </View>
+                )}
+            </AppTouchableOpacity>
+        </View>
+
+    })
 };
 
 

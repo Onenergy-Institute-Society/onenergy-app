@@ -35,17 +35,18 @@ const TracksList = (props) => {
             }
         }
     };
-
+    const bgImage1 = require('../assets/images/1-1024x683.jpg');
+    const bgImage7 = require('../assets/images/7-1024x683.jpg');
     const renderItem = ({ item }) => {
         let bgImage = '';
         let highlightColor = {};
         let showPlayer = false;
         if (selectedTrack && selectedTrack.id === item.id) {
-            bgImage = "https://assets.onenergy.institute/wp-content/uploads/2021/11/1-1024x683.jpg";
+            bgImage = bgImage1;
             highlightColor = {color: "white"};
             showPlayer = true;
         }else{
-            bgImage = "https://assets.onenergy.institute/wp-content/uploads/2021/11/7-1024x683.jpg";
+            bgImage = bgImage7;
             highlightColor = {color: "black"};
             showPlayer = false;
         }
@@ -56,10 +57,10 @@ const TracksList = (props) => {
                         onTrackItemPress(item).then();
                     }}
                 >
-                    <ImageBackground style={[styles.trackItemInner, styles.itemStyle]} source={{uri: bgImage}}>
+                    <ImageBackground style={[styles.trackItemInner, styles.itemStyle]} source={selectedTrack && selectedTrack.id === item.id?require('../assets/images/1-1024x683.jpg'):require('../assets/images/7-1024x683.jpg')}>
                         <View style={styles.trackImgBox}>
                             <ImageBackground style={styles.trackImg} imageStyle={{ borderRadius: 9}} source={{ uri: item.artwork }}>
-                                <View style = {styles.overlay_button}><Image style = {styles.play} source = {{uri: "https://cdn.onenergy.institute/images/audio-play.png"}} /></View>
+                                <View style = {styles.overlay_button}><Image style = {styles.play} source = {require('../assets/images/audio-play.png')} /></View>
                             </ImageBackground>
                         </View>
                         <View style={styles.trackDescBox}>

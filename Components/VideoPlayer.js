@@ -120,7 +120,6 @@ class VideoPlayer extends Component {
             [
                 {
                     text: "OK", onPress: () => {
-                        this.updateProgress().then();
                         this.props.navigation.goBack();
                     }
                 },

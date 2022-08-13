@@ -297,7 +297,7 @@ const HomeContent = (props) => {
                                 />
                             </View>
                             {visualGuide?
-                                <ImageCache style={[styles.tapFinger,{alignSelf:"center", marginTop:scale(100)}]} source={{uri:'https://cdn.onenergy.institute/images/TapFinger.gif'}} />
+                                <ImageCache style={[styles.tapFinger,{alignSelf:"center", marginTop:scale(100)}]} source={require('../assets/images/tapFinger.gif')} />
                                 :null
                             }
                         </TouchableScale>

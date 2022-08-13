@@ -56,7 +56,7 @@ const ChooseSubtitle =(props) => {
                         tintColor:"#FFFFFF",
                         opacity: 0.5
                     }}
-                    source={{uri:"https://cdn.onenergy.institute/images/closed-caption.png"}}
+                    source={require('../assets/images/closed-caption.png')}
                 />
                 </View>
             </TouchableWithoutFeedback>

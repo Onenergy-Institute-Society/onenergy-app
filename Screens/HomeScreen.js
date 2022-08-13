@@ -27,7 +27,7 @@ const CustomDrawerContentComponent = (props) => {
     return (
         <SafeAreaView style={{flex:1, backgroundColor: colors.bodyBg}}>
             <ImageBackground
-                source={{uri: 'https://assets.onenergy.institute/wp-content/uploads/2021/11/1-1024x683.jpg'}}
+                source={require('../assets/images/1-1024x683.jpg')}
                 style={{height:scale(140), justifyContent:"center", alignItems:"center"}}>
                 {user?
                     <>

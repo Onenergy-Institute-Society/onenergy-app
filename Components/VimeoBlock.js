@@ -40,14 +40,14 @@ const VimeoBlock = props => {
                         })
                     )
                 }}>
-                <View style = {styles.overlay_button}><Image style={styles.play} source={{uri: "https://assets.onenergy.institute/wp-content/uploads/2021/11/arrow_right-1.png"}} /></View>
+                <View style = {styles.overlay_button}><Image style={styles.play} source={require('../assets/images/arrow_right-1.png')} /></View>
                 <Image
                     style={styles.BackGroundImage}
                     source={{uri: thumbnail}}
                     resizeMode={'cover'}
                 />
                 {visualGuide?
-                    <ImageCache style={[styles.tapFinger,{alignSelf:"center", marginTop:scale(60)}]} source={{uri:'https://cdn.onenergy.institute/images/TapFinger.gif'}} />
+                    <ImageCache style={[styles.tapFinger,{alignSelf:"center", marginTop:scale(60)}]} source={require('../assets/images/tapFinger.gif')} />
                     :null
                 }
             </TouchableOpacity>
