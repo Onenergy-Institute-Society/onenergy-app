@@ -25,17 +25,35 @@ const EventList = props => {
     const current_time = new moment.utc();
     let displayGroup = [];
     useEffect(()=>{
-        if(user){
-            setTimeout(function () {
-                setVisualGuide(true);
-            }, 10000);
-        }
+        setTimeout(function () {
+            setVisualGuide(true);
+        }, 10000);
     },[])
     const renderItem = () => {
         return eventsDate.map((item) => {
             let showDate = null;
             let show = false;
-            if(item.location.includes(location)) {
+            switch(item.permission.toString())
+            {
+                case 'all':
+                    show = true;
+                    break;
+                case 'guest':
+                    user?show=false:show=true;
+                    break;
+                case 'login':
+                    user?show=true:show=false;
+                    break;
+                case 'user':
+                    user&&!(user.membership&&user.membership.length)?show=true:show=false;
+                    break;
+                case 'member':
+                    user&&(user.membership&&user.membership.length)?show=true:show=false;
+                    break;
+                default:
+                    break;
+            }
+            if(show && item.location.includes(location)) {
                 switch (item.show) {
                     case 'date':
                         let date2 = new moment.utc(item.showDate);
@@ -46,7 +64,7 @@ const EventList = props => {
                         break;
                     case 'course':
                         if (item.showCourseOption === 'enrolled') {
-                            let showCourse = user.enrolled_courses.find(course => course.id === parseInt(item.showCourse));
+                            let showCourse = user&&user.enrolled_courses.find(course => course.id === parseInt(item.showCourse));
                             if (showCourse) {
                                 showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
                                 if (current_time > showDate) {
@@ -54,7 +72,7 @@ const EventList = props => {
                                 }
                             }
                         } else if (item.showCourseOption === 'completed') {
-                            let showCourse = user.completed_courses.find(course => course.id === parseInt(item.showCourse));
+                            let showCourse = user&&user.completed_courses.find(course => course.id === parseInt(item.showCourse));
                             if (showCourse) {
                                 showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
                                 if (current_time > showDate) {
@@ -64,7 +82,7 @@ const EventList = props => {
                         }
                         break;
                     case 'lesson':
-                        let showLesson = user.completed_lessons.find(lesson => lesson.id === parseInt(item.showLesson));
+                        let showLesson = user&&user.completed_lessons.find(lesson => lesson.id === parseInt(item.showLesson));
                         if (showLesson) {
                             showDate = new moment.unix(showLesson['date']).add(item.delay, 'd');
                             if (current_time > showDate) {
@@ -73,7 +91,7 @@ const EventList = props => {
                         }
                         break;
                     case 'achievement':
-                        let showAchievement = user.completed_achievements.find(achievement => achievement.id === parseInt(item.showAchievement));
+                        let showAchievement = user&&user.completed_achievements.find(achievement => achievement.id === parseInt(item.showAchievement));
                         if (showAchievement) {
                             showDate = new moment.unix(showAchievement['date']).add(item.delay, 'd');
                             if (current_time > showDate) {
@@ -105,22 +123,22 @@ const EventList = props => {
                             break;
                         case 'course':
                             if (item.hideCourseOption === 'enrolled') {
-                                if (user.enrolled_courses.find(course => course.id === parseInt(item.hideCourse))) {
+                                if (user&&user.enrolled_courses.find(course => course.id === parseInt(item.hideCourse))) {
                                     show = false;
                                 }
                             } else if (item.hideCourseOption === 'completed') {
-                                if (user.completed_courses.find(course => course.id === parseInt(item.hideCourse))) {
+                                if (user&&user.completed_courses.find(course => course.id === parseInt(item.hideCourse))) {
                                     show = false;
                                 }
                             }
                             break;
                         case 'lesson':
-                            if (user.completed_lessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
+                            if (user&&user.completed_lessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
                                 show = false;
                             }
                             break;
                         case 'achievement':
-                            if (user.completed_achievements.find(achievement => achievement.id === parseInt(item.hideAchievement))) {
+                            if (user&&user.completed_achievements.find(achievement => achievement.id === parseInt(item.hideAchievement))) {
                                 show = false;
                             }
                             break;
@@ -138,6 +156,8 @@ const EventList = props => {
                         }
                     }
                 }
+            }else{
+                show = false;
             }
             return (
                 show?

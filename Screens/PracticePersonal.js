@@ -89,7 +89,7 @@ const PracticePersonal = props => {
     },[messageBarDisplay])
     return (
         <SafeAreaView style={styles.container}>
-            {user.hasGuide>0||tracks.length?
+            {user&&user.hasGuide>0||tracks.length?
                 tracksLoading ?
                     <ActivityIndicator size="large"/>
                 :

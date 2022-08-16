@@ -12,15 +12,12 @@ const VimeoBlock = props => {
     const {
         navigation, video, thumbnail, textTracks, no_skip_forward, lesson_video, selectedCCUrl
     } = props;
-    const user = useSelector((state) => state.user.userObject);
     const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
     const [visualGuide, setVisualGuide] = useState(false);
     useEffect(()=>{
-        if(user&&!user.firstCourseCompleted&&lesson_video&&!videoComplete){
-            setTimeout(function () {
-                setVisualGuide(true);
-            }, 5000);
-        }
+        setTimeout(function () {
+            setVisualGuide(true);
+        }, 5000);
     },[])
     return (
         <View
@@ -46,7 +43,7 @@ const VimeoBlock = props => {
                     source={{uri: thumbnail}}
                     resizeMode={'cover'}
                 />
-                {visualGuide?
+                {!videoComplete&&visualGuide?
                     <ImageCache style={[styles.tapFinger,{alignSelf:"center", marginTop:scale(60)}]} source={require('../assets/images/tapFinger.gif')} />
                     :null
                 }

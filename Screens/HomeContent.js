@@ -32,7 +32,6 @@ const HomeContent = (props) => {
     const [ loading, setLoading ] = useState(false);
     const [quotesData, setQuotesData] = useState([]);
     const [quotesLoading, setQuotesLoading] = useState(true);
-    const [visualGuide, setVisualGuide] = useState(false);
     TrackPlayer.updateOptions({
         stopWithApp: !(user&&user.membership&&user.membership.length), // false=> music continues in background even when app is closed
         alwaysPauseOnInterruption: false,
@@ -76,10 +75,6 @@ const HomeContent = (props) => {
             showNotification: !!user,
             title: optionData.titles[titleIndex].title,
         });
-        if(user&&!user.firstCourseCompleted)
-            setTimeout(function () {
-                setVisualGuide(true);
-            }, 5000);
     }, []);
     const renderFeaturedPrograms = (item) => {
         return (
@@ -180,13 +175,11 @@ const HomeContent = (props) => {
                             })}
                         </View>
                 )}
-                {user?
-                    <View style={styles.programRow}>
-                        <EventList location={'home'} eventsDate={optionData.goals} />
-                        <EventList location={'home'} eventsDate={optionData.webinars} />
-                    </View>
-                :null}
-                {user && user.firstCourseCompleted && optionData.show.includes('events') && (
+                <View style={styles.programRow}>
+                    <EventList location={'home'} eventsDate={optionData.goals} />
+                    <EventList location={'home'} eventsDate={optionData.webinars} />
+                </View>
+                {optionData.show.includes('events') && (
                 <View style={styles.eventRow}>
                     {optionData.events && (
                         <TouchableScale
@@ -233,7 +226,7 @@ const HomeContent = (props) => {
                     )}
                 </View>
                 )}
-                {user && user.firstCourseCompleted && optionData.show.includes('entries') && (
+                {optionData.show.includes('entries') && (
                 <View style={styles.eventRow}>
                     {optionData.entries && (
                     <TouchableScale
@@ -275,35 +268,6 @@ const HomeContent = (props) => {
                     )}
                 </View>
                 )}
-                {!user||!user.firstCourseCompleted?
-                    <View style={styles.row_intro}>
-                        <TouchableScale
-                            onPress={
-                                () => {
-                                    navigation.dispatch(
-                                        NavigationActions.navigate({
-                                            routeName: "MyCourseScreen",
-                                            params: {
-                                                courseId: 29421
-                                            }
-                                        })
-                                    )
-                                }
-                            }>
-                            <View style={[styles.view_intro, styles.boxShadow]}>
-                                <ImageCache
-                                    source={{uri: optionData.intro.image}}
-                                    style={styles.image_intro}
-                                />
-                            </View>
-                            {visualGuide?
-                                <ImageCache style={[styles.tapFinger,{alignSelf:"center", marginTop:scale(100)}]} source={require('../assets/images/tapFinger.gif')} />
-                                :null
-                            }
-                        </TouchableScale>
-                    </View>
-                    :null
-                }
                 {optionData.show.includes('blogs') && (
                 <View style={styles.blogRow}>
                     {optionData.blogs.map((blog)=>(

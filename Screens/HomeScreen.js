@@ -37,7 +37,7 @@ const CustomDrawerContentComponent = (props) => {
                                     onPress={() => navigation.navigate("ProfileScreen")}
                                 >
                                     <FastImage
-                                        source={{uri: user.avatar_urls['full']?user.avatar_urls['full']:user.avatar_urls['96']}}
+                                        source={{uri: user&&user.avatar_urls['full']?user.avatar_urls['full']:user.avatar_urls['96']}}
                                         style={{height: scale(80), width: scale(80), borderRadius: 100, margin: scale(10)}}
                                     />
                                 </TouchableOpacity>

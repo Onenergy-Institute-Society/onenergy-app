@@ -32,6 +32,7 @@ const MyStatsScreen = (props) => {
                 false
             ).then(response => {
                 setStatsData(response.data);
+                console.log(response.data);
                 setStatsLoading(false);
             });
         } catch (e) {
@@ -262,7 +263,7 @@ const MyStatsScreen = (props) => {
                                             <>
                                                 <View style={styles.row}>
                                                     <Text style={[styles.title,{flex:0.6}]}>{item.title}</Text>
-                                                    <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} {optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_move_counts')].title}</Text>
+                                                    <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} {optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_times')].title}</Text>
                                                     <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_hours')].title:Math.round(item.duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title}</Text>
                                                 </View>
                                                 {index<statsData.practices_stats.length-1?

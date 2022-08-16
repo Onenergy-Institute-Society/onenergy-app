@@ -10,7 +10,6 @@ import {scale} from "../Utils/scale";
 
 const LessonButton = (props) => {
     const { global, colors, lesson } = props;
-    const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
     const [completing, setCompleting] = useState(false);
@@ -44,11 +43,9 @@ const LessonButton = (props) => {
         })
     }
     useEffect(()=>{
-        if(user&&!user.firstCourseCompleted&&videoComplete){
-            setTimeout(function () {
-                setVisualGuideForButton(true);
-            }, 5000);
-        }
+        setTimeout(function () {
+            setVisualGuideForButton(true);
+        }, 5000);
     },[])
     const completeLesson = async () => {
         try {

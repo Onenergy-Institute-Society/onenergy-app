@@ -50,7 +50,7 @@ const PracticeTipsRow = props => {
         {
             item.meta_box.course.map((course_item, itemIndex) =>
             {
-                if(user.completed_courses.find(course => course.id === parseInt(course_item))){
+                if(user&&user.completed_courses.find(course => course.id === parseInt(course_item))){
                     setShowTitle(true);
                     show = true;
                 }

@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import {
-    Alert,
     StyleSheet,
     View,
     SafeAreaView, Text, TouchableOpacity, Platform, ScrollView
@@ -15,7 +14,7 @@ import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { Modalize } from 'react-native-modalize';
-import {scale,verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import EventList from "../Components/EventList";
 import PracticeTipsRow from "../Components/PracticeTipsRow";
 import LoginScreen from "@src/containers/Custom/LoginScreen";
@@ -52,23 +51,11 @@ const PracticesScreen = props => {
         const groupPracticePressed = () => {
             if(user)
             {
-                if(user.firstCourseCompleted) {
-                    navigation.dispatch(
-                        NavigationActions.navigate({
-                            routeName: "PracticeGroup",
-                        })
-                    )
-                }else{
-                    Alert.alert(
-                        "Notice",
-                        "Please finish introduction course first.",
-                        [
-                            {
-                                text: "Ok",
-                            },
-                        ]
-                    );
-                }
+                navigation.dispatch(
+                    NavigationActions.navigate({
+                        routeName: "PracticeGroup",
+                    })
+                )
             }else{
                 let helpIndex = optionData.helps.findIndex(el => el.name === 'all_login_required_popup_guest');
                 setHelpModal({title: optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'', id: optionData.helps[helpIndex].id});
@@ -99,17 +86,17 @@ const PracticesScreen = props => {
         return (
             <SafeAreaView style={styles.container}>
                 <ScrollView style={{flexGrow:1}} showsVerticalScrollIndicator={false}>
-                    {user?
-                        (optionData.goals&&optionData.goals.length)||(optionData.challenges&&optionData.challenges.length)?
-                            <View>
-                                <EventList location={'practice'} eventsDate={optionData.goals} />
-                                <EventList location={'practice'} eventsDate={optionData.challenges} />
-                            </View>
-                        :null
-                    :null}
-                    {user?
-                        <PracticeTipsRow />
-                        :null
+                    {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
+                        <View>
+                            <EventList location={'practice'} eventsDate={optionData.goals}/>
+                            <EventList location={'practice'} eventsDate={optionData.challenges}/>
+                        </View>
+                        : null
+                    }
+                    {
+                        user ?
+                            <PracticeTipsRow/>
+                            : null
                     }
                     <TouchableScale
                         onPress={personalPracticePressed}>
@@ -118,6 +105,7 @@ const PracticesScreen = props => {
                                 width={windowWidth - scale(30)}
                                 source={require('../assets/images/guided-practice-banner.png')}
                                 style={styles.image}
+                                background={true}
                             />
                             <NotificationTabBarIcon notificationID={'guide_personal'} top={3} right={3} size={scale(15)} fontSize={10} showNumber={true} />
                         </View>
@@ -130,6 +118,7 @@ const PracticesScreen = props => {
                                 width={windowWidth - scale(30)}
                                 source={require('../assets/images/group-practice-banner.png')}
                                 style={styles.image}
+                                background={true}
                             />
                         </View>
                     </TouchableScale>
@@ -141,6 +130,7 @@ const PracticesScreen = props => {
                                 width={windowWidth - scale(30)}
                                 source={require('../assets/images/member-practice-banner.png')}
                                 style={styles.image}
+                                background={true}
                             />
                         </View>
                     </TouchableScale>

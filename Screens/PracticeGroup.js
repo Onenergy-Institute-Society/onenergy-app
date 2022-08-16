@@ -140,7 +140,7 @@ const PracticeGroup = props => {
     const renderItem = ({ item }) => {
         let detail = item.content.rendered;
         const conditionLessons  = item.meta_box.lessons.every(value => user.completed_lessons.some(lesson=>(lesson.id===value)));
-        user.completed_lessons.map((lesson) => {
+        user&&user.completed_lessons.map((lesson) => {
             detail = detail.replace('<span id="'+lesson.id+'"></span>', '<span style="color:green">(Passed)</span>')
         })
         const conditionWeekDay = item.meta_box.weekday.includes(new Date().getDay().toString());

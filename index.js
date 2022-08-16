@@ -48,6 +48,7 @@ import TextBlock from "./Components/TextBlock";
 import ImageBlock from "./Components/ImageBlock";
 import BgVideoBlock from "./Components/BgVideoBlock";
 import RelatedPostsRow from "./Components/RelatedPostsRow";
+import FastImage from 'react-native-fast-image';
 
 export const applyCustomCode = externalCodeSetup => {
     externalCodeSetup.navigationApi.addNavigationRoute(
@@ -250,7 +251,6 @@ export const applyCustomCode = externalCodeSetup => {
 
     //Program screen course list
     const NewWidgetItemCourseComponent = (props) => {
-        const user = useSelector((state) => state.user.userObject);
         const {viewModel, colors} = props;
         let featuredUrl = viewModel.featuredUrl.replace('-300x200', '-1024x683');
         let statusText;
@@ -305,14 +305,8 @@ export const applyCustomCode = externalCodeSetup => {
                 }
             }
         }else{
-            if (viewModel.price && viewModel.price.required_points && (viewModel.price.required_points > user.points.point)) {
-                statusBarColor = colors.coursesLabelNotEnrolled;
-                statusText = viewModel.price.required_points + " Qi Required";
-                lessonNote = 'Practice to gather more Qi to unlock';
-            } else {
-                statusBarColor = colors.coursesLabelStart;
-                statusText = "Start Course";
-            }
+            statusBarColor = colors.coursesLabelStart;
+            statusText = "Start Course";
         }
         const styles = StyleSheet.create({
             containerStyle: {
@@ -722,14 +716,6 @@ export const applyCustomCode = externalCodeSetup => {
         const dispatch = useDispatch();
         const [visualGuide, setVisualGuide] = useState(false);
 
-        useEffect(()=>{
-            if(user&&!user.firstCourseCompleted){
-                setTimeout(function () {
-                    setVisualGuide(true);
-                }, 5000);
-            }
-        },[])
-
         let diffTime = '';
         if(diffMinutes < 60){
             diffTime = 'in ' + diffMinutes + ' minutes';
@@ -740,7 +726,7 @@ export const applyCustomCode = externalCodeSetup => {
                 diffTime = 'in ' + diffDays + ' days';
             }
         }
-        const [buttonEnroll, setButtonEnroll] = useState('Enroll Now');
+        const [buttonEnroll, setButtonEnroll] = useState('Start Now');
 
         const buttonText = "Next lesson will be available " + diffTime;
         if(courseVM.progression === 100){
@@ -810,7 +796,7 @@ export const applyCustomCode = externalCodeSetup => {
                 </View>
             ]
         }else{
-            if(courseVM.price.required_points > 0 && user.points.point < courseVM.price.required_points && courseVM.error.message){
+            if(user && courseVM.price.required_points > 0 && user.points.point < courseVM.price.required_points && courseVM.error.message){
                 const Info =
                     <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
                         <Text style={{color:"red", fontSize:scale(14)}}>{courseVM.error.message}</Text>
@@ -1087,15 +1073,6 @@ export const applyCustomCode = externalCodeSetup => {
 
     const customUserReducer = reducer => (state = reducer(undefined, {}), action) => {
         switch (action.type) {
-            case "COMPLETE_FIRST_COURSE":
-                const newState = {
-                    ...state,
-                    userObject:{
-                        ...state.userObject,
-                        firstCourseCompleted: true
-                    }
-                }
-                return reducer(newState, action);
             case "UPDATE_POINTS":
                 const newPoint = {
                     ...state,

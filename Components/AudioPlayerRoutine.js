@@ -207,7 +207,7 @@ const AudioPlayerRoutine = (props) => {
                     <Video
                         ref={videoPlayer => this.videoPlayer = videoPlayer}
                         audioOnly={true}
-                        playInBackground={!!(user.membership && user.membership.length)}
+                        playInBackground={user && !!(user.membership && user.membership.length)}
                         playWhenInactive={true}
                         ignoreSilentSwitch={"ignore"}
                         repeat={true}
