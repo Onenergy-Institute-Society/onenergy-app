@@ -327,6 +327,6 @@ PracticeMember.navigationOptions = ({ navigation }) => {
 const mapStateToProps = (state) => ({
     config: state.config,
     accessToken: state.auth.token,
-    routines: state.routinesReducer.routines
+    routines: state.routinesReducer.routines,
 });
 export default connect(mapStateToProps)(withNavigation(PracticeMember));

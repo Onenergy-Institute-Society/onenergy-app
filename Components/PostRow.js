@@ -40,7 +40,7 @@ const PostRow = props => {
         }
     }
     useEffect(() => {
-        fetchPostsData().then();
+            fetchPostsData().then();
     }, []);
     const renderOverlayImage = (format) => {
         switch(format) {
@@ -93,7 +93,7 @@ const PostRow = props => {
                     <ActivityIndicator size="large"/>
                 </View>
             ):(
-                 <FlatList
+                <FlatList
                     style={styles.scrollView}
                     data={dataPosts}
                     renderItem={renderItem}

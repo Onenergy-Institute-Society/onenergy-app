@@ -37,6 +37,7 @@ export default class TopSlider extends Component {
         contentContainerStyle: {},
         component: <TopSliderItem />,
         removeClippedSubviews: true,
+        refresh: false,
     };
 
     constructor(props) {

@@ -32,7 +32,6 @@ const MyStatsScreen = (props) => {
                 false
             ).then(response => {
                 setStatsData(response.data);
-                console.log(response.data);
                 setStatsLoading(false);
             });
         } catch (e) {
@@ -117,7 +116,12 @@ const MyStatsScreen = (props) => {
                                     <Text style={styles.text}> {Math.round(statsData.today_duration / 60 )>60?Math.round(statsData.today_duration / 60 /60)+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_hours')].title:Math.round(statsData.today_duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title}</Text>
                                 </View>
                                 <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
-                                <View style={[styles.row, styles.lastRow]}>
+                                <View style={styles.row}>
+                                    <Text style={styles.title}>Weekly Practice Time:</Text>
+                                    <Text style={styles.text}> {Math.round(statsData.week_duration / 60 )>60?Math.round(statsData.week_duration / 60 /60)+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_hours')].title:Math.round(statsData.week_duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title}</Text>
+                                </View>
+                                <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
+                                <View style={styles.row}>
                                     <Text style={styles.title}>Total Practice Time:</Text>
                                     <Text style={styles.text}> {Math.round(statsData.total_duration / 60 )>60?Math.round(statsData.total_duration / 60 /60)+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_hours')].title:Math.round(statsData.total_duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title}</Text>
                                 </View>
@@ -295,14 +299,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     scrollContainer:{
-        flex: 1,
+        flex:1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingHorizontal: 15,
     },
     card: {
-        flex:1,
         width: windowWidth-scale(30),
+        marginHorizontal: scale(15),
         borderRadius:9,
         marginTop:scale(15),
     },

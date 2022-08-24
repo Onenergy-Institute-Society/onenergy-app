@@ -9,14 +9,14 @@ import {
     View,
     SafeAreaView,
     TouchableOpacity,
-    TouchableWithoutFeedback, Platform, TextInput, Image, Keyboard, ScrollView, Switch
+    TouchableWithoutFeedback, TextInput, Image, ScrollView
 } from "react-native";
 import IconButton from "@src/components/IconButton";
 import {Swipeable, GestureHandlerRootView} from "react-native-gesture-handler";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import SortList from "./SortList";
 import { Modalize } from 'react-native-modalize';
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { BlurView } from "@react-native-community/blur";
@@ -247,7 +247,7 @@ const EditRoutine = props => {
                         <TouchableWithoutFeedback
                             onPress={()=>{setCurrentTrack({index:id, item:itemData});this.countDialog.open();}}>
                             <View style={styles.trackCount}>
-                                <Text style={styles.trackCountText}>{itemData.count}</Text>
+                                <Text style={styles.trackCountText}>{itemData.parts>1?itemData.parts+'x':''}{itemData.count}{itemData.mode==="0"?"":"m"}</Text>
                                 <Image style={{marginLeft:5,tintColor:"#4942e1"}} source={require("@src/assets/img/arrow-down.png")} />
                             </View>
                         </TouchableWithoutFeedback>
@@ -377,7 +377,7 @@ const EditRoutine = props => {
             return (
                 <TouchableOpacity
                     key={image}
-                    onPress={() => {Keyboard.dismiss();setRoutineDetail(prevState => ({...prevState, image:image})); setChangedStatus(true)}}
+                    onPress={() => {setRoutineDetail(prevState => ({...prevState, image:image})); setChangedStatus(true)}}
                 >
                     <Image source={{uri:image}} style={[styles.colorSelect,imageSelected]} resizeMode={"cover"} />
                 </TouchableOpacity>
@@ -411,7 +411,7 @@ const EditRoutine = props => {
             <View>
                 <View style={styles.listContainer}>
                     <TouchableWithoutFeedback
-                    onPress={() => {Keyboard.dismiss();this.bgmDialog.open();}}>
+                    onPress={() => {this.bgmDialog.open();}}>
                         <View style={styles.content}>
                             {selectBgm?(
                             <Text style={styles.trackTitle}>
@@ -427,14 +427,17 @@ const EditRoutine = props => {
             </View>
             <View style={{width: windowWidth-scale(30), flexDirection:"row", justifyContent: "space-between", alignItems:"center"}}>
                 <Text style={styles.title}>Practices</Text>
+                {!guidesLoading?
                 <IconButton
-                    pressHandler={() => {Keyboard.dismiss();this.addGuideModal.open();}}
+                    pressHandler={() => {this.addGuideModal.open();}}
                     icon={require("@src/assets/img/add.png")}
                     tintColor={"#4942e1"}
                     style={{ height: 20, width: 20 }}
                 />
+                :
+                    <ActivityIndicator size='small' />
+                }
             </View>
-            <TouchableWithoutFeedback onPress={()=>Keyboard.dismiss()} >
             <GestureHandlerRootView style={{height:"100%"}}>
                 {routineSettings.length===0?(
                     <View><Text>No practice selected, please tap "Plus Sign" to add.</Text></View>
@@ -453,7 +456,6 @@ const EditRoutine = props => {
                     />
                 )}
             </GestureHandlerRootView>
-            </TouchableWithoutFeedback>
             </ScrollView>
             {loading &&
                 <BlurView style={styles.loading}
@@ -717,7 +719,7 @@ EditRoutine.navigationOptions = ({ navigation }) => {
         headerTitle: params.title?params.title:navigation.getParam('title'),
         headerLeft:
             <TouchableOpacity
-                onPress={() => {Keyboard.dismiss();params.onBackPressed();}}
+                onPress={() => {params.onBackPressed();}}
             >
                 <View style={{flexDirection: "row", justifyContent:"flex-start", alignItems: "center"}}>
                     <IconButton
@@ -734,7 +736,7 @@ EditRoutine.navigationOptions = ({ navigation }) => {
         headerRight:
             <View style={{flexDirection:"row", justifyContent:"flex-end"}}>
                 <TouchableOpacity
-                    onPress={() => {Keyboard.dismiss();params.toggleHelpModal();}}
+                    onPress={() => {params.toggleHelpModal();}}
                 >
                     <IconButton
                         icon={require("@src/assets/img/help.png")}

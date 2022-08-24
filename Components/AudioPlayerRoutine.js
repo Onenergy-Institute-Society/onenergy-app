@@ -60,7 +60,7 @@ const AudioPlayerRoutine = (props) => {
                         payload: 'quest'
                     });
                 }
-                if(response.data.achievements)
+                if(response.data.achievements&&response.data.achievements.length)
                 {
                     dispatch({
                         type: 'UPDATE_USER_COMPLETED_ACHIEVEMENTS',

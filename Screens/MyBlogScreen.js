@@ -6,6 +6,7 @@ const MyBlogScreen = (props) => {
     const { navigation } = props;
     const blogId = navigation.getParam('blogId');
     let title = navigation.getParam('title').replace(/[‘’“”]+/g, '\'');
+
     if (! props.isFocused)
         return null;
     const loading = (

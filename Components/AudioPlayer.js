@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
-import {TouchableOpacity, View} from 'react-native';
+import {AppState, TouchableOpacity, View} from 'react-native';
 import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
 import IconButton from "@src/components/IconButton";
 import { StyleSheet } from 'react-native';
@@ -10,6 +10,7 @@ import TrackSlider from "./TrackSlider";
 import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 
 const AudioPlayer = (props) => {
+    const user = useSelector((state) => state.user.userObject);
     const {
         playerMaxView,
         buttonsSection,
@@ -70,6 +71,19 @@ const AudioPlayer = (props) => {
             console.error(e);
         }
     }
+    useEffect(()=>{
+        const appStateListener = AppState.addEventListener(
+            'change',
+            nextAppState => {
+                if((nextAppState==='background')&&(!user.membership||!user.membership.length)){
+                    TrackPlayer.pause();
+                }
+            },
+        );
+        return () => {
+            appStateListener?.remove();
+        };
+    },[])
     useEffect(() => {
         addTrack(track).then(()=>{TrackPlayer.play();setPlaying(true);setStopped(false);});
     }, [track]);

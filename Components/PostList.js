@@ -17,7 +17,6 @@ import Skeleton from './Loaders/PostsSkeletonLoading';
 import ImageCache from './ImageCache';
 import TouchableScale from './TouchableScale';
 import { scale } from '../Utils/scale';
-import NotificationTabBarIcon from "./NotificationTabBarIcon";
 
 const PostList = props => {
     const [ postsData, setPostsData ] = useState([]);
@@ -25,9 +24,6 @@ const PostList = props => {
     const [ loadMore, setLoadMore] = useState(false);
     const [ page, setPage] = useState(1);
     const { navigation, postCategory, postPerPage, postOrder, postOrderBy, useLoadMore } = props;
-    const user = useSelector((state) => state.user.userObject);
-    const notification = useSelector((state) => state.notifyReducer.notification);
-    const dispatch = useDispatch();
     const fetchPostsData = async () => {
         try {
             const api = getApi(props.config);
@@ -41,11 +37,6 @@ const PostList = props => {
             ).then(response => {
                 setPostsData((current) => [...current, ...response.data]);
                 setPostsDataLoading(false);
-                if(user) {
-                    dispatch({
-                        type: 'NOTIFICATION_TIME'
-                    });
-                }
             });
 
         } catch (e) {
@@ -54,7 +45,7 @@ const PostList = props => {
     }
 
     useEffect(() => {
-        fetchPostsData().then();
+            fetchPostsData().then();
     }, [page]);
 
     const handleLoadMore = () => {
@@ -82,38 +73,11 @@ const PostList = props => {
         fetchPostsData().then();
     }
     const renderItem = ({ item }) => {
-        let mode;
-        if(notification.time) {
-            switch (postCategory) {
-                case '103':
-                    mode = 'posts_watch';
-                    break;
-                case '105':
-                    mode = 'posts_read';
-                    break;
-            }
-            const dateTime= new Date(notification.time);
-            const datePost = new Date(item.dateUTC);
-            if ((datePost > dateTime) && user) {
-                dispatch({
-                    type: 'NOTIFICATION_POST_ADD',
-                    payload: item.id,
-                    mode: mode
-                });
-            }
-        }
         return (
             <TouchableScale
                 key={item.id + 'img'}
                 onPress={() => {
                     try {
-                        if(user) {
-                            dispatch({
-                                type: 'NOTIFICATION_POST_REMOVE',
-                                payload: item.id,
-                                mode: mode
-                            });
-                        }
                         navigation.dispatch(
                             NavigationActions.navigate({
                                 routeName: "MyBlogScreen",
@@ -149,14 +113,13 @@ const PostList = props => {
                             </View>
                         </View>
                     </View>
-                    <NotificationTabBarIcon notificationID={mode} top={3} right={3} size={15} fontSize={scale(10)} showNumber={false} data={item.id} />
                 </View>
             </TouchableScale>
         );
     }
     return (
         <SafeAreaView style={styles.container}>
-            {postsDataLoading ? (
+            {postsDataLoading? (
                 <Skeleton />
             ):(
                  <FlatList

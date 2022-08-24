@@ -467,6 +467,41 @@ export const applyCustomCode = externalCodeSetup => {
     }
     externalCodeSetup.blogSingleApi.setBlogHeaderAvatar(BlogHeaderAvatar);
 
+    //Add Blog reducer
+    externalCodeSetup.reduxApi.addReducer(
+        "postsReducer",
+        (state = {posts:[],lastView:''}, action) => {
+            let arrayTemp = [];
+            switch (action.type){
+                case "POSTS_ADD":
+                    arrayTemp = state.posts;
+                    arrayTemp.push(action.payload);
+                    console.log(arrayTemp)
+                    return {
+                        ...state,
+                        posts: arrayTemp,
+                        lastView:new Date().toLocaleString()
+                    };
+                case "POST_ADD":
+                    if(state.posts&&state.posts.length) {
+                        arrayTemp = state.posts;
+                        let addIndex = state.posts.findIndex(el => el.id === action.id);
+                        if (addIndex === -1) {
+                            arrayTemp.push(action.payload);
+                        }
+                    }else {
+                        arrayTemp.push(action.payload);
+                    }
+                    return {
+                        ...state,
+                        posts: arrayTemp
+                    };
+                default:
+                    return state;
+            }
+        }
+    );
+
     //Add Notification reducer
     externalCodeSetup.reduxApi.addReducer(
         "notifyReducer",
@@ -474,46 +509,48 @@ export const applyCustomCode = externalCodeSetup => {
             let count;
             switch (action.type){
                 case "NOTIFICATION_POST_ADD":
-                    if(state.notification[action.mode]){
+                    let arrayTemp = [];
+                    if(state.notification[action.mode]&&state.notification[action.mode].length) {
+                        arrayTemp = state.notification[action.mode];
                         let addIndex = state.notification[action.mode].indexOf(action.payload);
                         if (addIndex === -1) {
-                            return {
-                                ...state,
-                                notification: {
-                                    ...state.notification,
-                                    [action.mode]: [...state.notification[action.mode], action.payload]
-                                }
-                            };
-                        }else{
-                            return state;
+                            arrayTemp.push(action.payload);
                         }
-                    }else{
-                        return {
-                            ...state,
-                            notification: {
-                                ...state.notification,
-                                [action.mode]:[action.payload]
-                            }
-                        };
+                    }else {
+                        arrayTemp.push(action.payload);
                     }
+                    return {
+                        ...state,
+                        notification: {
+                            ...state.notification,
+                            [action.mode]: arrayTemp
+                        }
+                    };
                 case "NOTIFICATION_POST_REMOVE":
-                    if(state.notification[action.mode]) {
+                    if(state.notification[action.mode]&&state.notification[action.mode].length) {
                         let arrayTemp = state.notification[action.mode];
                         let index = arrayTemp.indexOf(action.payload);
                         if (index !== -1) {
                             arrayTemp.splice(index, 1);
-                            return {
-                                ...state,
-                                notification: {...state.notification, [action.mode]: arrayTemp}
-                            };
+                            if(arrayTemp.length>1) {
+                                console.log('empty1')
+                                return {
+                                    ...state,
+                                    notification: {
+                                        ...state.notification,
+                                        [action.mode]: arrayTemp
+                                    }
+                                };
+                            }
                         } else {
                             return state;
                         }
                     }else{
                         return state;
-                    }
+                    };
+                    return state;
                 case "NOTIFICATION_PRACTICE_ADD":
-                    if(state.notification['practice']){
+                    if(state.notification['practice']&&state.notification['practice'].length){
                         let addIndex = state.notification['practice'].indexOf(action.payload);
                         if (addIndex === -1) {
                             return {
@@ -536,14 +573,17 @@ export const applyCustomCode = externalCodeSetup => {
                         };
                     }
                 case "NOTIFICATION_PRACTICE_REMOVE":
-                    if(state.notification['practice']) {
+                    if(state.notification['practice']&&state.notification['practice'].length) {
                         let arrayTemp = state.notification['practice'];
                         let index = arrayTemp.indexOf(action.payload);
                         if (index !== -1) {
                             arrayTemp.splice(index, 1);
                             return {
                                 ...state,
-                                notification: {...state.notification, 'practice': arrayTemp}
+                                notification: {
+                                    ...state.notification,
+                                    'practice': arrayTemp
+                                }
                             };
                         } else {
                             return state;
@@ -674,7 +714,7 @@ export const applyCustomCode = externalCodeSetup => {
 
     // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
-        let whiteList = [...props.whitelist, "languagesReducer", "notifyReducer"];
+        let whiteList = [...props.whitelist, "languagesReducer", "routinesReducer", "notifyReducer"];
         let index = whiteList.indexOf('blog');
         if (index !== -1) {
             whiteList.splice(index, 1);
@@ -1298,7 +1338,6 @@ export const applyCustomCode = externalCodeSetup => {
                 )}
             </AppTouchableOpacity>
         </View>
-
     })
 };
 
