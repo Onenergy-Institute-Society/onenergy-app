@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Image, Platform, StyleSheet, Text, TouchableWithoutFeedback, View, ActivityIndicator, Alert} from "react-native";
 import Icon from "@src/components/Icon";
 import AppTouchableOpacity from "@src/components/AppTouchableOpacity";
@@ -42,6 +42,7 @@ import CourseActionButton from "@src/components/Course/CourseActionButton";
 import MyAppPageScreen from "./Screens/MyAppPageScreen";
 import AppAvatar from "@src/components/AppAvatar";
 import LessonScreenHeader from "./Components/LessonScreenHeader";
+import TopicScreenHeader from "./Components/TopicScreenHeader";
 import QuizScreenHeader from "./Components/QuizScreenHeader";
 import {FontWeights} from "@src/styles/global";
 import TextBlock from "./Components/TextBlock";
@@ -918,6 +919,9 @@ export const applyCustomCode = externalCodeSetup => {
     //Custom back button in Single Lesson Screen
     externalCodeSetup.lessonSingleScreenApi.setLessonScreenHeader(props => <LessonScreenHeader {...props}/>)
 
+    //Custom back button in Single Topic Screen
+    externalCodeSetup.learnTopicSingleScreenApi.setLearnTopicScreenHeader(props => <TopicScreenHeader {...props}/>)
+
     //Custom back button in Single Quiz Screen
     externalCodeSetup.quizApi.setQuizScreenHeader(props => <QuizScreenHeader {...props} />)
 
@@ -935,6 +939,26 @@ export const applyCustomCode = externalCodeSetup => {
                 <LessonButton global={global} colors={colors} lesson={lesson} />
             </View>
         if(lesson.completed){
+            return lessonButton
+        }else {
+            return Buttons;
+        }
+    })
+    //Custom complete button in Single Topic Screen
+    externalCodeSetup.learnTopicSingleScreenApi.setTransformTopicActionButtons((
+        lessonButton,
+        showComplete,
+        global,
+        colors,
+        topic,
+        completing,
+        labels,
+        handleComplete) => {
+        let Buttons =
+            <View style={global.row}>
+                <LessonButton global={global} colors={colors} lesson={topic} />
+            </View>
+        if(topic.completed){
             return lessonButton
         }else {
             return Buttons;
