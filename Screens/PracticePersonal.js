@@ -165,7 +165,7 @@ const PracticePersonal = props => {
                 shadowOpacity: 0.2,
                 shadowRadius: 3,
                 elevation: 4,
-            }} source={require("../assets/Del_YouMadeIt.gif")} />
+            }} source={require("../assets/images/Del_YouMadeIt.gif")} />
                 :null}
         </SafeAreaView>
     );
