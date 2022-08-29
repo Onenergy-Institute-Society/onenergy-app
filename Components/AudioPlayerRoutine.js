@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
 import { Text, TouchableOpacity, View, Platform} from 'react-native';
-import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
+import TrackPlayer, {State, Event, useTrackPlayerEvents, Capability, RepeatMode} from 'react-native-track-player';
 import IconButton from "@src/components/IconButton";
 import { StyleSheet } from 'react-native';
 import { scale, verticalScale } from '../Utils/scale';
@@ -74,6 +74,24 @@ const AudioPlayerRoutine = (props) => {
         }
     }
     useEffect(() => {
+        TrackPlayer.updateOptions({
+            stoppingAppPausesPlayback: true,
+            alwaysPauseOnInterruption: false,
+            // Media controls capabilities
+            capabilities: [
+                Capability.Play,
+                Capability.Pause,
+                Capability.Stop,
+            ],
+            // Capabilities that will show up when the notification is in the compact form on Android
+            compactCapabilities: [
+                Capability.Play,
+                Capability.Pause,
+                Capability.Stop,
+            ],
+        });
+        TrackPlayer.setRepeatMode(RepeatMode.Off);
+        TrackPlayer.setupPlayer();
         addTrack(routine.tracks).then(()=>{
             TrackPlayer.play().then();
             setPlaying(true);
@@ -81,7 +99,6 @@ const AudioPlayerRoutine = (props) => {
         });
     }, [routine]);
     async function addTrack(track){
-        await TrackPlayer.stop();
         await TrackPlayer.reset();
         return await TrackPlayer.add(track, -1);
     }
@@ -115,7 +132,7 @@ const AudioPlayerRoutine = (props) => {
             deactivateKeepAwake();
         }
         if (event.type === Event.RemoteStop) {
-            TrackPlayer.stop();
+            TrackPlayer.reset();
             setPlaying(false);
             setStopped(true);
             setTrackTitle('');
@@ -168,7 +185,7 @@ const AudioPlayerRoutine = (props) => {
     const onStopPress = async () => {
         const state = await TrackPlayer.getState();
         if ((state === State.Playing) || (state === State.Paused)) {
-            await TrackPlayer.stop();
+            await TrackPlayer.reset();
             setNextTrack(0);
         }
     };

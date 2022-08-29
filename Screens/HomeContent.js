@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, {useEffect, useState} from "react";
 import {getApi} from "@src/services";
 import {connect, useSelector} from "react-redux";
 import {
@@ -7,9 +7,9 @@ import {
     View,
     SafeAreaView, Text, ActivityIndicator
 } from "react-native";
+import IconButton from "@src/components/IconButton";
 import {windowWidth} from "../Utils/Dimensions";
 import {scale} from '../Utils/scale';
-import IconButton from "@src/components/IconButton";
 import TouchableScale from "../Components/TouchableScale";
 import TopSlider from '../Components/TopSlider';
 import DailyQuotes from '../Components/DailyQuotes'
@@ -17,39 +17,21 @@ import Skeleton from '../Components/Loaders/QuoteSkeletonLoading';
 import PostRow from '../Components/PostRow';
 import ImageCache from "../Components/ImageCache";
 import {NavigationActions} from "react-navigation";
-import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import EventList from "../Components/EventList";
-import { BlurView } from "@react-native-community/blur";
+import {BlurView} from "@react-native-community/blur";
 
 const HomeContent = (props) => {
     const {navigation, screenProps} = props;
     const {global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const [ loading, setLoading ] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [quotesData, setQuotesData] = useState([]);
     const [quotesLoading, setQuotesLoading] = useState(true);
-    TrackPlayer.updateOptions({
-        stopWithApp: true,
-        alwaysPauseOnInterruption: false,
-        // Media controls capabilities
-        capabilities: [
-            Capability.Play,
-            Capability.Pause,
-            Capability.Stop,
-        ],
-        // Capabilities that will show up when the notification is in the compact form on Android
-        compactCapabilities: [
-            Capability.Play,
-            Capability.Pause,
-            Capability.Stop,
-        ],
-    });
-    TrackPlayer.setRepeatMode(RepeatMode.Off);
-    TrackPlayer.setupPlayer();
+
     const fetchQuotesData = async () => {
         try {
             const apiQuotes = getApi(props.config);
@@ -100,10 +82,8 @@ const HomeContent = (props) => {
         )
     }
     const OnPress = async (item, typeName) => {
-        if(item)
-        {
-            switch(item[typeName])
-            {
+        if (item) {
+            switch (item[typeName]) {
                 case 'post':
                     navigation.dispatch(
                         NavigationActions.navigate({
@@ -128,10 +108,10 @@ const HomeContent = (props) => {
                     break;
                 case 'link':
                     setLoading(true);
-                    let secTimer = setInterval( () => {
+                    let secTimer = setInterval(() => {
                         setLoading(false);
                         clearInterval(secTimer);
-                    },1000)
+                    }, 1000)
                     await props.attemptDeepLink(false)(null, item.link);
                     break;
                 default:
@@ -162,11 +142,11 @@ const HomeContent = (props) => {
                     </View>
                 )}
                 {optionData.show.includes('quotes') && (
-                    quotesLoading?
+                    quotesLoading ?
                         <View style={[styles.quoteRow, styles.boxShadow]}>
                             <Skeleton/>
                         </View>
-                    :
+                        :
                         <View style={[styles.quoteRow, styles.boxShadow]}>
                             {quotesData.map(item => {
                                 return (
@@ -176,126 +156,128 @@ const HomeContent = (props) => {
                         </View>
                 )}
                 <View style={styles.programRow}>
-                    <EventList location={'home'} eventsDate={optionData.goals} />
-                    <EventList location={'home'} eventsDate={optionData.webinars} />
+                    <EventList location={'home'} eventsDate={optionData.goals}/>
+                    <EventList location={'home'} eventsDate={optionData.webinars}/>
                 </View>
                 {optionData.show.includes('events') && (
-                <View style={styles.eventRow}>
-                    {optionData.events && (
-                        <TouchableScale
-                            onPress={() =>{
-                                OnPress(optionData.events, 'eventType').then();
-                            }}>
-                            <View style={[styles.block_event,styles.boxShadow]}>
-                                <ImageCache
-                                    source={{uri: optionData.events.image?optionData.events.image:''}}
-                                    style={styles.image_event}
-                                />
-                            </View>
-                        </TouchableScale>
-                    )}
-                    {optionData.currentSolarTermImage && (
-                        <TouchableScale
-                            onPress={
-                                () => {
-                                    optionData.solarTerm.solarTermType==='page'?
+                    <View style={styles.eventRow}>
+                        {optionData.events && (
+                            <TouchableScale
+                                onPress={() => {
+                                    OnPress(optionData.events, 'eventType').then();
+                                }}>
+                                <View style={[styles.block_event, styles.boxShadow]}>
+                                    <ImageCache
+                                        source={{uri: optionData.events.image ? optionData.events.image : ''}}
+                                        style={styles.image_event}
+                                    />
+                                </View>
+                            </TouchableScale>
+                        )}
+                        {optionData.currentSolarTermImage && (
+                            <TouchableScale
+                                onPress={
+                                    () => {
+                                        optionData.solarTerm.solarTermType === 'page' ?
+                                            navigation.dispatch(
+                                                NavigationActions.navigate({
+                                                    routeName: "MyAppPageScreen",
+                                                    params: {
+                                                        pageId: optionData.solarTerm.page,
+                                                        title: optionData.solarTerm.title
+                                                    }
+                                                })
+                                            )
+                                            :
+                                            optionData.solarTerm.solarTermType === 'screen' ?
+                                                NavigationActions.navigate({
+                                                    routeName: "SolarTermScreen"
+                                                })
+                                                : null
+                                    }
+                                }>
+                                <View style={[styles.block_season, styles.boxShadow]}>
+                                    <ImageCache
+                                        source={{uri: optionData.currentSolarTermImage ? optionData.currentSolarTermImage : ''}}
+                                        style={styles.image_season}
+                                    />
+                                </View>
+                            </TouchableScale>
+                        )}
+                    </View>
+                )}
+                {optionData.show.includes('entries') && (
+                    <View style={styles.eventRow}>
+                        {optionData.entries && (
+                            <TouchableScale
+                                onPress={
+                                    () => {
                                         navigation.dispatch(
                                             NavigationActions.navigate({
-                                                routeName: "MyAppPageScreen",
+                                                routeName: "ProgramsScreen"
+                                            })
+                                        )
+                                    }
+                                }>
+                                <View style={[styles.block_half_left, styles.boxShadow]}>
+                                    <ImageCache
+                                        source={{uri: optionData.entries.courseImage ? optionData.entries.courseImage : ''}}
+                                        style={styles.image_half}
+                                    />
+                                </View>
+                            </TouchableScale>
+                        )}
+                        {optionData.entries && (
+                            <TouchableScale
+                                onPress={
+                                    () => {
+                                        navigation.dispatch(
+                                            NavigationActions.navigate({
+                                                routeName: "PracticesScreen"
+                                            })
+                                        )
+                                    }
+                                }>
+                                <View style={[styles.block_half, styles.boxShadow]}>
+                                    <ImageCache
+                                        source={{uri: optionData.entries.practiceImage ? optionData.entries.practiceImage : ''}}
+                                        style={styles.image_half}
+                                    />
+                                </View>
+                            </TouchableScale>
+                        )}
+                    </View>
+                )}
+                {optionData.show.includes('blogs') && (
+                    <View style={styles.blogRow}>
+                        {optionData.blogs.map((blog) => (
+                            <>
+                                <TouchableScale onPress={
+                                    () => {
+                                        navigation.dispatch(
+                                            NavigationActions.navigate({
+                                                routeName: "CategoryScreen",
                                                 params: {
-                                                    pageId: optionData.solarTerm.page,
-                                                    title: optionData.solarTerm.title
+                                                    category: blog.category,
+                                                    name: blog.name,
                                                 }
                                             })
                                         )
-                                    :
-                                    optionData.solarTerm.solarTermType==='screen'?
-                                        NavigationActions.navigate({
-                                          routeName: "SolarTermScreen"
-                                        })
-                                        :null
-                                }
-                            }>
-                            <View style={[styles.block_season,styles.boxShadow]}>
-                                <ImageCache
-                                    source={{uri: optionData.currentSolarTermImage?optionData.currentSolarTermImage:''}}
-                                    style={styles.image_season}
-                                />
-                            </View>
-                        </TouchableScale>
-                    )}
-                </View>
-                )}
-                {optionData.show.includes('entries') && (
-                <View style={styles.eventRow}>
-                    {optionData.entries && (
-                    <TouchableScale
-                        onPress={
-                            () => {
-                                navigation.dispatch(
-                                    NavigationActions.navigate({
-                                        routeName: "ProgramsScreen"
-                                    })
-                                )
-                            }
-                        }>
-                        <View style={[styles.block_half_left,styles.boxShadow]}>
-                            <ImageCache
-                                source={{uri: optionData.entries.courseImage?optionData.entries.courseImage:''}}
-                                style={styles.image_half}
-                            />
-                        </View>
-                    </TouchableScale>
-                    )}
-                    {optionData.entries && (
-                    <TouchableScale
-                        onPress={
-                            () => {
-                                navigation.dispatch(
-                                    NavigationActions.navigate({
-                                        routeName: "PracticesScreen"
-                                    })
-                                )
-                            }
-                        }>
-                        <View style={[styles.block_half,styles.boxShadow]}>
-                            <ImageCache
-                                source={{uri: optionData.entries.practiceImage?optionData.entries.practiceImage:''}}
-                                style={styles.image_half}
-                            />
-                        </View>
-                    </TouchableScale>
-                    )}
-                </View>
-                )}
-                {optionData.show.includes('blogs') && (
-                <View style={styles.blogRow}>
-                    {optionData.blogs.map((blog)=>(
-                        <>
-                            <TouchableScale onPress={
-                                () => {
-                                    navigation.dispatch(
-                                        NavigationActions.navigate({
-                                            routeName: "CategoryScreen",
-                                            params: {
-                                                category: blog.category,
-                                                name: blog.name,
-                                            }
-                                        })
-                                    )
-                                }
-                            }>
-                                <View style={styles.view_blog_title}>
-                                    <Text style={styles.heading}>{blog.name}</Text>
-                                    <Text style={styles.heading_more}>See All ></Text>
+                                    }
+                                }>
+                                    <View style={styles.view_blog_title}>
+                                        <Text style={styles.heading}>{blog.name}</Text>
+                                        <Text style={styles.heading_more}>See All ></Text>
+                                    </View>
+                                </TouchableScale>
+                                <View style={styles.eventRow}>
+                                    <PostRow postType={'categories'} postCategory={blog.category}
+                                             postPerPage={blog.count} postOrder={blog.order} postOrderBy={blog.orderBy}
+                                             showAuthor={blog.showAuthor}/>
                                 </View>
-                            </TouchableScale>
-                            <View style={styles.eventRow}>
-                                <PostRow postType={'categories'} postCategory={blog.category} postPerPage={blog.count} postOrder={blog.order} postOrderBy={blog.orderBy} showAuthor={blog.showAuthor}/>
-                            </View>
-                        </>
-                    ))}
-                </View>
+                            </>
+                        ))}
+                    </View>
                 )}
                 <View style={styles.bottomRow}>
                 </View>
@@ -307,7 +289,7 @@ const HomeContent = (props) => {
                       reducedTransparencyFallbackColor="white"
             >
                 <View>
-                    <ActivityIndicator size='large' />
+                    <ActivityIndicator size='large'/>
                 </View>
             </BlurView>
             }
@@ -324,10 +306,10 @@ const styles = StyleSheet.create({
     scroll_view: {
         flexGrow: 1,
     },
-    tapFinger:{
+    tapFinger: {
         position: "absolute",
-        width:scale(200),
-        height:scale(240),
+        width: scale(200),
+        height: scale(240),
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
@@ -347,7 +329,7 @@ const styles = StyleSheet.create({
         marginTop: scale(15),
         alignItems: 'center',
         justifyContent: 'center',
-        height: (windowWidth-scale(30))/3.25,
+        height: (windowWidth - scale(30)) / 3.25,
     },
     eventRow: {
         alignItems: 'center',
@@ -363,13 +345,13 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         paddingLeft: 15,
         marginTop: scale(10),
-        flex:1,
+        flex: 1,
     },
     bottomRow: {
         minHeight: 50,
     },
     view_title: {
-        flex:1,
+        flex: 1,
         flexDirection: "row",
         justifyContent: "flex-start",
         marginTop: scale(15),
@@ -435,15 +417,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     view_intro: {
-        marginTop:scale(15),
-        marginHorizontal:scale(15),
-        width:windowWidth-scale(30),
-        height:windowWidth-scale(30),
+        marginTop: scale(15),
+        marginHorizontal: scale(15),
+        width: windowWidth - scale(30),
+        height: windowWidth - scale(30),
         borderRadius: 9,
     },
     image_intro: {
-        width:windowWidth-scale(30),
-        height:windowWidth-scale(30),
+        width: windowWidth - scale(30),
+        height: windowWidth - scale(30),
         borderRadius: 9,
     },
     image_event: {

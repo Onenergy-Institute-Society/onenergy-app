@@ -1,5 +1,14 @@
 import React, {useState} from "react";
-import {Image, Platform, StyleSheet, Text, TouchableWithoutFeedback, View, ActivityIndicator, Alert} from "react-native";
+import {
+    Image,
+    Platform,
+    StyleSheet,
+    Text,
+    TouchableWithoutFeedback,
+    View,
+    ActivityIndicator,
+    Alert
+} from "react-native";
 import Icon from "@src/components/Icon";
 import AppTouchableOpacity from "@src/components/AppTouchableOpacity";
 import {NavigationActions} from "react-navigation";
@@ -64,6 +73,7 @@ export const applyCustomCode = externalCodeSetup => {
         BlogsScreen,
         "Main" // "Auth" | "noAuth" | "Main" | "All"
     );
+
     externalCodeSetup.navigationApi.addNavigationRoute(
         "programs",
         "Programs",
@@ -100,6 +110,7 @@ export const applyCustomCode = externalCodeSetup => {
         ChooseLanguage,
         "All"
     );
+
     externalCodeSetup.navigationApi.addNavigationRoute(
         "OnBoarding",
         "OnBoarding",
@@ -124,6 +135,7 @@ export const applyCustomCode = externalCodeSetup => {
         MyAppPageScreen,
         "All"
     );
+
     externalCodeSetup.navigationApi.addNavigationRoute(
         "SolarTermScreen",
         "SolarTermScreen",
@@ -247,10 +259,10 @@ export const applyCustomCode = externalCodeSetup => {
         return ["my_progress"]; //available filters include "title", "recent", "my_progress"
     });
     externalCodeSetup.coursesHooksApi.setFetchParamsFilter(props => {
-        return {...props, order: "desc", categories:[93]}
+        return {...props, order: "desc", categories: [93]}
     });
 
-    //Program screen course list
+//Program screen course list
     const NewWidgetItemCourseComponent = (props) => {
         const {viewModel, colors} = props;
         let featuredUrl = viewModel.featuredUrl.replace('-300x200', '-1024x683');
@@ -262,40 +274,39 @@ export const applyCustomCode = externalCodeSetup => {
         const diffHours = lesson_time.diff(current_time, 'hours');
         const diffDays = lesson_time.diff(current_time, 'days');
         let diffTime = '';
-        if(diffMinutes < 60){
+        if (diffMinutes < 60) {
             diffTime = 'in ' + diffMinutes + ' Minutes';
-        }else{
-            if(diffHours < 24){
+        } else {
+            if (diffHours < 24) {
                 diffTime = 'tomorrow';
-            }else{
+            } else {
                 diffTime = 'in ' + diffDays + ' Days';
             }
         }
         let lessonNote = '';
-        if(viewModel.progression === 100)
-        {
-            statusBarColor = colors.coursesLabelCompleted ;
+        if (viewModel.progression === 100) {
+            statusBarColor = colors.coursesLabelCompleted;
             statusText = "Completed";
             lessonNote = 'Congratulations on completion';
-        }else if(viewModel.price && viewModel.price.expired) {
+        } else if (viewModel.price && viewModel.price.expired) {
             statusBarColor = "black";
             statusText = "Expired";
             lessonNote = 'Course is expired, no more access';
-        }else if(viewModel.hasAccess){
-            if(lesson_time>current_time) {
+        } else if (viewModel.hasAccess) {
+            if (lesson_time > current_time) {
                 lessonNote = 'Next lesson will be available ' + diffTime;
-            }else {
+            } else {
                 lessonNote = 'Next lesson is available now';
             }
             const expiringTime = new moment.utc(viewModel.price.expires_on);
             const diffExpiringDays = expiringTime.diff(current_time, 'days');
             let diffExpiringTime = '';
-            diffExpiringTime = 'Expire in '+diffExpiringDays+' Days';
-            if(diffExpiringDays<=7 && diffExpiringDays>0){
+            diffExpiringTime = 'Expire in ' + diffExpiringDays + ' Days';
+            if (diffExpiringDays <= 7 && diffExpiringDays > 0) {
                 statusBarColor = "grey";
                 statusText = diffExpiringTime;
                 lessonNote = 'Course is expiring soon';
-            }else {
+            } else {
                 if (viewModel.progression > 0) {
                     statusBarColor = colors.coursesLabelProgress;
                     statusText = "In Progress";
@@ -305,7 +316,7 @@ export const applyCustomCode = externalCodeSetup => {
                     lessonNote = 'Please start your first lesson';
                 }
             }
-        }else{
+        } else {
             statusBarColor = colors.coursesLabelStart;
             statusText = "Start Course";
         }
@@ -314,10 +325,10 @@ export const applyCustomCode = externalCodeSetup => {
                 marginHorizontal: scale(15),
                 backgroundColor: 'transparent',
             },
-            statusBar:{
+            statusBar: {
                 height: scale(25),
-                position:'absolute',
-                top:10,
+                position: 'absolute',
+                top: 10,
                 flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
@@ -330,28 +341,28 @@ export const applyCustomCode = externalCodeSetup => {
                 zIndex: 3, // works on ios
                 elevation: 3,
             },
-            statusText:{
+            statusText: {
                 color: 'white',
                 fontSize: scale(13),
-                backgroundColor:'transparent',
+                backgroundColor: 'transparent',
             },
-            lessonTime:{
+            lessonTime: {
                 color: "white",
                 fontWeight: "700",
                 fontSize: scale(14),
-                position:'absolute',
-                bottom:25,
-                alignSelf:"center",
+                position: 'absolute',
+                bottom: 25,
+                alignSelf: "center",
                 textShadowColor: 'rgba(0, 0, 0, 0.75)',
                 textShadowOffset: {width: -1, height: 1},
                 textShadowRadius: 10
             },
-            progressBar:{
+            progressBar: {
                 height: 3,
-                position:'absolute',
-                bottom:15,
+                position: 'absolute',
+                bottom: 15,
                 flexDirection: "row",
-                width: windowWidth-90,
+                width: windowWidth - 90,
                 marginLeft: 30,
                 marginRight: 30,
                 backgroundColor: 'white',
@@ -361,7 +372,7 @@ export const applyCustomCode = externalCodeSetup => {
             },
             image: {
                 width: windowWidth - scale(30),
-                height: (windowWidth - scale(30))/9*4,
+                height: (windowWidth - scale(30)) / 9 * 4,
                 borderRadius: 9,
                 marginLeft: 0,
                 marginTop: 0,
@@ -371,12 +382,12 @@ export const applyCustomCode = externalCodeSetup => {
             imageView: {
                 backgroundColor: 'rgba(255,255,255,0.5)',
                 width: windowWidth - scale(30),
-                height: (windowWidth - scale(30))/9*4,
+                height: (windowWidth - scale(30)) / 9 * 4,
                 borderRadius: 9,
                 overflow: 'hidden',
             },
             metaOverlay: {
-                position:"absolute",
+                position: "absolute",
                 left: 0,
                 right: 0,
                 top: 0,
@@ -386,17 +397,17 @@ export const applyCustomCode = externalCodeSetup => {
             },
             meta: {
                 width: windowWidth - scale(30),
-                height: (windowWidth - scale(30))/9*4,
+                height: (windowWidth - scale(30)) / 9 * 4,
                 borderRadius: 9,
-                justifyContent:"flex-start",
+                justifyContent: "flex-start",
                 alignItems: "flex-end",
-                paddingRight:10,
-                paddingTop:10,
+                paddingRight: 10,
+                paddingTop: 10,
             },
             title: {
                 fontSize: scale(18),
                 textAlign: 'center',
-                justifyContent:"center",
+                justifyContent: "center",
                 color: 'white',
                 textShadowColor: 'rgba(0, 0, 0, 0.75)',
                 textShadowOffset: {width: -1, height: 1},
@@ -424,16 +435,20 @@ export const applyCustomCode = externalCodeSetup => {
             <View style={styles.containerStyle} key={'course-' + viewModel.id}>
                 <TouchableWithoutFeedback
                     key={viewModel.id + 'img'}
-                    onPress={viewModel.price.expired&&viewModel.hasAccess?() => alert('Course is expired'):viewModel.onClick}>
+                    onPress={viewModel.price.expired && viewModel.hasAccess ? () => alert('Course is expired') : viewModel.onClick}>
                     <View style={[styles.card, styles.boxShadow]}>
-                        <View style={[styles.statusBar, {backgroundColor: statusBarColor}]}><Text style={styles.statusText}>{statusText}</Text></View>
-                        <ImageCache style={styles.image} source={{uri: featuredUrl?featuredUrl:''}} />
-                        {lessonNote?
+                        <View style={[styles.statusBar, {backgroundColor: statusBarColor}]}><Text
+                            style={styles.statusText}>{statusText}</Text></View>
+                        <ImageCache style={styles.image} source={{uri: featuredUrl ? featuredUrl : ''}}/>
+                        {lessonNote ?
                             <Text style={styles.lessonTime}>{lessonNote}</Text>
-                            :null}
-                        {viewModel.progression>0&&viewModel.progression<100&&!viewModel.price.expired?
-                            <View style={styles.progressBar}><View style={{backgroundColor: colors.primaryColor, width:viewModel.progression+'%'}}/></View>
-                            :null}
+                            : null}
+                        {viewModel.progression > 0 && viewModel.progression < 100 && !viewModel.price.expired ?
+                            <View style={styles.progressBar}><View style={{
+                                backgroundColor: colors.primaryColor,
+                                width: viewModel.progression + '%'
+                            }}/></View>
+                            : null}
                         <View style={styles.metaOverlay}>
                             <View style={styles.meta}>
                                 <Text style={styles.title}>{viewModel.title}</Text>
@@ -446,21 +461,21 @@ export const applyCustomCode = externalCodeSetup => {
     }
     externalCodeSetup.coursesHooksApi.setWidgetItemCourseComponent(NewWidgetItemCourseComponent)
 
-    //Change author name to nickname in single blog screen
-    const BlogHeaderAvatar = ({  blog, global, textStyle }) => {
+//Change author name to nickname in single blog screen
+    const BlogHeaderAvatar = ({blog, global, textStyle}) => {
         return (
-            <View style={[global.row, { flex: 1 }]}>
-                {blog.avatar?
+            <View style={[global.row, {flex: 1}]}>
+                {blog.avatar ?
                     <AppAvatar
                         size={35}
-                        source={{ uri: blog.avatar }}
-                        style={{ marginRight: 10 }}
+                        source={{uri: blog.avatar}}
+                        style={{marginRight: 10}}
                     />
-                    :null}
+                    : null}
                 <View>
                     <Text
-                        style={[global.text, { fontWeight: FontWeights.semiBold }, textStyle]}>
-                        {blog._embedded?blog._embedded.author[0].name:''}
+                        style={[global.text, {fontWeight: FontWeights.semiBold}, textStyle]}>
+                        {blog._embedded ? blog._embedded.author[0].name : ''}
                     </Text>
                 </View>
             </View>
@@ -468,12 +483,12 @@ export const applyCustomCode = externalCodeSetup => {
     }
     externalCodeSetup.blogSingleApi.setBlogHeaderAvatar(BlogHeaderAvatar);
 
-    //Add Blog reducer
+//Add Blog reducer
     externalCodeSetup.reduxApi.addReducer(
         "postsReducer",
-        (state = {posts:[],lastView:''}, action) => {
+        (state = {posts: [], lastView: ''}, action) => {
             let arrayTemp = [];
-            switch (action.type){
+            switch (action.type) {
                 case "POSTS_ADD":
                     arrayTemp = state.posts;
                     arrayTemp.push(action.payload);
@@ -481,16 +496,16 @@ export const applyCustomCode = externalCodeSetup => {
                     return {
                         ...state,
                         posts: arrayTemp,
-                        lastView:new Date().toLocaleString()
+                        lastView: new Date().toLocaleString()
                     };
                 case "POST_ADD":
-                    if(state.posts&&state.posts.length) {
+                    if (state.posts && state.posts.length) {
                         arrayTemp = state.posts;
                         let addIndex = state.posts.findIndex(el => el.id === action.id);
                         if (addIndex === -1) {
                             arrayTemp.push(action.payload);
                         }
-                    }else {
+                    } else {
                         arrayTemp.push(action.payload);
                     }
                     return {
@@ -503,21 +518,21 @@ export const applyCustomCode = externalCodeSetup => {
         }
     );
 
-    //Add Notification reducer
+//Add Notification reducer
     externalCodeSetup.reduxApi.addReducer(
         "notifyReducer",
-        (state = {notification:{}}, action) => {
+        (state = {notification: {}}, action) => {
             let count;
-            switch (action.type){
+            switch (action.type) {
                 case "NOTIFICATION_POST_ADD":
                     let arrayTemp = [];
-                    if(state.notification[action.mode]&&state.notification[action.mode].length) {
+                    if (state.notification[action.mode] && state.notification[action.mode].length) {
                         arrayTemp = state.notification[action.mode];
                         let addIndex = state.notification[action.mode].indexOf(action.payload);
                         if (addIndex === -1) {
                             arrayTemp.push(action.payload);
                         }
-                    }else {
+                    } else {
                         arrayTemp.push(action.payload);
                     }
                     return {
@@ -528,12 +543,12 @@ export const applyCustomCode = externalCodeSetup => {
                         }
                     };
                 case "NOTIFICATION_POST_REMOVE":
-                    if(state.notification[action.mode]&&state.notification[action.mode].length) {
+                    if (state.notification[action.mode] && state.notification[action.mode].length) {
                         let arrayTemp = state.notification[action.mode];
                         let index = arrayTemp.indexOf(action.payload);
                         if (index !== -1) {
                             arrayTemp.splice(index, 1);
-                            if(arrayTemp.length>1) {
+                            if (arrayTemp.length > 1) {
                                 console.log('empty1')
                                 return {
                                     ...state,
@@ -546,12 +561,13 @@ export const applyCustomCode = externalCodeSetup => {
                         } else {
                             return state;
                         }
-                    }else{
+                    } else {
                         return state;
-                    };
+                    }
+                    ;
                     return state;
                 case "NOTIFICATION_PRACTICE_ADD":
-                    if(state.notification['practice']&&state.notification['practice'].length){
+                    if (state.notification['practice'] && state.notification['practice'].length) {
                         let addIndex = state.notification['practice'].indexOf(action.payload);
                         if (addIndex === -1) {
                             return {
@@ -561,20 +577,20 @@ export const applyCustomCode = externalCodeSetup => {
                                     'practice': [...state.notification['practice'], action.payload]
                                 }
                             };
-                        }else{
+                        } else {
                             return state;
                         }
-                    }else{
+                    } else {
                         return {
                             ...state,
                             notification: {
                                 ...state.notification,
-                                'practice':[action.payload]
+                                'practice': [action.payload]
                             }
                         };
                     }
                 case "NOTIFICATION_PRACTICE_REMOVE":
-                    if(state.notification['practice']&&state.notification['practice'].length) {
+                    if (state.notification['practice'] && state.notification['practice'].length) {
                         let arrayTemp = state.notification['practice'];
                         let index = arrayTemp.indexOf(action.payload);
                         if (index !== -1) {
@@ -589,30 +605,30 @@ export const applyCustomCode = externalCodeSetup => {
                         } else {
                             return state;
                         }
-                    }else{
+                    } else {
                         return state;
                     }
                 case "NOTIFICATION_INCREMENT":
-                    count = state.notification[action.payload]?state.notification[action.payload]:0;
+                    count = state.notification[action.payload] ? state.notification[action.payload] : 0;
                     return {
                         ...state,
-                        notification: {...state.notification, [action.payload]: count+1}
+                        notification: {...state.notification, [action.payload]: count + 1}
                     };
                 case "NOTIFICATION_DECREMENT":
-                    count = state.notification[action.payload]?state.notification[action.payload]:0;
-                    count>0?
+                    count = state.notification[action.payload] ? state.notification[action.payload] : 0;
+                    count > 0 ?
                         state = {
                             ...state,
                             notification: {...state.notification, [action.payload]: count - 1}
-                        }:null;
+                        } : null;
                     return state;
                 case "NOTIFICATION_CLEAR":
-                    count = state.notification[action.payload]?state.notification[action.payload]:0;
-                    count>0?
+                    count = state.notification[action.payload] ? state.notification[action.payload] : 0;
+                    count > 0 ?
                         state = {
                             ...state,
                             notification: {...state.notification, [action.payload]: 0}
-                        }:null;
+                        } : null;
                     return state;
                 case "NOTIFICATION_TIME":
                     return {
@@ -625,12 +641,12 @@ export const applyCustomCode = externalCodeSetup => {
         }
     );
 
-    // Add Video reducer for course completion
+// Add Video reducer for course completion
     externalCodeSetup.reduxApi.addReducer(
         "videoReducer",
-        (state = {videoComplete:false}, action) => {
+        (state = {videoComplete: false}, action) => {
             let count;
-            switch (action.type){
+            switch (action.type) {
                 case "VIDEO_COMPLETED":
                     return {
                         ...state,
@@ -647,21 +663,21 @@ export const applyCustomCode = externalCodeSetup => {
         }
     );
 
-    // Add routine reducer
+// Add routine reducer
     externalCodeSetup.reduxApi.addReducer(
         "routinesReducer",
-        (state = {routines:[], guides:[], groups:[]}, action) => {
-            switch (action.type){
+        (state = {routines: [], guides: [], groups: []}, action) => {
+            switch (action.type) {
                 case "ONENERGY_ROUTINE_UPDATE":
                     return {...state, routines: action.payload};
                 case "ONENERGY_ROUTINE_SAVE":
                     let routine = action.payload;
                     let tempState = [...state.routines];
                     let index = tempState.findIndex(el => el.id === routine.id);
-                    if(index !== -1){
+                    if (index !== -1) {
                         tempState[index] = routine;
                         return {...state, routines: tempState};
-                    }else{
+                    } else {
                         return {...state, routines: [...state.routines, routine]};
                     }
                 case "ONENERGY_GUIDE_UPDATE":
@@ -676,7 +692,7 @@ export const applyCustomCode = externalCodeSetup => {
         }
     );
 
-    // Add Language reducer
+// Add Language reducer
     const defaultLanguage = {
         abbr: 'en',
         name: 'English',
@@ -685,7 +701,7 @@ export const applyCustomCode = externalCodeSetup => {
     }
     externalCodeSetup.reduxApi.addReducer(
         "languagesReducer",
-        (state = {languages:defaultLanguage}, action) => {
+        (state = {languages: defaultLanguage}, action) => {
             switch (action.type) {
                 case "DEFAULT_LANGUAGE": {
                     return {
@@ -713,7 +729,7 @@ export const applyCustomCode = externalCodeSetup => {
         }
     );
 
-    // Make Language and Notification reducer persistent, and remove blog and post from persistent
+// Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
         let whiteList = [...props.whitelist, "languagesReducer", "routinesReducer", "notifyReducer"];
         let index = whiteList.indexOf('blog');
@@ -730,12 +746,12 @@ export const applyCustomCode = externalCodeSetup => {
         }
     })
 
-    // Hide categories and tags in Single Course screen
+// Hide categories and tags in Single Course screen
     externalCodeSetup.courseSingleApi.setIsCategoryTagsHidden((course) => {
         return true;
     })
 
-    // Course Action Button
+// Course Action Button
     externalCodeSetup.courseSingleApi.setTransformCourseActionButtons((
         CourseActionBtn,
         courseVM,
@@ -758,19 +774,19 @@ export const applyCustomCode = externalCodeSetup => {
         const [visualGuide, setVisualGuide] = useState(false);
 
         let diffTime = '';
-        if(diffMinutes < 60){
+        if (diffMinutes < 60) {
             diffTime = 'in ' + diffMinutes + ' minutes';
-        }else{
-            if(diffHours < 24){
+        } else {
+            if (diffHours < 24) {
                 diffTime = 'tomorrow';
-            }else{
+            } else {
                 diffTime = 'in ' + diffDays + ' days';
             }
         }
         const [buttonEnroll, setButtonEnroll] = useState('Start Now');
 
         const buttonText = "Next lesson will be available " + diffTime;
-        if(courseVM.progression === 100){
+        if (courseVM.progression === 100) {
             let Info = null;
             return [Info,
                 <View style={{
@@ -785,7 +801,7 @@ export const applyCustomCode = externalCodeSetup => {
                         style={{backgroundColor: colors.coursesLabelCompleted}}
                     />
                 </View>];
-        }else if(courseVM.price && courseVM.price.expired) {
+        } else if (courseVM.price && courseVM.price.expired) {
             let Info = null;
             return [Info,
                 <View style={{
@@ -800,19 +816,19 @@ export const applyCustomCode = externalCodeSetup => {
                         style={{backgroundColor: "black"}}
                     />
                 </View>];
-        }else if(courseVM.hasAccess){
+        } else if (courseVM.hasAccess) {
             let Info = null;
-            if(courseVM.price.expires_on) {
+            if (courseVM.price.expires_on) {
                 let diffExpiringTime = '';
                 const expiringTime = new moment.utc(courseVM.price.expires_on);
                 const diffExpiringDays = expiringTime.diff(current_time, 'days');
-                diffExpiringTime = 'Course expires in '+diffExpiringDays+' days, please finish all the lesson in time.';
+                diffExpiringTime = 'Course expires in ' + diffExpiringDays + ' days, please finish all the lesson in time.';
                 Info =
-                    diffExpiringDays<=7&&diffExpiringDays>0?
-                        <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
-                            <Text style={{color:"red", fontSize:scale(14)}}>{diffExpiringTime}</Text>
+                    diffExpiringDays <= 7 && diffExpiringDays > 0 ?
+                        <View style={{paddingHorizontal: 20, paddingVertical: 10}}>
+                            <Text style={{color: "red", fontSize: scale(14)}}>{diffExpiringTime}</Text>
                         </View>
-                        :null
+                        : null
             }
             return [Info,
                 <View style={{
@@ -822,25 +838,25 @@ export const applyCustomCode = externalCodeSetup => {
                     alignItems: "center",
                     justifyContent: "space-between",
                 }}>
-                    {lesson_time>current_time&&courseVM.progression>0?
+                    {lesson_time > current_time && courseVM.progression > 0 ?
                         <CourseActionButton
-                            onPress={()=>continueCourse()}
+                            onPress={() => continueCourse()}
                             title={buttonText}
                             style={{backgroundColor: colors.coursesLabelProgress}}
                         />
                         :
                         <CourseActionButton
-                            onPress={()=>continueCourse()}
+                            onPress={() => continueCourse()}
                             title={"Continue"}
                         />
                     }
                 </View>
             ]
-        }else{
-            if(user && courseVM.price.required_points > 0 && user.points.point < courseVM.price.required_points && courseVM.error.message){
+        } else {
+            if (user && courseVM.price.required_points > 0 && user.points.point < courseVM.price.required_points && courseVM.error.message) {
                 const Info =
-                    <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
-                        <Text style={{color:"red", fontSize:scale(14)}}>{courseVM.error.message}</Text>
+                    <View style={{paddingHorizontal: 20, paddingVertical: 10}}>
+                        <Text style={{color: "red", fontSize: scale(14)}}>{courseVM.error.message}</Text>
                     </View>
                 const Redirect =
                     <View style={{
@@ -853,7 +869,7 @@ export const applyCustomCode = externalCodeSetup => {
                         <CourseActionButton
                             title={"Practice to Gather More Qi"}
                             onPress={() => navigation.dispatch(
-                                NavigationActions.navigate( {
+                                NavigationActions.navigate({
                                     routeName: "PracticesScreen",
                                 })
                             )}
@@ -861,7 +877,7 @@ export const applyCustomCode = externalCodeSetup => {
                         />
                     </View>
                 return [Info, Redirect];
-            }else{
+            } else {
                 return [
                     <View style={{
                         paddingHorizontal: 20,
@@ -871,7 +887,7 @@ export const applyCustomCode = externalCodeSetup => {
                         justifyContent: "space-between",
                     }}>
                         <CourseActionButton
-                            onPress={()=>{
+                            onPress={() => {
                                 setVisualGuide(false);
                                 setButtonEnroll('Enrolling, please wait...');
                                 startCourse();
@@ -882,9 +898,9 @@ export const applyCustomCode = externalCodeSetup => {
                             }}
                             title={buttonEnroll}
                         />
-                        {visualGuide?
+                        {visualGuide ?
                             <TouchableWithoutFeedback
-                                onPress={()=>{
+                                onPress={() => {
                                     setVisualGuide(false);
                                     setButtonEnroll('Enrolling, please wait...');
                                     startCourse();
@@ -894,20 +910,20 @@ export const applyCustomCode = externalCodeSetup => {
                                     });
                                 }}>
                                 <FastImage style={{
-                                    bottom:scale(-80),
-                                    right:scale(80),
+                                    bottom: scale(-80),
+                                    right: scale(80),
                                     position: "absolute",
-                                    transform: [{ rotate: '180deg' }],
-                                    width:scale(200),
-                                    height:scale(240),
+                                    transform: [{rotate: '180deg'}],
+                                    width: scale(200),
+                                    height: scale(240),
                                     shadowColor: "#000",
                                     shadowOffset: {width: 2, height: -4},
                                     shadowOpacity: 0.2,
                                     shadowRadius: 3,
                                     elevation: 4,
-                                    }} source={require('./assets/images/tapFinger.gif')} />
+                                }} source={require('./assets/images/tapFinger.gif')}/>
                             </TouchableWithoutFeedback>
-                            :null
+                            : null
                         }
                     </View>
                 ]
@@ -916,16 +932,16 @@ export const applyCustomCode = externalCodeSetup => {
         }
     })
 
-    //Custom back button in Single Lesson Screen
+//Custom back button in Single Lesson Screen
     externalCodeSetup.lessonSingleScreenApi.setLessonScreenHeader(props => <LessonScreenHeader {...props}/>)
 
-    //Custom back button in Single Topic Screen
+//Custom back button in Single Topic Screen
     externalCodeSetup.learnTopicSingleScreenApi.setLearnTopicScreenHeader(props => <TopicScreenHeader {...props}/>)
 
-    //Custom back button in Single Quiz Screen
+//Custom back button in Single Quiz Screen
     externalCodeSetup.quizApi.setQuizScreenHeader(props => <QuizScreenHeader {...props} />)
 
-    //Custom complete button in Single Lesson Screen
+//Custom complete button in Single Lesson Screen
     externalCodeSetup.lessonSingleScreenApi.setTransformLessonActionButtons((
         lessonButton,
         showComplete,
@@ -936,15 +952,15 @@ export const applyCustomCode = externalCodeSetup => {
         labels) => {
         let Buttons =
             <View style={global.row}>
-                <LessonButton global={global} colors={colors} lesson={lesson} />
+                <LessonButton global={global} colors={colors} lesson={lesson}/>
             </View>
-        if(lesson.completed){
+        if (lesson.completed) {
             return lessonButton
-        }else {
+        } else {
             return Buttons;
         }
     })
-    //Custom complete button in Single Topic Screen
+//Custom complete button in Single Topic Screen
     externalCodeSetup.learnTopicSingleScreenApi.setTransformTopicActionButtons((
         lessonButton,
         showComplete,
@@ -956,11 +972,11 @@ export const applyCustomCode = externalCodeSetup => {
         handleComplete) => {
         let Buttons =
             <View style={global.row}>
-                <LessonButton global={global} colors={colors} lesson={topic} />
+                <LessonButton global={global} colors={colors} lesson={topic}/>
             </View>
-        if(topic.completed){
+        if (topic.completed) {
             return lessonButton
-        }else {
+        } else {
             return Buttons;
         }
     })
@@ -970,8 +986,7 @@ export const applyCustomCode = externalCodeSetup => {
         const iconTintColor = hasCover ? "#4942e1" : "#fff";
         const regex = /(<([^>]+)>)/ig;
 
-        if(blog.meta_box.share_url && blog.meta_box.share_url !== '')
-        {
+        if (blog.meta_box.share_url && blog.meta_box.share_url !== '') {
             const facebook = <IconButton
                 pressHandler={() =>
                     Share.shareSingle({
@@ -991,7 +1006,7 @@ export const applyCustomCode = externalCodeSetup => {
                     marginRight: 8
                 }}
                 tintColor={iconTintColor}
-                style={{ height: 28, width: 28 }}
+                style={{height: 28, width: 28}}
                 rtlStyleFix={"handled"}
             />
 
@@ -1014,12 +1029,12 @@ export const applyCustomCode = externalCodeSetup => {
                     marginRight: 8
                 }}
                 tintColor={iconTintColor}
-                style={{ height: 28, width: 28 }}
+                style={{height: 28, width: 28}}
                 rtlStyleFix={"handled"}
             />
 
             return [facebook, twitter];
-        }else{
+        } else {
             return [];
         }
 
@@ -1031,9 +1046,9 @@ export const applyCustomCode = externalCodeSetup => {
             android: feature.is_enabled_android
         })
 
-        // Get the initial switch route based on state data.
-        // getInitialSwitchRoute() is based on BB App's AppNavigator.js
-        // Feel free to copy and paste this to your own code
+// Get the initial switch route based on state data.
+// getInitialSwitchRoute() is based on BB App's AppNavigator.js
+// Feel free to copy and paste this to your own code
 
         const getInitialSwitchRoute = () => {
 
@@ -1056,10 +1071,9 @@ export const applyCustomCode = externalCodeSetup => {
                 } else {
                     return routeProps.shouldLockApp ? "AppLockScreen" : "noAuth";
                 }
-            }
-            else {
+            } else {
                 return myCustomRoute; //Use my own custom route instead of the default "Auth" route
-                //return defaultInitialRoute;
+//return defaultInitialRoute;
             }
 
         };
@@ -1087,7 +1101,7 @@ export const applyCustomCode = externalCodeSetup => {
     })
     externalCodeSetup.navigationApi.setBottomTabBarIcon((icon, iconProps) => {
         const routeLabel = iconProps.route.routes[0].params.item?.label;
-        switch (routeLabel){
+        switch (routeLabel) {
             case "QiGong":
                 return <View
                     style={{
@@ -1104,10 +1118,11 @@ export const applyCustomCode = externalCodeSetup => {
                             height: 24,
                             tintColor: iconProps.tintColor,
                             alignContent: 'center',
-                            marginBottom:0,
+                            marginBottom: 0,
                         }}
                     />
-                    <NotificationTabBarIcon notificationID={'guide_page'}  top={-3} right={-3} size={scale(10)} showNumber={false} />
+                    <NotificationTabBarIcon notificationID={'guide_page'} top={-3} right={-3} size={scale(10)}
+                                            showNumber={false}/>
                 </View>
             case "Wisdom":
                 return <View
@@ -1125,10 +1140,11 @@ export const applyCustomCode = externalCodeSetup => {
                             height: 24,
                             tintColor: iconProps.tintColor,
                             alignContent: 'center',
-                            marginBottom:0,
+                            marginBottom: 0,
                         }}
                     />
-                    <NotificationTabBarIcon notificationID={'blog'}  top={-3} right={-3} size={scale(10)} showNumber={false} />
+                    <NotificationTabBarIcon notificationID={'blog'} top={-3} right={-3} size={scale(10)}
+                                            showNumber={false}/>
                 </View>
             default:
                 return icon;
@@ -1140,9 +1156,9 @@ export const applyCustomCode = externalCodeSetup => {
             case "UPDATE_POINTS":
                 const newPoint = {
                     ...state,
-                    userObject:{
+                    userObject: {
                         ...state.userObject,
-                        points:{
+                        points: {
                             ...state.userObject.points,
                             point: action.payload,
                         }
@@ -1152,11 +1168,11 @@ export const applyCustomCode = externalCodeSetup => {
             case "UPDATE_USER_POINTS":
                 const newUserPoint = {
                     ...state,
-                    userObject:{
+                    userObject: {
                         ...state.userObject,
-                        user_points:state.userObject.user_points.map(item => ({
+                        user_points: state.userObject.user_points.map(item => ({
                             ...item,
-                            point: item.label === 'Qi'? action.payload:item.point
+                            point: item.label === 'Qi' ? action.payload : item.point
                         })),
                     }
                 }
@@ -1164,7 +1180,7 @@ export const applyCustomCode = externalCodeSetup => {
             case "UPDATE_USER_ROUTINE_STATUS":
                 const newUserState = {
                     ...state,
-                    userObject:{
+                    userObject: {
                         ...state.userObject,
                         hasRoutine: action.payload
                     }
@@ -1173,7 +1189,7 @@ export const applyCustomCode = externalCodeSetup => {
             case 'UPDATE_USER_COMPLETED_LESSONS':
                 const newUserLesson = {
                     ...state,
-                    userObject:{
+                    userObject: {
                         ...state.userObject,
                         completed_lessons: [...state.userObject.completed_lessons, action.payload]
                     }
@@ -1182,7 +1198,7 @@ export const applyCustomCode = externalCodeSetup => {
             case 'UPDATE_USER_ENROLLED_COURSES':
                 const newUserEnrolledCourse = {
                     ...state,
-                    userObject:{
+                    userObject: {
                         ...state.userObject,
                         enrolled_courses: [...state.userObject.enrolled_courses, action.payload]
                     }
@@ -1191,7 +1207,7 @@ export const applyCustomCode = externalCodeSetup => {
             case 'UPDATE_USER_COMPLETED_COURSES':
                 const newUserCourse = {
                     ...state,
-                    userObject:{
+                    userObject: {
                         ...state.userObject,
                         completed_courses: [...state.userObject.completed_courses, action.payload]
                     }
@@ -1200,7 +1216,7 @@ export const applyCustomCode = externalCodeSetup => {
             case 'UPDATE_USER_COMPLETED_ACHIEVEMENTS':
                 const newUserAchievement = {
                     ...state,
-                    userObject:{
+                    userObject: {
                         ...state.userObject,
                         completed_achievements: action.payload
                     }
@@ -1221,7 +1237,7 @@ export const applyCustomCode = externalCodeSetup => {
         "gamipress_ranks",
         "gamipress_achievements"
     ])
-    //Add new menu item to profile screen tab list
+//Add new menu item to profile screen tab list
     externalCodeSetup.profileScreenHooksApi.setTabsList((
         list,
         navigation,
@@ -1259,19 +1275,18 @@ export const applyCustomCode = externalCodeSetup => {
     })
     externalCodeSetup.blogSingleApi.setAfterBlogSingleBody((props) => {
         const {blog} = props;
-        if(blog.meta_box.related_posts&&blog.meta_box.related_posts.length) {
-            return(
-                <RelatedPostsRow posts={blog.meta_box.related_posts} />
+        if (blog.meta_box.related_posts && blog.meta_box.related_posts.length) {
+            return (
+                <RelatedPostsRow posts={blog.meta_box.related_posts}/>
             )
-        }else{
+        } else {
             return null;
         }
     })
     externalCodeSetup.deeplinksApi.setDeeplinksWithoutEmbeddedReturnValueFilter((defaultValue, linkObject, navigationService) => {
 
         if (linkObject.action === "open_screen") {
-            switch(linkObject.item_id)
-            {
+            switch (linkObject.item_id) {
                 case 'programs':
                     navigationService.navigate({
                         routeName: "ProgramsScreen",
@@ -1294,8 +1309,8 @@ export const applyCustomCode = externalCodeSetup => {
                     return true;
             }
         }
-        if(linkObject.action === "inapp") {
-            if(linkObject.url.includes('QuotesScreen')) {
+        if (linkObject.action === "inapp") {
+            if (linkObject.url.includes('QuotesScreen')) {
                 navigationService.navigate({
                     routeName: "QuotesScreen",
                 })
@@ -1304,12 +1319,12 @@ export const applyCustomCode = externalCodeSetup => {
         }
         return defaultValue;
     });
-    const AfterDetailsComponent = ({ user }) => {
+    const AfterDetailsComponent = ({user}) => {
         const userInfo = useSelector((state) => state.user.userObject);
         return (
-            userInfo.membership&&userInfo.membership.length>0?
-            <Text> {userInfo.membership[0].plan.name} </Text>
-                :null
+            userInfo.membership && userInfo.membership.length > 0 ?
+                <Text> {userInfo.membership[0].plan.name} </Text>
+                : null
         )
     }
     externalCodeSetup.profileScreenHooksApi.setAfterDetailsComponent(AfterDetailsComponent);
@@ -1331,17 +1346,19 @@ export const applyCustomCode = externalCodeSetup => {
                                     text: "Cancel",
                                     style: "cancel"
                                 },
-                                { text: "OK", onPress: () => {
+                                {
+                                    text: "OK", onPress: () => {
 
-                                    logout();
-                                }}
+                                        logout();
+                                    }
+                                }
                             ]
                         )
                     }
                 }}
             >
                 {isLoggingOut ? (
-                    <ActivityIndicator animating={true} size="small" />
+                    <ActivityIndicator animating={true} size="small"/>
                 ) : (
                     <View style={[global.row]}>
                         <Icon
@@ -1353,7 +1370,7 @@ export const applyCustomCode = externalCodeSetup => {
                             style={[
                                 global.settingsItemTitle,
                                 global.logoutInner,
-                                { marginLeft: 5 }
+                                {marginLeft: 5}
                             ]}
                         >
                             {t("settings:logout")}

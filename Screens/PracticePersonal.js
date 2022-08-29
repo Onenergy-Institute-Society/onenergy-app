@@ -202,7 +202,6 @@ PracticePersonal.navigationOptions = ({ navigation }) => {
         headerLeft:
             <TouchableOpacity
                 onPress={() => {
-                    TrackPlayer.stop();
                     TrackPlayer.reset();
                     navigation.goBack()
                 }}

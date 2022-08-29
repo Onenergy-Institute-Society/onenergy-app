@@ -85,7 +85,6 @@ const PracticeMember = props => {
         this.cpHelpModal.open();
     }
     const onAddPressed = async () => {
-        await TrackPlayer.stop();
         await TrackPlayer.reset();
 
         navigation.dispatch(
@@ -98,7 +97,6 @@ const PracticeMember = props => {
         );
     }
     const onEditRoutinePress = async (item, index) =>{
-        await TrackPlayer.stop();
         await TrackPlayer.reset();
 
         navigation.dispatch(
@@ -112,7 +110,6 @@ const PracticeMember = props => {
         );
     }
     const onRemoveRoutine = async (item) => {
-        await TrackPlayer.stop();
         await TrackPlayer.reset();
 
 
@@ -298,7 +295,6 @@ PracticeMember.navigationOptions = ({ navigation }) => {
         headerLeft:
             <TouchableOpacity
                 onPress={async () => {
-                    await TrackPlayer.stop();
                     await TrackPlayer.reset();
                     navigation.goBack()
                 }}
