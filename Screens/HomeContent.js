@@ -32,7 +32,14 @@ const HomeContent = (props) => {
     const [loading, setLoading] = useState(false);
     const [quotesData, setQuotesData] = useState([]);
     const [quotesLoading, setQuotesLoading] = useState(true);
-    TrackPlayer.updateOptions({
+    try{
+       // TrackPlayer.setupPlayer();
+    }catch (e)
+    {
+        console.log(e)
+    }
+
+    /*TrackPlayer.updateOptions({
         stoppingAppPausesPlayback: true,
         alwaysPauseOnInterruption: false,
         // Media controls capabilities
@@ -49,7 +56,7 @@ const HomeContent = (props) => {
         ],
     });
     TrackPlayer.setRepeatMode(RepeatMode.Off);
-    TrackPlayer.setupPlayer();
+*/
     const fetchQuotesData = async () => {
         try {
             const apiQuotes = getApi(props.config);

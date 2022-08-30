@@ -154,19 +154,6 @@ const PracticePersonal = props => {
             {messageBarDisplay?
             <Animated.View style={[styles.messageBar, {opacity: fadeAnim,}]}><Text style={styles.messageText}>Great! You just gather more qi. Keep it up!</Text></Animated.View>
                 :null}
-            {messageBarDisplay?
-            <FastImage style={{
-                bottom:4,
-                alignSelf:"center",
-                width:scale(360),
-                height:scale(360),
-                shadowColor: "#000",
-                shadowOffset: {width: -2, height: 4},
-                shadowOpacity: 0.2,
-                shadowRadius: 3,
-                elevation: 4,
-            }} source={require("../assets/images/Del_YouMadeIt.gif")} />
-                :null}
         </SafeAreaView>
     );
 };
