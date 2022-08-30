@@ -74,24 +74,6 @@ const AudioPlayerRoutine = (props) => {
         }
     }
     useEffect(() => {
-        TrackPlayer.updateOptions({
-            stoppingAppPausesPlayback: true,
-            alwaysPauseOnInterruption: false,
-            // Media controls capabilities
-            capabilities: [
-                Capability.Play,
-                Capability.Pause,
-                Capability.Stop,
-            ],
-            // Capabilities that will show up when the notification is in the compact form on Android
-            compactCapabilities: [
-                Capability.Play,
-                Capability.Pause,
-                Capability.Stop,
-            ],
-        });
-        TrackPlayer.setRepeatMode(RepeatMode.Off);
-        TrackPlayer.setupPlayer();
         addTrack(routine.tracks).then(()=>{
             TrackPlayer.play().then();
             setPlaying(true);

@@ -22,6 +22,7 @@ import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHand
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import EventList from "../Components/EventList";
 import {BlurView} from "@react-native-community/blur";
+import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 
 const HomeContent = (props) => {
     const {navigation, screenProps} = props;
@@ -31,7 +32,24 @@ const HomeContent = (props) => {
     const [loading, setLoading] = useState(false);
     const [quotesData, setQuotesData] = useState([]);
     const [quotesLoading, setQuotesLoading] = useState(true);
-
+    TrackPlayer.updateOptions({
+        stoppingAppPausesPlayback: true,
+        alwaysPauseOnInterruption: false,
+        // Media controls capabilities
+        capabilities: [
+            Capability.Play,
+            Capability.Pause,
+            Capability.Stop,
+        ],
+        // Capabilities that will show up when the notification is in the compact form on Android
+        compactCapabilities: [
+            Capability.Play,
+            Capability.Pause,
+            Capability.Stop,
+        ],
+    });
+    TrackPlayer.setRepeatMode(RepeatMode.Off);
+    TrackPlayer.setupPlayer();
     const fetchQuotesData = async () => {
         try {
             const apiQuotes = getApi(props.config);
