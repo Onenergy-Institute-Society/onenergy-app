@@ -5,58 +5,51 @@ import {
 import {useSelector} from "react-redux";
 
 const NotificationTabBarIcon = props => {
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    const postSelector = state => ({postsReducer: state.postsReducer})
+    const {postsReducer} = useSelector(postSelector);
     const {notificationID, top, right, size, fontSize=8, showNumber=false, data=''} = props;
     const notification = useSelector((state) => state.notifyReducer.notification);
-    let notificationCount,notificationCountWatch,notificationCountRead;
+    let notificationCount;
+    console.log(optionData, postsReducer.lastView)
     switch(notificationID)
     {
         case 'guide_page':
             notificationCount = notification.guide_personal?notification.guide_personal:0 + notification.guide_group?notification.guide_group:0 + notification.guide_member?notification.guide_member:0;
             break;
-        case 'posts_read':
-            notificationCount = notification['posts_read']?notification['posts_read'].indexOf(data)+1:0;
-            break;
-        case 'posts_watch':
-            notificationCount = notification['posts_watch']?notification['posts_watch'].indexOf(data)+1:0;
-            break;
-        case 'blog':
-            notificationCountRead = notification['posts_read']?notification['posts_read'].length:0;
-            notificationCountWatch = notification['posts_watch']?notification['posts_watch'].length:0;
-            if(notificationCountRead===0&&notificationCountWatch===0){
-                const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-                if(notification.time){
-                    const dateTime= new Date(notification.time);
-                    const datePostRead = new Date(optionData.latest_post_read);
-                    const datePostWatch = new Date(optionData.latest_post_watch);
-                    if ((datePostRead > dateTime) || (datePostWatch > dateTime)) {
+        case 'blog_read':
+            notificationCount = postsReducer.posts.filter((post)=>post.categories.includes(105)&&post.notify===true).length;
+            if(notificationCount===0) {
+                if (postsReducer.lastView) {
+                    console.log(postsReducer.lastView, optionData.latest_post_read)
+                    const dateTime = new Date(postsReducer.lastView);
+                    const datePost = new Date(optionData.latest_post_read);
+                    if (datePost > dateTime) {
                         notificationCount = 1;
                     }
                 }
-            }else{
-                notificationCount = notificationCountRead + notificationCountWatch;
             }
             break;
         case 'blog_watch':
-            notificationCount = notification['posts_watch']?notification['posts_watch'].length:0;
-            if(notificationCount===0){
-                const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-                if(notification.time){
-                    const dateTime= new Date(notification.time);
-                    const datePostWatch = new Date(optionData.latest_post_watch);
-                    if (datePostWatch > dateTime) {
+            notificationCount = postsReducer.posts.filter((post)=>post.categories.includes(103)&&post.notify===true).length;
+            if(notificationCount===0) {
+                if (postsReducer.lastView) {
+                    const dateTime = new Date(postsReducer.lastView);
+                    const datePost = new Date(optionData.latest_post_watch);
+                    if (datePost > dateTime) {
                         notificationCount = 1;
                     }
                 }
             }
             break;
-        case 'blog_read':
-            notificationCount = notification['posts_read']?notification['posts_read'].length:0;
-            if(notificationCount===0){
-                const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-                if(notification.time){
-                    const dateTime= new Date(notification.time);
+        case 'blog':
+            notificationCount = postsReducer.posts.filter((post)=>post.notify===true).length;
+            if(notificationCount===0) {
+                if (postsReducer.lastView) {
+                    const dateTime = new Date(postsReducer.lastView);
                     const datePostRead = new Date(optionData.latest_post_read);
-                    if (datePostRead > dateTime) {
+                    const datePostWatch = new Date(optionData.latest_post_watch);
+                    if ((datePostRead > dateTime) || (datePostWatch > dateTime)) {
                         notificationCount = 1;
                     }
                 }

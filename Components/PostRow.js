@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     StyleSheet,
     Platform,
@@ -9,7 +9,7 @@ import {
     ActivityIndicator,
     Image
 } from "react-native";
-import {connect} from "react-redux";
+import {connect, useSelector, useDispatch} from "react-redux";
 import {getApi} from "@src/services";
 import {NavigationActions, withNavigation} from "react-navigation";
 import ImageCache from './ImageCache';
@@ -17,31 +17,78 @@ import TouchableScale from './TouchableScale';
 import { scale } from '../Utils/scale';
 
 const PostRow = props => {
-    const [ dataPosts, setPostsData ] = useState([]);
-    const [ postLoading, setPostLoading ] = useState(true);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    const [ postsData, setPostsData ] = useState([]);
     const { navigation, postType, postCategory, postPerPage, postOrder, postOrderBy, showAuthor } = props;
+    const postSelector = state => ({postsReducer: state.postsReducer})
+    const {postsReducer} = useSelector(postSelector);
+    const dispatch = useDispatch();
 
     const fetchPostsData = async () => {
         try {
+            let notify = false;
             const api = getApi(props.config);
-            await api.customRequest(
-                "wp-json/wp/v2/posts?_embed&"+postType+"="+postCategory+"&order="+postOrder+"&orderby="+postOrderBy+"&per_page="+postPerPage,
+            const data = await api.customRequest(
+                "wp-json/wp/v2/posts?_embed&"+postType+"="+postCategory+"&order="+postOrder+"&orderby="+postOrderBy+"&per_page=10",
                 "get",       // get, post, patch, delete etc.
                 {},               // JSON, FormData or any other type of payload you want to send in a body of request
                 null,             // validation function or null
                 {},               // request headers object
                 false   // true - if full url is given, false if you use the suffix for the url. False is default.
-            ).then(response => {
-                setPostsData((current) => [...current, ...response.data]);
-                setPostLoading(false);
-            });
+            ).then(response => response.data);
+            let posts =[] ;
+            data.map((item)=>{
+                if(!postsReducer.posts.length||postsReducer.posts.filter(post => post.id === item.id).length===0) {
+                    if(new Date(item.date) > new Date(postsReducer.lastView)){
+                        notify = true;
+                    }
+                    posts.push({
+                        id: item.id,
+                        date: item.date,
+                        title: item.title,
+                        format: item.format,
+                        excerpt: item.excerpt,
+                        categories: item.categories,
+                        author: item._embedded['author'][0].name,
+                        avatar: item._embedded['author'][0].avatar_urls['24'],
+                        image: item._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url,
+                        notify: notify
+                    })
+                }
+            })
+            if(posts&&posts.length>0) {
+                dispatch({
+                    type: 'POSTS_ADD',
+                    payload: posts,
+                });
+            }
         } catch (e) {
             console.error(e);
         }
     }
     useEffect(() => {
+        let loadPosts = false;
+        if(postsReducer.lastView)
+        {
+            let postCount = postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).length;
+            if(postCount < parseInt(postPerPage))
+            {
+                loadPosts = true
+            }else {
+                setPostsData(postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage));
+                if (new Date(postsReducer.lastView) < new Date(optionData.last_post)) {
+                    loadPosts = true;
+                }
+            }
+        }else{
+            loadPosts = true;
+        }
+        if(loadPosts)
             fetchPostsData().then();
     }, []);
+    useEffect(() => {
+        setPostsData(postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage));
+    },[postsReducer.posts])
     const renderOverlayImage = (format) => {
         switch(format) {
             case 'video':
@@ -52,56 +99,79 @@ const PostRow = props => {
                 return null;
         }
     }
-    const renderItem = ({ item }) => (
-        <TouchableScale
-            key={item.id + 'img'}
-            onPress={() =>{
-                try {
-                    navigation.dispatch(
-                        NavigationActions.navigate({
-                            routeName: "MyBlogScreen",
-                            params: {
-                                blogId: item.id,
-                                title: item.title.rendered
-                            },
-                            key: 'MyBlogScreen-' + item.id
-                        })
-                    );
-                } catch (err) {
-                    console.log(`${err}`);
-                }
-            }}>
-            <View style={[styles.containerStyle, styles.boxShadow]} key={'post-' + item.id}>
-                <View style={styles.imageView}>
-                    <ImageCache style={styles.image} source={{uri: item._embedded['wp:featuredmedia'][0].source_url?item._embedded['wp:featuredmedia'][0].source_url:''}} />
-                    {renderOverlayImage(item.format)}
-                    <View style={styles.overlay}>
-                        <Text style={styles.title}>{item.title.rendered}</Text>
-                        {showAuthor && (
-                            <Text style={styles.author}>{item._embedded['author'][0].name?item._embedded['author'][0].name:''}</Text>
-                        )}
+    const renderItem = ({ item }) => {
+        return (
+            <TouchableScale
+                key={item.id + 'img'}
+                onPress={() =>{
+                    try {
+                        navigation.dispatch(
+                            NavigationActions.navigate({
+                                routeName: "MyBlogScreen",
+                                params: {
+                                    blogId: item.id,
+                                    title: item.title.rendered
+                                },
+                                key: 'MyBlogScreen-' + item.id
+                            })
+                        );
+                    } catch (err) {
+                        console.log(`${err}`);
+                    }
+                }}>
+                <View style={[styles.containerStyle, styles.boxShadow]} key={'post-' + item.id}>
+                    <View style={styles.imageView}>
+                        <ImageCache style={styles.image} source={{uri: item.image?item.image:''}} />
+                        {renderOverlayImage(item.format)}
+                        <View style={styles.overlay}>
+                            <Text style={styles.title}>{item.title.rendered}</Text>
+                            {showAuthor && (
+                                <Text style={styles.author}>{item.author?item.author:''}</Text>
+                            )}
+                        </View>
                     </View>
                 </View>
-            </View>
-        </TouchableScale>
-    );
+                {item.notify?
+                    <View
+                        style={{
+                            color: '#FFFFFF',
+                            position: 'absolute',
+                            top: 3,
+                            right: 3,
+                            minWidth: 15,
+                            height: 15,
+                            borderRadius: 15,
+                            borderWidth: 1,
+                            borderColor: "white",
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#FF0000',
+                            textAlign: "center",
+                            zIndex: 999
+                        }}
+                    >
+                    </View>
+                :null}
+            </TouchableScale>
+        )
+    }
 
     return (
         <SafeAreaView style={styles.container}>
-            {postLoading?(
-                <View style={{height:150, justifyContent:"center", alignItems:"center"}}>
-                    <ActivityIndicator size="large"/>
-                </View>
-            ):(
+            {postsData&&postsData.length?(
                 <FlatList
                     style={styles.scrollView}
-                    data={dataPosts}
+                    data={postsData}
                     renderItem={renderItem}
                     extraData={this.props}
                     keyExtractor={item => item.id}
                     showsHorizontalScrollIndicator={false}
                     horizontal
                 />
+            ):(
+                <View style={{height:150, justifyContent:"center", alignItems:"center"}}>
+                    <ActivityIndicator size="large"/>
+                </View>
             )}
         </SafeAreaView>
     );

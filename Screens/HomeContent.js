@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {getApi} from "@src/services";
-import {connect, useSelector} from "react-redux";
+import {connect, useSelector, useDispatch} from "react-redux";
 import {
     StyleSheet,
     ScrollView,
@@ -30,16 +30,9 @@ const HomeContent = (props) => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [loading, setLoading] = useState(false);
-    const [quotesData, setQuotesData] = useState([]);
-    const [quotesLoading, setQuotesLoading] = useState(true);
-    try{
-       // TrackPlayer.setupPlayer();
-    }catch (e)
-    {
-        console.log(e)
-    }
-
-    /*TrackPlayer.updateOptions({
+    const dispatch = useDispatch();
+    TrackPlayer.setupPlayer();
+    TrackPlayer.updateOptions({
         stoppingAppPausesPlayback: true,
         alwaysPauseOnInterruption: false,
         // Media controls capabilities
@@ -56,56 +49,18 @@ const HomeContent = (props) => {
         ],
     });
     TrackPlayer.setRepeatMode(RepeatMode.Off);
-*/
-    const fetchQuotesData = async () => {
-        try {
-            const apiQuotes = getApi(props.config);
-            await apiQuotes.customRequest(
-                "wp-json/wp/v2/posts?_embed&categories=125&order=desc&orderby=id&per_page=1",
-                "get",
-                {},
-                null,
-                {},
-                false
-            ).then(response => {
-                setQuotesData(response.data);
-                setQuotesLoading(false);
-            });
-        } catch (e) {
-            console.error(e);
-        }
-    }
+
     useEffect(() => {
-        fetchQuotesData().then();
         let titleIndex = optionData.titles.findIndex(el => el.id === 'home_title');
         props.navigation.setParams({
             showNotification: !!user,
             title: optionData.titles[titleIndex].title,
         });
+/*        dispatch({
+            type: 'POSTS_CLEAR',
+        });*/
     }, []);
-    const renderFeaturedPrograms = (item) => {
-        return (
-            <TouchableScale
-                onPress={() => {
-                    navigation.dispatch(
-                        NavigationActions.navigate({
-                            routeName: "MyAppPageScreen",
-                            params: {
-                                pageId: item.item.page,
-                                title: item.item.title,
-                            }
-                        })
-                    );
-                }}>
-                <View style={[styles.block_half_left, styles.boxShadow]}>
-                    <ImageCache
-                        source={{uri: item.item.image}}
-                        style={styles.image_half}
-                    />
-                </View>
-            </TouchableScale>
-        )
-    }
+
     const OnPress = async (item, typeName) => {
         if (item) {
             switch (item[typeName]) {
@@ -166,19 +121,10 @@ const HomeContent = (props) => {
                         )}
                     </View>
                 )}
-                {optionData.show.includes('quotes') && (
-                    quotesLoading ?
-                        <View style={[styles.quoteRow, styles.boxShadow]}>
-                            <Skeleton/>
-                        </View>
-                        :
-                        <View style={[styles.quoteRow, styles.boxShadow]}>
-                            {quotesData.map(item => {
-                                return (
-                                    <DailyQuotes item={item}/>
-                                )
-                            })}
-                        </View>
+                {optionData.show.includes('quotes') && optionData.quote && (
+                    <View style={[styles.quoteRow, styles.boxShadow]}>
+                        <DailyQuotes quote={optionData.quote}/>
+                    </View>
                 )}
                 <View style={styles.programRow}>
                     <EventList location={'home'} eventsDate={optionData.goals}/>

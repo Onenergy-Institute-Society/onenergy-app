@@ -19,35 +19,83 @@ import TouchableScale from './TouchableScale';
 import { scale } from '../Utils/scale';
 
 const PostList = props => {
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [ postsData, setPostsData ] = useState([]);
-    const [ postsDataLoading, setPostsDataLoading] = useState(true);
+    const postSelector = state => ({postsReducer: state.postsReducer})
+    const {postsReducer} = useSelector(postSelector);
     const [ loadMore, setLoadMore] = useState(false);
     const [ page, setPage] = useState(1);
     const { navigation, postCategory, postPerPage, postOrder, postOrderBy, useLoadMore } = props;
+    const dispatch = useDispatch();
     const fetchPostsData = async () => {
         try {
+            let notify = false;
             const api = getApi(props.config);
-            await api.customRequest(
+            const data = await api.customRequest(
                 "wp-json/wp/v2/posts?_embed&categories="+postCategory+"&order="+postOrder+"&orderby="+postOrderBy+"&per_page="+postPerPage+"&page="+page,          // Endpoint suffix or full url. Suffix will be appended to the site url that app uses. Example of a suffix is "wp-json/buddyboss/v1/members". Example of full url would be "https://app-demos.buddyboss.com/learndash/wp-json/buddyboss/v1/members".
                 "get",       // get, post, patch, delete etc.
                 {},               // JSON, FormData or any other type of payload you want to send in a body of request
                 null,             // validation function or null
                 {},               // request headers object
                 false   // true - if full url is given, false if you use the suffix for the url. False is default.
-            ).then(response => {
-                setPostsData((current) => [...current, ...response.data]);
-                setPostsDataLoading(false);
-            });
-
+            ).then(response => response.data);
+            if(data&&data.length>0) {
+                let posts = [];
+                data.map((item) => {
+                    if(new Date(item.date) > new Date(postsReducer.lastView)){
+                        notify = true;
+                    }
+                    if (!postsReducer.posts.length || postsReducer.posts.filter(post => post.id === item.id).length === 0) {
+                        posts.push({
+                            id: item.id,
+                            date: item.date,
+                            title: item.title,
+                            format: item.format,
+                            excerpt: item.excerpt,
+                            categories: item.categories,
+                            author: item._embedded['author'][0].name,
+                            avatar: item._embedded['author'][0].avatar_urls['24'],
+                            image: item._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url,
+                            notify: notify
+                        })
+                    }
+                })
+                if (posts && posts.length > 0) {
+                    dispatch({
+                        type: 'POSTS_ADD',
+                        payload: posts,
+                    });
+                }
+            }
         } catch (e) {
             console.error(e);
         }
     }
 
     useEffect(() => {
+        let loadPosts = false;
+        if(postsReducer.lastView)
+        {
+            let postCount = postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).length
+            if(postCount < parseInt(postPerPage)*page)
+            {
+                loadPosts = true
+            }else {
+                setPostsData((current) => [...current, ...postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice((page-1)*postPerPage, page*postPerPage)]);
+                console.log(new Date(postsReducer.lastView) , new Date(optionData.last_post))
+                if (new Date(postsReducer.lastView) < new Date(optionData.last_post)) {
+                    loadPosts = true;
+                }
+            }
+        }else{
+            loadPosts = true;
+        }
+        if(loadPosts)
             fetchPostsData().then();
     }, [page]);
-
+    useEffect(() => {
+        setPostsData(postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage*page));
+    },[postsReducer.posts])
     const handleLoadMore = () => {
         if(useLoadMore) {
             setPage(page + 1);
@@ -69,15 +117,19 @@ const PostList = props => {
                 return null;
         }
     }
-    const onRefresh = () => {
-        fetchPostsData().then();
-    }
+
     const renderItem = ({ item }) => {
         return (
             <TouchableScale
                 key={item.id + 'img'}
                 onPress={() => {
                     try {
+                        if(item.notify) {
+                            dispatch({
+                                type: 'POSTS_REMOVE_NOTIFY',
+                                payload: item.id,
+                            });
+                        }
                         navigation.dispatch(
                             NavigationActions.navigate({
                                 routeName: "MyBlogScreen",
@@ -92,12 +144,12 @@ const PostList = props => {
                         console.log(`${err}`);
                     }
                 }
-                }>
+            }>
                 <View style={[styles.containerStyle, styles.boxShadow]} key={'post-' + item.id}>
                     <View style={styles.rowStyle}>
                         <View style={styles.imageView}>
                             <ImageCache style={styles.image}
-                                        source={{uri: item._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url ? item._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url : ''}}/>
+                                        source={{uri: item.image?item.image:''}}/>
                             {renderOverlayImage(item.format)}
                         </View>
                         <View style={styles.overlay}>
@@ -108,32 +160,55 @@ const PostList = props => {
                                 </Text>
                             )}
                             <View style={styles.metaRow}>
-                                <ImageCache style={styles.avatar} source={{uri: item._embedded['author'][0].avatar_urls['24'] ? item._embedded['author'][0].avatar_urls['24'] : ''}}/>
-                                <Text style={styles.author}>{item._embedded['author'][0].name ? item._embedded['author'][0].name : ''}</Text>
+                                <ImageCache style={styles.avatar} source={{uri: item.avatar?item.avatar:''}}/>
+                                <Text style={styles.author}>{item.author?item.author:''}</Text>
                             </View>
                         </View>
                     </View>
+                    {item.notify?
+                        <View
+                            style={{
+                                color: '#FFFFFF',
+                                position: 'absolute',
+                                top: 3,
+                                right: 3,
+                                minWidth: 15,
+                                height: 15,
+                                borderRadius: 15,
+                                borderWidth: 1,
+                                borderColor: "white",
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#FF0000',
+                                textAlign: "center",
+                                zIndex: 999
+                            }}
+                        >
+                        </View>
+                        :null}
                 </View>
             </TouchableScale>
         );
     }
     return (
         <SafeAreaView style={styles.container}>
-            {postsDataLoading? (
-                <Skeleton />
-            ):(
-                 <FlatList
+            {postsData&&postsData.length?(
+                <FlatList
                     style={styles.scrollView}
                     data={postsData}
-                    onEndReached={handleLoadMore}
-                    onEndReachedThreshold={0.01}
+                    onEndReached={(d) =>{
+                        if (d.distanceFromEnd > 0) {
+                            handleLoadMore();
+                        }
+                    }}
+                    onEndReachedThreshold={0.7}
                     renderItem={renderItem}
                     extraData={this.props}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={item => item.id}
-                    onRefresh={() => onRefresh()}
-                    refreshing={postsDataLoading}
                 />
+            ):(
+                <Skeleton />
             )}
             {loadMore ? (
                 <ActivityIndicator style={styles.loading} size="large"/>

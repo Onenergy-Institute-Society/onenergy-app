@@ -17,13 +17,7 @@
     "react": "^16.9.0",
     "react-native": "0.61.5"
   },
-  "dependencies": {
-    "react-native-sound": "^0.11.2"
-  },
-  "nativeDependencies": {
-    "react-native-sound": "^0.11.2"
-  },
-  "podDependencies": {
-    "RNSound": "react-native-sound"
-  }
+  "dependencies": {},
+  "nativeDependencies": {},
+  "podDependencies": {}
 }

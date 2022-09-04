@@ -42,7 +42,7 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'blog_watch_tab'} />
-                        <NotificationTabBarIcon notificationID={'blog_watch'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        <NotificationTabBarIcon notificationID={'blog_watch'} top={-10} right={-10} size={scale(10)} showNumber={false} />
                     </View>
                 ),
             }
@@ -53,7 +53,7 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'blog_read_tab'} />
-                        <NotificationTabBarIcon notificationID={'blog_read'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        <NotificationTabBarIcon notificationID={'blog_read'} top={-10} right={-10} size={scale(10)} showNumber={false} />
                     </View>
                 ),
             }

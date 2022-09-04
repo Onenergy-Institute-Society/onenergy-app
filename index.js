@@ -487,30 +487,54 @@ export const applyCustomCode = externalCodeSetup => {
     externalCodeSetup.reduxApi.addReducer(
         "postsReducer",
         (state = {posts: [], lastView: ''}, action) => {
-            let arrayTemp = [];
+            const currentDate = new Date().toISOString();
             switch (action.type) {
                 case "POSTS_ADD":
-                    arrayTemp = state.posts;
-                    arrayTemp.push(action.payload);
-                    console.log(arrayTemp)
-                    return {
-                        ...state,
-                        posts: arrayTemp,
-                        lastView: new Date().toLocaleString()
-                    };
-                case "POST_ADD":
-                    if (state.posts && state.posts.length) {
-                        arrayTemp = state.posts;
-                        let addIndex = state.posts.findIndex(el => el.id === action.id);
-                        if (addIndex === -1) {
-                            arrayTemp.push(action.payload);
-                        }
-                    } else {
-                        arrayTemp.push(action.payload);
+                    let posts = action.payload;
+                    let postsState;
+                    if(state.posts.length>0) {
+                        postsState = {
+                            ...state,
+                            posts: [...state.posts, ...posts],
+                        };
+                    }else{
+                        postsState = {
+                            ...state,
+                            posts: posts,
+                        };
                     }
+                    posts = postsState.posts.sort((a, b) => {
+                        if(a.date < b.date){
+                            return 1
+                        }else if(a.date> b.date){
+                            return -1
+                        }else{
+                            return 0
+                        }
+                    })
                     return {
                         ...state,
-                        posts: arrayTemp
+                        posts: posts,
+                        lastView: currentDate
+                    };
+                case "POSTS_REMOVE_NOTIFY":
+                    let postIndex = state.posts.findIndex(post => post.id === action.payload);
+                    return {
+                        ...state,
+                        posts:[
+                            ...state.posts.slice(0,postIndex),
+                            {
+                                ...state.posts[postIndex],
+                                notify:false
+                            },
+                            ...state.posts.slice(postIndex+1)
+                        ]
+                    }
+                case "POSTS_CLEAR":
+                    return {
+                        ...state,
+                        posts: [],
+                        lastView: new Date("2022-08-31").toISOString()
                     };
                 default:
                     return state;
@@ -524,48 +548,6 @@ export const applyCustomCode = externalCodeSetup => {
         (state = {notification: {}}, action) => {
             let count;
             switch (action.type) {
-                case "NOTIFICATION_POST_ADD":
-                    let arrayTemp = [];
-                    if (state.notification[action.mode] && state.notification[action.mode].length) {
-                        arrayTemp = state.notification[action.mode];
-                        let addIndex = state.notification[action.mode].indexOf(action.payload);
-                        if (addIndex === -1) {
-                            arrayTemp.push(action.payload);
-                        }
-                    } else {
-                        arrayTemp.push(action.payload);
-                    }
-                    return {
-                        ...state,
-                        notification: {
-                            ...state.notification,
-                            [action.mode]: arrayTemp
-                        }
-                    };
-                case "NOTIFICATION_POST_REMOVE":
-                    if (state.notification[action.mode] && state.notification[action.mode].length) {
-                        let arrayTemp = state.notification[action.mode];
-                        let index = arrayTemp.indexOf(action.payload);
-                        if (index !== -1) {
-                            arrayTemp.splice(index, 1);
-                            if (arrayTemp.length > 1) {
-                                console.log('empty1')
-                                return {
-                                    ...state,
-                                    notification: {
-                                        ...state.notification,
-                                        [action.mode]: arrayTemp
-                                    }
-                                };
-                            }
-                        } else {
-                            return state;
-                        }
-                    } else {
-                        return state;
-                    }
-                    ;
-                    return state;
                 case "NOTIFICATION_PRACTICE_ADD":
                     if (state.notification['practice'] && state.notification['practice'].length) {
                         let addIndex = state.notification['practice'].indexOf(action.payload);
@@ -731,7 +713,7 @@ export const applyCustomCode = externalCodeSetup => {
 
 // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
-        let whiteList = [...props.whitelist, "languagesReducer", "routinesReducer", "notifyReducer"];
+        let whiteList = [...props.whitelist, "languagesReducer", "routinesReducer", "notifyReducer", "postsReducer"];
         let index = whiteList.indexOf('blog');
         if (index !== -1) {
             whiteList.splice(index, 1);
@@ -1335,6 +1317,7 @@ export const applyCustomCode = externalCodeSetup => {
                                                                 isLoggingOut,
                                                                 logout
                                                             }) => {
+        const dispatch = useDispatch();
         return <View style={global.tabLinksContainer}>
             <AppTouchableOpacity
                 style={global.logout}
@@ -1348,7 +1331,9 @@ export const applyCustomCode = externalCodeSetup => {
                                 },
                                 {
                                     text: "OK", onPress: () => {
-
+                                        dispatch({
+                                            type: 'POSTS_CLEAR',
+                                        });
                                         logout();
                                     }
                                 }

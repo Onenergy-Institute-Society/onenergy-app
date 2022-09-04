@@ -12,7 +12,7 @@ import Indicator from './Indicator';
 import TopSliderItem from './TopSliderItem';
 import {scale} from "../Utils/scale";
 
-export default class TopSlider extends Component {
+class TopSlider extends Component {
     slider = createRef();
 
     static defaultProps = {
@@ -69,6 +69,12 @@ export default class TopSlider extends Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.isFocused !== this.props.isFocused) {
+            this.stopAutoPlay();
+        }
+    }
+
     render() {
         const itemWidth = this.props.width;
         const separatorWidth = this.props.separatorWidth;
@@ -115,6 +121,7 @@ export default class TopSlider extends Component {
                         index,
                     })}
                     data={this.props.data}
+                    removeClippedSubviews={false}
                 />
                 {this.props.indicator && (
                     <Indicator
@@ -206,3 +213,5 @@ const styles = StyleSheet.create({
         marginTop: 18,
     },
 });
+
+export default TopSlider;

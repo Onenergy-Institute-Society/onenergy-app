@@ -7,13 +7,12 @@ import TouchableScale from './TouchableScale';
 
 const DailyQuotes = (props) => {
     const { navigation } = props;
-    const {item} = props;
+    const {quote} = props;
     const regex_tag = /(<([^>]+)>)/ig;
     const regex_newline = /\r?\n|\r/g;
-    const excerpt = item.excerpt.rendered.replace(regex_tag,'').replace(regex_newline,'');
+    const quote_rendered = quote.replace(regex_tag,'').replace(regex_newline,'');
     return (
         <TouchableScale
-            key={item.id + 'img'}
             onPress={() =>  {
                 try {
                     navigation.dispatch(
@@ -30,7 +29,7 @@ const DailyQuotes = (props) => {
                                 resizeMode: "contain",
                                 alignSelf: "flex-start"
                             }}>
-                <Text style={styles.title}>{excerpt}</Text>
+                <Text style={styles.title}>{quote_rendered}</Text>
             </ImageBackground>
         </TouchableScale>
     )
