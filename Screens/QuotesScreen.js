@@ -136,7 +136,6 @@ const QuotesScreen = props => {
         fetchQuote().then();
     }, [page]);
     const onViewableItemsChanged = React.useRef(({ viewableItems, changed }) => {
-        console.log(changed);
         props.navigation.setParams({inViewPort: changed[0]});
     })
     const visibilityConfig = useRef({

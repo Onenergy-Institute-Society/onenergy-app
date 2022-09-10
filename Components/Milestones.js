@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {getApi} from "@src/services";
-import {connect, useSelector} from "react-redux";
+import {connect, useSelector, useDispatch} from "react-redux";
 import {View, Text, StyleSheet, SafeAreaView, FlatList, ActivityIndicator} from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
@@ -11,21 +11,25 @@ const Milestones = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'achievement_milestone_empty');
     const emptyText = optionData.titles[emptyTextIndex].title
-    const [questsData, setQuestsData] = useState({});
-    const [questsLoading, setQuestsLoading] = useState(true);
+    const milestonesSelector = state => ({milestonesReducer: state.milestonesReducer[type]})
+    const {milestonesReducer} = useSelector(milestonesSelector);
+
+    const dispatch = useDispatch();
     const fetchQuests = async () => {
         try {
             const apiQuotes = getApi(props.config);
-            await apiQuotes.customRequest(
+            const data = await apiQuotes.customRequest(
                 "wp-json/onenergy/v1/milestones/?category="+type,
                 "get",
                 {},
                 null,
                 {},
                 false
-            ).then(response => {
-                setQuestsData(response.data);
-                setQuestsLoading(false);
+            ).then(response => response.data);
+            dispatch({
+                type: 'MILESTONE_ADD',
+                milestone_type: type,
+                payload: data,
             });
         } catch (e) {
             console.error(e);
@@ -41,27 +45,24 @@ const Milestones = (props) => {
     };
     return(
         <SafeAreaView style={styles.container}>
-            {!questsLoading?
-                questsData.length?
-                    <FlatList showsVerticalScrollIndicator={false} data={questsData} renderItem={renderItem} keyExtractor={item => item.id} />
-                    :
-                    <View style={{
-                        flex: 1,
-                        width: windowWidth
-                    }}>
-                        <View style={[styles.boxShadow, {padding:15,justifyContent: "center",alignSelf:"center",borderRadius: 9,backgroundColor:"#fff", margin:15}]}>
-                            <View style={{marginHorizontal: 0, justifyContent: "center", alignItems: "center"}}>
-                                <Text style={[styles.body, {
-                                    marginHorizontal: 0,
-                                    fontSize:scale(14),
-                                    lineHeight:scale(14*1.47),
-                                    textAlign:"left"
-                                }]}>{emptyText}</Text>
-                            </View>
+            {milestonesReducer&&milestonesReducer.length?
+                <FlatList showsVerticalScrollIndicator={false} data={milestonesReducer} renderItem={renderItem} keyExtractor={item => item.id} />
+                :
+                <View style={{
+                    flex: 1,
+                    width: windowWidth
+                }}>
+                    <View style={[styles.boxShadow, {padding:15,justifyContent: "center",alignSelf:"center",borderRadius: 9,backgroundColor:"#fff", margin:15}]}>
+                        <View style={{marginHorizontal: 0, justifyContent: "center", alignItems: "center"}}>
+                            <Text style={[styles.body, {
+                                marginHorizontal: 0,
+                                fontSize:scale(14),
+                                lineHeight:scale(14*1.47),
+                                textAlign:"left"
+                            }]}>{emptyText}</Text>
                         </View>
                     </View>
-                :
-                <ActivityIndicator size="large"/>
+                </View>
             }
         </SafeAreaView>
     )

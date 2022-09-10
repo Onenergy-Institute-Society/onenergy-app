@@ -11,8 +11,7 @@ const NotificationTabBarIcon = props => {
     const {notificationID, top, right, size, fontSize=8, showNumber=false, data=''} = props;
     const notification = useSelector((state) => state.notifyReducer.notification);
     let notificationCount;
-    console.log(optionData, postsReducer.lastView)
-    switch(notificationID)
+     switch(notificationID)
     {
         case 'guide_page':
             notificationCount = notification.guide_personal?notification.guide_personal:0 + notification.guide_group?notification.guide_group:0 + notification.guide_member?notification.guide_member:0;
@@ -20,9 +19,9 @@ const NotificationTabBarIcon = props => {
         case 'blog_read':
             notificationCount = postsReducer.posts.filter((post)=>post.categories.includes(105)&&post.notify===true).length;
             if(notificationCount===0) {
-                if (postsReducer.lastView) {
-                    console.log(postsReducer.lastView, optionData.latest_post_read)
-                    const dateTime = new Date(postsReducer.lastView);
+                let categoryIndex = postsReducer.lastView.findIndex(lv => lv.category === 105);
+                if (categoryIndex&&categoryIndex>=0) {
+                    const dateTime = new Date(postsReducer.lastView[categoryIndex].date);
                     const datePost = new Date(optionData.latest_post_read);
                     if (datePost > dateTime) {
                         notificationCount = 1;
@@ -33,8 +32,9 @@ const NotificationTabBarIcon = props => {
         case 'blog_watch':
             notificationCount = postsReducer.posts.filter((post)=>post.categories.includes(103)&&post.notify===true).length;
             if(notificationCount===0) {
-                if (postsReducer.lastView) {
-                    const dateTime = new Date(postsReducer.lastView);
+                let categoryIndex = postsReducer.lastView.findIndex(lv => lv.category === 103);
+                if (categoryIndex&&categoryIndex>=0) {
+                    const dateTime = new Date(postsReducer.lastView[categoryIndex].date);
                     const datePost = new Date(optionData.latest_post_watch);
                     if (datePost > dateTime) {
                         notificationCount = 1;
@@ -43,16 +43,9 @@ const NotificationTabBarIcon = props => {
             }
             break;
         case 'blog':
-            notificationCount = postsReducer.posts.filter((post)=>post.notify===true).length;
-            if(notificationCount===0) {
-                if (postsReducer.lastView) {
-                    const dateTime = new Date(postsReducer.lastView);
-                    const datePostRead = new Date(optionData.latest_post_read);
-                    const datePostWatch = new Date(optionData.latest_post_watch);
-                    if ((datePostRead > dateTime) || (datePostWatch > dateTime)) {
-                        notificationCount = 1;
-                    }
-                }
+            notificationCount = postsReducer.posts.filter((post)=>post.categories.includes(103)&&post.notify===true).length;
+            if(!notificationCount) {
+                notificationCount = postsReducer.posts.filter((post) => post.categories.includes(105) && post.notify === true).length;
             }
             break;
         case 'progress':

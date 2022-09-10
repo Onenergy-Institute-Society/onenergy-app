@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {getApi} from "@src/services";
-import {connect, useSelector} from "react-redux";
+import {connect, useSelector, useDispatch} from "react-redux";
 import {
     View,
     Text,
@@ -13,24 +13,24 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 
 const QuestsMonthly = (props) => {
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'achievement_quest_empty');
-    const emptyText = optionData.titles[emptyTextIndex].title
-    const [questsData, setQuestsData] = useState({});
-    const [questsLoading, setQuestsLoading] = useState(true);
+    const questsSelector = state => ({questsReducer: state.questsReducer.monthly})
+    const {questsReducer} = useSelector(questsSelector);
+    const dispatch = useDispatch();
     const fetchQuests = async () => {
         try {
             const apiQuotes = getApi(props.config);
-            await apiQuotes.customRequest(
+            const data = await apiQuotes.customRequest(
                 "wp-json/onenergy/v1/quests/?type=monthly",
                 "get",
                 {},
                 null,
                 {},
                 false
-            ).then(response => {
-                setQuestsData(response.data);
-                setQuestsLoading(false);
+            ).then(response => response.data);
+            dispatch({
+                type: 'QUEST_ADD',
+                quest_mode: 'monthly',
+                payload: data,
             });
         } catch (e) {
             console.error(e);
@@ -42,30 +42,31 @@ const QuestsMonthly = (props) => {
 
     return(
         <SafeAreaView style={styles.container}>
-            {!questsLoading?
-                <ScrollView style={styles.containerStyle}>
-                    <Text style={styles.titleText}>Practice consecutively for 30 days to unlock this reward. Miss one day will reset the progress. Completion reward: +100 Qi</Text>
-                    <View style={styles.daysContainer}>
-                    {Array(30).fill().map((_, idx) => 1 + idx).map((day,index)=>{
-                        return (
-                            <View style={styles.row} >
-                                <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
-                                    {
-                                        questsData.days[index]?
-                                            <Image source={require("@src/assets/img/check2.png")} />
-                                            :
-                                            <Image source={require("@src/assets/img/radio_unchecked_icon.png")} />
-                                    }
-                                </View>
-                                <Text>{questsData.days[index]?questsData.days[index].substring(5, 10):"Day "+day}</Text>
+            <ScrollView style={styles.containerStyle}>
+                <Text style={styles.titleText}>Practice consecutively for 30 days to unlock this reward. Miss one day will reset the progress. Completion reward: +100 Qi</Text>
+                <View style={styles.daysContainer}>
+                {Array(30).fill().map((_, idx) => 1 + idx).map((day,index)=>{
+                    return (
+                        <View style={styles.row} >
+                            <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+                                {
+                                    questsReducer&&questsReducer.length?questsReducer.days&&questsReducer.days.length?
+                                    questsReducer.days[index]?
+                                        <Image source={require("@src/assets/img/check2.png")} />
+                                        :
+                                        <Image source={require("@src/assets/img/radio_unchecked_icon.png")} />
+                                        :
+                                        <Image source={require("@src/assets/img/radio_unchecked_icon.png")} />
+                                        :
+                                        <Image source={require("@src/assets/img/radio_unchecked_icon.png")} />
+                                }
                             </View>
-                        )
-                    })}
-                    </View>
-                </ScrollView>
-            :
-                <ActivityIndicator size="large" />
-            }
+                            <Text>{questsReducer&&questsReducer.length?questsReducer.days&&questsReducer.days.length?questsReducer.days[index]?questsReducer.days[index].substring(5, 10):"Day "+day:'':''}</Text>
+                        </View>
+                    )
+                })}
+                </View>
+            </ScrollView>
         </SafeAreaView>
     )
 }

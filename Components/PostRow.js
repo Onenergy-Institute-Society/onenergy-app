@@ -23,7 +23,7 @@ const PostRow = props => {
     const postSelector = state => ({postsReducer: state.postsReducer})
     const {postsReducer} = useSelector(postSelector);
     const dispatch = useDispatch();
-
+    const categoryIndex = postsReducer.lastView&&postsReducer.lastView.length?postsReducer.lastView.findIndex(lv => lv.category === postCategory):null;
     const fetchPostsData = async () => {
         try {
             let notify = false;
@@ -37,10 +37,13 @@ const PostRow = props => {
                 false   // true - if full url is given, false if you use the suffix for the url. False is default.
             ).then(response => response.data);
             let posts =[] ;
+
             data.map((item)=>{
                 if(!postsReducer.posts.length||postsReducer.posts.filter(post => post.id === item.id).length===0) {
-                    if(new Date(item.date) > new Date(postsReducer.lastView)){
-                        notify = true;
+                    if(categoryIndex&&categoryIndex>=0) {
+                        if (new Date(item.date) > new Date(postsReducer.lastView[categoryIndex].date)) {
+                            notify = true;
+                        }
                     }
                     posts.push({
                         id: item.id,
@@ -55,11 +58,16 @@ const PostRow = props => {
                         notify: notify
                     })
                 }
+                dispatch({
+                    type: 'BLOG_ADD_ITEM',
+                    item: item,
+                });
             })
             if(posts&&posts.length>0) {
                 dispatch({
                     type: 'POSTS_ADD',
                     payload: posts,
+                    category: postCategory
                 });
             }
         } catch (e) {
@@ -68,15 +76,15 @@ const PostRow = props => {
     }
     useEffect(() => {
         let loadPosts = false;
-        if(postsReducer.lastView)
+        if(categoryIndex&&categoryIndex>=0)
         {
             let postCount = postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).length;
-            if(postCount < parseInt(postPerPage))
+            if(!postCount)
             {
                 loadPosts = true
             }else {
                 setPostsData(postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage));
-                if (new Date(postsReducer.lastView) < new Date(optionData.last_post)) {
+                if (new Date(postsReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[postCategory])) {
                     loadPosts = true;
                 }
             }

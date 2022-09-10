@@ -18,15 +18,7 @@ const MilestonesLearn = () => {
         console.log(`${err}`);
     }
 }
-const MilestonesPractice = () => {
-    try {
-        return (
-            <Milestones type={'practice'} />
-        )
-    } catch (err) {
-        console.log(`${err}`);
-    }
-}
+
 const MilestonesStartup = () => {
     try {
         return (

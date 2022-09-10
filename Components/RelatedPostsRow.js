@@ -6,10 +6,9 @@ import {
     Text,
     SafeAreaView,
     FlatList,
-    ActivityIndicator,
+    ActivityIndicator, Image,
 } from "react-native";
-import {connect} from "react-redux";
-import {getApi} from "@src/services";
+import {useSelector} from "react-redux";
 import {NavigationActions, withNavigation} from "react-navigation";
 import ImageCache from './ImageCache';
 import TouchableScale from './TouchableScale';
@@ -18,34 +17,22 @@ import {windowWidth} from "../Utils/Dimensions";
 
 const RelatedPostsRow = props => {
     const {posts, navigation} = props;
-    const [ dataPosts, setPostsData ] = useState([]);
-    const [ postLoading, setPostLoading ] = useState(true);
-
-    const fetchPostsData = async () => {
-        try {
-            let posts_string ='';
-            posts.map((post) => {
-                posts_string=posts_string+'&include[]='+post;
-            })
-            const api = getApi(props.config);
-            await api.customRequest(
-                "wp-json/wp/v2/posts?_embed"+posts_string,
-                "get",       // get, post, patch, delete etc.
-                {},               // JSON, FormData or any other type of payload you want to send in a body of request
-                null,             // validation function or null
-                {},               // request headers object
-                false   // true - if full url is given, false if you use the suffix for the url. False is default.
-            ).then(response => {
-                setPostsData(response.data);
-                setPostLoading(false);
-            });
-        } catch (e) {
-            console.error(e);
+    const [ postsData, setPostsData ] = useState([]);
+    const postSelector = state => ({postsReducer: state.postsReducer})
+    const {postsReducer} = useSelector(postSelector);
+    useEffect(() => {
+        setPostsData(postsReducer.posts.filter((post)=>posts.includes(post.id)));
+    }, []);
+    const renderOverlayImage = (format) => {
+        switch(format) {
+            case 'video':
+                return <View style = {styles.overlay_button}><Image style = {styles.play} source = {require('../assets/images/arrow_right-1.png')} /></View>;
+            case 'audio':
+                return <View style = {styles.overlay_button}><Image style = {styles.play} source = {require('../assets/images/arrow_right-1.png')} /></View>;
+            default:
+                return null;
         }
     }
-    useEffect(() => {
-        fetchPostsData().then();
-    }, []);
     const renderItem = ({ item }) => {
         return (
             <TouchableScale
@@ -68,10 +55,11 @@ const RelatedPostsRow = props => {
                 }}>
                 <View style={[styles.containerStyle, styles.boxShadow]} key={'post-' + item.id}>
                     <View style={styles.imageView}>
-                        <ImageCache style={styles.image} source={{uri: item._embedded['wp:featuredmedia'][0].source_url?item._embedded['wp:featuredmedia'][0].source_url:''}} />
+                        <ImageCache style={styles.image} source={{uri: item.image?item.image:''}} />
+                        {renderOverlayImage(item.format)}
                         <View style={styles.overlay}>
                             <Text style={styles.title}>{item.title.rendered}</Text>
-                            <Text style={styles.author}>{item._embedded['author'][0].name?item._embedded['author'][0].name:''}</Text>
+                            <Text style={styles.author}>{item.author?item.author:''}</Text>
                         </View>
                     </View>
                 </View>
@@ -81,27 +69,27 @@ const RelatedPostsRow = props => {
 
     return (
         <SafeAreaView style={styles.container}>
-            {postLoading?(
+            {postsData?
+                postsData.length?(
+                <View style={styles.ScrollView}>
+                    <View style={styles.view_blog_title}>
+                        <Text style={styles.heading}>Related Posts</Text>
+                    </View>
+                    <FlatList
+                        data={postsData}
+                        renderItem={renderItem}
+                        extraData={this.props}
+                        keyExtractor={item => item.id}
+                        showsHorizontalScrollIndicator={false}
+                        horizontal
+                    />
+                </View>
+                ):(
                 <View style={{height:150, justifyContent:"center", alignItems:"flex-start"}}>
                     <ActivityIndicator size="large"/>
                 </View>
-            ):(
-                dataPosts?
-                    <View style={styles.ScrollView}>
-                        <View style={styles.view_blog_title}>
-                            <Text style={styles.heading}>Related Posts</Text>
-                        </View>
-                        <FlatList
-                            data={dataPosts}
-                            renderItem={renderItem}
-                            extraData={this.props}
-                            keyExtractor={item => item.id}
-                            showsHorizontalScrollIndicator={false}
-                            horizontal
-                        />
-                    </View>
-                :null
-            )}
+            ):null
+            }
         </SafeAreaView>
     );
 };
@@ -210,9 +198,5 @@ const styles = StyleSheet.create({
     },
 });
 
-const mapStateToProps = (state) => ({
-    config: state.config,
-    accessToken: state.auth.token,
-});
 RelatedPostsRow.navigationOptions = {header: null};
-export default connect(mapStateToProps)(withNavigation(RelatedPostsRow));
+export default withNavigation(RelatedPostsRow);

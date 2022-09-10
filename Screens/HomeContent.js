@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {getApi} from "@src/services";
-import {connect, useSelector, useDispatch} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import {
     StyleSheet,
     ScrollView,
@@ -13,7 +12,6 @@ import {scale} from '../Utils/scale';
 import TouchableScale from "../Components/TouchableScale";
 import TopSlider from '../Components/TopSlider';
 import DailyQuotes from '../Components/DailyQuotes'
-import Skeleton from '../Components/Loaders/QuoteSkeletonLoading';
 import PostRow from '../Components/PostRow';
 import ImageCache from "../Components/ImageCache";
 import {NavigationActions} from "react-navigation";
@@ -31,6 +29,7 @@ const HomeContent = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
+
     TrackPlayer.setupPlayer();
     TrackPlayer.updateOptions({
         stoppingAppPausesPlayback: true,
@@ -56,9 +55,9 @@ const HomeContent = (props) => {
             showNotification: !!user,
             title: optionData.titles[titleIndex].title,
         });
-/*        dispatch({
+        dispatch({
             type: 'POSTS_CLEAR',
-        });*/
+        });
     }, []);
 
     const OnPress = async (item, typeName) => {
@@ -438,10 +437,6 @@ const styles = StyleSheet.create({
     },
 });
 
-const mapStateToProps = (state) => ({
-    config: state.config,  // not needed if axios or fetch is used
-    accessToken: state.auth.token,
-});
 HomeContent.navigationOptions = ({navigation}) => {
     const showNotification = navigation.getParam('showNotification');
     return ({
@@ -481,4 +476,4 @@ HomeContent.navigationOptions = ({navigation}) => {
     })
 }
 
-export default connect(mapStateToProps)(withDeeplinkClickHandler(HomeContent));
+export default withDeeplinkClickHandler(HomeContent);

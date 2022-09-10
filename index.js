@@ -483,10 +483,10 @@ export const applyCustomCode = externalCodeSetup => {
     }
     externalCodeSetup.blogSingleApi.setBlogHeaderAvatar(BlogHeaderAvatar);
 
-//Add Blog reducer
+    //Add Blog reducer
     externalCodeSetup.reduxApi.addReducer(
         "postsReducer",
-        (state = {posts: [], lastView: ''}, action) => {
+        (state = {posts: [], lastView: []}, action) => {
             const currentDate = new Date().toISOString();
             switch (action.type) {
                 case "POSTS_ADD":
@@ -512,11 +512,34 @@ export const applyCustomCode = externalCodeSetup => {
                             return 0
                         }
                     })
-                    return {
-                        ...state,
-                        posts: posts,
-                        lastView: currentDate
-                    };
+                    let categoryIndex = state.lastView.findIndex(lv => lv.category === action.category);
+
+                    if(categoryIndex&&categoryIndex>=0){
+                        return {
+                            ...state,
+                            posts: posts,
+                            lastView: [
+                                ...state.lastView.slice(0,categoryIndex),
+                                {
+                                    category:action.category,
+                                    date:currentDate
+                                },
+                                ...state.lastView.slice(categoryIndex+1)
+                            ]
+                        };
+                    }else{
+                        return {
+                            ...state,
+                            posts: posts,
+                            lastView: [
+                                ...state.lastView,
+                                {
+                                    category:action.category,
+                                    date:currentDate
+                                }
+                            ]
+                        };
+                    }
                 case "POSTS_REMOVE_NOTIFY":
                     let postIndex = state.posts.findIndex(post => post.id === action.payload);
                     return {
@@ -534,7 +557,7 @@ export const applyCustomCode = externalCodeSetup => {
                     return {
                         ...state,
                         posts: [],
-                        lastView: new Date("2022-08-31").toISOString()
+                        lastView: []
                     };
                 default:
                     return state;
@@ -542,7 +565,7 @@ export const applyCustomCode = externalCodeSetup => {
         }
     );
 
-//Add Notification reducer
+    //Add Notification reducer
     externalCodeSetup.reduxApi.addReducer(
         "notifyReducer",
         (state = {notification: {}}, action) => {
@@ -623,11 +646,66 @@ export const applyCustomCode = externalCodeSetup => {
         }
     );
 
-// Add Video reducer for course completion
+    // Add quest reducer
+    externalCodeSetup.reduxApi.addReducer(
+        "questsReducer",
+        (state = {daily: [], weekly: [], monthly: []}, action) => {
+            switch (action.type) {
+                case "QUEST_ADD":
+                    return {
+                        ...state,
+                        [action.quest_mode]: action.payload
+                    };
+                default:
+                    return state;
+            }
+        }
+    );
+
+    // Add milestone reducer
+    externalCodeSetup.reduxApi.addReducer(
+        "milestonesReducer",
+        (state = {learn: [], startup: [], endurance: []}, action) => {
+            switch (action.type) {
+                case "MILESTONE_ADD":
+                    return {
+                        ...state,
+                        [action.milestone_type]: action.payload
+                    };
+                default:
+                    return state;
+            }
+        }
+    );
+
+    // Add Progress reducer for user practice status
+    externalCodeSetup.reduxApi.addReducer(
+        "progressReducer",
+        (state = {progress: {}}, action) => {
+            switch (action.type) {
+                case "PROGRESS_ADD":
+                    return {
+                        ...state,
+                        progress: action.payload
+                    };
+                case "PROGRESS_UPDATE":
+                    return {
+                        ...state,
+                        progress: {
+                            ...state.progress,
+                            [action.process]: action.payload
+                        }
+                    };
+                default:
+                    return state;
+            }
+        }
+    );
+
+    // Add Video reducer for course completion
     externalCodeSetup.reduxApi.addReducer(
         "videoReducer",
         (state = {videoComplete: false}, action) => {
-            let count;
             switch (action.type) {
                 case "VIDEO_COMPLETED":
                     return {
@@ -713,7 +791,7 @@ export const applyCustomCode = externalCodeSetup => {
 
 // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
-        let whiteList = [...props.whitelist, "languagesReducer", "routinesReducer", "notifyReducer", "postsReducer"];
+        let whiteList = [...props.whitelist, "languagesReducer", "routinesReducer", "notifyReducer", "postsReducer", "progressReducer", "questsReducer", "milestonesReducer"];
         let index = whiteList.indexOf('blog');
         if (index !== -1) {
             whiteList.splice(index, 1);
@@ -937,26 +1015,6 @@ export const applyCustomCode = externalCodeSetup => {
                 <LessonButton global={global} colors={colors} lesson={lesson}/>
             </View>
         if (lesson.completed) {
-            return lessonButton
-        } else {
-            return Buttons;
-        }
-    })
-//Custom complete button in Single Topic Screen
-    externalCodeSetup.learnTopicSingleScreenApi.setTransformTopicActionButtons((
-        lessonButton,
-        showComplete,
-        global,
-        colors,
-        topic,
-        completing,
-        labels,
-        handleComplete) => {
-        let Buttons =
-            <View style={global.row}>
-                <LessonButton global={global} colors={colors} lesson={topic}/>
-            </View>
-        if (topic.completed) {
             return lessonButton
         } else {
             return Buttons;

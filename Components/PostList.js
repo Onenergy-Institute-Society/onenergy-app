@@ -27,6 +27,7 @@ const PostList = props => {
     const [ page, setPage] = useState(1);
     const { navigation, postCategory, postPerPage, postOrder, postOrderBy, useLoadMore } = props;
     const dispatch = useDispatch();
+    const categoryIndex = postsReducer.lastView&&postsReducer.lastView.length?postsReducer.lastView.findIndex(lv => lv.category === postCategory):null;
     const fetchPostsData = async () => {
         try {
             let notify = false;
@@ -39,33 +40,34 @@ const PostList = props => {
                 {},               // request headers object
                 false   // true - if full url is given, false if you use the suffix for the url. False is default.
             ).then(response => response.data);
-            if(data&&data.length>0) {
-                let posts = [];
-                data.map((item) => {
-                    if(new Date(item.date) > new Date(postsReducer.lastView)){
-                        notify = true;
+            let posts = [];
+            data.map((item) => {
+                if (!postsReducer.posts.length || postsReducer.posts.filter(post => post.id === item.id).length === 0) {
+                    if(categoryIndex&&categoryIndex>=0){
+                        if(new Date(item.date) > new Date(postsReducer.lastView[categoryIndex].date)){
+                            notify = true;
+                        }
                     }
-                    if (!postsReducer.posts.length || postsReducer.posts.filter(post => post.id === item.id).length === 0) {
-                        posts.push({
-                            id: item.id,
-                            date: item.date,
-                            title: item.title,
-                            format: item.format,
-                            excerpt: item.excerpt,
-                            categories: item.categories,
-                            author: item._embedded['author'][0].name,
-                            avatar: item._embedded['author'][0].avatar_urls['24'],
-                            image: item._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url,
-                            notify: notify
-                        })
-                    }
-                })
-                if (posts && posts.length > 0) {
-                    dispatch({
-                        type: 'POSTS_ADD',
-                        payload: posts,
-                    });
+                    posts.push({
+                        id: item.id,
+                        date: item.date,
+                        title: item.title,
+                        format: item.format,
+                        excerpt: item.excerpt,
+                        categories: item.categories,
+                        author: item._embedded['author'][0].name,
+                        avatar: item._embedded['author'][0].avatar_urls['24'],
+                        image: item._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url,
+                        notify: notify
+                    })
                 }
+            })
+            if (posts && posts.length > 0) {
+                dispatch({
+                    type: 'POSTS_ADD',
+                    payload: posts,
+                    category: postCategory
+                });
             }
         } catch (e) {
             console.error(e);
@@ -74,7 +76,7 @@ const PostList = props => {
 
     useEffect(() => {
         let loadPosts = false;
-        if(postsReducer.lastView)
+        if(categoryIndex&&categoryIndex>=0)
         {
             let postCount = postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).length
             if(postCount < parseInt(postPerPage)*page)
@@ -82,8 +84,7 @@ const PostList = props => {
                 loadPosts = true
             }else {
                 setPostsData((current) => [...current, ...postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice((page-1)*postPerPage, page*postPerPage)]);
-                console.log(new Date(postsReducer.lastView) , new Date(optionData.last_post))
-                if (new Date(postsReducer.lastView) < new Date(optionData.last_post)) {
+                if (new Date(postsReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[postCategory])) {
                     loadPosts = true;
                 }
             }

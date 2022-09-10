@@ -9,7 +9,7 @@ import {
     ActivityIndicator,
     Image
 } from "react-native";
-import {connect, useSelector} from "react-redux";
+import {connect, useSelector, useDispatch} from "react-redux";
 import {getApi} from "@src/services";
 import {NavigationActions, withNavigation} from "react-navigation";
 import ImageCache from './ImageCache';
@@ -18,32 +18,83 @@ import { scale } from '../Utils/scale';
 import {windowWidth} from "../Utils/Dimensions";
 
 const PracticeTipsRow = props => {
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const user = useSelector((state) => state.user.userObject);
+    const postSelector = state => ({postsReducer: state.postsReducer})
+    const {postsReducer} = useSelector(postSelector);
     const [ dataPosts, setPostsData ] = useState([]);
-    const [ postLoading, setPostLoading ] = useState(true);
     const [ showTitle, setShowTitle ] = useState(false);
     const { navigation } = props;
+    const dispatch = useDispatch();
+    const categoryIndex = postsReducer.lastView&&postsReducer.lastView.length?postsReducer.lastView.findIndex(lv => lv.category === 258):null;
     const fetchPostsData = async () => {
         try {
+            let notify = false;
             const api = getApi(props.config);
-            await api.customRequest(
+            const data = await api.customRequest(
                 "wp-json/wp/v2/posts?_embed&categories=258",
                 "get",       // get, post, patch, delete etc.
                 {},               // JSON, FormData or any other type of payload you want to send in a body of request
                 null,             // validation function or null
                 {},               // request headers object
                 false   // true - if full url is given, false if you use the suffix for the url. False is default.
-            ).then(response => {
-                setPostsData((current) => [...current, ...response.data]);
-                setPostLoading(false);
-            });
+            ).then(response => response.data);
+            let posts = [];
+            data.map((item) => {
+                if (!postsReducer.posts.length || postsReducer.posts.filter(post => post.id === item.id).length === 0) {
+                    if(categoryIndex&&categoryIndex>=0){
+                        if(new Date(item.date) > new Date(postsReducer.lastView[categoryIndex].date)){
+                            notify = true;
+                        }
+                    }
+                    posts.push({
+                        id: item.id,
+                        date: item.date,
+                        title: item.title,
+                        format: item.format,
+                        excerpt: item.excerpt,
+                        categories: item.categories,
+                        author: item._embedded['author'][0].name,
+                        avatar: item._embedded['author'][0].avatar_urls['24'],
+                        image: item._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url,
+                        meta_box: item.meta_box,
+                        notify: notify
+                    })
+                }
+            })
+            if (posts && posts.length > 0) {
+                dispatch({
+                    type: 'POSTS_ADD',
+                    payload: posts,
+                    category: 258
+                });
+            }
         } catch (e) {
             console.error(e);
         }
     }
     useEffect(() => {
-        fetchPostsData().then();
+        let loadPosts = false;
+        if (categoryIndex&&categoryIndex>=0) {
+            let postCount = postsReducer.posts.filter((post) => post.categories.includes(258)).length
+            if (!postCount) {
+                loadPosts = true
+            } else {
+                setPostsData((current) => [...current, ...postsReducer.posts.filter((post) => post.categories.includes(258))]);
+                if (new Date(postsReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[258])) {
+                    loadPosts = true;
+                }
+            }
+        } else {
+            loadPosts = true;
+        }
+        if (loadPosts){
+            fetchPostsData().then();
+        }
     }, []);
+    useEffect(() => {
+        setPostsData(postsReducer.posts.filter((post)=>post.categories.includes(258)));
+    },[postsReducer.posts])
     const renderItem = ({ item }) => {
         let show = false;
         if(item.meta_box.course)
@@ -77,7 +128,7 @@ const PracticeTipsRow = props => {
                     }}>
                     <View style={[styles.containerStyle, styles.boxShadow]} key={'post-' + item.id}>
                         <View style={styles.imageView}>
-                            <ImageCache style={styles.image} source={{uri: item._embedded['wp:featuredmedia'][0].source_url?item._embedded['wp:featuredmedia'][0].source_url:''}} />
+                            <ImageCache style={styles.image} source={{uri: item.image?item.image:''}} />
                         </View>
                     </View>
                 </TouchableScale>
@@ -86,31 +137,25 @@ const PracticeTipsRow = props => {
     }
 
     return (
-        postLoading?(
-            <View style={{height:150, justifyContent:"center", alignItems:"center"}}>
-                <ActivityIndicator size="large"/>
+        dataPosts&&dataPosts.length?
+            <View style={styles.ScrollView}>
+                {showTitle?
+                    <View style={styles.view_blog_title}>
+                        <Text style={styles.heading}>Practice Tips</Text>
+                    </View>
+                    :null
+                }
+                <FlatList
+                    style = {styles.postsTips}
+                    data={dataPosts}
+                    renderItem={renderItem}
+                    extraData={this.props}
+                    keyExtractor={item => item.id}
+                    showsHorizontalScrollIndicator={false}
+                    horizontal
+                />
             </View>
-        ):(
-            dataPosts?
-                <View style={styles.ScrollView}>
-                    {showTitle?
-                        <View style={styles.view_blog_title}>
-                            <Text style={styles.heading}>Practice Tips</Text>
-                        </View>
-                        :null
-                    }
-                    <FlatList
-                        style = {styles.postsTips}
-                        data={dataPosts}
-                        renderItem={renderItem}
-                        extraData={this.props}
-                        keyExtractor={item => item.id}
-                        showsHorizontalScrollIndicator={false}
-                        horizontal
-                    />
-                </View>
-            :null
-        )
+        :null
     );
 };
 
