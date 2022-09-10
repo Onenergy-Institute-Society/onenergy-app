@@ -55,9 +55,9 @@ const HomeContent = (props) => {
             showNotification: !!user,
             title: optionData.titles[titleIndex].title,
         });
-        dispatch({
+/*        dispatch({
             type: 'POSTS_CLEAR',
-        });
+        });*/
     }, []);
 
     const OnPress = async (item, typeName) => {
