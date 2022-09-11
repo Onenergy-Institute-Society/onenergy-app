@@ -95,7 +95,7 @@ const PostList = props => {
             fetchPostsData().then();
     }, [page]);
     useEffect(() => {
-        setPostsData(postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage*page));
+        setPostsData((current) => [...current, ...postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice((page-1)*postPerPage, postPerPage*page)]);
     },[postsReducer.posts])
     const handleLoadMore = () => {
         if(useLoadMore) {

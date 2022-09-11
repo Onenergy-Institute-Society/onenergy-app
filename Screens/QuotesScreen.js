@@ -11,37 +11,58 @@ import {
     SafeAreaView,
     FlatList
 } from "react-native";
-import {connect, useSelector} from "react-redux";
+import {connect, useSelector, useDispatch} from "react-redux";
 import {getApi} from "@src/services";
 import {windowWidth, windowHeight} from "../Utils/Dimensions";
 import IconButton from "@src/components/IconButton";
 import {scale} from "../Utils/scale";
-import { BlurView } from "@react-native-community/blur";
 import ScalableImage from "../Components/ScalableImage";
 import RNFetchBlob from 'rn-fetch-blob';
 
 const QuotesScreen = props => {
     const [ dataQuotesRead, setQuotesReadData ] = useState([]);
-    const [ quotesLoading, setQuotesLoading ] = useState(true);
-    const [ page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [ page, setPage] = useState(1);
     const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState(true);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    const postSelector = state => ({postsReducer: state.postsReducer})
+    const {postsReducer} = useSelector(postSelector);
+    const dispatch = useDispatch();
+    const categoryIndex = postsReducer.lastView&&postsReducer.lastView.length?postsReducer.lastView.findIndex(lv => lv.category === 125):null;
 
     const fetchQuote = async () => {
         const api = getApi(props.config);
-        await api.customRequest(
+        const data = await api.customRequest(
             "wp-json/wp/v2/posts?_embed&categories=125&status=publish&order=desc&orderby=date&per_page=5&page="+page,          // Endpoint suffix or full url. Suffix will be appended to the site url that app uses. Example of a suffix is "wp-json/buddyboss/v1/members". Example of full url would be "https://app-demos.buddyboss.com/learndash/wp-json/buddyboss/v1/members".
             "get",  // get, post, patch, delete etc.
             {},     // JSON, FormData or any other type of payload you want to send in a body of request
             null,   // validation function or null
             {},     // request headers object
             false   // true - if full url is given, false if you use the suffix for the url. False is default.
-        ).then(response => {
-            setQuotesReadData((current) => [...current, ...response.data]);
-            setQuotesLoading(false);
-            setLoading(false);
-        });
+        ).then(response => response.data);
+        let posts = [];
+        data.map((item) => {
+            if (!postsReducer.posts.length || postsReducer.posts.filter(post => post.id === item.id).length === 0) {
+                posts.push({
+                    id: item.id,
+                    date: item.date,
+                    title: item.title,
+                    format: item.format,
+                    excerpt: item.excerpt,
+                    categories: item.categories,
+                    author: item._embedded['author'][0].name,
+                    avatar: item._embedded['author'][0].avatar_urls['24'],
+                    image: item._embedded['wp:featuredmedia'][0].source_url,
+                })
+            }
+        })
+        if (posts && posts.length > 0) {
+            dispatch({
+                type: 'POSTS_ADD',
+                payload: posts,
+                category: 125
+            });
+        }
     }
     const checkPermission = async (image_URL) => {
         // Function to check the platform
@@ -119,7 +140,7 @@ const QuotesScreen = props => {
     };
     const downloadCurrentQuote = (inViewPort) => {
         if(inViewPort)
-        inViewPort.item._embedded['wp:featuredmedia'][0].source_url?checkPermission(inViewPort.item._embedded['wp:featuredmedia'][0].source_url):null;
+        inViewPort.item.image?checkPermission(inViewPort.item.image):null;
     };
     useEffect(()=>{
         let titleIndex = optionData.titles.findIndex(el => el.id === 'quote_title');
@@ -129,12 +150,31 @@ const QuotesScreen = props => {
         });
     },[]);
     useEffect(()=>{
-        setLoading(true);
-        setTimeout(function () {
-            setLoading(false);
-        }, 1000);
-        fetchQuote().then();
+        let loadPosts = false;
+        if(categoryIndex&&categoryIndex>=0)
+        {
+            let postCount = postsReducer.posts.filter((post)=>post.categories.includes(125)).length
+            if(postCount < 5*page)
+            {
+                loadPosts = true
+            }else {
+                setQuotesReadData((current) => [...current, ...postsReducer.posts.filter((post)=>post.categories.includes(125)).slice((page-1)*5, page*5)]);
+                if (new Date(postsReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[125])) {
+                    loadPosts = true;
+                }
+            }
+        }else{
+            loadPosts = true;
+        }
+        if(loadPosts) {
+            setLoading(true)
+            fetchQuote().then();
+        }
     }, [page]);
+    useEffect(() => {
+        setQuotesReadData((current) => [...current, ...postsReducer.posts.filter((post)=>post.categories.includes(125)).slice((page-1)*5, page*5)]);
+        setLoading(false);
+    },[postsReducer.posts])
     const onViewableItemsChanged = React.useRef(({ viewableItems, changed }) => {
         props.navigation.setParams({inViewPort: changed[0]});
     })
@@ -144,19 +184,16 @@ const QuotesScreen = props => {
     })
     const renderItem = ({ item }) => (
         <View style={styles.container}>
-            <ScalableImage width={windowWidth} source={{uri: item._embedded['wp:featuredmedia'][0].source_url?item._embedded['wp:featuredmedia'][0].source_url:''}} />
+            <ScalableImage width={windowWidth} source={{uri: item.image?item.image:''}} />
         </View>
     );
     return (
         <SafeAreaView style={styles.container}>
-            {quotesLoading?(
-                <View style={{flex:1,width:windowWidth, height:windowHeight,justifyContent:"center",alignItems:"center"}}>
-                    <ActivityIndicator size={'large'} />
-                </View>
-            ):(
+            {dataQuotesRead&&dataQuotesRead.length?(
                 <View style={styles.view}>
                     <FlatList
                         inverted
+                        initialNumToRender={5}
                         snapToInterval={windowWidth}
                         disableIntervalMomentum={true}
                         decelerationRate={"fast"}
@@ -166,6 +203,7 @@ const QuotesScreen = props => {
                         keyExtractor={(item, index) => index + ""}
                         showsHorizontalScrollIndicator={false}
                         onEndReached={({distanceFromEnd}) => {
+                            console.log(distanceFromEnd)
                             if(!onEndReachedCalledDuringMomentum) {
                                 if (distanceFromEnd < 0) return;
                                 setPage(page + 1);
@@ -178,23 +216,19 @@ const QuotesScreen = props => {
                         onMomentumScrollBegin={() => { setOnEndReachedCalledDuringMomentum(false) }}
                         horizontal
                     />
+                    {loading?
+                    <ActivityIndicator size={'large'} />
+                        :null}
                     <Text
                         style={styles.title}>
-                        Swipe for more quotes.
+                        &#x2190; Swipe for more quotes.
                     </Text>
                 </View>
-            )}
-            {loading &&
-            <BlurView style={styles.loading}
-                      blurType="light"
-                      blurAmount={5}
-                      reducedTransparencyFallbackColor="white"
-            >
-                <View>
-                    <ActivityIndicator size='large' />
+            ):(
+                <View style={{flex:1,width:windowWidth, height:windowHeight,justifyContent:"center",alignItems:"center"}}>
+                    <ActivityIndicator size={'large'} />
                 </View>
-            </BlurView>
-            }
+            )}
         </SafeAreaView>
     );
 };
