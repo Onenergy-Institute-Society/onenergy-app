@@ -57,7 +57,7 @@ const PostList = props => {
                         categories: item.categories,
                         author: item._embedded['author'][0].name,
                         avatar: item._embedded['author'][0].avatar_urls['24'],
-                        image: item._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url,
+                        image: item._embedded['wp:featuredmedia'][0].source_url,
                         notify: notify
                     })
                 }

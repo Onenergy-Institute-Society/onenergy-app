@@ -4,10 +4,7 @@ import {
     Platform,
     View,
     Text,
-    SafeAreaView,
     FlatList,
-    ActivityIndicator,
-    Image
 } from "react-native";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {getApi} from "@src/services";
@@ -56,7 +53,7 @@ const PracticeTipsRow = props => {
                         categories: item.categories,
                         author: item._embedded['author'][0].name,
                         avatar: item._embedded['author'][0].avatar_urls['24'],
-                        image: item._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url,
+                        image: item._embedded['wp:featuredmedia'][0].source_url,
                         meta_box: item.meta_box,
                         notify: notify
                     })
