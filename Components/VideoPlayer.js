@@ -1,12 +1,8 @@
 import React, { Component } from "react";
 import {
     View,
-    Dimensions,
-    StyleSheet,
     TouchableOpacity,
-    Image,
     StatusBar,
-    Platform,
     Text,
     PixelRatio,
     Alert,
@@ -77,8 +73,9 @@ class VideoPlayer extends Component {
             this.videoPlayer.seek(this.state.seek);
         } else {
             let min = new Date().getMinutes();
+            let sec = new Date().getSeconds();
             if (min > 30) min = min - 30;
-            let second = min * 60;
+            let second = min * 60 + sec;
             this.videoPlayer.seek(second);
             this.setState({currentTime: e.currentTime, duration: e.duration});
         }

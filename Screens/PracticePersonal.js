@@ -5,9 +5,7 @@ import {
     SafeAreaView,
     View,
     Text,
-    Platform,
     ScrollView,
-    ActivityIndicator,
     Animated
 } from "react-native";
 import {getApi} from "@src/services";
@@ -20,9 +18,8 @@ import externalCodeDependencies from "@src/externalCode/externalRepo/externalCod
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { Modalize } from 'react-native-modalize';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import EventList from "../Components/EventList";
-import FastImage from "react-native-fast-image";
 
 const PracticePersonal = props => {
     const dispatch = useDispatch();
@@ -32,8 +29,8 @@ const PracticePersonal = props => {
     const helpData = {title:optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'',id:optionData.helps[helpIndex].id};
     const helpPageIndex = optionData.helps.findIndex(el => el.name === 'practice_guided_empty');
     const helpPageData = {title:optionData.helps[helpPageIndex].title?optionData.helps[helpPageIndex].title:'',id:optionData.helps[helpPageIndex].id};
-    const [tracks, setTracks] = useState([]);
-    const [tracksLoading, setTracksLoading] = useState(true);
+    const guideSelector = state => ({guidesReducer: state.routinesReducer.guides})
+    const {guidesReducer} = useSelector(guideSelector);
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
     React.useEffect(() => {
@@ -45,20 +42,17 @@ const PracticePersonal = props => {
     const fetchTracks = async () => {
         try {
             const apiSlide = getApi(props.config);
-            await apiSlide.customRequest(
+            const data = await apiSlide.customRequest(
                 "wp-json/onenergy/v1/audio",
                 "get",
                 {},
                 null,
                 {},
                 false
-            ).then(response => {
-                dispatch({
-                    type: "ONENERGY_GUIDE_UPDATE",
-                    payload: response.data
-                });
-                setTracks(response.data);
-                setTracksLoading(false);
+            ).then(response => response.data);
+            dispatch({
+                type: "ONENERGY_GUIDE_UPDATE",
+                payload: data
             });
         } catch (e) {
             console.error(e);
@@ -68,11 +62,8 @@ const PracticePersonal = props => {
         this.ppHelpModal.open();
     };
     useEffect(() => {
-        if(!props.guides||!props.guides.length) {
+        if(!guidesReducer||!guidesReducer.length) {
             fetchTracks().then();
-        }else{
-            setTracks(props.guides);
-            setTracksLoading(false);
         }
         let titleIndex = optionData.titles.findIndex(el => el.id === 'practices_basic');
         props.navigation.setParams({
@@ -90,20 +81,17 @@ const PracticePersonal = props => {
     },[messageBarDisplay])
     return (
         <SafeAreaView style={styles.container}>
-            {user&&user.hasGuide>0||tracks.length?
-                tracksLoading ?
-                    <ActivityIndicator size="large"/>
-                :
-                    <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                        {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
-                            <View>
-                                <EventList location={'practice_guided'} eventsDate={optionData.goals}/>
-                                <EventList location={'practice_guided'} eventsDate={optionData.challenges}/>
-                            </View>
-                            : null
-                        }
-                        <TracksList tracks={tracks} setMessageBarDisplay={setMessageBarDisplay} />
-                    </ScrollView>
+            {user&&user.hasGuide>0||(guidesReducer&&guidesReducer.length)?
+                <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
+                    {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
+                        <View>
+                            <EventList location={'practice_guided'} eventsDate={optionData.goals}/>
+                            <EventList location={'practice_guided'} eventsDate={optionData.challenges}/>
+                        </View>
+                        : null
+                    }
+                    <TracksList tracks={guidesReducer} setMessageBarDisplay={setMessageBarDisplay} />
+                </ScrollView>
             :
                 <View style={{
                     flex: 1,
@@ -217,6 +205,5 @@ PracticePersonal.navigationOptions = ({ navigation }) => {
 const mapStateToProps = (state) => ({
     config: state.config,
     accessToken: state.auth.token,
-    guides: state.routinesReducer.guides
 });
 export default connect(mapStateToProps)(withNavigation(PracticePersonal));

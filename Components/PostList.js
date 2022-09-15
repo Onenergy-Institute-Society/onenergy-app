@@ -58,6 +58,7 @@ const PostList = props => {
                         author: item._embedded['author'][0].name,
                         avatar: item._embedded['author'][0].avatar_urls['24'],
                         image: item._embedded['wp:featuredmedia'][0].source_url,
+                        meta_box: item.meta_box,
                         notify: notify
                     })
                 }
@@ -95,7 +96,7 @@ const PostList = props => {
             fetchPostsData().then();
     }, [page]);
     useEffect(() => {
-        setPostsData((current) => [...current, ...postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice((page-1)*postPerPage, postPerPage*page)]);
+        setPostsData(postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage*page));
     },[postsReducer.posts])
     const handleLoadMore = () => {
         if(useLoadMore) {

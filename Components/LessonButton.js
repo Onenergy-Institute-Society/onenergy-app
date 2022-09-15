@@ -83,7 +83,7 @@ const LessonButton = (props) => {
                         payload: {"id": lesson.id, "date": new Date().getTime() / 1000}
                     });
                     dispatch({
-                        type: 'ONENERGY_GUIDE_EMPTY'
+                        type: 'ONENERGY_GUIDE_REFRESH'
                     });
                     if(response.data.next_lesson===0){
                         dispatch({

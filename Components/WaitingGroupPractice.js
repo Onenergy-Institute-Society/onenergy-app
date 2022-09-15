@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {
-    StyleSheet,
     Text,
 } from "react-native";
 import {connect} from "react-redux";
 import {getApi} from "@src/services";
-import {scale} from "../Utils/scale";
 
 const WaitingGroupPractice = props => {
     const { gp_id, gp_time, waitingStyle, waitingText } = props;

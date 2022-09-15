@@ -2,13 +2,12 @@ import React, {useEffect, useState} from "react";
 import {
     StyleSheet,
     View,
-    Text
 } from "react-native";
 import {useSelector} from "react-redux";
 import {NavigationActions, withNavigation} from "react-navigation";
 import ScalableImage from "../Components/ScalableImage";
 import TouchableScale from './TouchableScale';
-import { windowWidth, scale, verticalScale } from '../Utils/scale';
+import { windowWidth, scale } from '../Utils/scale';
 import AwesomeAlert from "../Components/AwesomeAlert";
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
@@ -54,6 +53,7 @@ const EventList = props => {
                     break;
             }
             if(show && item.location.includes(location)) {
+                show = false;
                 switch (item.show) {
                     case 'date':
                         let date2 = new moment.utc(item.showDate);
@@ -159,6 +159,7 @@ const EventList = props => {
             }else{
                 show = false;
             }
+            if(show)
             return (
                 show?
                     <View style={styles.container}>

@@ -273,7 +273,7 @@ export const applyCustomCode = externalCodeSetup => {
         const diffMinutes = lesson_time.diff(current_time, 'minutes');
         const diffHours = lesson_time.diff(current_time, 'hours');
         const diffDays = lesson_time.diff(current_time, 'days');
-        let diffTime = '';
+        let diffTime;
         if (diffMinutes < 60) {
             diffTime = 'in ' + diffMinutes + ' Minutes';
         } else {
@@ -300,7 +300,7 @@ export const applyCustomCode = externalCodeSetup => {
             }
             const expiringTime = new moment.utc(viewModel.price.expires_on);
             const diffExpiringDays = expiringTime.diff(current_time, 'days');
-            let diffExpiringTime = '';
+            let diffExpiringTime;
             diffExpiringTime = 'Expire in ' + diffExpiringDays + ' Days';
             if (diffExpiringDays <= 7 && diffExpiringDays > 0) {
                 statusBarColor = "grey";
@@ -640,6 +640,11 @@ export const applyCustomCode = externalCodeSetup => {
                         ...state,
                         notification: {...state.notification, time: new Date().toLocaleString()}
                     };
+                case "NOTIFICATION_RESET":
+                    return {
+                        ...state,
+                        notification: {}
+                    }
                 default:
                     return state;
             }
@@ -656,6 +661,13 @@ export const applyCustomCode = externalCodeSetup => {
                         ...state,
                         [action.quest_mode]: action.payload
                     };
+                case 'QUEST_RESET':
+                    return {
+                        ...state,
+                        learn: [],
+                        startup: [],
+                        endurance: []
+                    }
                 default:
                     return state;
             }
@@ -672,6 +684,13 @@ export const applyCustomCode = externalCodeSetup => {
                         ...state,
                         [action.milestone_type]: action.payload
                     };
+                case 'MILESTONE_RESET':
+                    return {
+                        ...state,
+                        learn: [],
+                        startup: [],
+                        endurance: []
+                    }
                 default:
                     return state;
             }
@@ -740,12 +759,16 @@ export const applyCustomCode = externalCodeSetup => {
                     } else {
                         return {...state, routines: [...state.routines, routine]};
                     }
+                case "ONENERGY_ROUTINE_REFRESH":
+                    return {...state, routines: []};
                 case "ONENERGY_GUIDE_UPDATE":
                     return {...state, guides: action.payload};
+                case "ONENERGY_GUIDE_REFRESH":
+                    return {...state, guides: []};
                 case "ONENERGY_GROUP_UPDATE":
                     return {...state, groups: action.payload};
-                case "ONENERGY_GUIDE_EMPTY":
-                    return {...state, guides: []};
+                case "ONENERGY_ROUTINE_RESET":
+                    return {...state, routines: [], guides: [], groups: []};
                 default:
                     return state;
             }
@@ -792,14 +815,14 @@ export const applyCustomCode = externalCodeSetup => {
 // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
         let whiteList = [...props.whitelist, "languagesReducer", "routinesReducer", "notifyReducer", "postsReducer", "progressReducer", "questsReducer", "milestonesReducer"];
-        let index = whiteList.indexOf('blog');
+/*        let index = whiteList.indexOf('blog');
         if (index !== -1) {
             whiteList.splice(index, 1);
         }
         index = whiteList.indexOf('blogCache');
         if (index !== -1) {
             whiteList.splice(index, 1);
-        }
+        }*/
         return {
             ...props,
             whitelist: whiteList
@@ -1391,6 +1414,18 @@ export const applyCustomCode = externalCodeSetup => {
                                     text: "OK", onPress: () => {
                                         dispatch({
                                             type: 'POSTS_CLEAR',
+                                        });
+                                        dispatch({
+                                            type: 'NOTIFICATION_RESET',
+                                        });
+                                        dispatch({
+                                            type: 'ONENERGY_ROUTINE_RESET',
+                                        });
+                                        dispatch({
+                                            type: 'MILESTONE_RESET',
+                                        });
+                                        dispatch({
+                                            type: 'QUEST_RESET',
                                         });
                                         logout();
                                     }

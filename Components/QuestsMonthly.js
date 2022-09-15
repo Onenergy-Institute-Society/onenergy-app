@@ -6,7 +6,6 @@ import {
     Text,
     StyleSheet,
     SafeAreaView,
-    ActivityIndicator,
     Image, ScrollView
 } from 'react-native';
 import {scale} from "../Utils/scale";
@@ -50,22 +49,27 @@ const QuestsMonthly = (props) => {
                         <View style={styles.row} >
                             <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
                                 {
-                                    questsReducer&&questsReducer.length?questsReducer.days&&questsReducer.days.length?
-                                    questsReducer.days[index]?
-                                        <Image source={require("@src/assets/img/check2.png")} />
-                                        :
-                                        <Image source={require("@src/assets/img/radio_unchecked_icon.png")} />
-                                        :
-                                        <Image source={require("@src/assets/img/radio_unchecked_icon.png")} />
-                                        :
-                                        <Image source={require("@src/assets/img/radio_unchecked_icon.png")} />
+
+                                    questsReducer? questsReducer.days && questsReducer.days.length ? questsReducer.days[index] !== undefined && questsReducer.days[index] !== null && questsReducer.days[index] !== '' ?
+                                    <Image source={require("@src/assets/img/check2.png")}/>
+                                    :
+                                    <Image source={require("@src/assets/img/radio_unchecked_icon.png")}/>
+                                    :
+                                    <Image source={require("@src/assets/img/radio_unchecked_icon.png")}/>
+                                    :
+                                    <Image source={require("@src/assets/img/radio_unchecked_icon.png")}/>
                                 }
                             </View>
-                            <Text>{questsReducer&&questsReducer.length?questsReducer.days&&questsReducer.days.length?questsReducer.days[index]?questsReducer.days[index].substring(5, 10):"Day "+day:'':''}</Text>
+                            <Text style={{color:day===30?"green":null}}>Day {day}</Text>
                         </View>
                     )
                 })}
                 </View>
+                <View style={{marginHorizontal: scale(15), paddingHorizontal:scale(10),
+                    paddingVertical:scale(10),
+                    borderRadius: 9, alignItems: 'center',
+                    justifyContent: 'center',backgroundColor: '#e6e6e8',
+                    marginTop: scale(2),}}><Text style={{color:"green"}}>Practice consecutively 30 days +100 Qi</Text></View>
             </ScrollView>
         </SafeAreaView>
     )

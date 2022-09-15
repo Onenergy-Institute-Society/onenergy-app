@@ -37,7 +37,6 @@ const PostRow = props => {
                 false   // true - if full url is given, false if you use the suffix for the url. False is default.
             ).then(response => response.data);
             let posts =[] ;
-
             data.map((item)=>{
                 if(!postsReducer.posts.length||postsReducer.posts.filter(post => post.id === item.id).length===0) {
                     if(categoryIndex&&categoryIndex>=0) {
@@ -55,6 +54,7 @@ const PostRow = props => {
                         author: item._embedded['author'][0].name,
                         avatar: item._embedded['author'][0].avatar_urls['24'],
                         image: item._embedded['wp:featuredmedia'][0].source_url,
+                        meta_box: item.meta_box,
                         notify: notify
                     })
                 }
@@ -95,6 +95,8 @@ const PostRow = props => {
             fetchPostsData().then();
     }, []);
     useEffect(() => {
+        console.log('load',postsReducer.posts)
+        if(postsReducer.posts&&postsReducer.posts.length)
         setPostsData(postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage));
     },[postsReducer.posts])
     const renderOverlayImage = (format) => {

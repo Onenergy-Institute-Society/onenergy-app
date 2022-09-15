@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
@@ -6,7 +6,6 @@ import {
     Text,
     StyleSheet,
     SafeAreaView,
-    ActivityIndicator,
     Image, ScrollView
 } from 'react-native';
 import {scale} from "../Utils/scale";
@@ -49,9 +48,9 @@ const QuestsWeekly = (props) => {
                         <View style={styles.row} >
                             <Text style={[styles.title,{color:index===6?"green":null}]}>Day {day} {index===6?'+20 Qi':''}</Text>
                             <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
-                                <Text style={{marginRight:10}}>{questsReducer&&questsReducer.length?questsReducer.days&&questsReducer.days.length?questsReducer.days[index]:'':''}</Text>
+                                <Text style={{marginRight:10}}>{questsReducer?questsReducer.days&&questsReducer.days.length?questsReducer.days[index]!==undefined&&questsReducer.days[index]!==null&&questsReducer.days[index]!==''?questsReducer.days[index]:'':'':''}</Text>
                                 {
-                                    questsReducer&&questsReducer.length?questsReducer.days&&questsReducer.days.length?questsReducer.days[index]?
+                                    questsReducer?questsReducer.days&&questsReducer.days.length?questsReducer.days[index]!==undefined&&questsReducer.days[index]!==null&&questsReducer.days[index]!==''?
                                         <Image source={require("@src/assets/img/check2.png")} />
                                         :
                                         <Image source={require("@src/assets/img/radio_unchecked_icon.png")} />
