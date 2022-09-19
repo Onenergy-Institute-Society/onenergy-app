@@ -27,6 +27,7 @@ const HomeContent = (props) => {
     const {global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    const routinesReducer = useSelector((state) => state.routinesReducer);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
 
@@ -55,9 +56,25 @@ const HomeContent = (props) => {
             showNotification: !!user,
             title: optionData.titles[titleIndex].title,
         });
-/*        dispatch({
-            type: 'POSTS_CLEAR',
-        });*/
+        if(routinesReducer.guideUpdate&&optionData.cache.guide>routinesReducer.guideUpdate||!routinesReducer.guideUpdate)
+        {
+            dispatch({
+                type: 'ONENERGY_GUIDE_REFRESH',
+            });
+        }
+        if(routinesReducer.routineUpdate&&optionData.cache.routine>routinesReducer.routineUpdate||!routinesReducer.routineUpdate)
+        {
+            dispatch({
+                type: 'ONENERGY_ROUTINE_REFRESH',
+            });
+        }
+        if(routinesReducer.groupUpdate&&optionData.cache.group>routinesReducer.groupUpdate||!routinesReducer.groupUpdate)
+        {
+            dispatch({
+                type: 'ONENERGY_GROUP_REFRESH',
+            });
+        }
+
     }, []);
 
     const OnPress = async (item, typeName) => {

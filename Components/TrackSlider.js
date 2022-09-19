@@ -1,12 +1,15 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useSelector} from "react-redux";
 import {useProgress} from 'react-native-track-player';
-import { Text } from 'react-native';
+import {Text} from 'react-native';
 import Slider from 'react-native-slider';
 import {scale} from "../Utils/scale";
-import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
-const TrackSlider = () => {
-    const { position, duration } = useProgress()
+import TrackPlayer from 'react-native-track-player';
+
+const TrackSlider = (props) => {
+    const {type,totalDuration, pastPosition} = props;
+    const {position, duration} = useProgress()
+    const [pastDuration, setPastDuration] = useState(0);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const secondsToHHMMSS = (seconds: number | string) => {
         seconds = Number(seconds);
@@ -19,34 +22,43 @@ const TrackSlider = () => {
         const scnds = s > 0 ? (s < 10 ? `0${s}` : s) : '00';
         return `${hrs}${mins}${scnds}`;
     };
+    useEffect(()=>{
+        setPastDuration(pastDuration+pastPosition);
+    },[duration])
     return (
-<>
-            <Text style={{marginRight:5, fontSize: scale(12),}}>{secondsToHHMMSS(Math.floor(position || 0))}</Text>
-            <Slider
-                style={{ width: '70%', height: 40 }}
-                value={position}
-                thumbTintColor='black'
-                minimumValue={0}
-                thumbStyle={{ width: 10, height: 10 }}
-                animationType='timing'
-                maximumValue={duration}
-                minimumTrackTintColor={'#4942E1'}
-                maximumTrackTintColor={'#7DE7FA'}
-                disabled={!optionData.testing_mode}
-                onValueChange={val => {
-                    TrackPlayer.pause();
-                }}
-                onSlidingComplete={val => {
-                    try {
-                        TrackPlayer.seekTo(val);
-                        TrackPlayer.play();
-                    }catch(e){
-                        console.log(e);
-                    }
-                }}
-            />
-            <Text style={{marginLeft:5,fontSize: scale(12),}}>{secondsToHHMMSS(duration || 0)}</Text>
-</>
+        <>
+            {type === 'routine' ?
+                <Text style={{marginLeft: 5, fontSize: scale(12),}}>{secondsToHHMMSS(Math.floor(totalDuration-pastDuration-position || 0))}</Text>
+                :
+                <><Text
+                    style={{marginRight: 5, fontSize: scale(12),}}>{secondsToHHMMSS(Math.floor(position || 0))}</Text>
+                    <Slider
+                        style={{width: '70%', height: 40}}
+                        value={position}
+                        thumbTintColor='black'
+                        minimumValue={0}
+                        thumbStyle={{width: 10, height: 10}}
+                        animationType='timing'
+                        maximumValue={duration}
+                        minimumTrackTintColor={'#4942E1'}
+                        maximumTrackTintColor={'#7DE7FA'}
+                        disabled={!optionData.testing_mode}
+                        onValueChange={val => {
+                            TrackPlayer.pause();
+                        }}
+                        onSlidingComplete={val => {
+                            try {
+                                TrackPlayer.seekTo(val);
+                                TrackPlayer.play();
+                            } catch (e) {
+                                console.log(e);
+                            }
+                        }}
+                    />
+                    <Text style={{marginLeft: 5, fontSize: scale(12),}}>{secondsToHHMMSS(duration || 0)}</Text>
+                </>
+            }
+        </>
     );
 }
 export default TrackSlider;

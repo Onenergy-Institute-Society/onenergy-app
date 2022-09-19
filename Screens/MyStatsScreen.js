@@ -1,15 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
 import IconButton from "@src/components/IconButton";
 import {
     View,
     Text,
-    Platform,
     StyleSheet,
     SafeAreaView,
-    ActivityIndicator,
-    Image, TouchableOpacity, ScrollView
+    TouchableOpacity, ScrollView
 } from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
@@ -112,24 +110,24 @@ const MyStatsScreen = (props) => {
                                 <Text style={styles.text}> {user.completed_lessons.length}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
-                            <View style={styles.row}>
+                           <View style={styles.row}>
                                 <Text style={styles.title}>Today Practice Time:</Text>
-                                <Text style={styles.text}> {progressReducer.progress.today_duration?Math.round(progressReducer.progress.today_duration / 60 )>60?Math.round(progressReducer.progress.today_duration / 60 /60)+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_hours')].title:Math.round(progressReducer.progress.today_duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title:0}</Text>
+                                <Text style={styles.text}> {progressReducer.today_duration?Math.round(progressReducer.today_duration / 60 )>60?Math.round(progressReducer.today_duration /3600)+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_hours')].title:Math.round(progressReducer.today_duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
                             <View style={styles.row}>
                                 <Text style={styles.title}>Weekly Practice Time:</Text>
-                                <Text style={styles.text}> {progressReducer.progress.week_duration?Math.round(progressReducer.progress.week_duration / 60 )>60?Math.round(progressReducer.progress.week_duration / 60 /60)+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_hours')].title:Math.round(progressReducer.progress.week_duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title:0}</Text>
+                                <Text style={styles.text}> {progressReducer.week_duration?Math.round(progressReducer.week_duration / 60 )>60?Math.round(progressReducer.week_duration / 60 /60)+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_hours')].title:Math.round(progressReducer.week_duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
                             <View style={styles.row}>
                                 <Text style={styles.title}>Total Practice Time:</Text>
-                                <Text style={styles.text}> {progressReducer.progress.total_duration?Math.round(progressReducer.progress.total_duration / 60 )>60?Math.round(progressReducer.progress.total_duration / 60 /60)+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_hours')].title:Math.round(progressReducer.progress.total_duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title:0}</Text>
+                                <Text style={styles.text}> {progressReducer.total_duration?Math.round(progressReducer.total_duration / 60 )>60?Math.round(progressReducer.total_duration / 60 /60)+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_hours')].title:Math.round(progressReducer.total_duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
                             <View style={[styles.row, styles.lastRow]}>
                                 <Text style={styles.title}>Total Practice Days:</Text>
-                                <Text style={styles.text}> {progressReducer.progress.total_days?progressReducer.progress.total_days+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_days')].title:0}</Text>
+                                <Text style={styles.text}> {progressReducer.total_days?progressReducer.total_days+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_days')].title:0}</Text>
                             </View>
                         </LinearGradient>
                     </View>
@@ -162,7 +160,7 @@ const MyStatsScreen = (props) => {
                                 <View style={[styles.rowHr, {backgroundColor: "#fff7ed"}]}/>
                                 <View style={[styles.row, styles.lastRow]}>
                                     <Text style={styles.title}>Customized Routine:</Text>
-                                    <Text style={styles.text}> {progressReducer.progress.routines_stats?progressReducer.progress.routines_stats.length:''}</Text>
+                                    <Text style={styles.text}> {progressReducer.routines_stats?progressReducer.routines_stats.length:''}</Text>
                                 </View>
                             </LinearGradient>
                         </View>
@@ -181,8 +179,8 @@ const MyStatsScreen = (props) => {
                                     borderBottomLeftRadius:9,
                                 }]}
                                 colors={['#fbcfe8', '#fce7f3']}>
-                                {progressReducer.progress.routines_stats&&progressReducer.progress.routines_stats.length ?
-                                    progressReducer.progress.routines_stats.map((item, index) => {
+                                {progressReducer.routines_stats&&progressReducer.routines_stats.length ?
+                                    progressReducer.routines_stats.map((item, index) => {
                                         return (
                                             <>
                                                 <View style={styles.row}>
@@ -200,7 +198,7 @@ const MyStatsScreen = (props) => {
                                                         alignItems: "flex-end"
                                                     }]}>{Math.round(item.duration / 60) > 60 ? Math.round(item.duration / 60 / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_hours')].title : Math.round(item.duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title}</Text>
                                                 </View>
-                                                {index < progressReducer.progress.routines_stats.length - 1 ?
+                                                {index < progressReducer.routines_stats.length - 1 ?
                                                     <View style={[styles.rowHr, {backgroundColor: "#fdf2f8"}]}/>
                                                     :
                                                     <View style={{marginBottom: scale(10)}}/>}
@@ -216,7 +214,7 @@ const MyStatsScreen = (props) => {
                     </View>
                 </>
                     :null}
-                {progressReducer.progress.gp_stats&&progressReducer.progress.gp_stats.length?
+                {progressReducer.gp_stats&&progressReducer.gp_stats.length?
                 <View style={[styles.boxShadow, styles.card]}>
                     <View style={[styles.header,{backgroundColor:"#c4b5fd"}]}>
                         <Text style={styles.headerText}>
@@ -231,7 +229,7 @@ const MyStatsScreen = (props) => {
                                 borderBottomLeftRadius:9,
                             }]}
                             colors={['#ddd6fe', '#ede9fe']}>
-                            {progressReducer.progress.gp_stats.map((item, index)=> {
+                            {progressReducer.gp_stats.map((item, index)=> {
                                 return (
                                     <>
                                         <View style={styles.row}>
@@ -239,7 +237,7 @@ const MyStatsScreen = (props) => {
                                             <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} {optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_times')].title}</Text>
                                             <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_hours')].title:Math.round(item.duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title}</Text>
                                         </View>
-                                        {index<progressReducer.progress.gp_stats.length-1?
+                                        {index<progressReducer.gp_stats.length-1?
                                             <View style={[styles.rowHr, {backgroundColor: "#f5f3ff"}]}/>
                                             :
                                             <View style={{marginBottom:scale(10)}} />}
@@ -264,8 +262,8 @@ const MyStatsScreen = (props) => {
                                 borderBottomLeftRadius:9,
                             }]}
                             colors={['#d1fae5', '#a7f3d0']}>
-                            {progressReducer.progress.practices_stats&&progressReducer.progress.practices_stats.length?
-                                progressReducer.progress.practices_stats.map((item, index)=> {
+                            {progressReducer.practices_stats&&progressReducer.practices_stats.length?
+                                progressReducer.practices_stats.map((item, index)=> {
                                     return (
                                         <>
                                             <View style={styles.row}>
@@ -273,7 +271,7 @@ const MyStatsScreen = (props) => {
                                                 <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} {optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_times')].title}</Text>
                                                 <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' '+optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_hours')].title:Math.round(item.duration / 60) + ' ' + optionData.titles[optionData.titles.findIndex(el => el.id === 'stats_detail_minutes')].title}</Text>
                                             </View>
-                                            {index<progressReducer.progress.practices_stats.length-1?
+                                            {index<progressReducer.practices_stats.length-1?
                                             <View style={[styles.rowHr, {backgroundColor: "#ecfdf5"}]}/>
                                                 :
                                             <View style={{marginBottom:scale(10)}} />}

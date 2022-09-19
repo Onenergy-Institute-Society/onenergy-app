@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {
-    Text,
+    Text, View
 } from "react-native";
 import {connect} from "react-redux";
 import {getApi} from "@src/services";
+import FastImage from "react-native-fast-image";
 
 const WaitingGroupPractice = props => {
-    const { gp_id, gp_time, waitingStyle, waitingText } = props;
+    const { gp_id, gp_time, waitingStyle, waitingIconStyle, waitingTextStyle, waitingIconColor } = props;
     const [waitingNumber, setWaitingNumber] = useState(0);
     const fetchGroupPracticeNumber = async () => {
         try {
@@ -31,7 +32,7 @@ const WaitingGroupPractice = props => {
         return () => clearInterval(secTimer)
     },[]);
     return (
-        <Text style={waitingStyle}>{waitingNumber} {waitingText}</Text>
+        <View style={waitingStyle}><FastImage tintColor={waitingIconColor} source={require("@src/assets/img/group_invite.png")} style={waitingIconStyle} /><Text style={waitingTextStyle}>{waitingNumber}</Text></View>
     );
 };
 const mapStateToProps = (state) => ({

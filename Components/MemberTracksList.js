@@ -10,7 +10,6 @@ import {
     SafeAreaView
 } from 'react-native';
 import { useSelector } from "react-redux";
-import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
 import {scale} from '../Utils/scale';
 import AudioPlayerRoutine from './AudioPlayerRoutine';
 import {windowWidth} from "../Utils/Dimensions";
@@ -35,14 +34,6 @@ const MemberTracksList = (props) => {
                 routine.bgm_url = '';
             }
             setSelectedRoutine(routine);
-        }else{
-            const state = await TrackPlayer.getState();
-            if (state === State.Playing) {
-                await TrackPlayer.pause();
-            }
-            if (state === State.Paused) {
-                await TrackPlayer.play();
-            }
         }
     };
 
@@ -72,6 +63,10 @@ const MemberTracksList = (props) => {
     const handleOpen = (index : any) => () => setKey(index);
     const renderItem = ({ item, index }) => {
         let showPlayer = !!(selectedRoutine && selectedRoutine.id === item.id);
+        let totalDuration = 0;
+        item.tracks.map((item)=>{
+            totalDuration += item.duration;
+        })
         return (
                 <Swipeable
                     ref={ref => row[index] = ref}
@@ -94,6 +89,7 @@ const MemberTracksList = (props) => {
                                 <View style={styles.titleBox}>
                                     <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center", width:"100%"}}>
                                         <Text style={styles.title}>{item.title}</Text>
+                                        <Text style={styles.duration}>{new Date(totalDuration * 1000).toISOString().substr(14, 5)}</Text>
                                     </View>
                                     <View style={styles.detail}>
                                     {
@@ -108,7 +104,7 @@ const MemberTracksList = (props) => {
                         </ImageBackground>
                         </TouchableScale>
                         {showPlayer? (
-                            <AudioPlayerRoutine routine={selectedRoutine} setMessageBarDisplay={setMessageBarDisplay} />
+                            <AudioPlayerRoutine routine={selectedRoutine} setMessageBarDisplay={setMessageBarDisplay} totalDuration={totalDuration} />
                         ):null}
                     </View>
                 </Swipeable>
@@ -249,6 +245,7 @@ const styles = StyleSheet.create({
     },
     duration: {
         fontSize: scale(12),
+        color: "white"
     },
     listBox: {
         height: '100%',

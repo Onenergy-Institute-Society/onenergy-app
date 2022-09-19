@@ -700,20 +700,29 @@ export const applyCustomCode = externalCodeSetup => {
     // Add Progress reducer for user practice status
     externalCodeSetup.reduxApi.addReducer(
         "progressReducer",
-        (state = {progress: {}}, action) => {
+        (state = {total_duration: 0, today_duration: 0, week_duration: 0, total_days:0, practices_stats:[], routines_stats:[],gp_stats:[]}, action) => {
             switch (action.type) {
                 case "PROGRESS_ADD":
                     return {
                         ...state,
-                        progress: action.payload
+                        total_duration: action.payload.total_duration,
+                        today_duration: action.payload.today_duration,
+                        week_duration: action.payload.week_duration,
+                        total_days: action.payload.total_days,
+                        practices_stats: action.payload.practices_stats,
+                        routines_stats: action.payload.routines_stats,
+                        gp_stats: action.payload.gp_stats,
                     };
-                case "PROGRESS_UPDATE":
+                case "PROGRESS_RESET":
                     return {
                         ...state,
-                        progress: {
-                            ...state.progress,
-                            [action.process]: action.payload
-                        }
+                        total_duration: 0,
+                        today_duration: 0,
+                        week_duration: 0,
+                        total_days: 0,
+                        practices_stats: [],
+                        routines_stats: [],
+                        gp_stats: [],
                     };
                 default:
                     return state;
@@ -745,30 +754,33 @@ export const applyCustomCode = externalCodeSetup => {
 // Add routine reducer
     externalCodeSetup.reduxApi.addReducer(
         "routinesReducer",
-        (state = {routines: [], guides: [], groups: []}, action) => {
+        (state = {routines: [], guides: [], groups: [], routineUpdate: '', guideUpdate: '', groupUpdate: ''}, action) => {
+            const currentDate = new Date().toISOString();
             switch (action.type) {
                 case "ONENERGY_ROUTINE_UPDATE":
-                    return {...state, routines: action.payload};
+                    return {...state, routines: action.payload, routineUpdate: currentDate};
                 case "ONENERGY_ROUTINE_SAVE":
                     let routine = action.payload;
                     let tempState = [...state.routines];
                     let index = tempState.findIndex(el => el.id === routine.id);
                     if (index !== -1) {
                         tempState[index] = routine;
-                        return {...state, routines: tempState};
+                        return {...state, routines: tempState, routineUpdate: currentDate};
                     } else {
-                        return {...state, routines: [...state.routines, routine]};
+                        return {...state, routines: [...state.routines, routine], routineUpdate: currentDate};
                     }
                 case "ONENERGY_ROUTINE_REFRESH":
-                    return {...state, routines: []};
+                    return {...state, routineUpdate: ''};
                 case "ONENERGY_GUIDE_UPDATE":
-                    return {...state, guides: action.payload};
+                    return {...state, guides: action.payload, guideUpdate: currentDate};
                 case "ONENERGY_GUIDE_REFRESH":
-                    return {...state, guides: []};
+                    return {...state, guideUpdate: ''};
                 case "ONENERGY_GROUP_UPDATE":
-                    return {...state, groups: action.payload};
+                    return {...state, groups: action.payload, groupUpdate: currentDate};
+                case "ONENERGY_GROUP_REFRESH":
+                    return {...state, groupUpdate: ''};
                 case "ONENERGY_ROUTINE_RESET":
-                    return {...state, routines: [], guides: [], groups: []};
+                    return {...state, routines: [], guides: [], groups: [], routineUpdate: '', guideUpdate: '', groupUpdate: ''};
                 default:
                     return state;
             }
@@ -1376,6 +1388,24 @@ export const applyCustomCode = externalCodeSetup => {
             if (linkObject.url.includes('QuotesScreen')) {
                 navigationService.navigate({
                     routeName: "QuotesScreen",
+                })
+                return true;
+            }
+            if (linkObject.url.includes('wisdom')) {
+                navigationService.navigate({
+                    routeName: "BlogsScreen",
+                })
+                return true;
+            }
+            if (linkObject.url.includes('practices')) {
+                navigationService.navigate({
+                    routeName: "PracticesScreen",
+                })
+                return true;
+            }
+            if (linkObject.url.includes('programs')) {
+                navigationService.navigate({
+                    routeName: "ProgramsScreen",
                 })
                 return true;
             }

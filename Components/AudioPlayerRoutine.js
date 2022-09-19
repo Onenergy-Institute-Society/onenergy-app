@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
 import { Text, TouchableOpacity, View, Platform} from 'react-native';
-import TrackPlayer, {State, Event, useTrackPlayerEvents, Capability, RepeatMode} from 'react-native-track-player';
+import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
 import IconButton from "@src/components/IconButton";
 import { StyleSheet } from 'react-native';
-import { scale, verticalScale } from '../Utils/scale';
+import { scale } from '../Utils/scale';
 import Video from 'react-native-video';
 import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
+import TrackSlider from "./TrackSlider";
 
 const AudioPlayerRoutine = (props) => {
     const user = useSelector((state) => state.user.userObject);
@@ -19,11 +20,12 @@ const AudioPlayerRoutine = (props) => {
         playPauseButton,
         stopButton,
     } = styles;
-    const { routine, setMessageBarDisplay } = props;
+    const { routine, setMessageBarDisplay, totalDuration } = props;
     const [playing, setPlaying] = useState(false);
     const [stopped, setStopped] = useState(true)
     const [trackTitle, setTrackTitle] = useState('');
     const [nextTrack, setNextTrack] = useState(0);
+    const [pastPosition, setPastPosition] = useState(0);
     const dispatch = useDispatch();
 
     const updateProgress = async () => {
@@ -74,8 +76,8 @@ const AudioPlayerRoutine = (props) => {
         }
     }
     useEffect(() => {
-        addTrack(routine.tracks).then(()=>{
-            TrackPlayer.play().then();
+        addTrack(routine.tracks).then(async ()=>{
+            await TrackPlayer.play().then();
             setPlaying(true);
             setStopped(false);
         });
@@ -86,19 +88,13 @@ const AudioPlayerRoutine = (props) => {
     }
     useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.RemoteStop], (event) => {
         if ((event.type === Event.PlaybackState) && ((event.state === State.Stopped) || (event.state === State.None))) {
-            setPlaying(false);
-            setStopped(true);
             setTrackTitle('');
             deactivateKeepAwake();
         }
         if (event.state === State.Playing) {
-            setPlaying(true);
-            setStopped(false);
             activateKeepAwake();
         }
         if (event.state === State.Paused) {
-            setPlaying(false);
-            setStopped(false);
             deactivateKeepAwake();
         }
         if (event.type === Event.RemotePlay) {
@@ -121,7 +117,8 @@ const AudioPlayerRoutine = (props) => {
             deactivateKeepAwake();
         }
     });
-    useTrackPlayerEvents([Event.PlaybackTrackChanged], ({nextTrack}) => {
+    useTrackPlayerEvents([Event.PlaybackTrackChanged], ({nextTrack, position}) => {
+        setPastPosition(position)
         setNextTrack(nextTrack)
         if (nextTrack) setTrackTitle(routine.tracks[parseInt(nextTrack, 10)].title);
         let index = parseInt(nextTrack, 10);
@@ -154,13 +151,17 @@ const AudioPlayerRoutine = (props) => {
         const state = await TrackPlayer.getState();
         if (state === State.Playing) {
             await TrackPlayer.pause();
+            setPlaying(false);
         }
         if ((state === State.Paused)) {
             await TrackPlayer.play();
+            setPlaying(true);
         }
         if ((state === State.Stopped) || (state === State.None)) {
             await addTrack(routine.tracks);
             await TrackPlayer.play();
+            setPlaying(true);
+            setStopped(false);
         }
     };
 
@@ -169,6 +170,8 @@ const AudioPlayerRoutine = (props) => {
         if ((state === State.Playing) || (state === State.Paused)) {
             await TrackPlayer.reset();
             setNextTrack(0);
+            setPlaying(false);
+            setStopped(true);
         }
     };
 
@@ -201,7 +204,7 @@ const AudioPlayerRoutine = (props) => {
                 </View>
             </View>
             <View style={progressBarSection}>
-                <Text>{trackTitle}</Text>
+                <Text>{trackTitle}</Text><TrackSlider type={"routine"} pastPosition={pastPosition} totalDuration={totalDuration} />
                 {!!routine.bgm?(
                     <Video
                         ref={videoPlayer => this.videoPlayer = videoPlayer}

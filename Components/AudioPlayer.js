@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {AppState, TouchableOpacity, View} from 'react-native';
-import TrackPlayer, {State, Event, useTrackPlayerEvents, Capability, RepeatMode} from 'react-native-track-player';
+import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
 import IconButton from "@src/components/IconButton";
 import { StyleSheet } from 'react-native';
 import { scale } from '../Utils/scale';
@@ -24,7 +24,6 @@ const AudioPlayer = (props) => {
     const [playing, setPlaying] = useState(false);
     const [stopped, setStopped] = useState(true)
     const dispatch = useDispatch();
-
     const updateProgress = async () => {
         try {
             const apiRequest = getApi(props.config);
@@ -93,18 +92,12 @@ const AudioPlayer = (props) => {
     }
     useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.RemoteStop, Event.PlaybackQueueEnded], (event) => {
         if (event.state === State.Playing) {
-            setPlaying(true);
-            setStopped(false);
             activateKeepAwake();
         }
         if (event.state === State.Paused) {
-            setPlaying(false);
-            setStopped(false);
             deactivateKeepAwake();
         }
         if ((event.state === State.Stopped) || (event.state === State.None)) {
-            setPlaying(false);
-            setStopped(true);
             deactivateKeepAwake();
         }
         if (event.type === Event.RemotePlay) {
@@ -149,13 +142,17 @@ const AudioPlayer = (props) => {
         const state = await TrackPlayer.getState();
         if (state === State.Playing) {
             await TrackPlayer.pause();
+            setPlaying(false);
         }
         if ((state === State.Paused)) {
             await TrackPlayer.play();
+            setPlaying(true);
         }
         if ((state === State.Stopped) || (state === State.None)) {
             await addTrack(track);
             await TrackPlayer.play();
+            setPlaying(true);
+            setStopped(false);
         }
     };
 
@@ -163,6 +160,8 @@ const AudioPlayer = (props) => {
         const state = await TrackPlayer.getState();
         if ((state === State.Playing) || (state === State.Paused)) {
             await TrackPlayer.reset();
+            setPlaying(false);
+            setStopped(true);
         }
     };
 

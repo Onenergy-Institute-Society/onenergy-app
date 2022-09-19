@@ -221,7 +221,7 @@ const QuotesScreen = props => {
                         :null}
                     <Text
                         style={styles.title}>
-                        &#x2190; Swipe for more quotes.
+                        &#x2190; Swipe for more quotes &#x2192;
                     </Text>
                 </View>
             ):(

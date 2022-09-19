@@ -9,9 +9,6 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import {getApi} from "@src/services";
-import {connect, useSelector, useDispatch} from "react-redux";
-import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
 import {scale} from '../Utils/scale';
 import AudioPlayer from './AudioPlayer';
 import {windowWidth} from "../Utils/Dimensions";
@@ -24,29 +21,16 @@ const TracksList = (props) => {
     const onTrackItemPress = async (track) => {
         if(!selectedTrack || track.id !== selectedTrack.id) {
             setSelectedTrack(track);
-        }else{
-            const state = await TrackPlayer.getState();
-            if (state === State.Playing) {
-                await TrackPlayer.pause();
-            }
-
-            if (state === State.Paused) {
-                await TrackPlayer.play();
-            }
         }
     };
-    const bgImage1 = require('../assets/images/1-1024x683.jpg');
-    const bgImage7 = require('../assets/images/7-1024x683.jpg');
+
     const renderItem = ({ item }) => {
-        let bgImage = '';
-        let highlightColor = {};
-        let showPlayer = false;
+        let highlightColor;
+        let showPlayer;
         if (selectedTrack && selectedTrack.id === item.id) {
-            bgImage = bgImage1;
             highlightColor = {color: "white"};
             showPlayer = true;
         }else{
-            bgImage = bgImage7;
             highlightColor = {color: "black"};
             showPlayer = false;
         }
@@ -226,9 +210,4 @@ const styles = StyleSheet.create({
         width: '100%',
     },
 });
-const mapStateToProps = (state) => ({
-    config: state.config,
-    accessToken: state.auth.token,
-    notification: state.notification,
-});
-export default connect(mapStateToProps)(TracksList);
+export default TracksList;

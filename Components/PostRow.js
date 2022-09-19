@@ -95,7 +95,6 @@ const PostRow = props => {
             fetchPostsData().then();
     }, []);
     useEffect(() => {
-        console.log('load',postsReducer.posts)
         if(postsReducer.posts&&postsReducer.posts.length)
         setPostsData(postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage));
     },[postsReducer.posts])

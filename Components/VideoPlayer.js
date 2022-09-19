@@ -45,7 +45,8 @@ class VideoPlayer extends Component {
             video : this.props.navigation.getParam('video'),
             seek : this.props.navigation.getParam('seek'),
             config: this.props.navigation.getParam('config'),
-
+            optionData: this.props.navigation.getParam('optionData'),
+            startMinute: parseInt(this.props.navigation.getParam('gp_minute')),
         }
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     }
@@ -74,7 +75,13 @@ class VideoPlayer extends Component {
         } else {
             let min = new Date().getMinutes();
             let sec = new Date().getSeconds();
-            if (min > 30) min = min - 30;
+            let startMinutes = this.state.startMinute;
+
+            if (min < startMinutes){
+                min = 30 - startMinutes + min;
+            }else{
+                min = min - startMinutes - 30;
+            }
             let second = min * 60 + sec;
             this.videoPlayer.seek(second);
             this.setState({currentTime: e.currentTime, duration: e.duration});
@@ -113,10 +120,12 @@ class VideoPlayer extends Component {
     handleBackButtonClick() {
         Alert.alert(
             "Please Confirm",
-            "Stop before session ends will result not counting as one complete practice, are you sure you want to exit?",
+            this.state.optionData.testing_mode?"Testing mode: Update progress and exit?":"Stop before session ends will result not counting as one complete practice, are you sure you want to exit?",
             [
                 {
                     text: "OK", onPress: () => {
+                        this.state.optionData.testing_mode?
+                            this.updateProgress().then():null;
                         this.props.navigation.goBack();
                     }
                 },
@@ -135,8 +144,8 @@ class VideoPlayer extends Component {
     static navigationOptions = { header: null }
 
     render() {
-        const { onClosePressed, volume, navigation } = this.props;
-        const { currentTime, duration, paused } = this.state;
+        const { navigation } = this.props;
+        const { paused } = this.state;
 
         //const completedPercentage = this.getCurrentTimePercentage(currentTime, duration) * 100;
 
@@ -155,7 +164,7 @@ class VideoPlayer extends Component {
                         paused={paused}
                         resizeMode={this.state.resizeMode}
                         style={this.state.videoStyle} />
-                    <WaitingGroupPractice waitingText={'participating'} gp_id={navigation.getParam('gp_id')} gp_time={navigation.getParam('gp_time')} waitingStyle={{borderRadius:9, paddingHorizontal:10, color:"white", backgroundColor:"black", position:"absolute", top:40, left: 20, fontSize:scale(16)}} />
+                    <WaitingGroupPractice gp_id={navigation.getParam('gp_id')} gp_time={navigation.getParam('gp_time')} waitingStyle={{flexDirection: "row", justifyContent: "flex-start", alignItems:"center",borderRadius:9, paddingHorizontal:10, backgroundColor:"black", position:"absolute", top:40, left: 20}} waitingIconColor={"white"} waitingIconStyle={{width:16, height:16}} waitingTextStyle={{color:"white", fontSize:scale(16), marginLeft:5}} />
                     <TouchableOpacity
                         style={{borderRadius:9, backgroundColor:"red", position:"absolute", top:40, right: 20}}
                         onPress={() => this.handleBackButtonClick()}
