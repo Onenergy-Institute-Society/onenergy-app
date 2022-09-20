@@ -134,14 +134,16 @@ const AudioPlayerRoutine = (props) => {
                     setPlaying(false);
                     setStopped(true);
                     setTrackTitle('');
-                    TrackPlayer.removeUpcomingTracks();
+                    TrackPlayer.reset();
+                    setNextTrack(0);
                     updateProgress().then();
                 }
             } else {
                 setPlaying(false);
                 setStopped(true);
                 setTrackTitle('');
-                TrackPlayer.removeUpcomingTracks();
+                TrackPlayer.reset();
+                setNextTrack(0);
                 updateProgress().then();
             }
         }
@@ -152,10 +154,12 @@ const AudioPlayerRoutine = (props) => {
         if (state === State.Playing) {
             await TrackPlayer.pause();
             setPlaying(false);
+            setStopped(false);
         }
         if ((state === State.Paused)) {
             await TrackPlayer.play();
             setPlaying(true);
+            setStopped(false);
         }
         if ((state === State.Stopped) || (state === State.None)) {
             await addTrack(routine.tracks);
@@ -170,6 +174,7 @@ const AudioPlayerRoutine = (props) => {
         if ((state === State.Playing) || (state === State.Paused)) {
             await TrackPlayer.reset();
             setNextTrack(0);
+            setPastPosition(0);
             setPlaying(false);
             setStopped(true);
         }

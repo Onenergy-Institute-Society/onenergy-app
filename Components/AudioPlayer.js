@@ -120,6 +120,8 @@ const AudioPlayer = (props) => {
         }
         if(event.type === 'playback-queue-ended') {
             TrackPlayer.reset();
+            setPlaying(false);
+            setStopped(true);
             updateProgress().then();
             if(notification) {
                 if (notification['practice']){
@@ -143,10 +145,12 @@ const AudioPlayer = (props) => {
         if (state === State.Playing) {
             await TrackPlayer.pause();
             setPlaying(false);
+            setStopped(false);
         }
         if ((state === State.Paused)) {
             await TrackPlayer.play();
             setPlaying(true);
+            setStopped(false);
         }
         if ((state === State.Stopped) || (state === State.None)) {
             await addTrack(track);

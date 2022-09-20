@@ -25,6 +25,11 @@ const TrackSlider = (props) => {
     useEffect(()=>{
         setPastDuration(pastDuration+pastPosition);
     },[duration])
+    useEffect(()=>{
+        if(pastPosition===0)
+        setPastDuration(0);
+    },[pastPosition])
+
     return (
         <>
             {type === 'routine' ?

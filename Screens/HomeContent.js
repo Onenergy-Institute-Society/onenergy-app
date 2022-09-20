@@ -28,6 +28,7 @@ const HomeContent = (props) => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const routinesReducer = useSelector((state) => state.routinesReducer);
+    const postsReducer = useSelector((state) => state.postsReducer);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
 
@@ -74,7 +75,12 @@ const HomeContent = (props) => {
                 type: 'ONENERGY_GROUP_REFRESH',
             });
         }
-
+        if(postsReducer.postUpdate&&optionData.cache.post>postsReducer.postUpdate||!postsReducer.postUpdate)
+        {
+            dispatch({
+                type: 'POSTS_RESET',
+            });
+        }
     }, []);
 
     const OnPress = async (item, typeName) => {

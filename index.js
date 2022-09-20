@@ -486,7 +486,7 @@ export const applyCustomCode = externalCodeSetup => {
     //Add Blog reducer
     externalCodeSetup.reduxApi.addReducer(
         "postsReducer",
-        (state = {posts: [], lastView: []}, action) => {
+        (state = {posts: [], lastView: [], postUpdate: ''}, action) => {
             const currentDate = new Date().toISOString();
             switch (action.type) {
                 case "POSTS_ADD":
@@ -525,7 +525,8 @@ export const applyCustomCode = externalCodeSetup => {
                                     date:currentDate
                                 },
                                 ...state.lastView.slice(categoryIndex+1)
-                            ]
+                            ],
+                            postUpdate: currentDate
                         };
                     }else{
                         return {
@@ -537,7 +538,8 @@ export const applyCustomCode = externalCodeSetup => {
                                     category:action.category,
                                     date:currentDate
                                 }
-                            ]
+                            ],
+                            postUpdate: currentDate
                         };
                     }
                 case "POSTS_REMOVE_NOTIFY":
@@ -553,11 +555,12 @@ export const applyCustomCode = externalCodeSetup => {
                             ...state.posts.slice(postIndex+1)
                         ]
                     }
-                case "POSTS_CLEAR":
+                case "POSTS_RESET":
                     return {
                         ...state,
                         posts: [],
-                        lastView: []
+                        lastView: [],
+                        postUpdate: '',
                     };
                 default:
                     return state;
