@@ -236,9 +236,9 @@ const PracticeGroup = props => {
                             }
                         </View>
                         {conditionLessons?
-                            null
+                            <Text style={{fontSize: scale(12), textAlign: "center"}}>Live every hour at {startMinutes} min</Text>
                             :
-                            <Text style={{fontSize: scale(12), textAlign: "center"}}>finish required lessons to unlock this group practice.</Text>
+                            <Text style={{fontSize: scale(12), textAlign: "center"}}>Finish required lessons to unlock this group practice.</Text>
                         }
                         <Text style={styles.description}>tap to view detail</Text>
                     </ImageBackground>
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
         alignSelf: "flex-start",
         marginLeft:scale(5),
         marginBottom:scale(5),
-        fontSize: scale(12),
+        fontSize: scale(10),
         fontStyle: "italic",
         color: '#000',
         backgroundColor: 'transparent',

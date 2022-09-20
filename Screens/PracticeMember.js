@@ -5,7 +5,6 @@ import {
     StyleSheet,
     TouchableOpacity,
     Text,
-    Platform,
     ScrollView,
     ActivityIndicator,
     Animated
@@ -19,7 +18,7 @@ import externalCodeDependencies from "@src/externalCode/externalRepo/externalCod
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {NavigationActions, withNavigation} from "react-navigation";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import {scale, verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
 import TrackPlayer from 'react-native-track-player';
 import EventList from "../Components/EventList";
 
@@ -32,7 +31,9 @@ const PracticeMember = props => {
     const helpPageData = {title:optionData.helps[helpPageIndex].title?optionData.helps[helpPageIndex].title:'',id:optionData.helps[helpPageIndex].id};
     const emptyIndex = optionData.helps.findIndex(el => el.name === 'practice_customize_empty_member');
     const emptyData = {title:optionData.helps[emptyIndex].title?optionData.helps[emptyIndex].title:'',id:optionData.helps[emptyIndex].id};
-    const [routinesLoading, setRoutinesLoading] = useState(true);
+    const routineSelector = state => ({routinesReducer: state.routinesReducer.routines})
+    const {routinesReducer} = useSelector(routineSelector);
+    const routineUpdate = useSelector((state) => state.routinesReducer.routineUpdate);
     const [helpModal, setHelpModal] = useState({title:'',id:0});
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
@@ -45,20 +46,17 @@ const PracticeMember = props => {
     const fetchTracks = async () => {
         try {
             const apiSlide = getApi(props.config);
-            await apiSlide.customRequest(
+            const data = await apiSlide.customRequest(
                 "wp-json/onenergy/v1/routine",
                 "get",
                 {},
                 null,
                 {},
                 false
-            ).then(response => {
-
-                dispatch({
-                    type: "ONENERGY_ROUTINE_UPDATE",
-                    payload: response.data
-                });
-                setRoutinesLoading(false);
+            ).then(response => response.data);
+            dispatch({
+                type: "ONENERGY_ROUTINE_UPDATE",
+                payload: data
             });
         } catch (e) {
             console.error(e);
@@ -74,9 +72,7 @@ const PracticeMember = props => {
                 null,
                 {},
                 false
-            ).then(
-                setRoutinesLoading(false)
-            );
+            ).then();
         } catch (e) {
             console.error(e);
         }
@@ -112,8 +108,7 @@ const PracticeMember = props => {
     const onRemoveRoutine = async (item) => {
         await TrackPlayer.reset();
 
-
-        let array = [...props.routines]; // make a separate copy of the array
+        let array = [...routinesReducer]; // make a separate copy of the array
         let index = array.indexOf(item);
         if (index !== -1) {
             array.splice(index, 1);
@@ -128,14 +123,12 @@ const PracticeMember = props => {
                 payload: false,
             });
         }
-        setRoutinesLoading(true);
         removeRoutine(item).then();
     }
     useEffect(() => {
-        if(!props.routines||!props.routines.length) {
+        console.log(routineUpdate, routinesReducer)
+        if(!routinesReducer||!routinesReducer.length||!routineUpdate) {
             fetchTracks().then();
-        }else{
-            setRoutinesLoading(false);
         }
         let helpIndex;
         if(user&&user.membership.length > 0) {
@@ -163,9 +156,7 @@ const PracticeMember = props => {
         <SafeAreaView style={styles.container}>
             {user.hasGuide>0?
                 user.hasRoutine > 0 ?
-                    routinesLoading ?
-                        <ActivityIndicator size="large"/>
-                        :
+                    routinesReducer&&routinesReducer.length ?
                         <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                             {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
                                 <View style={{marginVertical:scale(5)}}>
@@ -174,8 +165,10 @@ const PracticeMember = props => {
                                 </View>
                                 : null
                             }
-                            <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine} setMessageBarDisplay={setMessageBarDisplay} />
+                            <MemberTracksList routines={routinesReducer} onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine} setMessageBarDisplay={setMessageBarDisplay} />
                         </ScrollView>
+                        :
+                        <ActivityIndicator size="large"/>
                     :
                     <View style={{
                         flex: 1,
@@ -201,9 +194,9 @@ const PracticeMember = props => {
                                  {...props} />
                 </View>
             }
-            {user.hasGuide>0 && props.routines.length<5?
+            {user.hasGuide>0 && ((routinesReducer && routinesReducer.length<5) || !routinesReducer)?
                 <IconButton
-                    pressHandler={() => {onAddPressed()}}
+                    pressHandler={() => {onAddPressed().then()}}
                     icon={require("@src/assets/img/add.png")}
                     style={{ height: 24, width: 24 }}
                     tintColor={'#FFFFFF'}
@@ -224,6 +217,7 @@ const PracticeMember = props => {
                     }}
                 />
                 :null}
+
             <Modalize
                 ref={(cpHelpModal) => { this.cpHelpModal = cpHelpModal; }}
                 modalHeight = {windowHeight*4/5}
@@ -323,6 +317,5 @@ PracticeMember.navigationOptions = ({ navigation }) => {
 const mapStateToProps = (state) => ({
     config: state.config,
     accessToken: state.auth.token,
-    routines: state.routinesReducer.routines,
 });
 export default connect(mapStateToProps)(withNavigation(PracticeMember));

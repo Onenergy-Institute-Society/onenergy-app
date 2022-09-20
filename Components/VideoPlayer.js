@@ -77,7 +77,7 @@ class VideoPlayer extends Component {
             let sec = new Date().getSeconds();
             let startMinutes = this.state.startMinute;
 
-            if (min < startMinutes){
+            if (min <= startMinutes){
                 min = 30 - startMinutes + min;
             }else{
                 min = min - startMinutes - 30;

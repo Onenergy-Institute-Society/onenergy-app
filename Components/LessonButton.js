@@ -115,9 +115,6 @@ const LessonButton = (props) => {
                             type: 'UPDATE_USER_COMPLETED_COURSES',
                             payload: {"id": lesson.parent.id, "date": new Date().getTime() / 1000}
                         });
-                        if(response.data.course===29421){
-                            dispatch({ type: "COMPLETE_FIRST_COURSE" });
-                        }
                     }
                     if(lesson.settings.no_video||lesson.settings.no_popup/*||optionData.testing_mode*/) {
                         if(lesson.settings.open_screen) {
@@ -195,6 +192,7 @@ const LessonButton = (props) => {
                 break;
             case 'parent':
                 props.navigation.goBack();
+                break;
             default:
                 return;
         }

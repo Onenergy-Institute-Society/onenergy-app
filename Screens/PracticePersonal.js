@@ -31,6 +31,7 @@ const PracticePersonal = props => {
     const helpPageData = {title:optionData.helps[helpPageIndex].title?optionData.helps[helpPageIndex].title:'',id:optionData.helps[helpPageIndex].id};
     const guideSelector = state => ({guidesReducer: state.routinesReducer.guides})
     const {guidesReducer} = useSelector(guideSelector);
+    const guideUpdate = useSelector((state) => state.routinesReducer.guideUpdate);
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
     React.useEffect(() => {
@@ -62,7 +63,7 @@ const PracticePersonal = props => {
         this.ppHelpModal.open();
     };
     useEffect(() => {
-        if(!guidesReducer||!guidesReducer.length) {
+        if(!guidesReducer||!guidesReducer.length||!guideUpdate) {
             fetchTracks().then();
         }
         let titleIndex = optionData.titles.findIndex(el => el.id === 'practices_basic');

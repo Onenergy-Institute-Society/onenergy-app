@@ -18,9 +18,8 @@ import IconButton from "@src/components/IconButton";
 import TouchableScale from "./TouchableScale";
 
 const MemberTracksList = (props) => {
-    const {setMessageBarDisplay} = props;
+    const {routines, setMessageBarDisplay} = props;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const routines = useSelector((state) => state.routinesReducer.routines);
     const [selectedRoutine, setSelectedRoutine] = useState(null);
 
     // state vars
@@ -99,7 +98,7 @@ const MemberTracksList = (props) => {
                                     }
                                     </View>
                                 </View>
-                                <View style={{flexDirection:"row", justifyContent: "flex-end"}}><View><Text style={{fontStyle:"italic",color:"white", fontSize:scale(10)}}>Swipe to edit</Text></View></View>
+                                <View style={{flexDirection:"row", justifyContent: "flex-end"}}><View><Text style={{fontStyle:"italic",color:"white", fontSize:scale(10)}}>&#x2190; Swipe to edit</Text></View></View>
                             </View>
                         </ImageBackground>
                         </TouchableScale>
