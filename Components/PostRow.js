@@ -76,20 +76,25 @@ const PostRow = props => {
     }
     useEffect(() => {
         let loadPosts = false;
-        if(categoryIndex&&categoryIndex>=0)
+        if(postsReducer.postUpdate&&optionData.cache.blog>postsReducer.postUpdate||!postsReducer.postUpdate)
         {
-            let postCount = postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).length;
-            if(!postCount)
-            {
-                loadPosts = true
-            }else {
-                setPostsData(postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage));
-                if (new Date(postsReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[postCategory])) {
-                    loadPosts = true;
-                }
-            }
-        }else{
             loadPosts = true;
+        }else{
+            if(categoryIndex&&categoryIndex>=0)
+            {
+                let postCount = postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).length;
+                if(!postCount)
+                {
+                    loadPosts = true
+                }else {
+                    setPostsData(postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage));
+                    if (new Date(postsReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[postCategory])) {
+                        loadPosts = true;
+                    }
+                }
+            }else{
+                loadPosts = true;
+            }
         }
         if(loadPosts)
             fetchPostsData().then();

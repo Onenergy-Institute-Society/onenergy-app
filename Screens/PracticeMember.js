@@ -126,7 +126,6 @@ const PracticeMember = props => {
         removeRoutine(item).then();
     }
     useEffect(() => {
-        console.log(routineUpdate, routinesReducer)
         if(!routinesReducer||!routinesReducer.length||!routineUpdate) {
             fetchTracks().then();
         }

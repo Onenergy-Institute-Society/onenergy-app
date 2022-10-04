@@ -683,9 +683,18 @@ export const applyCustomCode = externalCodeSetup => {
         (state = {learn: [], startup: [], endurance: []}, action) => {
             switch (action.type) {
                 case "MILESTONE_ADD":
+                    const milestones = action.payload.sort((a, b)=>{return a.completed > b.completed}).sort((a, b)=>{return a.awarded > b.awarded});
                     return {
                         ...state,
-                        [action.milestone_type]: action.payload
+                        [action.milestone_type]: milestones
+                    };
+                case "MILESTONE_CLAIM":
+                    let tempState = [...state[action.milestone_type]];
+                    let msIndex = state[action.milestone_type].findIndex(ms => ms.id === action.payload);
+                    tempState[msIndex].awarded = true;
+                    return {
+                        ...state,
+                        [action.milestone_type]: tempState.sort((a, b)=>{return a.completed > b.completed}).sort((a, b)=>{return a.awarded > b.awarded}),
                     };
                 case 'MILESTONE_RESET':
                     return {

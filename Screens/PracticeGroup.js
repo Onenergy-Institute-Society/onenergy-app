@@ -198,8 +198,8 @@ const PracticeGroup = props => {
                                                           waitingTextStyle={styles.waitingTextStyle}/>
                                 </View>
                             </View>
-                            {conditionLessons?
-                                timeToGo <= 30?
+                            {conditionLessons||optionData.testing_mode?
+                                timeToGo <= 30||optionData.testing_mode?
                                     <TouchableOpacity style={styles.btnJoin}
                                                       onPress={() => {
                                                           handlePress(item.meta_box.url, item.id, CurrentStartTime, startMinutes)
@@ -235,7 +235,7 @@ const PracticeGroup = props => {
                                 </TouchableOpacity>
                             }
                         </View>
-                        {conditionLessons?
+                        {conditionLessons||optionData.testing_mode?
                             <Text style={{fontSize: scale(12), textAlign: "center"}}>Live every hour at {startMinutes} min</Text>
                             :
                             <Text style={{fontSize: scale(12), textAlign: "center"}}>Finish required lessons to unlock this group practice.</Text>

@@ -66,6 +66,12 @@ const LessonButton = (props) => {
                     type: 'UPDATE_USER_COMPLETED_LESSONS',
                     payload: {"id": lesson.id, "date": new Date().getTime() / 1000}
                 });
+                if(response.data.next_lesson===0){
+                    dispatch({
+                        type: 'UPDATE_USER_COMPLETED_COURSES',
+                        payload: {"id": lesson.parent.id, "date": new Date().getTime() / 1000}
+                    });
+                }
                 if(lesson.settings.guide)
                 {
                     dispatch({
@@ -79,18 +85,8 @@ const LessonButton = (props) => {
                         });
                     });
                     dispatch({
-                        type: 'UPDATE_USER_COMPLETED_LESSONS',
-                        payload: {"id": lesson.id, "date": new Date().getTime() / 1000}
-                    });
-                    dispatch({
                         type: 'ONENERGY_GUIDE_REFRESH'
                     });
-                    if(response.data.next_lesson===0){
-                        dispatch({
-                            type: 'UPDATE_USER_COMPLETED_COURSES',
-                            payload: {"id": lesson.parent.id, "date": new Date().getTime() / 1000}
-                        });
-                    }
                     if(lesson.settings.no_video||optionData.testing_mode) {
                         props.navigation.goBack();
                     }else{
@@ -106,16 +102,6 @@ const LessonButton = (props) => {
                         setShowAlert(true);
                     }
                 }else{
-                    dispatch({
-                        type: 'UPDATE_USER_COMPLETED_LESSONS',
-                        payload: {"id": lesson.id, "date": new Date().getTime() / 1000}
-                    });
-                    if(response.data.next_lesson===0){
-                        dispatch({
-                            type: 'UPDATE_USER_COMPLETED_COURSES',
-                            payload: {"id": lesson.parent.id, "date": new Date().getTime() / 1000}
-                        });
-                    }
                     if(lesson.settings.no_video||lesson.settings.no_popup/*||optionData.testing_mode*/) {
                         if(lesson.settings.open_screen) {
                             switch (lesson.settings.open_screen) {

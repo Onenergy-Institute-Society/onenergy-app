@@ -109,15 +109,12 @@ const PostList = props => {
     };
     const regex = /(<([^>]+)>)/ig;
 
-    const renderOverlayImage = (format) => {
-        switch(format) {
-            case 'video':
+    const renderOverlayImage = (categories) => {
+        if(categories.includes(103)) //Video
                 return <View style = {styles.overlay_button}><Image style = {styles.play} source = {require('../assets/images/arrow_right-1.png')} /></View>;
-            case 'audio':
+        if(categories.includes(104)) //Audio
                 return <View style = {styles.overlay_button}><Image style = {styles.play} source = {require('../assets/images/arrow_right-1.png')} /></View>;
-            default:
-                return null;
-        }
+        return null;
     }
 
     const renderItem = ({ item }) => {
@@ -152,19 +149,19 @@ const PostList = props => {
                         <View style={styles.imageView}>
                             <ImageCache style={styles.image}
                                         source={{uri: item.image?item.image:''}}/>
-                            {renderOverlayImage(item.format)}
-                        </View>
-                        <View style={styles.overlay}>
-                            <Text numberOfLines={2} style={styles.title}>{item.title.rendered}</Text>
-                            {item.excerpt.rendered.length > 0 && (
-                                <Text numberOfLines={2} style={styles.description}>
-                                    {item.excerpt.rendered.replace(regex, '')}
-                                </Text>
-                            )}
+                            {renderOverlayImage(item.categories)}
                             <View style={styles.metaRow}>
                                 <ImageCache style={styles.avatar} source={{uri: item.avatar?item.avatar:''}}/>
                                 <Text style={styles.author}>{item.author?item.author:''}</Text>
                             </View>
+                        </View>
+                        <View style={styles.overlay}>
+                            <Text numberOfLines={2} style={styles.title}>{item.title.rendered}</Text>
+                            {item.excerpt.rendered.length > 0 && (
+                                <Text numberOfLines={3} style={styles.description}>
+                                    {item.excerpt.rendered.replace(regex, '')}
+                                </Text>
+                            )}
                         </View>
                     </View>
                     {item.notify?
@@ -231,7 +228,7 @@ const styles = StyleSheet.create({
         marginHorizontal: scale(15),
         marginTop: scale(15),
         width: width - scale(30),
-        height: scale(150),
+        height: scale(120),
     },
     rowStyle: {
         overflow: 'hidden',
@@ -244,23 +241,25 @@ const styles = StyleSheet.create({
         paddingBottom: scale(60),
     },
     image: {
+        marginTop:scale(15),
         width: scale(120),
-        height: scale(120),
+        height: scale(60),
         borderRadius: 9,
         overflow: 'hidden',
     },
     imageView: {
         width: scale(150),
-        height:scale(150),
-        justifyContent:"center",
+        height:scale(120),
+        justifyContent:"space-between",
         alignItems:"center"
     },
     overlay: {
         alignItems: 'flex-start',
         justifyContent: 'space-between',
         width: width - scale(180),
-        height: scale(150),
+        height: scale(120),
         paddingVertical:scale(15),
+        paddingRight: scale(15),
         marginRight:scale(20),
     },
     title: {
@@ -273,15 +272,17 @@ const styles = StyleSheet.create({
             ? 'Roboto' : 'Avenir-Roman',
     },
     metaRow: {
-        width: width - scale(200),
+        marginLeft:scale(30),
+        marginBottom:scale(15),
+        width: scale(150),
         flexDirection: 'row',
         justifyContent: "flex-start",
         alignItems: "center",
     },
     avatar: {
-        width: scale(32),
-        height: scale(32),
-        borderRadius:scale(32),
+        width: scale(24),
+        height: scale(24),
+        borderRadius:scale(24),
         marginRight:5,
     },
     author: {
@@ -296,6 +297,7 @@ const styles = StyleSheet.create({
     description: {
         fontSize: scale(12),
         color: '#3c3c3c',
+        marginTop: scale(5),
         marginBottom: scale(15),
         backgroundColor: 'transparent',
         fontFamily: Platform.OS === 'android'
@@ -313,7 +315,8 @@ const styles = StyleSheet.create({
         alignSelf:"center",
         width: scale(120),
         opacity: 1,
-        height: scale(120),
+        marginTop: scale(15),
+        height: scale(60),
         borderRadius: 9,
         alignItems: 'center',
         justifyContent: 'center',

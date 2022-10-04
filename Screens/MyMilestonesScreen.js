@@ -8,6 +8,7 @@ import Milestones from "../Components/Milestones";
 import {useSelector} from "react-redux";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import {scale} from "../Utils/scale";
+import QiPointHeader from "../Components/QiPointHeader";
 
 const MilestonesLearn = () => {
     try {
@@ -123,5 +124,8 @@ MyMilestonesScreen.navigationOptions = ({navigation}) => ({
                 }}
             />
         </TouchableOpacity>,
+    headerRight:
+        <QiPointHeader />
+        ,
 })
 export default withNavigation(MyMilestonesScreen);

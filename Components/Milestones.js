@@ -1,19 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
-import {View, Text, StyleSheet, SafeAreaView, FlatList, ActivityIndicator} from 'react-native';
+import {View, Text, StyleSheet, SafeAreaView, FlatList, TouchableWithoutFeedback} from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import MilestonesAccordian from "./MilestonesAccordian";
+import * as Progress from 'react-native-progress';
 
 const Milestones = (props) => {
     const {type} = props;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    const user = useSelector((state) => state.user.userObject);
     const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'achievement_milestone_empty');
     const emptyText = optionData.titles[emptyTextIndex].title
     const milestonesSelector = state => ({milestonesReducer: state.milestonesReducer[type]})
     const {milestonesReducer} = useSelector(milestonesSelector);
-
     const dispatch = useDispatch();
     const fetchQuests = async () => {
         try {
@@ -26,11 +27,13 @@ const Milestones = (props) => {
                 {},
                 false
             ).then(response => response.data);
-            dispatch({
-                type: 'MILESTONE_ADD',
-                milestone_type: type,
-                payload: data,
-            });
+            if(data&&data.length) {
+                dispatch({
+                    type: 'MILESTONE_ADD',
+                    milestone_type: type,
+                    payload: data,
+                });
+            }
         } catch (e) {
             console.error(e);
         }
@@ -39,7 +42,115 @@ const Milestones = (props) => {
         fetchQuests().then();
     }, []);
     const renderItem = ({ item }) => {
+        console.log(item)
         return (
+            item.progress?
+                <View style={[styles.boxShadow, styles.row]}>
+                    <View style={styles.rowLeft}>
+                        <Text style={styles.title}>{item.name}</Text>
+                        {!item.awarded?
+                        <View style={{marginVertical: 10}}>
+                            <Progress.Bar showsText={true} borderColor={"#4942e1"} color={"#7de7fa"} unfilledColor={"black"} borderRadius={9}
+                                          progress={item.steps.length > 1 ? item.completed_steps / item.steps.length : item.steps[0].progress.current / item.steps[0].progress.total}
+                                          width={windowWidth/2} height={scale(16)}/>
+                            <View
+                                style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}><Text style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                width: -1,
+                                height: 1
+                            }}}>{item.completed?"completed":item.steps.length > 1 ? item.completed_steps + ' / ' + item.steps.length : item.steps[0].progress.current + ' / ' + item.steps[0].progress.total}</Text></View>
+                        </View>
+                            :null}
+                    </View>
+                    <TouchableWithoutFeedback
+                        onPress={() => {
+                            if(item.completed&&!item.awarded) {
+                                dispatch({
+                                    type: "UPDATE_POINTS",
+                                    payload: user.points.point + item.points
+                                });
+                                dispatch({
+                                    type: "MILESTONE_CLAIM",
+                                    milestone_type: type,
+                                    payload: item.id
+                                });
+                            }
+                            const apiQuotes = getApi(props.config);
+                            apiQuotes.customRequest(
+                                "wp-json/onenergy/v1/awardClaim",
+                                "post",
+                                {"id":item.id},
+                                null,
+                                {},
+                                false
+                            ).then();
+                        }}
+                    >
+                        <View style={[styles.rowRight, {backgroundColor:item.awarded?'gray':item.completed?'gold':'#7de7fa'}]}>
+                            {
+                                item.awarded ?
+                                    <>
+                                        <Text
+                                            style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                                    width: -1,
+                                                    height: 1
+                                                }}}
+                                        >
+                                            CLEARED
+                                        </Text>
+                                        <Text
+                                            numberOfLines={1}
+                                            style={{fontSize:11, fontWeight:700, color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                                    width: -1,
+                                                    height: 1
+                                                }}}
+                                        >
+                                            {item.date}
+                                        </Text>
+                                    </>
+                                    :
+                                item.completed ?
+                                    <>
+                                        <Text
+                                            style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                                    width: -1,
+                                                    height: 1
+                                                }}}
+                                        >
+                                            CLAIM
+                                        </Text>
+                                        <Text
+                                            style={{fontSize:24, fontWeight:700, color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                                    width: -1,
+                                                    height: 1
+                                                }}}
+                                        >
+                                            +{item.points} Qi
+                                        </Text>
+                                    </>
+                                    :
+                                    <>
+                                            <Text
+                                                style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                                        width: -1,
+                                                        height: 1
+                                                    }}}
+                                            >
+                                                REWARD
+                                            </Text>
+                                            <Text
+                                                style={{fontSize:24, fontWeight:700, color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                                        width: -1,
+                                                        height: 1
+                                                    }}}
+                                            >
+                                                +{item.points} Qi
+                                            </Text>
+                                    </>
+                            }
+                        </View>
+                    </TouchableWithoutFeedback>
+                </View>
+                :
             <MilestonesAccordian item={item} />
         );
     };
@@ -73,6 +184,39 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: "#ffffff",
+    },
+    row: {
+        borderRadius: 9,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: windowWidth - scale(30),
+        height: scale(60),
+        flexDirection: 'row',
+        backgroundColor: '#f2f2f2',
+        marginTop: scale(10),
+        marginHorizontal: scale(15),
+    },
+    rowLeft: {
+        paddingHorizontal: scale(10),
+        paddingVertical: scale(10),
+        borderTopLeftRadius: 9,
+        borderBottomLeftRadius: 9,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: (windowWidth - scale(30))*3/4,
+        height: scale(60),
+        backgroundColor: '#f2f2f2',
+    },
+    rowRight: {
+        paddingHorizontal: scale(10),
+        paddingVertical: scale(10),
+        borderTopRightRadius: 9,
+        borderBottomRightRadius: 9,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: (windowWidth - scale(30))/4,
+        height: scale(60),
+        backgroundColor: '#7de7fa',
     },
     achievementItemBox: {
         marginTop:scale(50),

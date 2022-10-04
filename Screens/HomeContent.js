@@ -31,7 +31,6 @@ const HomeContent = (props) => {
     const postsReducer = useSelector((state) => state.postsReducer);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
-
     TrackPlayer.setupPlayer();
     TrackPlayer.updateOptions({
         stoppingAppPausesPlayback: true,
@@ -75,7 +74,7 @@ const HomeContent = (props) => {
                 type: 'ONENERGY_GROUP_REFRESH',
             });
         }
-        if(postsReducer.postUpdate&&optionData.cache.post>postsReducer.postUpdate||!postsReducer.postUpdate)
+        if(postsReducer.postUpdate&&optionData.cache.blog>postsReducer.postUpdate||!postsReducer.postUpdate)
         {
             dispatch({
                 type: 'POSTS_RESET',
