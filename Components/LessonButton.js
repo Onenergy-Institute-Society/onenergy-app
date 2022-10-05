@@ -87,7 +87,7 @@ const LessonButton = (props) => {
                     dispatch({
                         type: 'ONENERGY_GUIDE_REFRESH'
                     });
-                    if(lesson.settings.no_video||optionData.testing_mode) {
+                    if(lesson.settings.no_video) {
                         props.navigation.goBack();
                     }else{
                         let index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_title');
@@ -95,14 +95,14 @@ const LessonButton = (props) => {
                         index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_body');
                         setAlertBody(optionData.titles[index].title + ' ' + lesson.title);
                         setAlertCancelText('');
-                        setAlertConfirmType('top');
+                        setAlertConfirmType(lesson.settings.open_screen?lesson.settings.open_screen:lesson.settings.back_to);
                         index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_button');
                         setAlertConfirmText(optionData.titles[index].title);
                         setAlertShowConfirm(true);
                         setShowAlert(true);
                     }
                 }else{
-                    if(lesson.settings.no_video||lesson.settings.no_popup/*||optionData.testing_mode*/) {
+                    if(lesson.settings.no_video||lesson.settings.no_popup) {
                         if(lesson.settings.open_screen) {
                             switch (lesson.settings.open_screen) {
                                 case "guided-practices":
@@ -158,7 +158,7 @@ const LessonButton = (props) => {
             case "guided-practices":
                 props.navigation.dispatch(
                     NavigationActions.navigate( {
-                        routeName: "PracticesScreen",
+                        routeName: "PracticePersonal",
                     }));
                 break;
             case "group-practices":

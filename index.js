@@ -39,6 +39,7 @@ import MyProgressScreen from './Screens/MyProgressScreen';
 import MyVouchersScreen from './Screens/MyVouchersScreen';
 import MyStatsScreen from './Screens/MyStatsScreen';
 import MyMembership from './Screens/MyMembership';
+import myFeedbackScreen from "./Screens/MyFeedbackScreen";
 import {scale} from './Utils/scale';
 import ImageCache from "./Components/ImageCache";
 import {windowWidth} from "./Utils/Dimensions";
@@ -657,19 +658,55 @@ export const applyCustomCode = externalCodeSetup => {
     // Add quest reducer
     externalCodeSetup.reduxApi.addReducer(
         "questsReducer",
-        (state = {daily: [], weekly: [], monthly: []}, action) => {
+        (state = {daily: [], weekly: [], monthly: [], weekly_log: '', monthly_log: ''}, action) => {
             switch (action.type) {
                 case "QUEST_ADD":
+                    let quests;
+                    if(action.quest_mode === "daily") {
+                        quests = action.payload.sort((a, b) => {
+                            return a.completed > b.completed
+                        }).sort((a, b) => {
+                            return a.awarded > b.awarded
+                        });
+                    }else{
+                        quests = action.payload;
+                    }
                     return {
                         ...state,
-                        [action.quest_mode]: action.payload
+                        [action.quest_mode]: quests
+                    };
+                case "QUEST_CLAIM":
+                    let tempState = [...state[action.quest_mode]];
+                    let questIndex = state[action.quest_mode].findIndex(quest => quest.id === action.payload);
+                    tempState[questIndex].awarded = true;
+                    tempState[questIndex].date = moment().format('YYYY-MM-DD');
+                    return {
+                        ...state,
+                        [action.quest_mode]: tempState.sort((a, b)=>{return a.completed > b.completed}).sort((a, b)=>{return a.awarded > b.awarded}),
+                    };
+                case "QUEST_WAIT_CLAIM":
+                    let tempQuestState = [...state[action.quest_mode]];
+                    let questItemIndex = state[action.quest_mode].findIndex(quest => quest.id === action.item);
+                    let waitItemIndex = tempQuestState[questItemIndex].wait.findIndex(waitItem => waitItem.log_id === action.log);
+                    tempQuestState[questItemIndex].wait.splice(waitItemIndex, 1);
+                    return {
+                        ...state,
+                        [action.quest_mode]: tempQuestState,
+                    };
+                case "QUEST_CLAIM_WEEKLY_MONTHLY":
+                    return {
+                        ...state,
+                        [action.quest_mode]: {
+                            ...state[action.quest_mode],
+                            log:''
+                        },
                     };
                 case 'QUEST_RESET':
                     return {
                         ...state,
-                        learn: [],
-                        startup: [],
-                        endurance: []
+                        daily: [],
+                        weekly: [],
+                        monthly: []
                     }
                 default:
                     return state;
@@ -692,6 +729,7 @@ export const applyCustomCode = externalCodeSetup => {
                     let tempState = [...state[action.milestone_type]];
                     let msIndex = state[action.milestone_type].findIndex(ms => ms.id === action.payload);
                     tempState[msIndex].awarded = true;
+                    tempState[msIndex].date = moment().format('YYYY-MM-DD');
                     return {
                         ...state,
                         [action.milestone_type]: tempState.sort((a, b)=>{return a.completed > b.completed}).sort((a, b)=>{return a.awarded > b.awarded}),
@@ -1433,7 +1471,7 @@ export const applyCustomCode = externalCodeSetup => {
         )
     }
     externalCodeSetup.profileScreenHooksApi.setAfterDetailsComponent(AfterDetailsComponent);
-    externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "videoPlayer", "vimeoPlayer"])
+    externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "videoPlayer", "vimeoPlayer", "myMilestonesScreen", "myQuestsScreen", "myStatsScreen", "myVouchersScreen", "myFeedbackScreen", "SettingsScreen", "CoursesSingleScreen", "LessonSingleScreen"])
     externalCodeSetup.settingsScreenApi.setLogoutComponent(({
                                                                 global,
                                                                 t,

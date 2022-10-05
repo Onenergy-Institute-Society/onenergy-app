@@ -39,10 +39,12 @@ export default class MilestonesAccordian extends Component {
                 }]}>
                     <TouchableOpacity onPress={() => this.toggleExpand()}>
                         <View style={styles.rowLeft}>
-                            <Image source={require("@src/assets/img/arrow-down.png")} style={{
-                                tintColor: "#4942e1",
-                                transform: [{rotate: this.state.expanded ? '180deg' : '0deg'}]
-                            }}/>
+                            <View style={{flex:0.2}}>
+                                <Image source={require("@src/assets/img/arrow-down.png")} style={{
+                                    tintColor: "#4942e1",
+                                    transform: [{rotate: this.state.expanded ? '180deg' : '0deg'}],
+                                }}/>
+                            </View>
                             <View style={styles.rowLeftCenter}>
                             <Text style={styles.title}>{this.props.item.name}</Text>
                             {!this.props.item.awarded?
@@ -268,6 +270,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#e6e6e8',
     },
     rowLeftCenter: {
+        flex: 0.8,
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingVertical: scale(10),
@@ -307,6 +310,12 @@ const styles = StyleSheet.create({
     },
     colorInActive: {
         borderColor: Colors.DARKGRAY,
-    }
-
+    },
+    boxShadow: {
+        shadowColor: "#000",
+        shadowOffset: {width: -2, height: 4},
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 4,
+    },
 });

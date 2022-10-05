@@ -6,12 +6,13 @@ import {
     Text,
     StyleSheet,
     SafeAreaView,
-    Image, ScrollView
+    Image, ScrollView, TouchableWithoutFeedback
 } from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 
 const QuestsWeekly = (props) => {
+    const user = useSelector((state) => state.user.userObject);
     const questsSelector = state => ({questsReducer: state.questsReducer.weekly})
     const {questsReducer} = useSelector(questsSelector);
     const dispatch = useDispatch();
@@ -46,7 +47,7 @@ const QuestsWeekly = (props) => {
                 {Array(7).fill().map((_, idx) => 1 + idx).map((day,index)=>{
                     return (
                         <View style={styles.row} >
-                            <Text style={[styles.title,{color:index===6?"green":null}]}>Day {day} {index===6?'+20 Qi':''}</Text>
+                            <Text style={[styles.title,{color:index===6?"green":null}]}>Day {day} {index===6?'REWARD +20 Qi':''}</Text>
                             <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
                                 <Text style={{marginRight:10}}>{questsReducer?questsReducer.days&&questsReducer.days.length?questsReducer.days[index]!==undefined&&questsReducer.days[index]!==null&&questsReducer.days[index]!==''?questsReducer.days[index]:'':'':''}</Text>
                                 {
@@ -63,6 +64,87 @@ const QuestsWeekly = (props) => {
                         </View>
                     )
                 })}
+                {questsReducer.log?
+                    <View style={[styles.boxShadow, styles.rowReward]}>
+                        <View style={styles.rowLeft}>
+                            <Text style={styles.title}>Practice for a week</Text>
+                            <View style={{marginVertical: 10}}>
+                                <View
+                                    style={{justifyContent: 'center', alignItems: 'center'}}>
+                                    <Text style={{color:"#ED57E1"}}>Expire in {questsReducer.log.days} days</Text></View>
+                            </View>
+                        </View>
+                        <TouchableWithoutFeedback
+                            onPress={() => {
+                                dispatch({
+                                    type: "UPDATE_POINTS",
+                                    payload: user.points.point + 20
+                                });
+                                dispatch({
+                                    type: "QUEST_CLAIM_WEEKLY_MONTHLY",
+                                    quest_mode: "weekly",
+                                });
+                                const apiQuotes = getApi(props.config);
+                                apiQuotes.customRequest(
+                                    "wp-json/onenergy/v1/awardClaim",
+                                    "post",
+                                    {"id":32270, "log_id":questsReducer.log.log_id},
+                                    null,
+                                    {},
+                                    false
+                                ).then();
+                            }}
+                        >
+                            <View style={[styles.rowRight, {backgroundColor:'gold'}]}>
+                                <Text
+                                    style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                            width: -1,
+                                            height: 1
+                                        }}}
+                                >
+                                    CLAIM
+                                </Text>
+                                <Text
+                                    style={{fontSize:24, fontWeight:700, color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                            width: -1,
+                                            height: 1
+                                        }}}
+                                >
+                                    +20 Qi
+                                </Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>:null
+                }
+                {questsReducer.list?
+                    questsReducer.list.map(listItem => (
+                        <View style={[styles.boxShadow, styles.rowReward]}>
+                            <View style={styles.rowLeft}>
+                                <Text style={styles.title}>Practice for a week</Text>
+                            </View>
+                            <View style={[styles.rowRight, {backgroundColor:'grey'}]}>
+                                <Text
+                                    style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                            width: -1,
+                                            height: 1
+                                        }}}
+                                >
+                                    CLEARED
+                                </Text>
+                                <Text
+                                    numberOfLines={1}
+                                    style={{fontSize:11, fontWeight:700, color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                            width: -1,
+                                            height: 1
+                                        }}}
+                                >
+                                    {listItem.date}
+                                </Text>
+                            </View>
+                        </View>
+                    ))
+                    :null
+                }
             </ScrollView>
         </SafeAreaView>
     )
@@ -88,6 +170,43 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: '#e6e6e8',
         marginTop: scale(10),
+        marginHorizontal: scale(15),
+    },
+    rowReward: {
+        borderRadius: 9,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: windowWidth - scale(30),
+        height: scale(60),
+        flexDirection: 'row',
+        backgroundColor: '#f2f2f2',
+        marginTop: scale(10),
+        marginHorizontal: scale(15),
+    },
+    rowLeft: {
+        paddingHorizontal: scale(10),
+        paddingVertical: scale(10),
+        borderTopLeftRadius: 9,
+        borderBottomLeftRadius: 9,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: (windowWidth - scale(30))*3/4,
+        height: scale(60),
+        backgroundColor: '#e6e6e8',
+    },
+    rowRight: {
+        paddingHorizontal: scale(10),
+        paddingVertical: scale(10),
+        borderTopRightRadius: 9,
+        borderBottomRightRadius: 9,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: (windowWidth - scale(30))/4,
+        height: scale(60),
+        backgroundColor: '#7de7fa',
+    },
+    title: {
+      fontSize:scale(14)
     },
     achievementItemBox: {
         marginTop:scale(50),

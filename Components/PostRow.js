@@ -76,7 +76,7 @@ const PostRow = props => {
     }
     useEffect(() => {
         let loadPosts = false;
-        if(postsReducer.postUpdate&&optionData.cache.blog>postsReducer.postUpdate||!postsReducer.postUpdate)
+        if(postsReducer.postUpdate&&optionData.cache.post>postsReducer.postUpdate||!postsReducer.postUpdate)
         {
             loadPosts = true;
         }else{

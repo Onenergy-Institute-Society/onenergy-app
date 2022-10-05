@@ -42,7 +42,6 @@ const Milestones = (props) => {
         fetchQuests().then();
     }, []);
     const renderItem = ({ item }) => {
-        console.log(item)
         return (
             item.progress?
                 <View style={[styles.boxShadow, styles.row]}>

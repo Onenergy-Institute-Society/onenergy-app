@@ -47,6 +47,26 @@ const NotificationTabBarIcon = props => {
             if(!notificationCount) {
                 notificationCount = postsReducer.posts.filter((post) => post.categories.includes(105) && post.notify === true).length;
             }
+            if(notificationCount===0) {
+                let categoryIndex = postsReducer.lastView.findIndex(lv => lv.category === 103);
+                if (categoryIndex&&categoryIndex>=0) {
+                    const dateTime = new Date(postsReducer.lastView[categoryIndex].date);
+                    const datePost = new Date(optionData.latest_post_watch);
+                    if (datePost > dateTime) {
+                        notificationCount = 1;
+                    }
+                }
+                if(notificationCount===0) {
+                    categoryIndex = postsReducer.lastView.findIndex(lv => lv.category === 105);
+                    if (categoryIndex && categoryIndex >= 0) {
+                        const dateTime = new Date(postsReducer.lastView[categoryIndex].date);
+                        const datePost = new Date(optionData.latest_post_read);
+                        if (datePost > dateTime) {
+                            notificationCount = 1;
+                        }
+                    }
+                }
+            }
             break;
         case 'progress':
             notificationCount = notification.progress?notification.progress:0;

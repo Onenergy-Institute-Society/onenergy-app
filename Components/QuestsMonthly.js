@@ -6,12 +6,13 @@ import {
     Text,
     StyleSheet,
     SafeAreaView,
-    Image, ScrollView
+    Image, ScrollView, TouchableWithoutFeedback
 } from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 
 const QuestsMonthly = (props) => {
+    const user = useSelector((state) => state.user.userObject);
     const questsSelector = state => ({questsReducer: state.questsReducer.monthly})
     const {questsReducer} = useSelector(questsSelector);
     const dispatch = useDispatch();
@@ -69,7 +70,89 @@ const QuestsMonthly = (props) => {
                     paddingVertical:scale(10),
                     borderRadius: 9, alignItems: 'center',
                     justifyContent: 'center',backgroundColor: '#e6e6e8',
-                    marginTop: scale(2),}}><Text style={{color:"green"}}>Practice consecutively 30 days +100 Qi</Text></View>
+                    marginTop: scale(2),}}><Text style={{color:"green"}}>Practice consecutively 30 days REWARD +100 Qi</Text></View>
+
+                {questsReducer.log?
+                    <View style={[styles.boxShadow, styles.rowReward]}>
+                        <View style={styles.rowLeft}>
+                            <Text style={styles.title}>Practice for a month</Text>
+                            <View style={{marginVertical: 10}}>
+                                <View
+                                    style={{justifyContent: 'center', alignItems: 'center'}}>
+                                    <Text style={{color:"#ED57E1"}}>Expire in {questsReducer.log.days} days</Text></View>
+                            </View>
+                        </View>
+                        <TouchableWithoutFeedback
+                            onPress={() => {
+                                dispatch({
+                                    type: "UPDATE_POINTS",
+                                    payload: user.points.point + 100
+                                });
+                                dispatch({
+                                    type: "QUEST_CLAIM_WEEKLY_MONTHLY",
+                                    quest_mode: "monthly",
+                                });
+                                const apiQuotes = getApi(props.config);
+                                apiQuotes.customRequest(
+                                    "wp-json/onenergy/v1/awardClaim",
+                                    "post",
+                                    {"id":32272, "log_id":questsReducer.log.log_id},
+                                    null,
+                                    {},
+                                    false
+                                ).then();
+                            }}
+                        >
+                            <View style={[styles.rowRight, {backgroundColor:'gold'}]}>
+                                <Text
+                                    style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                            width: -1,
+                                            height: 1
+                                        }}}
+                                >
+                                    CLAIM
+                                </Text>
+                                <Text
+                                    style={{fontSize:24, fontWeight:700, color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                            width: -1,
+                                            height: 1
+                                        }}}
+                                >
+                                    +100 Qi
+                                </Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>:null
+                }
+                {questsReducer.list?
+                    questsReducer.list.map(listItem => (
+                        <View style={[styles.boxShadow, styles.rowReward]}>
+                            <View style={styles.rowLeft}>
+                                <Text style={styles.title}>Practice for a month</Text>
+                            </View>
+                            <View style={[styles.rowRight, {backgroundColor:'grey'}]}>
+                                <Text
+                                    style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                            width: -1,
+                                            height: 1
+                                        }}}
+                                >
+                                    CLEARED
+                                </Text>
+                                <Text
+                                    numberOfLines={1}
+                                    style={{fontSize:11, fontWeight:700, color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                            width: -1,
+                                            height: 1
+                                        }}}
+                                >
+                                    {listItem.date}
+                                </Text>
+                            </View>
+                        </View>
+                    ))
+                    :null
+                }
             </ScrollView>
         </SafeAreaView>
     )

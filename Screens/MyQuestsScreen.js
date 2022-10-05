@@ -10,6 +10,7 @@ import {scale} from "../Utils/scale";
 import DailyQuests from "../Components/QuestsDaily";
 import WeeklyQuests from "../Components/QuestsWeekly";
 import MonthlyQuests from "../Components/QuestsMonthly";
+import QiPointHeader from "../Components/QiPointHeader";
 
 const QuestsDaily = () => {
     try {
@@ -42,7 +43,7 @@ const TabTitle = ({tintColor, name}) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     let titleIndex = optionData.titles.findIndex(el => el.id === name);
     return (
-        <Text style={{ color: tintColor }}>{optionData.titles[titleIndex].title}</Text>
+        <Text style={{ color: tintColor, fontSize: scale(20) }}>{optionData.titles[titleIndex].title}</Text>
     )
 }
 const Tabs = createMaterialTopTabNavigator(
@@ -124,5 +125,7 @@ MyQuestsScreen.navigationOptions = ({navigation}) => ({
                 }}
             />
         </TouchableOpacity>,
+    headerRight:
+        <QiPointHeader />
 })
 export default withNavigation(MyQuestsScreen);

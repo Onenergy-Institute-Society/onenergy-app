@@ -148,26 +148,34 @@ const PracticeGroup = props => {
         let CurrentStartTime = '';
         let startTime;
         let hour;
+        let startMinutes;
+        let loop = parseInt(item.meta_box.loop);
 
-        let startMinutes = parseInt(item.meta_box.start_time);
-
-        if(startMinutes >= currentMinutes)
+        if(loop > currentMinutes)
         {
-            hour = new Date().getHours(); //To get the Current Year
-            timeToGo = startMinutes - currentMinutes;
+            startMinutes = loop;
+            timeToGo = loop - currentMinutes;
         }else{
-            startTime = new Date(
-                new Date().getFullYear(),
-                new Date().getMonth(),
-                new Date().getDate(),
-                new Date().getHours()+1,
-                parseInt(item.meta_box.start_time),
-                new Date().getSeconds(),
-            );
-            hour = startTime.getHours(); //To get the Current Year
-            timeToGo = 60 - currentMinutes + startMinutes;
+            startMinutes =  Math.ceil(currentMinutes / loop) * loop;
+            if(startMinutes<60)
+            {
+                hour = new Date().getHours(); //To get the Current Hour
+                timeToGo = startMinutes - currentMinutes;
+            }else{
+                startTime = new Date(
+                    new Date().getFullYear(),
+                    new Date().getMonth(),
+                    new Date().getDate(),
+                    new Date().getHours()+1,
+                    startMinutes-60,
+                    new Date().getSeconds(),
+                );
+                hour = startTime.getHours(); //To get the Current Hour
+                timeToGo = startMinutes - currentMinutes;
+                startMinutes -= 60;
+            }
         }
-        CurrentStartTime = year + '-' + month + '-' + date + ' ' + hour + ":" + item.meta_box.start_time;
+        CurrentStartTime = year + '-' + month + '-' + date + ' ' + hour + ":" + startMinutes;
 
         return (
             <TouchableOpacity
@@ -236,7 +244,7 @@ const PracticeGroup = props => {
                             }
                         </View>
                         {conditionLessons||optionData.testing_mode?
-                            <Text style={{fontSize: scale(12), textAlign: "center"}}>Live every hour at {startMinutes} min</Text>
+                            <Text style={{fontSize: scale(12), textAlign: "center"}}>Live every {loop} min</Text>
                             :
                             <Text style={{fontSize: scale(12), textAlign: "center"}}>Finish required lessons to unlock this group practice.</Text>
                         }

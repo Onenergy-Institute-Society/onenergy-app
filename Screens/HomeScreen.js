@@ -6,7 +6,7 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback, SafeAreaView
 } from 'react-native';
-import { withNavigation } from 'react-navigation';
+import { StackActions, NavigationActions, withNavigation } from 'react-navigation';
 import {
     createDrawerNavigator,
 } from 'react-navigation-drawer';
@@ -291,7 +291,7 @@ const Drawer = createDrawerNavigator(
         },
         drawerType: 'slide',
         contentComponent: props => <CustomDrawerContentComponent {...props} />,
-        navigationOptions : {header:null}
+        navigationOptions : {header:null},
     }
 );
 
