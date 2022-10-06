@@ -48,7 +48,13 @@ const CustomDrawerContentComponent = (props) => {
                                         color: '#fff',
                                         fontSize: scale(18),
                                         textAlign:"right",
-                                        marginBottom:10
+                                        marginBottom:10,
+                                        textShadowColor: 'black',
+                                        textShadowRadius: 1,
+                                        textShadowOffset: {
+                                            width: -1,
+                                            height: 1
+                                        }
                                     }}>
                                     {user.name}
                                 </Text>
@@ -60,7 +66,13 @@ const CustomDrawerContentComponent = (props) => {
                                                 color: '#fff',
                                                 fontSize: scale(14),
                                                 marginLeft:5,
-                                                alignSelf:"center"
+                                                alignSelf:"center",
+                                                textShadowColor: 'black',
+                                                textShadowRadius: 1,
+                                                textShadowOffset: {
+                                                    width: -1,
+                                                    height: 1
+                                                }
                                             }}>
                                             {user.user_ranks[0].rank.title}
                                         </Text>
@@ -76,7 +88,13 @@ const CustomDrawerContentComponent = (props) => {
                                                     style={{
                                                         color: '#fff',
                                                         textAlign:"left",
-                                                        marginLeft:5
+                                                        marginLeft:5,
+                                                        textShadowColor: 'black',
+                                                        textShadowRadius: 1,
+                                                        textShadowOffset: {
+                                                            width: -1,
+                                                            height: 1
+                                                        }
                                                     }}>
                                                     {point.point} {point.label}
                                                 </Text>

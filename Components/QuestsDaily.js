@@ -21,7 +21,7 @@ const QuestsDaily = (props) => {
     const questsSelector = state => ({questsReducer: state.questsReducer.daily})
     const {questsReducer} = useSelector(questsSelector);
     const dispatch = useDispatch();
-    let date = new Date();
+
     const fetchQuests = async () => {
         try {
             const apiQuotes = getApi(props.config);
@@ -48,7 +48,6 @@ const QuestsDaily = (props) => {
         fetchQuests().then();
     }, []);
     const renderItem = ({item}) => {
-        console.log(item)
         return (
             <>
             <View style={[styles.boxShadow, styles.row]}>
@@ -69,6 +68,7 @@ const QuestsDaily = (props) => {
                 </View>
                 <TouchableWithoutFeedback
                     onPress={() => {
+                        console.log(item)
                         if(item.completed&&!item.awarded) {
                             dispatch({
                                 type: "UPDATE_POINTS",
@@ -77,18 +77,18 @@ const QuestsDaily = (props) => {
                             dispatch({
                                 type: "QUEST_CLAIM",
                                 quest_mode: "daily",
-                                payload: item.id
+                                payload: item.id,
                             });
+                            const apiQuotes = getApi(props.config);
+                            apiQuotes.customRequest(
+                                "wp-json/onenergy/v1/awardClaim",
+                                "post",
+                                {"id":item.id, "log_id":item.wait[0].log_id},
+                                null,
+                                {},
+                                false
+                            ).then();
                         }
-                        const apiQuotes = getApi(props.config);
-                        apiQuotes.customRequest(
-                            "wp-json/onenergy/v1/awardClaim",
-                            "post",
-                            {"id":item.id},
-                            null,
-                            {},
-                            false
-                        ).then();
                     }}
                 >
                     <View style={[styles.rowRight, {backgroundColor:item.awarded?'gray':item.completed?'gold':'#7de7fa'}]}>
@@ -158,59 +158,61 @@ const QuestsDaily = (props) => {
             </View>
 
         {item.wait&&item.wait.length?
-            item.wait.map(waitItem =>
-            <View style={[styles.boxShadow, styles.row]}>
-                <View style={styles.rowLeft}>
-                    <Text style={styles.title}>{item.name}</Text>
-                        <View style={{marginVertical: 10}}>
-                            <View
-                                style={{justifyContent: 'center', alignItems: 'center'}}>
-                                <Text style={{color:"#ED57E1"}}>Expire in {waitItem.days} days</Text></View>
-                        </View>
-                </View>
-                <TouchableWithoutFeedback
-                    onPress={() => {
-                        dispatch({
-                            type: "UPDATE_POINTS",
-                            payload: user.points.point + item.points
-                        });
-                        dispatch({
-                            type: "QUEST_WAIT_CLAIM",
-                            quest_mode: "daily",
-                            item: item.id,
-                            log: waitItem.log_id
-                        });
-                        const apiQuotes = getApi(props.config);
-                        apiQuotes.customRequest(
-                            "wp-json/onenergy/v1/awardClaim",
-                            "post",
-                            {"id":item.id, "log_id":waitItem.log_id},
-                            null,
-                            {},
-                            false
-                        ).then();
-                    }}
-                >
-                    <View style={[styles.rowRight, {backgroundColor:'gold'}]}>
-                        <Text
-                            style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
-                                    width: -1,
-                                    height: 1
-                                }}}
-                        >
-                            CLAIM
-                        </Text>
-                        <Text
-                            style={{fontSize:24, fontWeight:700, color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
-                                    width: -1,
-                                    height: 1
-                                }}}
-                        >
-                            +{item.points} Qi
-                        </Text>
+            item.wait.map(waitItem => {
+                if(parseInt(waitItem.days)<7)
+                return (
+                <View style={[styles.boxShadow, styles.row]}>
+                    <View style={styles.rowLeft}>
+                        <Text style={styles.title}>{item.name}</Text>
+                            <View style={{marginVertical: 10}}>
+                                <View
+                                    style={{justifyContent: 'center', alignItems: 'center'}}>
+                                    <Text style={{color:"#ED57E1"}}>Expire in {waitItem.days} days</Text></View>
+                            </View>
                     </View>
-                </TouchableWithoutFeedback>
-            </View>)
+                    <TouchableWithoutFeedback
+                        onPress={() => {
+                            dispatch({
+                                type: "UPDATE_POINTS",
+                                payload: user.points.point + item.points
+                            });
+                            dispatch({
+                                type: "QUEST_WAIT_CLAIM",
+                                quest_mode: "daily",
+                                item: item.id,
+                                log: waitItem.log_id
+                            });
+                            const apiQuotes = getApi(props.config);
+                            apiQuotes.customRequest(
+                                "wp-json/onenergy/v1/awardClaim",
+                                "post",
+                                {"id":item.id, "log_id":waitItem.log_id},
+                                null,
+                                {},
+                                false
+                            ).then();
+                        }}
+                    >
+                        <View style={[styles.rowRight, {backgroundColor:'gold'}]}>
+                            <Text
+                                style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                        width: -1,
+                                        height: 1
+                                    }}}
+                            >
+                                CLAIM
+                            </Text>
+                            <Text
+                                style={{fontSize:24, fontWeight:700, color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                        width: -1,
+                                        height: 1
+                                    }}}
+                            >
+                                +{item.points} Qi
+                            </Text>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </View>)})
             :null
         }</>
         )

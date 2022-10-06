@@ -661,6 +661,7 @@ export const applyCustomCode = externalCodeSetup => {
         (state = {daily: [], weekly: [], monthly: [], weekly_log: '', monthly_log: ''}, action) => {
             switch (action.type) {
                 case "QUEST_ADD":
+                    console.log("quest_add")
                     let quests;
                     if(action.quest_mode === "daily") {
                         quests = action.payload.sort((a, b) => {
@@ -1227,6 +1228,27 @@ export const applyCustomCode = externalCodeSetup => {
     externalCodeSetup.navigationApi.setBottomTabBarIcon((icon, iconProps) => {
         const routeLabel = iconProps.route.routes[0].params.item?.label;
         switch (routeLabel) {
+            case 'Home':
+                return <View
+                    style={{
+                        height: 30,
+                        width: 30,
+                        borderRadius: 58,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}>
+                    <Image
+                        source={require('./assets/images/home-outlined.png')}
+                        style={{
+                            width: 24,
+                            height: 24,
+                            tintColor: iconProps.tintColor,
+                            alignContent: 'center',
+                            marginBottom: 0,
+                        }}
+                    />
+                    <NotificationTabBarIcon notificationID={'left_menu'}  top={-3} right={-3} size={scale(10)} showNumber={false} />
+                </View>
             case "QiGong":
                 return <View
                     style={{

@@ -35,23 +35,13 @@ const AudioPlayer = (props) => {
                 {},
                 false
             ).then(response => {
-                if(response.data.updated) {
-                    dispatch({
-                        type: "UPDATE_POINTS",
-                        payload: response.data.qi
-                    });
-                    dispatch({
-                        type: "UPDATE_USER_POINTS",
-                        payload: response.data.qi
-                    });
+                if(response.data.updated.quest) {
                     dispatch({
                         type: 'NOTIFICATION_INCREMENT',
                         payload: 'quest'
                     });
-                    dispatch({
-                        type: 'NOTIFICATION_INCREMENT',
-                        payload: 'progress'
-                    });
+                }
+                if(response.data.updated.milestone) {
                     dispatch({
                         type: 'NOTIFICATION_INCREMENT',
                         payload: 'achievement'
