@@ -147,7 +147,7 @@ const PracticeGroup = props => {
         let timeToGo;
         let CurrentStartTime = '';
         let startTime;
-        let hour;
+        let hour = new Date().getHours();
         let startMinutes;
         let loop = parseInt(item.meta_box.loop);
 
@@ -159,7 +159,6 @@ const PracticeGroup = props => {
             startMinutes =  Math.ceil(currentMinutes / loop) * loop;
             if(startMinutes<60)
             {
-                hour = new Date().getHours(); //To get the Current Hour
                 timeToGo = startMinutes - currentMinutes;
             }else{
                 startTime = new Date(
@@ -196,7 +195,7 @@ const PracticeGroup = props => {
                                 <View style={{flexDirection: "row", justifyContent: "space-between",marginHorizontal: scale(15)}}>
                                     <View style={{flexDirection: "row", justifyContent: "flex-start",}}>
                                         <FastImage tintColor="black" source={require("@src/assets/img/stopwatch.png")} style={{width:16, height:16}} />
-                                        <Text style={styles.waitTime}>live in {timeToGo} mins</Text>
+                                        <Text style={styles.waitTime}>Start in {timeToGo} mins</Text>
                                     </View>
                                     <WaitingGroupPractice gp_id={item.id}
                                                           gp_time={CurrentStartTime}
@@ -244,7 +243,7 @@ const PracticeGroup = props => {
                             }
                         </View>
                         {conditionLessons||optionData.testing_mode?
-                            <Text style={{fontSize: scale(12), textAlign: "center"}}>Live every {loop} min</Text>
+                            <Text style={{fontSize: scale(12), textAlign: "center"}}>last for {new Date(item.meta_box.duration * 1000).toISOString().substr(14, 5)}, repeat every {loop} mins</Text>
                             :
                             <Text style={{fontSize: scale(12), textAlign: "center"}}>Finish required lessons to unlock this group practice.</Text>
                         }

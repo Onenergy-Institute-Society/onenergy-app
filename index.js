@@ -1199,7 +1199,7 @@ export const applyCustomCode = externalCodeSetup => {
                 }
             } else {
                 return myCustomRoute; //Use my own custom route instead of the default "Auth" route
-//return defaultInitialRoute;
+                    //return defaultInitialRoute;
             }
 
         };

@@ -158,7 +158,7 @@ const PracticeMember = props => {
                     routinesReducer&&routinesReducer.length ?
                         <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                             {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
-                                <View style={{marginVertical:scale(5)}}>
+                                <View>
                                     <EventList location={'practice_member'} eventsDate={optionData.goals}/>
                                     <EventList location={'practice_member'} eventsDate={optionData.challenges}/>
                                 </View>

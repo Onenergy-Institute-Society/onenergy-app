@@ -77,7 +77,7 @@ class VideoPlayer extends Component {
             let sec = new Date().getSeconds();
             let startMinutes = this.state.startMinute;
 
-            if (min <= startMinutes){
+            if (min < startMinutes){
                 min = 30 - startMinutes + min;
             }else{
                 min = min - startMinutes - 30;
@@ -102,13 +102,11 @@ class VideoPlayer extends Component {
             {},
             false
         ).then(response => {
-            if(response.data.updated)
-            {
-                this.props.execDispatch('UPDATE_POINTS', response.data.qi);
-                this.props.execDispatch('UPDATE_USER_POINTS', response.data.qi);
-                this.props.execDispatch('NOTIFICATION_INCREMENT', 'progress');
-                this.props.execDispatch('NOTIFICATION_INCREMENT', 'achievement');
+            if(response.data.updated.quest) {
                 this.props.execDispatch('NOTIFICATION_INCREMENT', 'quest');
+            }
+            if(response.data.updated.milestone) {
+                this.props.execDispatch('NOTIFICATION_INCREMENT', 'achievement');
             }
             if(response.data.achievements)
             {
