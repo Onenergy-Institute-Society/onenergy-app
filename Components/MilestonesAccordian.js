@@ -101,7 +101,7 @@ export default class MilestonesAccordian extends Component {
                                         </Text>
                                         <Text
                                             numberOfLines={1}
-                                            style={{fontSize:11, fontWeight:700, color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                            style={{fontSize:11, fontWeight:"700", color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
                                                     width: -1,
                                                     height: 1
                                                 }}}
@@ -121,7 +121,7 @@ export default class MilestonesAccordian extends Component {
                                                 CLAIM
                                             </Text>
                                             <Text
-                                                style={{fontSize:24, fontWeight:700, color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                                style={{fontSize:24, fontWeight:"700", color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
                                                         width: -1,
                                                         height: 1
                                                     }}}
@@ -140,7 +140,7 @@ export default class MilestonesAccordian extends Component {
                                                 REWARD
                                             </Text>
                                             <Text
-                                                style={{fontSize:24, fontWeight:700, color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                                style={{fontSize:24, fontWeight:"700", color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
                                                         width: -1,
                                                         height: 1
                                                     }}}

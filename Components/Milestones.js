@@ -98,7 +98,7 @@ const Milestones = (props) => {
                                         </Text>
                                         <Text
                                             numberOfLines={1}
-                                            style={{fontSize:11, fontWeight:700, color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                            style={{fontSize:scale(11), fontWeight:"700", color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
                                                     width: -1,
                                                     height: 1
                                                 }}}
@@ -118,7 +118,7 @@ const Milestones = (props) => {
                                             CLAIM
                                         </Text>
                                         <Text
-                                            style={{fontSize:24, fontWeight:700, color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                            style={{fontSize:scale(24), fontWeight:"700", color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
                                                     width: -1,
                                                     height: 1
                                                 }}}
@@ -137,7 +137,7 @@ const Milestones = (props) => {
                                                 REWARD
                                             </Text>
                                             <Text
-                                                style={{fontSize:24, fontWeight:700, color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                                style={{fontSize:scale(24), fontWeight:"700", color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
                                                         width: -1,
                                                         height: 1
                                                     }}}
