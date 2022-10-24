@@ -17,6 +17,8 @@ import FastImage from "react-native-fast-image";
 const EventList = props => {
     const {navigation, location, eventsDate} = props;
     const user = useSelector((state) => state.user.userObject);
+    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
+    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer.achievements);
     const [showAlert, setShowAlert] = useState(false);
     const [alertTitle, setAlertTitle] = useState('');
     const [alertBody, setAlertBody] = useState('');
@@ -64,7 +66,7 @@ const EventList = props => {
                         break;
                     case 'course':
                         if (item.showCourseOption === 'enrolled') {
-                            let showCourse = user&&user.enrolled_courses.find(course => course.id === parseInt(item.showCourse));
+                            let showCourse = user&&progressReducer.enrolledCourses.find(course => course.id === parseInt(item.showCourse));
                             if (showCourse) {
                                 showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
                                 if (current_time > showDate) {
@@ -72,7 +74,7 @@ const EventList = props => {
                                 }
                             }
                         } else if (item.showCourseOption === 'completed') {
-                            let showCourse = user&&user.completed_courses.find(course => course.id === parseInt(item.showCourse));
+                            let showCourse = user&&progressReducer.completedCourses.find(course => course.id === parseInt(item.showCourse));
                             if (showCourse) {
                                 showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
                                 if (current_time > showDate) {
@@ -82,7 +84,7 @@ const EventList = props => {
                         }
                         break;
                     case 'lesson':
-                        let showLesson = user&&user.completed_lessons.find(lesson => lesson.id === parseInt(item.showLesson));
+                        let showLesson = user&&progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.showLesson));
                         if (showLesson) {
                             showDate = new moment.unix(showLesson['date']).add(item.delay, 'd');
                             if (current_time > showDate) {
@@ -91,7 +93,7 @@ const EventList = props => {
                         }
                         break;
                     case 'achievement':
-                        let showAchievement = user&&user.completed_achievements.find(achievement => achievement.id === parseInt(item.showAchievement));
+                        let showAchievement = user&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.showAchievement));
                         if (showAchievement) {
                             showDate = new moment.unix(showAchievement['date']).add(item.delay, 'd');
                             if (current_time > showDate) {
@@ -123,22 +125,22 @@ const EventList = props => {
                             break;
                         case 'course':
                             if (item.hideCourseOption === 'enrolled') {
-                                if (user&&user.enrolled_courses.find(course => course.id === parseInt(item.hideCourse))) {
+                                if (user&&progressReducer.enrolledCourses.find(course => course.id === parseInt(item.hideCourse))) {
                                     show = false;
                                 }
                             } else if (item.hideCourseOption === 'completed') {
-                                if (user&&user.completed_courses.find(course => course.id === parseInt(item.hideCourse))) {
+                                if (user&&progressReducer.completedCourses.find(course => course.id === parseInt(item.hideCourse))) {
                                     show = false;
                                 }
                             }
                             break;
                         case 'lesson':
-                            if (user&&user.completed_lessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
+                            if (user&&progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
                                 show = false;
                             }
                             break;
                         case 'achievement':
-                            if (user&&user.completed_achievements.find(achievement => achievement.id === parseInt(item.hideAchievement))) {
+                            if (user&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.hideAchievement))) {
                                 show = false;
                             }
                             break;
@@ -178,7 +180,7 @@ const EventList = props => {
                                         case 'app':
                                             navigation.dispatch(
                                                 NavigationActions.navigate({
-                                                    routeName: "MyAppPageScreen",
+                                                    routeName: "AppPageScreen",
                                                     params: {
                                                         pageId: item.param,
                                                         title: ''
@@ -189,7 +191,7 @@ const EventList = props => {
                                         case 'blog':
                                             navigation.dispatch(
                                                 NavigationActions.navigate({
-                                                    routeName: "MyBlogScreen",
+                                                    routeName: "BlogScreen",
                                                     params: {
                                                         blogId: item.param,
                                                         title: ''
@@ -200,7 +202,7 @@ const EventList = props => {
                                         case 'course':
                                             navigation.dispatch(
                                                 NavigationActions.navigate({
-                                                    routeName: "MyCourseScreen",
+                                                    routeName: "CourseScreen",
                                                     params: {
                                                         courseId: parseInt(item.param),
                                                     }

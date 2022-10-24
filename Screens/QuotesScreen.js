@@ -20,15 +20,12 @@ import ScalableImage from "../Components/ScalableImage";
 import RNFetchBlob from 'rn-fetch-blob';
 
 const QuotesScreen = props => {
-    const [ dataQuotesRead, setQuotesReadData ] = useState([]);
     const [loading, setLoading] = useState(false);
     const [ page, setPage] = useState(1);
     const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState(true);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const postSelector = state => ({postsReducer: state.postsReducer})
-    const {postsReducer} = useSelector(postSelector);
+    const quoteReducer = useSelector((state) => state.onenergyReducer.quoteReducer.quotes);
     const dispatch = useDispatch();
-    const categoryIndex = postsReducer.lastView&&postsReducer.lastView.length?postsReducer.lastView.findIndex(lv => lv.category === 125):null;
 
     const fetchQuote = async () => {
         const api = getApi(props.config);
@@ -40,28 +37,30 @@ const QuotesScreen = props => {
             {},     // request headers object
             false   // true - if full url is given, false if you use the suffix for the url. False is default.
         ).then(response => response.data);
-        let posts = [];
-        data.map((item) => {
-            if (!postsReducer.posts.length || postsReducer.posts.filter(post => post.id === item.id).length === 0) {
-                posts.push({
-                    id: item.id,
-                    date: item.date,
-                    title: item.title,
-                    format: item.format,
-                    excerpt: item.excerpt,
-                    categories: item.categories,
-                    author: item._embedded['author'][0].name,
-                    avatar: item._embedded['author'][0].avatar_urls['24'],
-                    image: item._embedded['wp:featuredmedia'][0].source_url,
-                })
+        let quotes = [];
+        if(data&&data.length) {
+            data.map((item) => {
+                if (!quoteReducer.length || quoteReducer.filter(quote => quote.id === item.id).length === 0) {
+                    quotes.push({
+                        id: item.id,
+                        date: item.date,
+                        title: item.title,
+                        format: item.format,
+                        excerpt: item.excerpt,
+                        author: item._embedded['author'][0].name,
+                        avatar: item._embedded['author'][0].avatar_urls['24'],
+                        image: item._embedded['wp:featuredmedia'][0].source_url,
+                    })
+                }
+            })
+            console.log(quotes)
+            if (quotes && quotes.length > 0) {
+                dispatch({
+                    type: 'ONENERGY_QUOTES_ADD',
+                    payload: quotes,
+                });
             }
-        })
-        if (posts && posts.length > 0) {
-            dispatch({
-                type: 'POSTS_ADD',
-                payload: posts,
-                category: 125
-            });
+            setLoading(false);
         }
     }
     const checkPermission = async (image_URL) => {
@@ -103,7 +102,7 @@ const QuotesScreen = props => {
         let ext = getExtention(image_URL);
         ext = '.' + ext[0];
         // Get config and fs from RNFetchBlob
-        // config: To pass the downloading related options
+        // config: To pass the downloading related options'
         // fs: Directory path where we want our image to download
         const { config, fs } = RNFetchBlob;
         let PictureDir = Platform.OS === 'ios' ? fs.dirs.DocumentDir : fs.dirs.PictureDir;
@@ -143,38 +142,25 @@ const QuotesScreen = props => {
         inViewPort.item.image?checkPermission(inViewPort.item.image):null;
     };
     useEffect(()=>{
-        let titleIndex = optionData.titles.findIndex(el => el.id === 'quote_title');
         props.navigation.setParams({
-            title: optionData.titles[titleIndex].title,
+            title: optionData.titles.find(el => el.id === 'quote_title').title,
             downloadCurrentQuote: downloadCurrentQuote,
         });
     },[]);
     useEffect(()=>{
-        let loadPosts = false;
-        if(categoryIndex&&categoryIndex>=0)
+        let loadQuotes = false;
+        let quoteCount = quoteReducer.length
+
+        if(quoteCount < 5*page)
         {
-            let postCount = postsReducer.posts.filter((post)=>post.categories.includes(125)).length
-            if(postCount < 5*page)
-            {
-                loadPosts = true
-            }else {
-                setQuotesReadData((current) => [...current, ...postsReducer.posts.filter((post)=>post.categories.includes(125)).slice((page-1)*5, page*5)]);
-                if (new Date(postsReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[125])) {
-                    loadPosts = true;
-                }
-            }
-        }else{
-            loadPosts = true;
+            loadQuotes = true
         }
-        if(loadPosts) {
-            setLoading(true)
+        if(loadQuotes) {
+            setLoading(true);
             fetchQuote().then();
         }
     }, [page]);
-    useEffect(() => {
-        setQuotesReadData((current) => [...current, ...postsReducer.posts.filter((post)=>post.categories.includes(125)).slice((page-1)*5, page*5)]);
-        setLoading(false);
-    },[postsReducer.posts])
+
     const onViewableItemsChanged = React.useRef(({ viewableItems, changed }) => {
         props.navigation.setParams({inViewPort: changed[0]});
     })
@@ -189,21 +175,22 @@ const QuotesScreen = props => {
     );
     return (
         <SafeAreaView style={styles.container}>
-            {dataQuotesRead&&dataQuotesRead.length?(
+            {quoteReducer&&quoteReducer.length?(
                 <View style={styles.view}>
                     <FlatList
                         inverted
                         initialNumToRender={5}
+                        maxToRenderPerBatch={5}
                         snapToInterval={windowWidth}
                         disableIntervalMomentum={true}
                         decelerationRate={"fast"}
                         snapToAlignment={'start'}
-                        data={dataQuotesRead}
+                        data={quoteReducer}
                         renderItem={renderItem}
                         keyExtractor={(item, index) => index + ""}
                         showsHorizontalScrollIndicator={false}
                         onEndReached={({distanceFromEnd}) => {
-                            console.log(distanceFromEnd)
+
                             if(!onEndReachedCalledDuringMomentum) {
                                 if (distanceFromEnd < 0) return;
                                 setPage(page + 1);
@@ -304,7 +291,7 @@ QuotesScreen.navigationOptions = ({ navigation }) => {
             </TouchableOpacity>,
         headerRight:
             <TouchableOpacity
-                onPress={() => {console.log(params);params.downloadCurrentQuote(params.inViewPort)}}
+                onPress={() => {params.downloadCurrentQuote(params.inViewPort)}}
             >
                 <IconButton
                     icon={require("@src/assets/img/download-large.png")}

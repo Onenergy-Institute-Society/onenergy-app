@@ -6,157 +6,175 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import MilestonesAccordian from "./MilestonesAccordian";
 import * as Progress from 'react-native-progress';
+import moment from 'moment';
 
 const Milestones = (props) => {
     const {type} = props;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const user = useSelector((state) => state.user.userObject);
-    const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'achievement_milestone_empty');
-    const emptyText = optionData.titles[emptyTextIndex].title
-    const milestonesSelector = state => ({milestonesReducer: state.milestonesReducer[type]})
-    const {milestonesReducer} = useSelector(milestonesSelector);
+    const emptyText = optionData.titles.find(el => el.id === 'achievement_milestone_empty').title
+    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
+    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === type));
     const dispatch = useDispatch();
-    const fetchQuests = async () => {
-        try {
-            const apiQuotes = getApi(props.config);
-            const data = await apiQuotes.customRequest(
-                "wp-json/onenergy/v1/milestones/?category="+type,
-                "get",
-                {},
-                null,
-                {},
-                false
-            ).then(response => response.data);
-            if(data&&data.length) {
-                dispatch({
-                    type: 'MILESTONE_ADD',
-                    milestone_type: type,
-                    payload: data,
-                });
-            }
-        } catch (e) {
-            console.error(e);
+
+    const handleOnPress = (item) => {
+        if(item.complete_date&&!item.claim_date) {
+            dispatch({
+                type: "ONENERGY_UPDATE_USER_POINTS",
+                payload: {'qi': item.points}
+            });
+            dispatch({
+                type: "ONENERGY_ACHIEVEMENT_CLAIM",
+                milestone_type: type,
+                payload: item.id
+            });
         }
+        const apiMilestone = getApi(props.config);
+        apiMilestone.customRequest(
+            "wp-json/onenergy/v1/awardClaim",
+            "post",
+            {"id":item.id},
+            null,
+            {},
+            false
+        ).then();
     }
-    useEffect(() => {
-        fetchQuests().then();
-    }, []);
+
     const renderItem = ({ item }) => {
+        let show = -1;
+        let complete_date = '';
+        let claim_date = '';
+        switch(item.show){
+            case 'course':
+                switch(item.showCourseOption){
+                    case 'enrolled':
+                        show = progressReducer.enrolledCourses.findIndex(course => course.id === parseInt(item.showCourse));
+                        break;
+                    case 'completed':
+                        show = progressReducer.completedCourses.findIndex(course => course.id === parseInt(item.showCourse));
+                        break;
+                }
+                break;
+            case 'lesson':
+                show = progressReducer.completedLessons.findIndex(lesson => lesson.id === parseInt(item.showLesson));
+                break;
+            case 'achievement':
+                show = achievementReducer.findIndex(achievement => (achievement.id === parseInt(item.showAchievement) && achievement.complete_date));
+                break;
+            default:
+                show = 1;
+                break;
+        }
+        if(item.complete_date) complete_date = new moment.unix(item.complete_date).format('YYYY-MM-DD');
+        if(item.claim_date) claim_date = new moment.unix(item.claim_date).format('YYYY-MM-DD');
         return (
-            item.progress?
-                <View style={[styles.boxShadow, styles.row]}>
-                    <View style={styles.rowLeft}>
-                        <Text style={styles.title}>{item.name}</Text>
-                        {!item.awarded?
-                        <View style={{marginVertical: 10}}>
-                            <Progress.Bar showsText={true} borderColor={"#4942e1"} color={"#7de7fa"} unfilledColor={"black"} borderRadius={9}
-                                          progress={item.steps.length > 1 ? item.completed_steps / item.steps.length : item.steps[0].progress.current / item.steps[0].progress.total}
-                                          width={windowWidth/2} height={scale(16)}/>
-                            <View
-                                style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}><Text style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
-                                width: -1,
-                                height: 1
-                            }}}>{item.completed?"completed":item.steps.length > 1 ? item.completed_steps + ' / ' + item.steps.length : item.steps[0].progress.current + ' / ' + item.steps[0].progress.total}</Text></View>
-                        </View>
+            show >= 0?
+                Array.isArray(item.step)?
+                    <MilestonesAccordian item={item} handleOnPress={handleOnPress} optionData={optionData} />
+                    :
+                    <View style={[styles.boxShadow, styles.row]}>
+                        <View style={styles.rowLeft}>
+                            <Text style={styles.title}>{item.title}</Text>
+                            {!claim_date?
+                                <View style={{marginTop:10}}>
+                                    <Progress.Bar showsText={true} borderColor={"#4942e1"} color={complete_date?"lightgreen":"#7de7fa"} unfilledColor={"black"} borderRadius={9}
+                                                  progress={item.step / item.total}
+                                                  width={windowWidth/2} height={scale(16)}/>
+                                    <View
+                                        style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}><Text style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                        width: -1,
+                                        height: 1
+                                    }}}>{complete_date?"completed":item.step + ' / ' + item.total}</Text></View>
+                                </View>
                             :null}
-                    </View>
-                    <TouchableWithoutFeedback
-                        onPress={() => {
-                            if(item.completed&&!item.awarded) {
-                                dispatch({
-                                    type: "UPDATE_POINTS",
-                                    payload: user.points.point + item.points
-                                });
-                                dispatch({
-                                    type: "MILESTONE_CLAIM",
-                                    milestone_type: type,
-                                    payload: item.id
-                                });
-                            }
-                            const apiQuotes = getApi(props.config);
-                            apiQuotes.customRequest(
-                                "wp-json/onenergy/v1/awardClaim",
-                                "post",
-                                {"id":item.id},
-                                null,
-                                {},
-                                false
-                            ).then();
-                        }}
-                    >
-                        <View style={[styles.rowRight, {backgroundColor:item.awarded?'gray':item.completed?'gold':'#7de7fa'}]}>
-                            {
-                                item.awarded ?
-                                    <>
-                                        <Text
-                                            style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
-                                                    width: -1,
-                                                    height: 1
-                                                }}}
-                                        >
-                                            CLEARED
-                                        </Text>
-                                        <Text
-                                            numberOfLines={1}
-                                            style={{fontSize:scale(11), fontWeight:"700", color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
-                                                    width: -1,
-                                                    height: 1
-                                                }}}
-                                        >
-                                            {item.date}
-                                        </Text>
-                                    </>
-                                    :
-                                item.completed ?
-                                    <>
-                                        <Text
-                                            style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
-                                                    width: -1,
-                                                    height: 1
-                                                }}}
-                                        >
-                                            CLAIM
-                                        </Text>
-                                        <Text
-                                            style={{fontSize:scale(24), fontWeight:"700", color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
-                                                    width: -1,
-                                                    height: 1
-                                                }}}
-                                        >
-                                            +{item.points} Qi
-                                        </Text>
-                                    </>
-                                    :
-                                    <>
+                        </View>
+                        <TouchableWithoutFeedback
+                            onPress={() => {
+                                handleOnPress(item);
+                            }}
+                        >
+                            <View style={[styles.rowRight, {backgroundColor:claim_date?'gray':complete_date?'gold':'#7de7fa'}]}>
+                                {
+                                    claim_date ?
+                                        <>
                                             <Text
-                                                style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                                style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                        width: -1,
+                                                        height: 1
+                                                    }}}
+                                            >
+                                                CLEARED
+                                            </Text>
+                                            <Text
+                                                numberOfLines={1}
+                                                style={{flexWrap: "nowrap", fontSize:scale(11), fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                        width: -1,
+                                                        height: 1
+                                                    }}}
+                                            >
+                                                {claim_date}
+                                            </Text>
+                                        </>
+                                        :
+                                    complete_date ?
+                                        <>
+                                            <Text
+                                                style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                        width: -1,
+                                                        height: 1
+                                                    }}}
+                                            >
+                                                CLAIM
+                                            </Text>
+                                            {item.awards.map(point =>
+                                                <Text
+                                                    style={{flexWrap: "nowrap", fontSize:scale(24), fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                            width: -1,
+                                                            height: 1
+                                                        }}}
+                                                >
+                                                    +{point.point} {optionData.points.find(pt => pt.pointName === point.name).pointTitle}
+                                                </Text>
+                                            )}
+                                        </>
+                                        :
+                                        <>
+                                            <Text
+                                                style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                                         width: -1,
                                                         height: 1
                                                     }}}
                                             >
                                                 REWARD
                                             </Text>
-                                            <Text
-                                                style={{fontSize:scale(24), fontWeight:"700", color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
-                                                        width: -1,
-                                                        height: 1
-                                                    }}}
-                                            >
-                                                +{item.points} Qi
-                                            </Text>
-                                    </>
-                            }
-                        </View>
-                    </TouchableWithoutFeedback>
-                </View>
-                :
-            <MilestonesAccordian item={item} />
+                                            {item.awards.map(point =>
+                                                <Text
+                                                    style={{flexWrap: "nowrap", fontSize:scale(24), fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                            width: -1,
+                                                            height: 1
+                                                        }}}
+                                                >
+                                                    +{point.point} {optionData.points.find(pt => pt.pointName === point.name).pointTitle}
+                                                </Text>
+                                            )}
+                                        </>
+                                }
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>
+            :null
         );
     };
     return(
         <SafeAreaView style={styles.container}>
-            {milestonesReducer&&milestonesReducer.length?
-                <FlatList showsVerticalScrollIndicator={false} data={milestonesReducer} renderItem={renderItem} keyExtractor={item => item.id} />
+            {achievementReducer&&achievementReducer.length?
+                <FlatList
+                    contentContainerStyle={{ paddingBottom: scale(20) }}
+                    showsVerticalScrollIndicator={false}
+                    data={achievementReducer}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id}
+                />
                 :
                 <View style={{
                     flex: 1,
@@ -189,32 +207,31 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         width: windowWidth - scale(30),
-        height: scale(60),
+        height: scale(70),
         flexDirection: 'row',
         backgroundColor: '#f2f2f2',
         marginTop: scale(10),
         marginHorizontal: scale(15),
     },
     rowLeft: {
-        paddingHorizontal: scale(10),
-        paddingVertical: scale(10),
+        marginVertical: 0,
+        paddingHorizontal:5,
         borderTopLeftRadius: 9,
         borderBottomLeftRadius: 9,
         alignItems: 'center',
-        justifyContent: 'space-between',
-        width: (windowWidth - scale(30))*3/4,
-        height: scale(60),
+        justifyContent: 'center',
+        width: (windowWidth - scale(30))*2/3,
+        height: scale(70),
         backgroundColor: '#f2f2f2',
     },
     rowRight: {
-        paddingHorizontal: scale(10),
-        paddingVertical: scale(10),
+        marginVertical: 0,
         borderTopRightRadius: 9,
         borderBottomRightRadius: 9,
         alignItems: 'center',
-        justifyContent: 'space-between',
-        width: (windowWidth - scale(30))/4,
-        height: scale(60),
+        justifyContent: 'center',
+        width: (windowWidth - scale(30))/3,
+        height: scale(70),
         backgroundColor: '#7de7fa',
     },
     achievementItemBox: {

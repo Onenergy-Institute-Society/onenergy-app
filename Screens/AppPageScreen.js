@@ -10,7 +10,7 @@ import {windowWidth} from "../Utils/Dimensions";
 import IconButton from "@src/components/IconButton";
 import {scale,verticalScale} from "../Utils/scale";
 
-const MyAppPageScreen = (props) => {
+const AppPageScreen = (props) => {
     if (!props.isFocused)
         return null;
     const {navigation} = props;
@@ -28,7 +28,7 @@ const MyAppPageScreen = (props) => {
     )
 }
 
-MyAppPageScreen.navigationOptions = ({ navigation }) => {
+AppPageScreen.navigationOptions = ({ navigation }) => {
     let headerLeft = null;
     let navRoutes = navigation.dangerouslyGetParent().state.routes;
     if(navRoutes.length >= 2){
@@ -54,4 +54,4 @@ MyAppPageScreen.navigationOptions = ({ navigation }) => {
     }
 };
 
-export default MyAppPageScreen;
+export default AppPageScreen;

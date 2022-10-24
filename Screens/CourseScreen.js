@@ -2,7 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import CourseSingleScreen from "@src/containers/Custom/CourseSingleScreen";
 
-const MyCourseScreen = (props) => {
+const CourseScreen = (props) => {
     const { navigation } = props;
     const courseId = navigation.getParam('courseId');
     return (
@@ -12,6 +12,6 @@ const MyCourseScreen = (props) => {
     )
 }
 
-MyCourseScreen.navigationOptions = { header: null };
+CourseScreen.navigationOptions = { header: null };
 
-export default MyCourseScreen;
+export default CourseScreen;

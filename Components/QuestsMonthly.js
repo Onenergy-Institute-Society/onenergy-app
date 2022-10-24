@@ -13,33 +13,8 @@ import {windowWidth} from "../Utils/Dimensions";
 
 const QuestsMonthly = (props) => {
     const user = useSelector((state) => state.user.userObject);
-    const questsSelector = state => ({questsReducer: state.questsReducer.monthly})
-    const {questsReducer} = useSelector(questsSelector);
+    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer.monthly);
     const dispatch = useDispatch();
-    const fetchQuests = async () => {
-        try {
-            const apiQuotes = getApi(props.config);
-            const data = await apiQuotes.customRequest(
-                "wp-json/onenergy/v1/quests/?type=monthly",
-                "get",
-                {},
-                null,
-                {},
-                false
-            ).then(response => response.data);
-            dispatch({
-                type: 'QUEST_ADD',
-                quest_mode: 'monthly',
-                payload: data,
-            });
-        } catch (e) {
-            console.error(e);
-        }
-    }
-    useEffect(() => {
-        fetchQuests().then();
-    }, []);
-
     return(
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.containerStyle}>
@@ -51,7 +26,7 @@ const QuestsMonthly = (props) => {
                             <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
                                 {
 
-                                    questsReducer? questsReducer.days && questsReducer.days.length ? questsReducer.days[index] !== undefined && questsReducer.days[index] !== null && questsReducer.days[index] !== '' ?
+                                    achievementReducer? achievementReducer.days && achievementReducer.days.length ? achievementReducer.days[index] !== undefined && achievementReducer.days[index] !== null && achievementReducer.days[index] !== '' ?
                                     <Image source={require("@src/assets/img/check2.png")}/>
                                     :
                                     <Image source={require("@src/assets/img/radio_unchecked_icon.png")}/>
@@ -72,31 +47,31 @@ const QuestsMonthly = (props) => {
                     justifyContent: 'center',backgroundColor: '#e6e6e8',
                     marginTop: scale(2),}}><Text style={{color:"green"}}>Practice consecutively 30 days REWARD +100 Qi</Text></View>
 
-                {questsReducer.log?
+                {achievementReducer.log?
                     <View style={[styles.boxShadow, styles.rowReward]}>
                         <View style={styles.rowLeft}>
                             <Text style={styles.title}>Practice for a month</Text>
                             <View style={{marginVertical: 10}}>
                                 <View
                                     style={{justifyContent: 'center', alignItems: 'center'}}>
-                                    <Text style={{color:"#ED57E1"}}>Expire in {questsReducer.log.days} days</Text></View>
+                                    <Text style={{color:"#ED57E1"}}>Expire in {achievementReducer.log.days} days</Text></View>
                             </View>
                         </View>
                         <TouchableWithoutFeedback
                             onPress={() => {
                                 dispatch({
-                                    type: "UPDATE_POINTS",
-                                    payload: user.points.point + 100
+                                    type: "ONENERGY_UPDATE_USER_POINTS",
+                                    payload: {'qi': 100}
                                 });
                                 dispatch({
-                                    type: "QUEST_CLAIM_WEEKLY_MONTHLY",
+                                    type: "ONENERGY_ACHIEVEMENT_CLAIM_WEEKLY_MONTHLY",
                                     quest_mode: "monthly",
                                 });
                                 const apiQuotes = getApi(props.config);
                                 apiQuotes.customRequest(
                                     "wp-json/onenergy/v1/awardClaim",
                                     "post",
-                                    {"id":32272, "log_id":questsReducer.log.log_id},
+                                    {"id":32272, "log_id":achievementReducer.log.log_id},
                                     null,
                                     {},
                                     false
@@ -105,7 +80,7 @@ const QuestsMonthly = (props) => {
                         >
                             <View style={[styles.rowRight, {backgroundColor:'gold'}]}>
                                 <Text
-                                    style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                    style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                             width: -1,
                                             height: 1
                                         }}}
@@ -113,7 +88,7 @@ const QuestsMonthly = (props) => {
                                     CLAIM
                                 </Text>
                                 <Text
-                                    style={{fontSize:24, fontWeight:"700", color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                    style={{fontSize:24, fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                             width: -1,
                                             height: 1
                                         }}}
@@ -124,15 +99,15 @@ const QuestsMonthly = (props) => {
                         </TouchableWithoutFeedback>
                     </View>:null
                 }
-                {questsReducer.list?
-                    questsReducer.list.map(listItem => (
+                {achievementReducer.list?
+                    achievementReducer.list.map(listItem => (
                         <View style={[styles.boxShadow, styles.rowReward]}>
                             <View style={styles.rowLeft}>
                                 <Text style={styles.title}>Practice for a month</Text>
                             </View>
                             <View style={[styles.rowRight, {backgroundColor:'grey'}]}>
                                 <Text
-                                    style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                    style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                             width: -1,
                                             height: 1
                                         }}}
@@ -141,7 +116,7 @@ const QuestsMonthly = (props) => {
                                 </Text>
                                 <Text
                                     numberOfLines={1}
-                                    style={{fontSize:11, fontWeight:"700", color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                    style={{fontSize:11, fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                             width: -1,
                                             height: 1
                                         }}}

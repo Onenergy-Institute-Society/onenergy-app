@@ -17,13 +17,13 @@ import {windowWidth} from "../Utils/Dimensions";
 const PracticeTipsRow = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const user = useSelector((state) => state.user.userObject);
-    const postSelector = state => ({postsReducer: state.postsReducer})
-    const {postsReducer} = useSelector(postSelector);
+    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
+    const postReducer = useSelector((state) => state.postReducer);
     const [ dataPosts, setPostsData ] = useState([]);
     const [ showTitle, setShowTitle ] = useState(false);
     const { navigation } = props;
     const dispatch = useDispatch();
-    const categoryIndex = postsReducer.lastView&&postsReducer.lastView.length?postsReducer.lastView.findIndex(lv => lv.category === 258):null;
+    const categoryIndex = postReducer.lastView&&postReducer.lastView.length?postReducer.lastView.findIndex(lv => lv.category === 258):null;
     const fetchPostsData = async () => {
         try {
             let notify = false;
@@ -38,9 +38,9 @@ const PracticeTipsRow = props => {
             ).then(response => response.data);
             let posts = [];
             data.map((item) => {
-                if (!postsReducer.posts.length || postsReducer.posts.filter(post => post.id === item.id).length === 0) {
+                if (!postReducer.posts.length || postReducer.posts.filter(post => post.id === item.id).length === 0) {
                     if(categoryIndex&&categoryIndex>=0){
-                        if(new Date(item.date) > new Date(postsReducer.lastView[categoryIndex].date)){
+                        if(new Date(item.date) > new Date(postReducer.lastView[categoryIndex].date)){
                             notify = true;
                         }
                     }
@@ -61,7 +61,7 @@ const PracticeTipsRow = props => {
             })
             if (posts && posts.length > 0) {
                 dispatch({
-                    type: 'POSTS_ADD',
+                    type: 'ONENERGY_POSTS_ADD',
                     payload: posts,
                     category: 258
                 });
@@ -73,12 +73,12 @@ const PracticeTipsRow = props => {
     useEffect(() => {
         let loadPosts = false;
         if (categoryIndex&&categoryIndex>=0) {
-            let postCount = postsReducer.posts.filter((post) => post.categories.includes(258)).length
+            let postCount = postReducer.posts.filter((post) => post.categories.includes(258)).length
             if (!postCount) {
                 loadPosts = true
             } else {
-                setPostsData((current) => [...current, ...postsReducer.posts.filter((post) => post.categories.includes(258))]);
-                if (new Date(postsReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[258])) {
+                setPostsData(postReducer.posts.filter((post) => post.categories.includes(258)));
+                if (new Date(postReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[258])) {
                     loadPosts = true;
                 }
             }
@@ -89,16 +89,13 @@ const PracticeTipsRow = props => {
             fetchPostsData().then();
         }
     }, []);
-    useEffect(() => {
-        setPostsData(postsReducer.posts.filter((post)=>post.categories.includes(258)));
-    },[postsReducer.posts])
     const renderItem = ({ item }) => {
         let show = false;
         if(item.meta_box.course)
         {
             item.meta_box.course.map((course_item, itemIndex) =>
             {
-                if(user&&user.completed_courses.find(course => course.id === parseInt(course_item))){
+                if(progressReducer.completedCourses&&progressReducer.completedCourses.find(course => course.id === parseInt(course_item))){
                     setShowTitle(true);
                     show = true;
                 }
@@ -112,7 +109,7 @@ const PracticeTipsRow = props => {
                         try {
                             navigation.dispatch(
                                 NavigationActions.navigate({
-                                    routeName: "MyBlogScreen",
+                                    routeName: "BlogScreen",
                                     params: {
                                         blogId: item.id,
                                         title: item.title.rendered

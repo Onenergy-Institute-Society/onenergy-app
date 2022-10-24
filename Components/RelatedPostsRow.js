@@ -18,10 +18,9 @@ import {windowWidth} from "../Utils/Dimensions";
 const RelatedPostsRow = props => {
     const {posts, navigation} = props;
     const [ postsData, setPostsData ] = useState([]);
-    const postSelector = state => ({postsReducer: state.postsReducer})
-    const {postsReducer} = useSelector(postSelector);
+    const postReducer = useSelector((state) => state.postReducer);
     useEffect(() => {
-        setPostsData(postsReducer.posts.filter((post)=>posts.includes(post.id)));
+        setPostsData(postReducer.posts.filter((post)=>posts.includes(post.id)));
     }, []);
     const renderOverlayImage = (format) => {
         switch(format) {
@@ -41,12 +40,12 @@ const RelatedPostsRow = props => {
                     try {
                         navigation.dispatch(
                             NavigationActions.navigate({
-                                routeName: "MyBlogScreen",
+                                routeName: "BlogScreen",
                                 params: {
                                     blogId: item.id,
                                     title: item.title.rendered
                                 },
-                                key: 'MyBlogScreen-' + item.id
+                                key: 'BlogScreen-' + item.id
                             })
                         );
                     } catch (err) {

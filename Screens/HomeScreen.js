@@ -6,28 +6,26 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback, SafeAreaView
 } from 'react-native';
-import { withNavigation } from 'react-navigation';
-import {
-    createDrawerNavigator,
-} from 'react-navigation-drawer';
-import { useSelector, useDispatch } from "react-redux";
+import { withNavigation } from "react-navigation";
+import { createDrawerNavigator } from 'react-navigation-drawer';
+import { useSelector } from "react-redux";
 import FastImage from 'react-native-fast-image';
 import { createStackNavigator } from 'react-navigation-stack';
 import HomeContent from './HomeContent';
 import IconButton from "@src/components/IconButton";
-import {scale} from "../Utils/scale";
+import { scale } from "../Utils/scale";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 
 const CustomDrawerContentComponent = (props) => {
     const {navigation, screenProps} = props;
-    const dispatch = useDispatch();
     const {colors} = screenProps;
     const user = useSelector((state) => state.user.userObject);
+    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     return (
         <SafeAreaView style={{flex:1, backgroundColor: colors.bodyBg}}>
             <ImageBackground
-                source={require('../assets/images/1-1024x683.jpg')}
+               source={require('../assets/images/1-1024x683.jpg')}
                 style={{height:scale(140), justifyContent:"center", alignItems:"center"}}>
                 {user?
                     <>
@@ -49,7 +47,7 @@ const CustomDrawerContentComponent = (props) => {
                                         fontSize: scale(18),
                                         textAlign:"right",
                                         marginBottom:10,
-                                        textShadowColor: 'black',
+                                        textShadowColor: 'grey',
                                         textShadowRadius: 1,
                                         textShadowOffset: {
                                             width: -1,
@@ -58,47 +56,47 @@ const CustomDrawerContentComponent = (props) => {
                                     }}>
                                     {user.name}
                                 </Text>
-                                {user.user_ranks?(
+                                {user.rank?(
                                     <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center"}}>
-                                        <FastImage source={{uri:user.user_ranks[0].rank.thumbnail_url}} style={{width:24, height:24, alignSelf:"center"}} />
+                                        <FastImage source={{uri:optionData.ranks[user.rank].rankImage}} style={{width:24, height:24, alignSelf:"center"}} />
                                         <Text
                                             style={{
                                                 color: '#fff',
                                                 fontSize: scale(14),
                                                 marginLeft:5,
                                                 alignSelf:"center",
-                                                textShadowColor: 'black',
+                                                textShadowColor: 'grey',
                                                 textShadowRadius: 1,
                                                 textShadowOffset: {
                                                     width: -1,
                                                     height: 1
                                                 }
                                             }}>
-                                            {user.user_ranks[0].rank.title}
+                                            {optionData.ranks[user.rank].rankName}
                                         </Text>
                                     </View>
                                 ):null}
-                                {user.points.point?(
-                                <View>
-                                    <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center"}}>
-                                        <FastImage source={{uri:'https://assets.onenergy.institute/wp-content/uploads/2020/07/gamipress-icon-ray-material-54x54.png'}} style={{width:16, height:16}} />
-                                        <Text
-                                            style={{
-                                                color: '#fff',
-                                                textAlign:"left",
-                                                marginLeft:5,
-                                                textShadowColor: 'black',
-                                                textShadowRadius: 1,
-                                                textShadowOffset: {
-                                                    width: -1,
-                                                    height: 1
-                                                }
-                                            }}>
-                                            {user.points.point} Qi
-                                        </Text>
+                                {progressReducer.points&&progressReducer.points.length?Object.entries(progressReducer.points).map(([key, value])=>(
+                                    <View>
+                                        <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center"}}>
+                                            <FastImage source={{uri:'https://assets.onenergy.institute/wp-content/uploads/2020/07/gamipress-icon-ray-material-54x54.png'}} style={{width:16, height:16}} />
+                                            <Text
+                                                style={{
+                                                    color: '#fff',
+                                                    textAlign:"left",
+                                                    marginLeft:5,
+                                                    textShadowColor: 'grey',
+                                                    textShadowRadius: 1,
+                                                    textShadowOffset: {
+                                                        width: -1,
+                                                        height: 1
+                                                    }
+                                                }}>
+                                                {key} {value}
+                                            </Text>
+                                        </View>
                                     </View>
-                                </View>
-                                ):null}
+                                )):null}
                             </View>
                         </View>
                     {user.membership.length > 0 ?
@@ -113,18 +111,13 @@ const CustomDrawerContentComponent = (props) => {
                         {user?
                             <>
                                 <TouchableWithoutFeedback onPress={() => {
-                                    dispatch({
-                                        type: 'NOTIFICATION_CLEAR',
-                                        payload: 'progress'
-                                    });
-                                    navigation.navigate('MyStatsScreen');
+                                    navigation.navigate('StatsScreen');
                                     }}>
                                     <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', borderTopRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                                         <Text
                                             style={{fontSize:scale(18)}}>
-                                            {optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_progress')].title}
+                                            {optionData.titles.find(el => el.id === 'left_menu_progress').title}
                                         </Text>
-                                        <NotificationTabBarIcon notificationID={'progress'}  top={0} right={0} size={scale(10)} showNumber={false} />
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
                                             style={{
@@ -135,15 +128,11 @@ const CustomDrawerContentComponent = (props) => {
                                     </View>
                                 </TouchableWithoutFeedback>
                                 <TouchableWithoutFeedback onPress={() => {
-                                    dispatch({
-                                        type: 'NOTIFICATION_CLEAR',
-                                        payload: 'quest'
-                                    });
-                                    navigation.navigate('MyQuestsScreen');}}>
+                                    navigation.navigate('QuestsScreen');}}>
                                     <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                                         <Text
                                             style={{fontSize:scale(18)}}>
-                                            {optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_quests')].title}
+                                            {optionData.titles.find(el => el.id === 'left_menu_quests').title}
                                         </Text>
                                         <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
                                         <IconButton
@@ -156,15 +145,11 @@ const CustomDrawerContentComponent = (props) => {
                                     </View>
                                 </TouchableWithoutFeedback>
                                 <TouchableWithoutFeedback onPress={() => {
-                                    dispatch({
-                                        type: 'NOTIFICATION_CLEAR',
-                                        payload: 'achievement'
-                                    });
-                                    navigation.navigate("MyMilestonesScreen");}}>
+                                    navigation.navigate("MilestonesScreen");}}>
                                     <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                                         <Text
                                             style={{fontSize:scale(18)}}>
-                                            {optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_achievements')].title}
+                                            {optionData.titles.find(el => el.id === 'left_menu_achievements').title}
                                         </Text>
                                         <NotificationTabBarIcon notificationID={'achievement'}  top={0} right={0} size={scale(10)} showNumber={false} />
                                         <IconButton
@@ -177,15 +162,11 @@ const CustomDrawerContentComponent = (props) => {
                                     </View>
                                 </TouchableWithoutFeedback>
                                 <TouchableWithoutFeedback onPress={() => {
-                                    dispatch({
-                                        type: 'NOTIFICATION_CLEAR',
-                                        payload: 'voucher'
-                                    });
-                                    navigation.navigate("MyVouchersScreen");}}>
+                                    navigation.navigate("VouchersScreen");}}>
                                     <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                                         <Text
                                             style={{fontSize:scale(18)}}>
-                                            {optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_vouchers')].title}
+                                            {optionData.titles.find(el => el.id === 'left_menu_vouchers').title}
                                         </Text>
                                         <NotificationTabBarIcon notificationID={'voucher'}  top={0} right={0} size={scale(10)} showNumber={false} />
                                         <IconButton
@@ -200,11 +181,11 @@ const CustomDrawerContentComponent = (props) => {
                             </>
                         :
                             <>
-                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("SignupScreen");}}>
+                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("SignupScreen")}}>
                                     <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                                         <Text
                                             style={{fontSize:scale(18)}}>
-                                            {optionData.titles.findIndex(el => el.id === 'left_menu_signup')?optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_signup')].title:'Create an Account'}
+                                            {optionData.titles.find(el => el.id === 'left_menu_signup').title}
                                         </Text>
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
@@ -215,11 +196,11 @@ const CustomDrawerContentComponent = (props) => {
                                         />
                                     </View>
                                 </TouchableWithoutFeedback>
-                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("LoginScreen");}}>
+                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("LoginScreen")}}>
                                     <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                                         <Text
                                             style={{fontSize:scale(18)}}>
-                                            {optionData.titles.findIndex(el => el.id === 'left_menu_login')?optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_login')].title:'Login My Account'}
+                                            {optionData.titles.find(el => el.id === 'left_menu_login').title}
                                         </Text>
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
@@ -237,7 +218,7 @@ const CustomDrawerContentComponent = (props) => {
                 <View style={{justifyContent:"flex-end", marginBottom:scale(30),padding: 15, borderTopWidth: 1, borderTopColor: '#ccc'}}>
                     {user?
                         <TouchableOpacity
-                            onPress={() => navigation.navigate("MyFeedbackScreen")}
+                            onPress={() => navigation.navigate("FeedbackScreen")}
                             style={{marginBottom: 5}}
                         >
                             <View style={{flexDirection:"row",justifyContent:"flex-start",alignItems: 'center'}}>
@@ -249,12 +230,12 @@ const CustomDrawerContentComponent = (props) => {
                                         height:24,
                                     }}
                                 />
-                                <Text style={{fontSize:scale(14)}}>{optionData.titles.findIndex(el => el.id === 'left_menu_feedback')?optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_feedback')].title:'Feedback'}</Text>
+                                <Text style={{fontSize:scale(14)}}>{optionData.titles.find(el => el.id === 'left_menu_feedback').title}</Text>
                             </View>
                         </TouchableOpacity>
                         :null}
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("MyAppPageScreen", {pageId: 30271, title: 'Q & A'})}
+                        onPress={() => navigation.navigate("AppPageScreen", {pageId: 30271, title: 'Q & A'})}
                         style={{marginBottom: 5}}
                     >
                         <View style={{flexDirection:"row",justifyContent:"flex-start",alignItems: 'center'}}>
@@ -266,7 +247,7 @@ const CustomDrawerContentComponent = (props) => {
                                     height:24,
                                 }}
                             />
-                            <Text style={{fontSize:scale(14)}}>{optionData.titles.findIndex(el => el.id === 'left_menu_faq')?optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_faq')].title:'Q & A'}</Text>
+                            <Text style={{fontSize:scale(14)}}>{optionData.titles.find(el => el.id === 'left_menu_faq').title}</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -282,7 +263,7 @@ const CustomDrawerContentComponent = (props) => {
                                     height:24,
                                 }}
                             />
-                            <Text style={{fontSize:scale(14)}}>{optionData.titles.findIndex(el => el.id === 'left_menu_settings')?optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_settings')].title:'Settings'}</Text>
+                            <Text style={{fontSize:scale(14)}}>{optionData.titles.find(el => el.id === 'left_menu_settings').title}</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -313,8 +294,9 @@ const Drawer = createDrawerNavigator(
 
 const HomeScreen = createStackNavigator({
     Drawer: {
-        screen: Drawer
+        screen: Drawer,
     },
+
 })
 
 HomeScreen.navigationOptions = {header:null};

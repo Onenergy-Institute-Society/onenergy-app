@@ -14,7 +14,7 @@ import moment from 'moment';
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 
-const MyMembership = (props) => {
+const Membership = (props) => {
     const {navigation} = props;
     const user = useSelector((state) => state.user.userObject);
 
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
         marginBottom:scale(10),
     }
 });
-MyMembership.navigationOptions = ({navigation}) => ({
+Membership.navigationOptions = ({navigation}) => ({
     title: "My Membership",
     headerTitleStyle: {textAlign:'left'},
     headerLeft:
@@ -161,4 +161,4 @@ MyMembership.navigationOptions = ({navigation}) => ({
             />
         </TouchableOpacity>,
 })
-export default withDeeplinkClickHandler(MyMembership);
+export default withDeeplinkClickHandler(Membership);

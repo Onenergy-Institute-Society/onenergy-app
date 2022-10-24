@@ -32,7 +32,7 @@ const MilestonesStartup = () => {
 const MilestonesStamina = () => {
     try {
         return (
-            <Milestones type={'stamina'} />
+            <Milestones type={'endurance'} />
         )
     } catch (err) {
         console.log(`${err}`);
@@ -40,9 +40,8 @@ const MilestonesStamina = () => {
 }
 const TabTitle = ({tintColor, name}) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    let titleIndex = optionData.titles.findIndex(el => el.id === name);
     return (
-        <Text style={{ color: tintColor, fontSize: scale(20) }}>{optionData.titles[titleIndex].title}</Text>
+        <Text style={{ color: tintColor, fontSize: scale(20) }}>{optionData.titles.find(el => el.id === name).title}</Text>
     )
 }
 const Tabs = createMaterialTopTabNavigator(
@@ -53,7 +52,7 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'milestone_learn_tab'} />
-                        <NotificationTabBarIcon notificationID={'milestone_uncompleted'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        <NotificationTabBarIcon notificationID={'milestone_learn'} top={-5} right={-5} size={scale(10)} showNumber={false} />
                     </View>
                 ),
             }
@@ -64,25 +63,25 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'milestone_startup_tab'} />
-                        <NotificationTabBarIcon notificationID={'milestone_completed'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        <NotificationTabBarIcon notificationID={'milestone_startup'} top={-5} right={-5} size={scale(10)} showNumber={false} />
                     </View>
                 ),
             }
         },
-        Stamina: {
+        Endurance: {
             screen: MilestonesStamina,
             navigationOptions: {
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'milestone_stamina_tab'} />
-                        <NotificationTabBarIcon notificationID={'milestone_completed'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        <NotificationTabBarIcon notificationID={'milestone_endurance'} top={-5} right={-5} size={scale(10)} showNumber={false} />
                     </View>
                 ),
             }
         },
     },
     {
-        initialRouteName: 'Learn',
+        initialRouteName: 'Endurance',
         swipeEnabled: true,
         lazy: true,
         optimizationsEnabled: true,
@@ -100,7 +99,7 @@ const Tabs = createMaterialTopTabNavigator(
         }
     },
 );
-const MyMilestonesScreen = createStackNavigator({
+const MilestonesScreen = createStackNavigator({
     Tabs: {
         screen: Tabs,
         navigationOptions: {
@@ -108,7 +107,7 @@ const MyMilestonesScreen = createStackNavigator({
         }
     }
 });
-MyMilestonesScreen.navigationOptions = ({navigation}) => ({
+MilestonesScreen.navigationOptions = ({navigation}) => ({
     title: 'My Milestones',
     headerTitleStyle: {textAlign:'left'},
     headerLeft:
@@ -128,4 +127,4 @@ MyMilestonesScreen.navigationOptions = ({navigation}) => ({
         <QiPointHeader />
         ,
 })
-export default withNavigation(MyMilestonesScreen);
+export default withNavigation(MilestonesScreen);

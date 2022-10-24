@@ -1,70 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import {getApi} from "@src/services";
+import React, {useEffect, useState} from 'react';
 import {connect, useSelector, useDispatch} from "react-redux";
 import {AppState, TouchableOpacity, View} from 'react-native';
 import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
 import IconButton from "@src/components/IconButton";
-import { StyleSheet } from 'react-native';
-import { scale } from '../Utils/scale';
+import {StyleSheet} from 'react-native';
+import {scale} from '../Utils/scale';
 import TrackSlider from "./TrackSlider";
-import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
+import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 
 const AudioPlayer = (props) => {
     const user = useSelector((state) => state.user.userObject);
-    const {
-        playerMaxView,
-        buttonsSection,
-        progressBarSection,
-        buttonsCol,
-        playPauseButton,
-        stopButton,
-    } = styles;
-    const { track, setMessageBarDisplay } = props;
-    const notification = useSelector((state) => state.notifyReducer.notification);
+    const {track, setMessageBarDisplay} = props;
     const [playing, setPlaying] = useState(false);
     const [stopped, setStopped] = useState(true)
     const dispatch = useDispatch();
-    const updateProgress = async () => {
+    const updateProgress = () => {
         try {
-            const apiRequest = getApi(props.config);
-            await apiRequest.customRequest(
-                "wp-json/onenergy/v1/progress",
-                "post",
-                {"id":track.guide, "type":"Guide_End"},
-                null,
-                {},
-                false
-            ).then(response => {
-                if(response.data.updated.quest) {
-                    dispatch({
-                        type: 'NOTIFICATION_INCREMENT',
-                        payload: 'quest'
-                    });
+            dispatch({
+                type: 'ONENERGY_ACHIEVEMENT_COMPLETE_PRACTICE',
+                payload: {
+                    mode: 'single',
+                    data: track.id
                 }
-                if(response.data.updated.milestone) {
-                    dispatch({
-                        type: 'NOTIFICATION_INCREMENT',
-                        payload: 'achievement'
-                    });
-                }
-                if(response.data.achievements)
-                {
-                    dispatch({
-                        type: 'UPDATE_USER_COMPLETED_ACHIEVEMENTS',
-                        payload:response.data.achievements
-                    });
-                }
-                setMessageBarDisplay(true);
             });
+            setMessageBarDisplay(true);
         } catch (e) {
             console.error(e);
         }
     }
-    useEffect(()=>{
+    useEffect(() => {
         const appStateListener = AppState.addEventListener(
             'change',
             nextAppState => {
-                if((nextAppState==='background')&&(!user.membership||!user.membership.length)){
+                if ((nextAppState === 'background') && (!user.membership || !user.membership.length)) {
                     TrackPlayer.pause();
                 }
             },
@@ -72,14 +40,20 @@ const AudioPlayer = (props) => {
         return () => {
             appStateListener?.remove();
         };
-    },[])
+    }, [])
     useEffect(() => {
-        addTrack(track).then(()=>{TrackPlayer.play();setPlaying(true);setStopped(false);});
+        addTrack(track).then(() => {
+            TrackPlayer.play();
+            setPlaying(true);
+            setStopped(false);
+        });
     }, [track]);
-    async function addTrack(track){
+
+    async function addTrack(track) {
         await TrackPlayer.reset();
         return await TrackPlayer.add(track, -1);
     }
+
     useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.RemoteStop, Event.PlaybackQueueEnded], (event) => {
         if (event.state === State.Playing) {
             activateKeepAwake();
@@ -108,25 +82,11 @@ const AudioPlayer = (props) => {
             setStopped(true);
             deactivateKeepAwake();
         }
-        if(event.type === 'playback-queue-ended') {
+        if (event.type === 'playback-queue-ended') {
             TrackPlayer.reset();
             setPlaying(false);
             setStopped(true);
-            updateProgress().then();
-            if(notification) {
-                if (notification['practice']){
-                    if(notification['practice'].length >= 1) {
-                        dispatch({
-                            type: 'NOTIFICATION_CLEAR',
-                            payload: 'guide_personal'
-                        });
-                    }
-                    dispatch({
-                        type: 'NOTIFICATION_PRACTICE_REMOVE',
-                        payload: track.guide,
-                    });
-                }
-            }
+            updateProgress();
         }
     });
 
@@ -160,10 +120,11 @@ const AudioPlayer = (props) => {
     };
 
     return (
-        <View style={playerMaxView}>
-            <View style={buttonsSection}>
-                <View style={buttonsCol}>
-                    <TouchableOpacity onPress={onPlayPausePress} style={playPauseButton} hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
+        <View style={styles.playerMaxView}>
+            <View style={styles.buttonsSection}>
+                <View style={styles.buttonsCol}>
+                    <TouchableOpacity onPress={onPlayPausePress} style={styles.playPauseButton}
+                                      hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
                         <IconButton
                             icon={playing ? require("@src/assets/img/music-pause.png") : require("@src/assets/img/music-play.png")}
                             tintColor={"black"}
@@ -173,27 +134,27 @@ const AudioPlayer = (props) => {
                             }}
                         />
                     </TouchableOpacity>
-                    {!stopped?(
-                    <TouchableOpacity onPress={onStopPress} style={stopButton} hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
-                        <IconButton
-                            icon={require("@src/assets/img/stop.png")}
-                            tintColor={"black"}
-                            style={{
-                                height: 24,
-                                width: 24,
-                            }}
-                        />
-                    </TouchableOpacity>
-                    ):null}
+                    {!stopped ? (
+                        <TouchableOpacity onPress={onStopPress} style={styles.stopButton}
+                                          hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
+                            <IconButton
+                                icon={require("@src/assets/img/stop.png")}
+                                tintColor={"black"}
+                                style={{
+                                    height: 24,
+                                    width: 24,
+                                }}
+                            />
+                        </TouchableOpacity>
+                    ) : null}
                 </View>
             </View>
-            <View style={progressBarSection}>
+            <View style={styles.progressBarSection}>
                 <TrackSlider />
             </View>
         </View>
     );
 };
-
 
 const flexStyles: any = {
     display: 'flex',
@@ -205,7 +166,7 @@ const flexStyles: any = {
 const styles = StyleSheet.create({
     playerMaxView: {
         ...flexStyles,
-        overflow:"hidden",
+        overflow: "hidden",
         paddingHorizontal: 5,
         height: scale(50),
         flexDirection: "row",
@@ -217,7 +178,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         display: 'flex',
         flexDirection: 'row',
-        paddingHorizontal:scale(10),
+        paddingHorizontal: scale(10),
     },
     buttonsSection: {
         ...flexStyles,
@@ -233,10 +194,10 @@ const styles = StyleSheet.create({
         width: scale(150),
     },
     stopButton: {
-        marginHorizontal:scale(5),
+        marginHorizontal: scale(5),
     },
     playPauseButton: {
-        marginLeft:scale(5),
+        marginLeft: scale(5),
     },
     playPauseIcon: {
         color: '#000',

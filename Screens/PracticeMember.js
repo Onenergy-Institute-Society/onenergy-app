@@ -27,13 +27,9 @@ const PracticeMember = props => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const helpPageIndex = optionData.helps.findIndex(el => el.name === 'practice_guided_empty');
-    const helpPageData = {title:optionData.helps[helpPageIndex].title?optionData.helps[helpPageIndex].title:'',id:optionData.helps[helpPageIndex].id};
-    const emptyIndex = optionData.helps.findIndex(el => el.name === 'practice_customize_empty_member');
-    const emptyData = {title:optionData.helps[emptyIndex].title?optionData.helps[emptyIndex].title:'',id:optionData.helps[emptyIndex].id};
-    const routineSelector = state => ({routinesReducer: state.routinesReducer.routines})
-    const {routinesReducer} = useSelector(routineSelector);
-    const routineUpdate = useSelector((state) => state.routinesReducer.routineUpdate);
+    const helpPageData = optionData.helps.find(el => el.name === 'practice_guided_empty');
+    const emptyData = optionData.helps.find(el => el.name === 'practice_customize_empty_member');
+    const practiceReducer = useSelector((state) => state.onenergyReducer.practiceReducer);
     const [helpModal, setHelpModal] = useState({title:'',id:0});
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
@@ -108,7 +104,7 @@ const PracticeMember = props => {
     const onRemoveRoutine = async (item) => {
         await TrackPlayer.reset();
 
-        let array = [...routinesReducer]; // make a separate copy of the array
+        let array = [...practiceReducer.routines]; // make a separate copy of the array
         let index = array.indexOf(item);
         if (index !== -1) {
             array.splice(index, 1);
@@ -117,28 +113,19 @@ const PracticeMember = props => {
                 payload: array
             });
         }
-        if(array.length===0){
-            dispatch({
-                type: 'UPDATE_USER_ROUTINE_STATUS',
-                payload: false,
-            });
-        }
         removeRoutine(item).then();
     }
     useEffect(() => {
-        if(!routinesReducer||!routinesReducer.length||!routineUpdate) {
+        if(!practiceReducer.routines||!practiceReducer.routines.length||!practiceReducer.routineUpdate) {
             fetchTracks().then();
         }
-        let helpIndex;
         if(user&&user.membership.length > 0) {
-            helpIndex = optionData.helps.findIndex(el => el.name === 'practice_customize_popup_member');
+            setHelpModal(optionData.helps.find(el => el.name === 'practice_customize_popup_member'));
         }else{
-            helpIndex = optionData.helps.findIndex(el => el.name === 'practice_customize_popup_nonmember');
+            setHelpModal(optionData.helps.find(el => el.name === 'practice_customize_popup_nonmember'));
         }
-        setHelpModal({title:optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'',id:optionData.helps[helpIndex].id});
-        let titleIndex = optionData.titles.findIndex(el => el.id === 'practices_member');
         props.navigation.setParams({
-            title: optionData.titles[titleIndex].title,
+            title: optionData.titles.find(el => el.id === 'practices_member').title,
             toggleHelpModal: toggleHelpModal,
             onAddPressed: onAddPressed,
         });
@@ -153,39 +140,26 @@ const PracticeMember = props => {
     },[messageBarDisplay])
     return (
         <SafeAreaView style={styles.container}>
-            {user.hasGuide>0?
-                user.hasRoutine > 0 ?
-                    routinesReducer&&routinesReducer.length ?
-                        <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                            {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
-                                <View>
-                                    <EventList location={'practice_member'} eventsDate={optionData.goals}/>
-                                    <EventList location={'practice_member'} eventsDate={optionData.challenges}/>
-                                </View>
-                                : null
-                            }
-                            <MemberTracksList routines={routinesReducer} onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine} setMessageBarDisplay={setMessageBarDisplay} />
-                        </ScrollView>
-                        :
-                        <ActivityIndicator size="large"/>
+            {practiceReducer.guides&&practiceReducer.guides.length>0?
+                practiceReducer.routines&&practiceReducer.routines.length ?
+                    <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
+                        {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
+                            <View>
+                                <EventList location={'practice_member'} eventsDate={optionData.goals}/>
+                                <EventList location={'practice_member'} eventsDate={optionData.challenges}/>
+                            </View>
+                            : null
+                        }
+                        <MemberTracksList routines={practiceReducer} onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine} setMessageBarDisplay={setMessageBarDisplay} />
+                    </ScrollView>
                     :
-                    <View style={{
-                        flex: 1,
-                        width: windowWidth
-                    }}>
-                        <BlockScreen pageId={emptyData.id}
-                                     contentInsetTop={0}
-                                     contentOffsetY={0}
-                                     hideTitle={true}
-                                     hideNavigationHeader={true}
-                                     {...props} />
-                    </View>
+                    <ActivityIndicator size="large"/>
                 :
                 <View style={{
                     flex: 1,
                     width: windowWidth
                 }}>
-                    <BlockScreen pageId={helpPageData.id}
+                    <BlockScreen pageId={emptyData.id}
                                  contentInsetTop={0}
                                  contentOffsetY={0}
                                  hideTitle={true}
@@ -193,7 +167,7 @@ const PracticeMember = props => {
                                  {...props} />
                 </View>
             }
-            {user.hasGuide>0 && ((routinesReducer && routinesReducer.length<5) || !routinesReducer)?
+            {(practiceReducer.routines && practiceReducer.routines.length<5) || !practiceReducer.routines?
                 <IconButton
                     pressHandler={() => {onAddPressed().then()}}
                     icon={require("@src/assets/img/add.png")}
@@ -251,7 +225,7 @@ const PracticeMember = props => {
                 </View>
             </Modalize>
             {messageBarDisplay?
-                <Animated.View style={[styles.messageBar, {opacity: fadeAnim}]}><Text style={styles.messageText}>Great! You just gather more qi. Keep it up!</Text></Animated.View>
+                <Animated.View style={[styles.messageBar, {opacity: fadeAnim}]}><Text style={styles.messageText}>Great! You earn more qi. Keep it up!</Text></Animated.View>
                 :null}
         </SafeAreaView>
     );
@@ -289,7 +263,7 @@ PracticeMember.navigationOptions = ({ navigation }) => {
             <TouchableOpacity
                 onPress={async () => {
                     await TrackPlayer.reset();
-                    navigation.goBack()
+                    navigation.goBack();
                 }}
             >
                 <IconButton

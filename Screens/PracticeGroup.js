@@ -33,38 +33,13 @@ const PracticeGroup = props => {
     const {colors} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const helpIndex = optionData.helps.findIndex(el => el.name === 'practice_group_popup');
-    const helpData = {
-        title: optionData.helps[helpIndex].title ? optionData.helps[helpIndex].title : '',
-        id: optionData.helps[helpIndex].id
-    };
+    const helpData = optionData.helps.find(el => el.name === 'practice_group_popup');
     const [loading, setLoading] = useState(false);
-    const groupsSelector = state => ({groups: state.routinesReducer.groups});
-    const groupReducer = useSelector(groupsSelector);
-    const groupUpdate = useSelector((state) => state.routinesReducer.groupUpdate);
+    const groupReducer = useSelector((state) => state.onenergyReducer.practiceReducer.groups);
+    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
     const [groupPracticeDetail, setGroupPracticeDetail] = useState(0);
     const [currentMinutes, setCurrentMinutes] = useState(new Date().getMinutes());
-    const dispatch = useDispatch();
 
-    const fetchGroupPractice = async () => {
-        try {
-            const api = getApi(props.config);
-            const data = await api.customRequest(
-                "wp-json/wp/v2/group-practice?order=asc&orderby=date",          // Endpoint suffix or full url. Suffix will be appended to the site url that app uses. Example of a suffix is "wp-json/buddyboss/v1/members". Example of full url would be "https://app-demos.buddyboss.com/learndash/wp-json/buddyboss/v1/members".
-                "get",       // get, post, patch, delete etc.
-                {},               // JSON, FormData or any other type of payload you want to send in a body of request
-                null,             // validation function or null
-                {},               // request headers object
-                false   // true - if full url is given, false if you use the suffix for the url. False is default.
-            ).then(response => response.data);
-            dispatch({
-                type: "ONENERGY_GROUP_UPDATE",
-                payload: data
-            });
-        } catch (e) {
-            console.error(e);
-        }
-    }
     const JoinGroupPractice = async (gp_id, gp_time) => {
         try {
             const api = getApi(props.config);
@@ -84,12 +59,8 @@ const PracticeGroup = props => {
         this.pgHelpModal.open();
     };
     useEffect(() => {
-        if (!groupReducer || !groupUpdate) {
-            fetchGroupPractice().then();
-        }
-        let titleIndex = optionData.titles.findIndex(el => el.id === 'practices_group');
         props.navigation.setParams({
-            title: optionData.titles[titleIndex].title,
+            title: optionData.titles.find(el => el.id === 'practices_group').title,
             toggleHelpModal: toggleHelpModal,
         });
         setCurrentMinutes(new Date().getMinutes());
@@ -98,18 +69,25 @@ const PracticeGroup = props => {
         }, 60000)
         return () => clearInterval(secTimer)
     }, []);
-    const handlePress = (url, gp_id, gp_time, gp_minute) => {
-        JoinGroupPractice(gp_id, gp_time).then();
+    const handlePress = (groupPractice, gp_time, gp_minute) => {
+        let min = new Date().getMinutes();
+        let sec = new Date().getSeconds();
+
+        if (min < gp_minute){
+            min = 30 - gp_minute + min;
+        }else{
+            min = min - gp_minute - 30;
+        }
+        let seek = min * 60 + sec;
+
+        JoinGroupPractice(groupPractice.id, gp_time).then();
         navigation.dispatch(
             NavigationActions.navigate({
-                routeName: "videoPlayer",
+                routeName: "VideoPlayer",
                 params: {
-                    video: url,
-                    gp_id: gp_id,
+                    group: groupPractice,
+                    seek: seek,
                     gp_time: gp_time,
-                    gp_minute: gp_minute,
-                    config: props.config,
-                    optionData: optionData
                 }
             })
         )
@@ -136,9 +114,10 @@ const PracticeGroup = props => {
         },
     };
     const renderItem = ({item}) => {
-        let detail = item.content.rendered;
-        const conditionLessons = item.meta_box.lessons.every(value => user.completed_lessons.some(lesson => (lesson.id === value)));
-        user && user.completed_lessons.map((lesson) => {
+
+        let detail = item.detail;
+        const conditionLessons = item.lessons.every(value => progressReducer.completedLessons.some(lesson => (lesson.id === value)));
+        user && progressReducer.completedLessons.map((lesson) => {
             detail = detail.replace('<span id="' + lesson.id + '"></span>', '<span style="color:green">(Passed)</span>')
         })
         const date = new Date().getDate(); //To get the Current Date
@@ -149,7 +128,7 @@ const PracticeGroup = props => {
         let startTime;
         let hour = new Date().getHours();
         let startMinutes;
-        let loop = parseInt(item.meta_box.loop);
+        let loop = parseInt(item.loop);
 
         if(loop > currentMinutes)
         {
@@ -182,7 +161,7 @@ const PracticeGroup = props => {
             >
                 <View style={[styles.containerStyle, styles.boxShadow]} key={'gp-' + item.id}>
                     <ImageBackground style={styles.imageView}
-                                     source={{uri: item.meta_box.bg_image.full_url}}>
+                                     source={{uri: item.bg_image.full_url}}>
                         <View style={{
                             flexDirection: "row",
                             height: scale(60),
@@ -209,7 +188,7 @@ const PracticeGroup = props => {
                                 timeToGo <= 30||optionData.testing_mode?
                                     <TouchableOpacity style={styles.btnJoin}
                                                       onPress={() => {
-                                                          handlePress(item.meta_box.url, item.id, CurrentStartTime, startMinutes)
+                                                          handlePress(item, CurrentStartTime, startMinutes)
                                                       }}
                                     >
                                         <Text style={{
@@ -243,7 +222,7 @@ const PracticeGroup = props => {
                             }
                         </View>
                         {conditionLessons||optionData.testing_mode?
-                            <Text style={{fontSize: scale(12), textAlign: "center"}}>last for {new Date(item.meta_box.duration * 1000).toISOString().substr(14, 5)}, repeat every {loop} mins</Text>
+                            <Text style={{fontSize: scale(12), textAlign: "center"}}>last for {new Date(item.duration * 1000).toISOString().substring(14, 19)}, repeat every {loop} mins</Text>
                             :
                             <Text style={{fontSize: scale(12), textAlign: "center"}}>Finish required lessons to unlock this group practice.</Text>
                         }
@@ -256,7 +235,7 @@ const PracticeGroup = props => {
 
     return (
         <SafeAreaView style={styles.container}>
-            {groupReducer.groups&&groupReducer.groups.length ? (
+            {groupReducer&&groupReducer.length ? (
                 <ScrollView nestedScrollEnabled={true} styles={styles.scrollView} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
                         <View>
@@ -266,8 +245,9 @@ const PracticeGroup = props => {
                         : null
                     }
                     <FlatList
-                        style={{paddingTop: 15}}
-                        data={groupReducer.groups}
+                        contentContainerStyle={{ paddingBottom: scale(20) }}
+                        style={styles.trackList}
+                        data={groupReducer}
                         renderItem={renderItem}
                         extraData={this.props}
                         showsVerticalScrollIndicator={false}
@@ -400,8 +380,12 @@ const styles = StyleSheet.create({
         width: windowWidth - scale(30),
         height: scale(100),
         marginHorizontal: scale(15),
-        marginBottom: scale(15),
+        marginTop: scale(10),
+        marginBottom: scale(5),
         borderRadius: 9,
+    },
+    trackList:{
+        paddingTop:scale(5),
     },
     boxShadow: {
         shadowColor: "#000",
@@ -529,7 +513,6 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
     config: state.config,
     accessToken: state.auth.token,
-    groups: state.routinesReducer.groups
 });
 PracticeGroup.navigationOptions = ({navigation}) => {
     const {params = {}} = navigation.state;

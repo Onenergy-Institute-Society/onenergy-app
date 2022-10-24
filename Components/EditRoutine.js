@@ -30,9 +30,8 @@ const EditRoutine = props => {
     const [ loading, setLoading ] = useState(false);
     const [routineDetail, setRoutineDetail] = useState(navigation.getParam('routine')?navigation.getParam('routine'):{id:0,title:'',image:optionData.routine_image[0],bgm:optionData.routine_bgm[0].name,tracks:[],routine:[]});
     const [selectBgm, setSelectBgm] = useState('');
-    const [guides, setGuides] = useState([]);
+    const guideReducer = useSelector((state) => state.onenergyReducer.practiceReducer.guides);
     const [tracksLoading, setTracksLoading] = useState(true);
-    const [guidesLoading, setGuidesLoading] = useState(true);
     const [routineSettings, setRoutineSettings] = useState(routineDetail.routine);
     const [currentTrack, setCurrentTrack] = useState({index:-1, detail:{}});
     const [changedStatus, setChangedStatus] = useState(false);
@@ -69,33 +68,7 @@ const EditRoutine = props => {
                 false
             ).then(response => {
                 setRoutineDetail(prevState => {return {...prevState, id: response.data.id, tracks: response.data.tracks}});
-                dispatch({
-                    type: 'UPDATE_USER_ROUTINE_STATUS',
-                    payload: true,
-                });
                 setTracksLoading(false)
-            });
-        } catch (e) {
-            console.error(e);
-        }
-    }
-    const fetchGuides = async () => {
-        try {
-            const apiSlide = getApi(props.config);
-            await apiSlide.customRequest(
-                "wp-json/onenergy/v1/guide/?category=preparatory-practices",
-                "get",
-                {},
-                null,
-                {},
-                false
-            ).then(response => {
-                dispatch({
-                    type: "ONENERGY_GUIDES",
-                    payload: response.data
-                });
-                setGuides(response.data);
-                setGuidesLoading(false);
             });
         } catch (e) {
             console.error(e);
@@ -105,13 +78,10 @@ const EditRoutine = props => {
         this.routineHelpModal.open();
     }
     useEffect(() => {
-        let helpIndex = optionData.helps.findIndex(el => el.name === 'practice_customize_editor_popup_member');
-        setHelpModal({title:optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'',id:optionData.helps[helpIndex].id});
-        let titleIndex = optionData.titles.findIndex(el => el.id === 'home_title');
+        setHelpModal(optionData.helps.find(el => el.name === 'practice_customize_editor_popup_member'));
         props.navigation.setParams({
-            title: optionData.titles[titleIndex].title,
+            title: optionData.titles.find(el => el.id === 'home_title').title,
         });
-        fetchGuides().then();
     },[])
     useEffect(()=>{
         if(!tracksLoading) {
@@ -269,21 +239,35 @@ const EditRoutine = props => {
     const renderGuides = (item) => {
         let index = routineDetail.routine.findIndex(el => el.id === item.item.id);
         return (
-            <TouchableWithoutFeedback onPress={() => {addGuideToRoutine(item.item);setChangedStatus(true)}}>
-                <View style={{paddingHorizontal:25, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', borderTopRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                    <Text
-                        style={{fontSize:18}}>
-                        {item.item.title}
-                    </Text>
-                    {index>=0?(
-                        <IconButton
-                            icon={require("@src/assets/img/check-simple.png")}
-                            tintColor={"#4942e1"}
-                            style={{ height: 14, width: 14 }}
-                        />
-                    ):null}
-                </View>
-            </TouchableWithoutFeedback>
+            item.item.show?
+                <TouchableWithoutFeedback onPress={() => {
+                    addGuideToRoutine(item.item);
+                    setChangedStatus(true)
+                }}>
+                    <View style={{
+                        paddingHorizontal: 25,
+                        paddingVertical: 10,
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#ccc',
+                        borderTopRightRadius: 9,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
+                    }}>
+                        <Text
+                            style={{fontSize: 18}}>
+                            {item.item.title}
+                        </Text>
+                        {index >= 0 ? (
+                            <IconButton
+                                icon={require("@src/assets/img/check-simple.png")}
+                                tintColor={"#4942e1"}
+                                style={{height: 14, width: 14}}
+                            />
+                        ) : null}
+                    </View>
+                </TouchableWithoutFeedback>
+            :null
         )
     }
     const renderCount = (item) => {
@@ -363,7 +347,9 @@ const EditRoutine = props => {
     }
     const renderSectionHeader = (section) => {
         return(
+            section.section.data.find((item) => item.show)?
             <Text style={{backgroundColor: '#e6e6e8', paddingVertical:10, fontSize: 24, marginTop:15, textAlign: "center" }}>{section.section.title.toUpperCase()}</Text>
+                :null
         );
     }
     const renderColor = () => {
@@ -427,16 +413,12 @@ const EditRoutine = props => {
             </View>
             <View style={{width: windowWidth-scale(30), flexDirection:"row", justifyContent: "space-between", alignItems:"center"}}>
                 <Text style={styles.title}>Practices</Text>
-                {!guidesLoading?
                 <IconButton
                     pressHandler={() => {this.addGuideModal.open();}}
                     icon={require("@src/assets/img/add.png")}
                     tintColor={"#4942e1"}
                     style={{ height: 20, width: 20 }}
                 />
-                :
-                    <ActivityIndicator size='small' />
-                }
             </View>
             <GestureHandlerRootView style={{height:"100%"}}>
                 {routineSettings.length===0?(
@@ -569,39 +551,37 @@ const EditRoutine = props => {
                     showsVerticalScrollIndicator: false,
                 }}
             />
-            {guidesLoading?null:(
-                <Modalize
-                    ref={(addGuideModal) => { this.addGuideModal = addGuideModal; }}
-                    modalHeight={windowHeight*2/3}
-                    handlePosition = "outside"
-                    HeaderComponent={
-                        <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
-                            <Text style={{fontSize:24}}>Practices</Text><IconButton
-                            pressHandler={() => {this.addGuideModal.close();}}
-                            icon={require("@src/assets/img/close.png")}
-                            tintColor={"#838384"}
-                            style={{ height: scale(16), width: scale(16) }}
-                            touchableStyle={{
-                                position:"absolute", top:10, right: 10,
-                                height: scale(24),
-                                width: scale(24),
-                                backgroundColor: "#e6e6e8",
-                                alignItems: "center",
-                                borderRadius: 100,
-                                padding: scale(5),
-                            }}
-                        /></View>
-                    }
-                    sectionListProps = {{
-                        stickySectionHeadersEnabled:false,
-                        sections:guides,
-                        renderItem:renderGuides,
-                        renderSectionHeader:renderSectionHeader,
-                        keyExtractor:(item, index) => `${item.title}-${index}`,
-                        showsVerticalScrollIndicator: false,
-                    }}
-                />
-            )}
+            <Modalize
+                ref={(addGuideModal) => { this.addGuideModal = addGuideModal; }}
+                modalHeight={windowHeight*2/3}
+                handlePosition = "outside"
+                HeaderComponent={
+                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
+                        <Text style={{fontSize:24}}>Practices</Text><IconButton
+                        pressHandler={() => {this.addGuideModal.close();}}
+                        icon={require("@src/assets/img/close.png")}
+                        tintColor={"#838384"}
+                        style={{ height: scale(16), width: scale(16) }}
+                        touchableStyle={{
+                            position:"absolute", top:10, right: 10,
+                            height: scale(24),
+                            width: scale(24),
+                            backgroundColor: "#e6e6e8",
+                            alignItems: "center",
+                            borderRadius: 100,
+                            padding: scale(5),
+                        }}
+                    /></View>
+                }
+                sectionListProps = {{
+                    stickySectionHeadersEnabled:false,
+                    sections:guideReducer,
+                    renderItem:renderGuides,
+                    renderSectionHeader:renderSectionHeader,
+                    keyExtractor:(item, index) => `${item.title}-${index}`,
+                    showsVerticalScrollIndicator: false,
+                }}
+            />
         </SafeAreaView>
     );
 };

@@ -23,17 +23,20 @@ const TrackSlider = (props) => {
         return `${hrs}${mins}${scnds}`;
     };
     useEffect(()=>{
+        if(type)
         setPastDuration(pastDuration+pastPosition);
     },[duration])
     useEffect(()=>{
-        if(pastPosition===0)
-        setPastDuration(0);
+        if(type) {
+            if (pastPosition === 0)
+                setPastDuration(0);
+        }
     },[pastPosition])
 
     return (
         <>
             {type === 'routine' ?
-                <Text style={{marginLeft: 5, fontSize: scale(12),}}>{secondsToHHMMSS(Math.floor(totalDuration-pastDuration-position || 0))}</Text>
+                <Text style={{marginLeft: 5, fontSize: scale(12),}}>{secondsToHHMMSS(Math.floor(type?totalDuration-pastDuration-position:duration-position || 0))}</Text>
                 :
                 <><Text
                     style={{marginRight: 5, fontSize: scale(12),}}>{secondsToHHMMSS(Math.floor(position || 0))}</Text>
@@ -48,8 +51,8 @@ const TrackSlider = (props) => {
                         minimumTrackTintColor={'#4942E1'}
                         maximumTrackTintColor={'#7DE7FA'}
                         disabled={!optionData.testing_mode}
-                        onValueChange={val => {
-                            TrackPlayer.pause();
+                        onValueChange={ val => {
+                             TrackPlayer.pause();
                         }}
                         onSlidingComplete={val => {
                             try {

@@ -208,6 +208,9 @@ class VimeoPlayer extends Component {
                                 </View>
                                 </>
                             :null}
+                            {this.state.seekableDuration?
+                            <View style={styles.remainingView}><Text style={styles.remaining}>{new Date(Math.round(this.state.seekableDuration - this.state.currentTime) * 1000).toISOString().substring(14, 19)}</Text></View>
+                                :null}
                             {(this.state.textTracks.length>0&&this.state.paused)?
                                 <ChooseSubtitle textTracks={this.state.textTracks} setSelectedCCUrl={this.setSelectedCCUrl} />
                                 :null}
@@ -287,6 +290,17 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.5)',
         top: windowWidth-scale(40),
     },
+    remainingView:{
+        position:"absolute",
+        top: scale(10),
+        right: 0,
+        left: 0,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    remaining:{
+        color: "white",
+    },
     progressView: {
         marginTop:20,
         alignSelf:"center",
@@ -327,7 +341,7 @@ const styles = StyleSheet.create({
 function mapDispatchToProps(dispatch) {
     return {
         completeVideo: () => dispatch({
-            type: 'VIDEO_COMPLETED'
+            type: 'ONENERGY_VIDEO_COMPLETED'
         })
     }
 }

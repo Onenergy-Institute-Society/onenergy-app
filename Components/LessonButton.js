@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import {Text, View, TouchableOpacity, ActivityIndicator} from "react-native";
 import {getApi} from "@src/services";
 import {StackActions, NavigationActions, withNavigation} from "react-navigation";
-import {connect, useSelector, useDispatch} from "react-redux";
+import {connect, useSelector, useDispatch, batch} from "react-redux";
 import IconButton from "@src/components/IconButton";
 import AwesomeAlert from "../Components/AwesomeAlert";
 import ImageCache from "./ImageCache";
@@ -11,6 +11,8 @@ import {scale} from "../Utils/scale";
 const LessonButton = (props) => {
     const { global, colors, lesson } = props;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer);
+    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
     const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
     const [completing, setCompleting] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
@@ -22,26 +24,7 @@ const LessonButton = (props) => {
     const [alertShowConfirm, setAlertShowConfirm] = useState(false);
     const [visualGuideForButton, setVisualGuideForButton] = useState(false);
     const dispatch = useDispatch();
-    const getUserPoints = async () => {
-        const apiRequest = getApi(props.config);
-        await apiRequest.customRequest(
-            "wp-json/onenergy/v1/points",
-            "get",
-            {},
-            null,
-            {},
-            false
-        ).then(response => {
-            dispatch({
-                type:"UPDATE_POINTS",
-                payload:response.data
-            });
-            dispatch({
-                type:"UPDATE_USER_POINTS",
-                payload:response.data
-            });
-        })
-    }
+
     useEffect(()=>{
         setTimeout(function () {
             setVisualGuideForButton(true);
@@ -49,82 +32,109 @@ const LessonButton = (props) => {
     },[])
     const completeLesson = async () => {
         try {
-            const apiRequest = getApi(props.config);
-            await apiRequest.customRequest(
-                "wp-json/buddyboss-app/learndash/v1/lessons/"+lesson.id+"/complete",
-                "post",
-                {"course_id":lesson.parent.id},
-                null,
-                {},
-                false
-            ).then(response => {
-                dispatch({
-                    type: 'VIDEO_RESET',
+            batch(async () => {
+                let achievements = [];
+                let points;
+                let updatedList = [];
+
+                optionData.points.map(point => {
+                    points = {...points, [point.pointName]: 0};
                 });
-                setCompleting(false);
-                dispatch({
-                    type: 'UPDATE_USER_COMPLETED_LESSONS',
-                    payload: {"id": lesson.id, "date": new Date().getTime() / 1000}
-                });
-                if(response.data.next_lesson===0){
-                    dispatch({
-                        type: 'UPDATE_USER_COMPLETED_COURSES',
-                        payload: {"id": lesson.parent.id, "date": new Date().getTime() / 1000}
-                    });
-                }
-                if(lesson.settings.guide)
-                {
-                    dispatch({
-                        type: 'NOTIFICATION_INCREMENT',
-                        payload: 'guide_personal'
-                    });
-                    lesson.settings.guide.map((item) => {
-                        dispatch({
-                            type: 'NOTIFICATION_PRACTICE_ADD',
-                            payload: item,
+                updatedList.push({
+                    "mode": 'LC',
+                    "data": {
+                        'id': lesson.id
+                    },
+                })
+                let course_completed = false;
+                if (!lesson.next_lesson) {
+                    achievementReducer.filter(milestone =>
+                        (milestone.trigger === 'course' &&
+                            (parseInt(milestone.triggerCourse) === lesson.parent.id || !milestone.triggerCourse) &&
+                            !milestone.complete_date)
+                    ).map((item) => {
+                        let complete_date = Math.floor(new Date().getTime() / 1000);
+                        item.awards.map(award => {
+                            points[award.name] += parseInt(award.point);
+                        })
+                        achievements.push({
+                            "id": item.id,
+                            "title": item.title,
+                            "type": "milestone",
+                            "step": 1,
+                            "complete_date": complete_date
                         });
-                    });
+                    })
+                    updatedList.push({
+                        "mode": 'CC',
+                        "data": {
+                            'id': lesson.parent.id
+                        },
+                    })
+                    course_completed = true;
+                }
+                dispatch({
+                    type: 'ONENERGY_ACHIEVEMENT_COMPLETE_LESSON',
+                    payload: {"lesson": lesson.id, "course": lesson.parent.id, "course_completed":course_completed}
+                });
+                dispatch({
+                    type: 'ONENERGY_PROGRESS_UPDATE',
+                    payload: updatedList,
+                });
+                apiRequest.customRequest(
+                    "wp-json/onenergy/v1/statsUpdate",
+                    "post",
+                    {
+                        "mode": "LC",
+                        "data": lesson,
+                        "points": points,
+                        "stats": progressReducer,
+                        "achievements": achievements
+                    },
+                    null,
+                    {},
+                    false
+                );
+                if (lesson.settings.guide) {
                     dispatch({
-                        type: 'ONENERGY_GUIDE_REFRESH'
+                        type: 'ONENERGY_GUIDE_UPDATE',
+                        payload: lesson.settings.guide,
                     });
-                    if(lesson.settings.no_video) {
+                    if (lesson.settings.no_video) {
                         props.navigation.goBack();
-                    }else{
-                        let index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_title');
-                        setAlertTitle(optionData.titles[index].title);
-                        index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_body');
-                        setAlertBody(optionData.titles[index].title + ' ' + lesson.title);
+                    } else {
+                        setAlertTitle(optionData.titles.find(el => el.id === 'alert_guide_activated_title').title);
+                        setAlertBody(optionData.titles.find(el => el.id === 'alert_guide_activated_body').title + ' ' + lesson.title);
                         setAlertCancelText('');
-                        setAlertConfirmType(lesson.settings.open_screen?lesson.settings.open_screen:lesson.settings.back_to);
-                        index = optionData.titles.findIndex(el => el.id === 'alert_guide_activated_button');
-                        setAlertConfirmText(optionData.titles[index].title);
+                        setAlertConfirmType(lesson.settings.open_screen ? lesson.settings.open_screen : lesson.settings.back_to);
+                        setAlertConfirmText(optionData.titles.find(el => el.id === 'alert_guide_activated_button').title);
                         setAlertShowConfirm(true);
                         setShowAlert(true);
                     }
-                }else{
-                    if(lesson.settings.no_video||lesson.settings.no_popup) {
-                        if(lesson.settings.open_screen) {
+                } else {
+                    if (lesson.settings.no_video || lesson.settings.no_popup) {
+                        if (lesson.settings.open_screen) {
                             switch (lesson.settings.open_screen) {
                                 case "guided-practices":
                                     props.navigation.dispatch(
-                                        NavigationActions.navigate( {
+                                        NavigationActions.navigate({
                                             routeName: "PracticesScreen",
                                         }));
                                     break;
                                 case "group-practices":
                                     props.navigation.dispatch(
-                                        NavigationActions.navigate( {
+                                        NavigationActions.navigate({
                                             routeName: "PracticeGroup",
                                         }));
                                     break;
                                 case "programs":
                                     props.navigation.dispatch(
-                                        NavigationActions.navigate( {
+                                        NavigationActions.navigate({
                                             routeName: "ProgramsScreen",
                                         }));
                                     break
                             }
-                        }else {
+                        } else {
                             switch (lesson.settings.back_to) {
                                 case "top":
                                     props.navigation.dispatch(StackActions.popToTop());
@@ -134,21 +144,34 @@ const LessonButton = (props) => {
                                     break
                             }
                         }
-                    }else{
-                        let index = optionData.titles.findIndex(el => el.id === 'alert_course_completed_title');
-                        setAlertTitle(optionData.titles[index].title);
-                        index = optionData.titles.findIndex(el => el.id === 'alert_course_completed_body');
-                        setAlertBody(optionData.titles[index].title + ' ' + lesson.title);
+                    } else {
+                        setAlertTitle(optionData.titles.find(el => el.id === 'alert_course_completed_title').title);
+                        setAlertBody(optionData.titles.find(el => el.id === 'alert_course_completed_body').title + ' ' + lesson.title);
                         setAlertCancelText('');
-                        setAlertConfirmType(lesson.settings.open_screen?lesson.settings.open_screen:lesson.settings.back_to);
-                        index = optionData.titles.findIndex(el => el.id === 'alert_course_completed_button');
-                        setAlertConfirmText(optionData.titles[index].title);
+                        setAlertConfirmType(lesson.settings.open_screen ? lesson.settings.open_screen : lesson.settings.back_to);
+                        setAlertConfirmText(optionData.titles.find(el => el.id === 'alert_course_completed_button').title);
                         setAlertShowConfirm(true);
                         setShowAlert(true);
                     }
                 }
-                getUserPoints();
-            });
+                apiRequest.customRequest(
+                    "wp-json/buddyboss-app/learndash/v1/lessons/" + lesson.id + "/complete",
+                    "post",
+                    {"course_id": lesson.parent.id},
+                    null,
+                    {},
+                    false
+                );
+                dispatch({
+                    type: "ONENERGY_UPDATE_USER_POINTS",
+                    payload: points
+                });
+
+                dispatch({
+                    type: 'ONENERGY_VIDEO_RESET',
+                });
+                setCompleting(false);
+            })
         } catch (e) {
             console.error(e);
         }

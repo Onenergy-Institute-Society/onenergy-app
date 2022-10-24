@@ -29,9 +29,8 @@ const CategoryPageWatch = () => {
 }
 const TabTitle = ({tintColor, name}) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    let titleIndex = optionData.titles.findIndex(el => el.id === name);
     return (
-        <Text style={{ color: tintColor, fontSize: scale(20) }}>{optionData.titles[titleIndex].title}</Text>
+        <Text style={{ color: tintColor, fontSize: scale(20) }}>{optionData.titles.find(el => el.id === name).title}</Text>
     )
 }
 const Tabs = createMaterialTopTabNavigator(

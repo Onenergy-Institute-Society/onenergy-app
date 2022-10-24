@@ -92,7 +92,7 @@ function processArrayBlocksToCues(arrayBlocks) {
                         }
                         return cue;
                     }
-                    cue.text = cue.text + ' ' + string.replace('&nbsp;', ' ');
+                    cue.text = cue.text + ' ' + string.replace('&nbsp;&nbsp;', '').replace('&nbsp;', ' ');
                     return cue;
                 },
                 {

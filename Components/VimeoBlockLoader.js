@@ -13,6 +13,7 @@ const VimeoBlockLoader =(props) => {
     const language = useSelector((state) => state.languagesReducer.languages);
     const no_skip_forward = block.data.no_skip_forward;
     const lesson_video = block.data.lesson_video;
+    const duration = block.data.duration;
     const [vimeoConfig, setVimeoConfig] = useState([]);
     const [video, setVideo] = useState('');
     const [thumbnail, setThumbnail] = useState('');
@@ -73,7 +74,7 @@ const VimeoBlockLoader =(props) => {
             </ImageBackground>
             :
             <View style={styles.container}>
-                <VimeoBlock video={video} thumbnail={thumbnail} textTracks={textTracks} lesson_video={lesson_video} no_skip_forward={no_skip_forward} selectedCCUrl={selectedCCUrl} />
+                <VimeoBlock video={video} duration={duration} thumbnail={thumbnail} textTracks={textTracks} lesson_video={lesson_video} no_skip_forward={no_skip_forward} selectedCCUrl={selectedCCUrl} />
             </View>
     )
 }

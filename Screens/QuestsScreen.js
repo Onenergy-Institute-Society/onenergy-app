@@ -41,9 +41,8 @@ const QuestsMonthly = () => {
 }
 const TabTitle = ({tintColor, name}) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    let titleIndex = optionData.titles.findIndex(el => el.id === name);
     return (
-        <Text style={{ color: tintColor, fontSize: scale(20) }}>{optionData.titles[titleIndex].title}</Text>
+        <Text style={{ color: tintColor, fontSize: scale(20) }}>{optionData.titles.find(el => el.id === name).title}</Text>
     )
 }
 const Tabs = createMaterialTopTabNavigator(
@@ -101,7 +100,7 @@ const Tabs = createMaterialTopTabNavigator(
         }
     },
 );
-const MyQuestsScreen = createStackNavigator({
+const QuestsScreen = createStackNavigator({
     Tabs: {
         screen: Tabs,
         navigationOptions: {
@@ -109,7 +108,7 @@ const MyQuestsScreen = createStackNavigator({
         }
     }
 });
-MyQuestsScreen.navigationOptions = ({navigation}) => ({
+QuestsScreen.navigationOptions = ({navigation}) => ({
     title: 'My Quests',
     headerTitleStyle: {textAlign:'left'},
     headerLeft:
@@ -127,5 +126,6 @@ MyQuestsScreen.navigationOptions = ({navigation}) => ({
         </TouchableOpacity>,
     headerRight:
         <QiPointHeader />
+    ,
 })
-export default withNavigation(MyQuestsScreen);
+export default withNavigation(QuestsScreen);

@@ -1,11 +1,14 @@
-import React, {useEffect, useState} from "react";
-import {useSelector, useDispatch} from "react-redux";
+import React, {useEffect, useRef} from "react";
+import {connect, useSelector, useDispatch} from "react-redux";
 import {
     StyleSheet,
     ScrollView,
     View,
-    SafeAreaView, Text, ActivityIndicator
+    SafeAreaView,
+    Text,
+    AppState, Alert
 } from "react-native";
+import {getApi} from "@src/services";
 import IconButton from "@src/components/IconButton";
 import {windowWidth} from "../Utils/Dimensions";
 import {scale} from '../Utils/scale';
@@ -19,76 +22,131 @@ import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workarou
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import EventList from "../Components/EventList";
-import {BlurView} from "@react-native-community/blur";
 import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 
 const HomeContent = (props) => {
+    const appState = useRef(AppState.currentState);
     const {navigation, screenProps} = props;
     const {global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const routinesReducer = useSelector((state) => state.routinesReducer);
-    const postsReducer = useSelector((state) => state.postsReducer);
-    const [loading, setLoading] = useState(false);
+    const practiceReducer = useSelector((state) => state.onenergyReducer.practiceReducer);
+    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
+    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer);
+    const postReducer = useSelector((state) => state.postReducer);
     const dispatch = useDispatch();
-    TrackPlayer.setupPlayer();
-    TrackPlayer.updateOptions({
-        stoppingAppPausesPlayback: true,
-        alwaysPauseOnInterruption: false,
-        // Media controls capabilities
-        capabilities: [
-            Capability.Play,
-            Capability.Pause,
-            Capability.Stop,
-        ],
-        // Capabilities that will show up when the notification is in the compact form on Android
-        compactCapabilities: [
-            Capability.Play,
-            Capability.Pause,
-            Capability.Stop,
-        ],
-    });
-    TrackPlayer.setRepeatMode(RepeatMode.Off);
+    const onFocusHandler=() =>{
+        try
+        {
+            navigation.closeDrawer();
 
+        }catch (e) {
+
+        }
+    }
+    const _handleAppStateChange = async () => {
+        if (appState.current === 'background' && progressReducer.latestUpdate > progressReducer.lastUpload) {
+            let achievements = {
+                'achievements': [],
+                'weekly': achievementReducer.weekly,
+                'monthly': achievementReducer.monthly
+            }
+            achievementReducer.achievements.map((achievement) => {
+                achievements.achievements.push({
+                    'id': achievement.id,
+                    'step': achievement.step,
+                    'complete_date': achievement.complete_date,
+                    'claim_date': achievement.claim_date,
+                    'list': achievement.list
+                });
+            });
+            const apiRequest = getApi(props.config);
+            await apiRequest.customRequest(
+                "wp-json/onenergy/v1/statsUpdate",
+                "post",
+                {
+                    "actionList": progressReducer.actionList,
+                    "points": progressReducer.points,
+                    "stats": progressReducer,
+                    "achievements": achievements
+                },
+                null,
+                {},
+                false
+            ).then(response => {
+                if(response.data){
+                    dispatch({
+                        type: 'ONENERGY_PROGRESS_UPLOADED'
+                    });
+                }
+            });
+        }
+    };
     useEffect(() => {
-        let titleIndex = optionData.titles.findIndex(el => el.id === 'home_title');
+        navigation.addListener('willFocus', onFocusHandler)
+        const subscription = AppState.addEventListener("change", _handleAppStateChange);
         props.navigation.setParams({
             showNotification: !!user,
-            title: optionData.titles[titleIndex].title,
+            title: optionData.titles.find(el => el.id === 'home_title').title,
         });
-        if(routinesReducer.guideUpdate&&optionData.cache.guide>routinesReducer.guideUpdate||!routinesReducer.guideUpdate)
-        {
-            dispatch({
-                type: 'ONENERGY_GUIDE_REFRESH',
+        if(user) {
+            TrackPlayer.setupPlayer();
+            TrackPlayer.updateOptions({
+                stoppingAppPausesPlayback: true,
+                alwaysPauseOnInterruption: false,
+                // Media controls capabilities
+                capabilities: [
+                    Capability.Play,
+                    Capability.Pause,
+                    Capability.Stop,
+                ],
+                // Capabilities that will show up when the notification is in the compact form on Android
+                compactCapabilities: [
+                    Capability.Play,
+                    Capability.Pause,
+                    Capability.Stop,
+                ],
             });
+            TrackPlayer.setRepeatMode(RepeatMode.Off);
+            console.log("1", optionData.cache.guide, practiceReducer.guideUpdate, practiceReducer);
+            let load = false;
+            if (optionData.cache.guide && practiceReducer.guideUpdate && optionData.cache.guide > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
+                load = true;
+            }
+            console.log("2", optionData.cache.group, practiceReducer.groupUpdate, practiceReducer);
+            if (optionData.cache.group && practiceReducer.groupUpdate && optionData.cache.group > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
+                load = true;
+            }
+            console.log("3", optionData.cache.post, postReducer.postUpdate, postReducer);
+            if (optionData.cache.post && postReducer.postUpdate && optionData.cache.post > postReducer.postUpdate || !postReducer.postUpdate) {
+                dispatch({
+                    type: 'ONENERGY_POSTS_RESET',
+                });
+            }
+            console.log("4", optionData.cache.achievement, achievementReducer.achievementUpdate, achievementReducer);
+            if (optionData.cache.achievement && achievementReducer.achievementUpdate && optionData.cache.achievement > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
+                load = true;
+            }
+            console.log("5", optionData.cache.progress, progressReducer.progressUpdate, progressReducer);
+            if (optionData.cache.progress && progressReducer.progressUpdate && optionData.cache.progress > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
+                load = true;
+            }
+            if (load) {
+                props.navigation.navigate("HomeModal", { transition: 'fade' });
+            }
         }
-        if(routinesReducer.routineUpdate&&optionData.cache.routine>routinesReducer.routineUpdate||!routinesReducer.routineUpdate)
-        {
-            dispatch({
-                type: 'ONENERGY_ROUTINE_REFRESH',
-            });
-        }
-        if(routinesReducer.groupUpdate&&optionData.cache.group>routinesReducer.groupUpdate||!routinesReducer.groupUpdate)
-        {
-            dispatch({
-                type: 'ONENERGY_GROUP_REFRESH',
-            });
-        }
-        if(postsReducer.postUpdate&&optionData.cache.post>postsReducer.postUpdate||!postsReducer.postUpdate)
-        {
-            dispatch({
-                type: 'POSTS_RESET',
-            });
+        return () => {
+            navigation.removeListener('willFocus', onFocusHandler);
+            subscription.remove();
         }
     }, []);
-
     const OnPress = async (item, typeName) => {
         if (item) {
             switch (item[typeName]) {
                 case 'post':
                     navigation.dispatch(
                         NavigationActions.navigate({
-                            routeName: "MyBlogScreen",
+                            routeName: "BlogScreen",
                             params: {
                                 blogId: item.post,
                                 title: item.title
@@ -99,7 +157,7 @@ const HomeContent = (props) => {
                 case 'page':
                     navigation.dispatch(
                         NavigationActions.navigate({
-                            routeName: "MyAppPageScreen",
+                            routeName: "AppPageScreen",
                             params: {
                                 pageId: item.page,
                                 title: item.title
@@ -108,9 +166,7 @@ const HomeContent = (props) => {
                     )
                     break;
                 case 'link':
-                    setLoading(true);
                     let secTimer = setInterval(() => {
-                        setLoading(false);
                         clearInterval(secTimer);
                     }, 1000)
                     await props.attemptDeepLink(false)(null, item.link);
@@ -149,7 +205,6 @@ const HomeContent = (props) => {
                 )}
                 <View style={styles.programRow}>
                     <EventList location={'home'} eventsDate={optionData.goals}/>
-                    <EventList location={'home'} eventsDate={optionData.webinars}/>
                 </View>
                 {optionData.show.includes('events') && (
                     <View style={styles.eventRow}>
@@ -173,7 +228,7 @@ const HomeContent = (props) => {
                                         optionData.solarTerm.solarTermType === 'page' ?
                                             navigation.dispatch(
                                                 NavigationActions.navigate({
-                                                    routeName: "MyAppPageScreen",
+                                                    routeName: "AppPageScreen",
                                                     params: {
                                                         pageId: optionData.solarTerm.page,
                                                         title: optionData.solarTerm.title
@@ -274,17 +329,6 @@ const HomeContent = (props) => {
                 <View style={styles.bottomRow}>
                 </View>
             </ScrollView>
-            {loading &&
-            <BlurView style={styles.loading}
-                      blurType="light"
-                      blurAmount={5}
-                      reducedTransparencyFallbackColor="white"
-            >
-                <View>
-                    <ActivityIndicator size='large'/>
-                </View>
-            </BlurView>
-            }
         </SafeAreaView>
     );
 };
@@ -497,5 +541,8 @@ HomeContent.navigationOptions = ({navigation}) => {
                 :null
     })
 }
-
-export default withDeeplinkClickHandler(HomeContent);
+const mapStateToProps = (state) => ({
+    config: state.config?state.config:null,
+    accessToken: state.auth.token?state.auth.token:null,
+});
+export default connect(mapStateToProps)(withDeeplinkClickHandler(HomeContent));

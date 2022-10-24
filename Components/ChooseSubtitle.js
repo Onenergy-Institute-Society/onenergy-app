@@ -20,7 +20,7 @@ const ChooseSubtitle =(props) => {
             <TouchableOpacity onPress={() => {
                 setSelectedCCUrl(item.item.uri);
                 dispatch({
-                    type: 'CHANGE_SUBTITLE',
+                    type: 'ONENERGY_CHANGE_SUBTITLE',
                     payload: item.item.language
                 });
                 this.ccDialog.close();

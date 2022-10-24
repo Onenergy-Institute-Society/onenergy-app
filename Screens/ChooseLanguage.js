@@ -82,7 +82,7 @@ const ChooseLanguage = (props) => {
             <View>
                 <TouchableScale onPress={() => {
                     dispatch({
-                        type: 'DEFAULT_LANGUAGE',
+                        type: 'ONENERGY_DEFAULT_LANGUAGE',
                         payload: selectedLanguage,
                     });
                     props.navigation.dispatch(

@@ -20,10 +20,9 @@ const PostRow = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [ postsData, setPostsData ] = useState([]);
     const { navigation, postType, postCategory, postPerPage, postOrder, postOrderBy, showAuthor } = props;
-    const postSelector = state => ({postsReducer: state.postsReducer})
-    const {postsReducer} = useSelector(postSelector);
+    const postReducer = useSelector((state) => state.postReducer);
     const dispatch = useDispatch();
-    const categoryIndex = postsReducer.lastView&&postsReducer.lastView.length?postsReducer.lastView.findIndex(lv => lv.category === postCategory):null;
+    const categoryIndex = postReducer.lastView&&postReducer.lastView.length?postReducer.lastView.findIndex(lv => lv.category === postCategory):null;
     const fetchPostsData = async () => {
         try {
             let notify = false;
@@ -38,12 +37,13 @@ const PostRow = props => {
             ).then(response => response.data);
             let posts =[] ;
             data.map((item)=>{
-                if(!postsReducer.posts.length||postsReducer.posts.filter(post => post.id === item.id).length===0) {
+                if(!postReducer.posts.find(post => post.id === item.id)) {
                     if(categoryIndex&&categoryIndex>=0) {
-                        if (new Date(item.date) > new Date(postsReducer.lastView[categoryIndex].date)) {
+                        if (new Date(item.date) > new Date(postReducer.lastView[categoryIndex].date)) {
                             notify = true;
                         }
                     }
+                    if(item._embedded['wp:featuredmedia'])
                     posts.push({
                         id: item.id,
                         date: item.date,
@@ -58,14 +58,10 @@ const PostRow = props => {
                         notify: notify
                     })
                 }
-                dispatch({
-                    type: 'BLOG_ADD_ITEM',
-                    item: item,
-                });
             })
             if(posts&&posts.length>0) {
                 dispatch({
-                    type: 'POSTS_ADD',
+                    type: 'ONENERGY_POSTS_ADD',
                     payload: posts,
                     category: postCategory
                 });
@@ -76,19 +72,19 @@ const PostRow = props => {
     }
     useEffect(() => {
         let loadPosts = false;
-        if(postsReducer.postUpdate&&optionData.cache.post>postsReducer.postUpdate||!postsReducer.postUpdate)
+        if(postReducer.postUpdate&&optionData.cache.post>postReducer.postUpdate||!postReducer.postUpdate)
         {
             loadPosts = true;
         }else{
             if(categoryIndex&&categoryIndex>=0)
             {
-                let postCount = postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).length;
+                let postCount = postReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).length;
                 if(!postCount)
                 {
                     loadPosts = true
                 }else {
-                    setPostsData(postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage));
-                    if (new Date(postsReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[postCategory])) {
+                    setPostsData(postReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage));
+                    if (new Date(postReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[postCategory])) {
                         loadPosts = true;
                     }
                 }
@@ -100,9 +96,9 @@ const PostRow = props => {
             fetchPostsData().then();
     }, []);
     useEffect(() => {
-        if(postsReducer.posts&&postsReducer.posts.length)
-        setPostsData(postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage));
-    },[postsReducer.posts])
+        if(postReducer.posts&&postReducer.posts.length)
+        setPostsData(postReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage));
+    },[postReducer.posts])
     const renderOverlayImage = (format) => {
         switch(format) {
             case 'video':
@@ -121,12 +117,12 @@ const PostRow = props => {
                     try {
                         navigation.dispatch(
                             NavigationActions.navigate({
-                                routeName: "MyBlogScreen",
+                                routeName: "BlogScreen",
                                 params: {
                                     blogId: item.id,
                                     title: item.title.rendered
                                 },
-                                key: 'MyBlogScreen-' + item.id
+                                key: 'BlogScreen-' + item.id
                             })
                         );
                     } catch (err) {

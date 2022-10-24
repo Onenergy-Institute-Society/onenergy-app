@@ -7,7 +7,7 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
-    View
+    View, SectionList
 } from 'react-native';
 import {scale} from '../Utils/scale';
 import AudioPlayer from './AudioPlayer';
@@ -17,7 +17,7 @@ import NotificationTabBarIcon from "./NotificationTabBarIcon";
 const TracksList = (props) => {
     const {tracks, setMessageBarDisplay} = props;
     const [selectedTrack, setSelectedTrack] = useState(null);
-
+    console.log(tracks)
     const onTrackItemPress = async (track) => {
         if(!selectedTrack || track.id !== selectedTrack.id) {
             setSelectedTrack(track);
@@ -30,56 +30,74 @@ const TracksList = (props) => {
         if (selectedTrack && selectedTrack.id === item.id) {
             highlightColor = {color: "white"};
             showPlayer = true;
-        }else{
+        } else {
             highlightColor = {color: "black"};
             showPlayer = false;
         }
         return (
-            <View style={[styles.trackItem, styles.boxShadow, { height: showPlayer?scale(120):scale(80)}]} key={'practice-'+item.index}>
-                <TouchableOpacity
-                    onPress={() => {
-                        onTrackItemPress(item).then();
-                    }}
-                >
-                    <ImageBackground style={[styles.trackItemInner, styles.itemStyle]} source={selectedTrack && selectedTrack.id === item.id?require('../assets/images/1-1024x683.jpg'):require('../assets/images/7-1024x683.jpg')}>
-                        <View style={styles.trackImgBox}>
-                            <ImageBackground style={styles.trackImg} imageStyle={{ borderRadius: 9}} source={{ uri: item.artwork }}>
-                                <View style = {styles.overlay_button}><Image style = {styles.play} source = {require('../assets/images/audio-play.png')} /></View>
-                            </ImageBackground>
-                        </View>
-                        <View style={styles.trackDescBox}>
-                            <View style={styles.titleBox}>
-                                <Text style={[styles.title, highlightColor]}>{item.title}</Text>
-                                {item.new?(
-                                    <View style={{
-                                        height: 12,
-                                        width: 12,
-                                        borderRadius: 6,
-                                        backgroundColor: 'red',
-                                    }}/>
-                                ):null}
+            item.show?
+                <View style={[styles.trackItem, styles.boxShadow, {height: showPlayer ? scale(120) : scale(80)}]}
+                      key={'practice-' + item.id}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            onTrackItemPress(item).then();
+                        }}
+                    >
+                        <ImageBackground style={[styles.trackItemInner, styles.itemStyle]}
+                                         source={selectedTrack && selectedTrack.id === item.id ? require('../assets/images/1-1024x683.jpg') : require('../assets/images/7-1024x683.jpg')}>
+                            <View style={styles.trackImgBox}>
+                                <ImageBackground style={styles.trackImg} imageStyle={{borderRadius: 9}}
+                                                 source={{uri: item.artwork}}>
+                                    <View style={styles.overlay_button}><Image style={styles.play}
+                                                                               source={require('../assets/images/audio-play.png')}/></View>
+                                </ImageBackground>
                             </View>
-                            <View style={styles.subTitleBox}>
-                                <Text style={[styles.subTitle, highlightColor]}>{item.album || 'Unknown'}</Text><Text style={[styles.duration, highlightColor]}>{new Date(item.duration * 1000).toISOString().substr(14, 5)}</Text>
+                            <View style={styles.trackDescBox}>
+                                <View style={styles.titleBox}>
+                                    <Text style={[styles.title, highlightColor]}>{item.title}</Text>
+                                    {item.new ? (
+                                        <View style={{
+                                            height: 12,
+                                            width: 12,
+                                            borderRadius: 6,
+                                            backgroundColor: 'red',
+                                        }}/>
+                                    ) : null}
+                                </View>
+                                <View style={styles.subTitleBox}>
+                                    <Text
+                                        style={[styles.subTitle, highlightColor]}>{item.album || 'Unknown'}</Text><Text
+                                    style={[styles.duration, highlightColor]}>{new Date(item.duration * 1000).toISOString().substring(14, 19)}</Text>
+                                </View>
                             </View>
-                        </View>
-                    </ImageBackground>
-                    <NotificationTabBarIcon notificationID={'practice'} top={3} right={3} size={scale(15)} fontSize={10} showNumber={false} data={item.guide} />
-                </TouchableOpacity>
-                {showPlayer? (
-                    <AudioPlayer track={selectedTrack} setMessageBarDisplay={setMessageBarDisplay} />
-                ):null}
-            </View>
+                        </ImageBackground>
+                        <NotificationTabBarIcon notificationID={'practice'} top={3} right={3} size={scale(15)}
+                                                fontSize={10} showNumber={false} data={item.id}/>
+                    </TouchableOpacity>
+                    {showPlayer ? (
+                        <AudioPlayer track={selectedTrack} setMessageBarDisplay={setMessageBarDisplay}/>
+                    ) : null}
+                </View>
+            :null
         );
     };
-
+    const renderSectionHeader = (section) => {
+        return(
+            section.section.data.find((item) => item.show)?
+                <Text style={{paddingVertical:10, fontSize: 24, marginTop:5, textAlign: "center" }}>{section.section.title.toUpperCase()}</Text>
+                :null
+        );
+    }
     return (
         <SafeAreaView style={styles.container}>
-            <FlatList
+            <SectionList
+                stickySectionHeadersEnabled={false}
+                contentContainerStyle={{ paddingBottom: scale(20) }}
                 style={styles.trackList}
-                data={tracks}
+                sections={tracks}
                 renderItem={renderItem}
-                keyExtractor={item => item.id}
+                renderSectionHeader={renderSectionHeader}
+                keyExtractor={(item, index) => `${item.title}-${index}`}
             />
         </SafeAreaView>
     );

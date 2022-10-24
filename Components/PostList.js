@@ -21,13 +21,13 @@ import { scale } from '../Utils/scale';
 const PostList = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [ postsData, setPostsData ] = useState([]);
-    const postSelector = state => ({postsReducer: state.postsReducer})
-    const {postsReducer} = useSelector(postSelector);
+    const postSelector = state => ({postReducer: state.postReducer})
+    const {postReducer} = useSelector(postSelector);
     const [ loadMore, setLoadMore] = useState(false);
     const [ page, setPage] = useState(1);
     const { navigation, postCategory, postPerPage, postOrder, postOrderBy, useLoadMore } = props;
     const dispatch = useDispatch();
-    const categoryIndex = postsReducer.lastView&&postsReducer.lastView.length?postsReducer.lastView.findIndex(lv => lv.category === postCategory):null;
+    const categoryIndex = postReducer.lastView&&postReducer.lastView.length?postReducer.lastView.findIndex(lv => lv.category === parseInt(postCategory)):null;
     const fetchPostsData = async () => {
         try {
             let notify = false;
@@ -42,12 +42,13 @@ const PostList = props => {
             ).then(response => response.data);
             let posts = [];
             data.map((item) => {
-                if (!postsReducer.posts.length || postsReducer.posts.filter(post => post.id === item.id).length === 0) {
+                if (!postReducer.posts.length || !postReducer.posts.find(post => post.id === item.id)) {
                     if(categoryIndex&&categoryIndex>=0){
-                        if(new Date(item.date) > new Date(postsReducer.lastView[categoryIndex].date)){
+                        if(new Date(item.date) > new Date(postReducer.lastView[categoryIndex].date)){
                             notify = true;
                         }
                     }
+                    if(item._embedded['wp:featuredmedia'])
                     posts.push({
                         id: item.id,
                         date: item.date,
@@ -57,7 +58,7 @@ const PostList = props => {
                         categories: item.categories,
                         author: item._embedded['author'][0].name,
                         avatar: item._embedded['author'][0].avatar_urls['24'],
-                        image: item._embedded['wp:featuredmedia'][0].source_url,
+                        image: item._embedded['wp:featuredmedia']?item._embedded['wp:featuredmedia'][0].source_url:null,
                         meta_box: item.meta_box,
                         notify: notify
                     })
@@ -65,7 +66,7 @@ const PostList = props => {
             })
             if (posts && posts.length > 0) {
                 dispatch({
-                    type: 'POSTS_ADD',
+                    type: 'ONENERGY_POSTS_ADD',
                     payload: posts,
                     category: postCategory
                 });
@@ -79,13 +80,13 @@ const PostList = props => {
         let loadPosts = false;
         if(categoryIndex&&categoryIndex>=0)
         {
-            let postCount = postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).length
+            let postCount = postReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).length
             if(postCount < parseInt(postPerPage)*page)
             {
                 loadPosts = true
             }else {
-                setPostsData((current) => [...current, ...postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice((page-1)*postPerPage, page*postPerPage)]);
-                if (new Date(postsReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[postCategory])) {
+                setPostsData((current) => [...current, ...postReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice((page-1)*postPerPage, page*postPerPage)]);
+                if (new Date(postReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[postCategory])) {
                     loadPosts = true;
                 }
             }
@@ -96,8 +97,8 @@ const PostList = props => {
             fetchPostsData().then();
     }, [page]);
     useEffect(() => {
-        setPostsData(postsReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage*page));
-    },[postsReducer.posts])
+        setPostsData(postReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage*page));
+    },[postReducer.posts])
     const handleLoadMore = () => {
         if(useLoadMore) {
             setPage(page + 1);
@@ -125,18 +126,18 @@ const PostList = props => {
                     try {
                         if(item.notify) {
                             dispatch({
-                                type: 'POSTS_REMOVE_NOTIFY',
+                                type: 'ONENERGY_POSTS_REMOVE_NOTIFY',
                                 payload: item.id,
                             });
                         }
                         navigation.dispatch(
                             NavigationActions.navigate({
-                                routeName: "MyBlogScreen",
+                                routeName: "BlogScreen",
                                 params: {
                                     blogId: item.id,
                                     title: item.title.rendered
                                 },
-                                key: 'MyBlogScreen-' + item.id
+                                key: 'BlogScreen-' + item.id
                             })
                         );
                     } catch (err) {
@@ -193,6 +194,7 @@ const PostList = props => {
         <SafeAreaView style={styles.container}>
             {postsData&&postsData.length?(
                 <FlatList
+                    contentContainerStyle={{ paddingBottom: scale(20) }}
                     style={styles.scrollView}
                     data={postsData}
                     onEndReached={(d) =>{

@@ -10,6 +10,7 @@ import {
     Alert
 } from "react-native";
 import Icon from "@src/components/Icon";
+import HomeModal from "./Screens/HomeModal";
 import AppTouchableOpacity from "@src/components/AppTouchableOpacity";
 import {NavigationActions} from "react-navigation";
 import {useDispatch, useSelector} from "react-redux";
@@ -30,26 +31,25 @@ import PracticePersonal from './Screens/PracticePersonal';
 import PracticeGroup from './Screens/PracticeGroup';
 import PracticeMember from './Screens/PracticeMember';
 import OnBoarding from './Screens/OnBoarding';
-import MyBlogScreen from './Screens/MyBlogScreen';
-import MyCourseScreen from './Screens/MyCourseScreen';
+import BlogScreen from './Screens/BlogScreen';
+import CourseScreen from './Screens/CourseScreen';
 import ChooseLanguage from './Screens/ChooseLanguage';
-import MyQuestsScreen from './Screens/MyQuestsScreen';
-import MyMilestonesScreen from './Screens/MyMilestonesScreen';
-import MyProgressScreen from './Screens/MyProgressScreen';
-import MyVouchersScreen from './Screens/MyVouchersScreen';
-import MyStatsScreen from './Screens/MyStatsScreen';
-import MyMembership from './Screens/MyMembership';
-import myFeedbackScreen from "./Screens/MyFeedbackScreen";
+import QuestsScreen from './Screens/QuestsScreen';
+import MilestonesScreen from './Screens/MilestonesScreen';
+import ProgressScreen from './Screens/ProgressScreen';
+import VouchersScreen from './Screens/VouchersScreen';
+import StatsScreen from './Screens/StatsScreen';
+import Membership from './Screens/Membership';
 import {scale} from './Utils/scale';
 import ImageCache from "./Components/ImageCache";
 import {windowWidth} from "./Utils/Dimensions";
 import ProgramsScreen from "./Screens/ProgramsScreen";
 import EditRoutine from "./Components/EditRoutine";
-import MyFeedbackScreen from "./Screens/MyFeedbackScreen";
+import FeedbackScreen from "./Screens/FeedbackScreen";
 import NotificationTabBarIcon from "./Components/NotificationTabBarIcon";
 import TrackPlayer from 'react-native-track-player';
 import CourseActionButton from "@src/components/Course/CourseActionButton";
-import MyAppPageScreen from "./Screens/MyAppPageScreen";
+import AppPageScreen from "./Screens/AppPageScreen";
 import AppAvatar from "@src/components/AppAvatar";
 import LessonScreenHeader from "./Components/LessonScreenHeader";
 import TopicScreenHeader from "./Components/TopicScreenHeader";
@@ -60,7 +60,10 @@ import ImageBlock from "./Components/ImageBlock";
 import BgVideoBlock from "./Components/BgVideoBlock";
 import RelatedPostsRow from "./Components/RelatedPostsRow";
 import FastImage from 'react-native-fast-image';
-
+import LoginScreen from "@src/containers/Custom/LoginScreen";
+import SignupScreen from "@src/containers/Custom/SignupScreen";
+import PracticesContent from "./Screens/PracticesContent";
+import ProgramsContent from "./Screens/ProgramsContent";
 export const applyCustomCode = externalCodeSetup => {
     externalCodeSetup.navigationApi.addNavigationRoute(
         "homePage",
@@ -90,13 +93,13 @@ export const applyCustomCode = externalCodeSetup => {
     externalCodeSetup.navigationApi.addNavigationRoute(
         "ProgramsScreen",
         "ProgramsScreen",
-        ProgramsScreen,
+        ProgramsContent,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
         "PracticesScreen",
         "PracticesScreen",
-        PracticesScreen,
+        PracticesContent,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
@@ -119,24 +122,35 @@ export const applyCustomCode = externalCodeSetup => {
         "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "MyBlogScreen",
-        "MyBlogScreen",
-        MyBlogScreen,
+        "SignupScreen",
+        "SignupScreen",
+        SignupScreen,
         "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "MyCourseScreen",
-        "MyCourseScreen",
-        MyCourseScreen,
+        "LoginScreen",
+        "LoginScreen",
+        LoginScreen,
         "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "MyAppPageScreen",
-        "MyAppPageScreen",
-        MyAppPageScreen,
+        "BlogScreen",
+        "BlogScreen",
+        BlogScreen,
         "All"
     );
-
+    externalCodeSetup.navigationApi.addNavigationRoute(
+        "CourseScreen",
+        "CourseScreen",
+        CourseScreen,
+        "All"
+    );
+    externalCodeSetup.navigationApi.addNavigationRoute(
+        "AppPageScreen",
+        "AppPageScreen",
+        AppPageScreen,
+        "All"
+    );
     externalCodeSetup.navigationApi.addNavigationRoute(
         "SolarTermScreen",
         "SolarTermScreen",
@@ -150,13 +164,13 @@ export const applyCustomCode = externalCodeSetup => {
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "videoPlayer",
+        "VideoPlayer",
         "VideoPlayer",
         VideoPlayer,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "vimeoPlayer",
+        "VimeoPlayer",
         "VimeoPlayer",
         VimeoPlayer,
         "All" // "Auth" | "noAuth" | "Main" | "All"
@@ -192,45 +206,51 @@ export const applyCustomCode = externalCodeSetup => {
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "MyQuestsScreen",
-        "MyQuestsScreen",
-        MyQuestsScreen,
+        "QuestsScreen",
+        "QuestsScreen",
+        QuestsScreen,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "MyMilestonesScreen",
-        "MyMilestonesScreen",
-        MyMilestonesScreen,
+        "MilestonesScreen",
+        "MilestonesScreen",
+        MilestonesScreen,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "MyProgressScreen",
-        "MyProgressScreen",
-        MyProgressScreen,
+        "ProgressScreen",
+        "ProgressScreen",
+        ProgressScreen,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "MyVouchersScreen",
-        "MyVouchersScreen",
-        MyVouchersScreen,
+        "VouchersScreen",
+        "VouchersScreen",
+        VouchersScreen,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "MyMembership",
-        "MyMembership",
-        MyMembership,
+        "Membership",
+        "Membership",
+        Membership,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "MyFeedbackScreen",
-        "MyFeedbackScreen",
-        MyFeedbackScreen,
+        "FeedbackScreen",
+        "FeedbackScreen",
+        FeedbackScreen,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "MyStatsScreen",
-        "MyStatsScreen",
-        MyStatsScreen,
+        "StatsScreen",
+        "StatsScreen",
+        StatsScreen,
+        "All" // "Auth" | "noAuth" | "Main" | "All"
+    );
+    externalCodeSetup.navigationApi.addNavigationRoute(
+        "HomeModal",
+        "HomeModal",
+        HomeModal,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.blocksApi.addCustomBlockRender(
@@ -262,10 +282,10 @@ export const applyCustomCode = externalCodeSetup => {
     externalCodeSetup.coursesHooksApi.setFetchParamsFilter(props => {
         return {...props, order: "desc", categories: [93]}
     });
-
 //Program screen course list
     const NewWidgetItemCourseComponent = (props) => {
         const {viewModel, colors} = props;
+
         let featuredUrl = viewModel.featuredUrl.replace('-300x200', '-1024x683');
         let statusText;
         let statusBarColor;
@@ -354,9 +374,9 @@ export const applyCustomCode = externalCodeSetup => {
                 position: 'absolute',
                 bottom: 25,
                 alignSelf: "center",
-                textShadowColor: 'rgba(0, 0, 0, 0.75)',
+                textShadowColor: 'grey',
                 textShadowOffset: {width: -1, height: 1},
-                textShadowRadius: 10
+                textShadowRadius: 1
             },
             progressBar: {
                 height: 3,
@@ -410,9 +430,9 @@ export const applyCustomCode = externalCodeSetup => {
                 textAlign: 'center',
                 justifyContent: "center",
                 color: 'white',
-                textShadowColor: 'rgba(0, 0, 0, 0.75)',
+                textShadowColor: 'grey',
                 textShadowOffset: {width: -1, height: 1},
-                textShadowRadius: 10,
+                textShadowRadius: 1,
                 fontFamily: Platform.OS === 'android'
                     ? 'Roboto' : 'Avenir-Roman',
             },
@@ -486,77 +506,77 @@ export const applyCustomCode = externalCodeSetup => {
 
     //Add Blog reducer
     externalCodeSetup.reduxApi.addReducer(
-        "postsReducer",
+        "postReducer",
         (state = {posts: [], lastView: [], postUpdate: ''}, action) => {
             const currentDate = new Date().toISOString();
             switch (action.type) {
-                case "POSTS_ADD":
+                case "ONENERGY_POSTS_ADD":
                     let posts = action.payload;
                     let postsState;
-                    if(state.posts.length>0) {
+                    if (state.posts.length > 0) {
                         postsState = {
                             ...state,
                             posts: [...state.posts, ...posts],
                         };
-                    }else{
+                    } else {
                         postsState = {
                             ...state,
                             posts: posts,
                         };
                     }
                     posts = postsState.posts.sort((a, b) => {
-                        if(a.date < b.date){
+                        if (a.date < b.date) {
                             return 1
-                        }else if(a.date> b.date){
+                        } else if (a.date > b.date) {
                             return -1
-                        }else{
+                        } else {
                             return 0
                         }
                     })
                     let categoryIndex = state.lastView.findIndex(lv => lv.category === action.category);
 
-                    if(categoryIndex&&categoryIndex>=0){
+                    if (categoryIndex && categoryIndex >= 0) {
                         return {
                             ...state,
                             posts: posts,
                             lastView: [
-                                ...state.lastView.slice(0,categoryIndex),
+                                ...state.lastView.slice(0, categoryIndex),
                                 {
-                                    category:action.category,
-                                    date:currentDate
+                                    category: action.category,
+                                    date: currentDate
                                 },
-                                ...state.lastView.slice(categoryIndex+1)
+                                ...state.lastView.slice(categoryIndex + 1)
                             ],
                             postUpdate: currentDate
                         };
-                    }else{
+                    } else {
                         return {
                             ...state,
                             posts: posts,
                             lastView: [
                                 ...state.lastView,
                                 {
-                                    category:action.category,
-                                    date:currentDate
+                                    category: parseInt(action.category),
+                                    date: currentDate
                                 }
                             ],
                             postUpdate: currentDate
                         };
                     }
-                case "POSTS_REMOVE_NOTIFY":
+                case "ONENERGY_POSTS_REMOVE_NOTIFY":
                     let postIndex = state.posts.findIndex(post => post.id === action.payload);
                     return {
                         ...state,
-                        posts:[
-                            ...state.posts.slice(0,postIndex),
+                        posts: [
+                            ...state.posts.slice(0, postIndex),
                             {
                                 ...state.posts[postIndex],
-                                notify:false
+                                notify: false
                             },
-                            ...state.posts.slice(postIndex+1)
+                            ...state.posts.slice(postIndex + 1)
                         ]
                     }
-                case "POSTS_RESET":
+                case "ONENERGY_POSTS_RESET":
                     return {
                         ...state,
                         posts: [],
@@ -569,212 +589,645 @@ export const applyCustomCode = externalCodeSetup => {
         }
     );
 
-    //Add Notification reducer
+    //Add Quote Reducer
     externalCodeSetup.reduxApi.addReducer(
-        "notifyReducer",
-        (state = {notification: {}}, action) => {
-            let count;
+        "quoteReducer",
+        (state = {quotes:[]}, action) => {
             switch (action.type) {
-                case "NOTIFICATION_PRACTICE_ADD":
-                    if (state.notification['practice'] && state.notification['practice'].length) {
-                        let addIndex = state.notification['practice'].indexOf(action.payload);
-                        if (addIndex === -1) {
-                            return {
-                                ...state,
-                                notification: {
-                                    ...state.notification,
-                                    'practice': [...state.notification['practice'], action.payload]
-                                }
-                            };
+                case "ONENERGY_QUOTES_ADD":
+                    let quotes = action.payload;
+                    let quotesState;
+                    if (state.quotes.length > 0) {
+                        quotesState = {
+                            ...state,
+                            quotes: [...state.quotes, ...quotes],
+                        };
+                    } else {
+                        quotesState = {
+                            ...state,
+                            quotes: quotes,
+                        };
+                    }
+                    quotes = quotesState.quotes.sort((a, b) => {
+                        if (a.date < b.date) {
+                            return 1
+                        } else if (a.date > b.date) {
+                            return -1
                         } else {
-                            return state;
+                            return 0
                         }
+                    })
+                    return {
+                        ...state,
+                        quotes: quotes,
+                    };
+                default:
+                    return state;
+            }
+        }
+    );
+
+    //Add Progress reducer
+    externalCodeSetup.reduxApi.addReducer(
+        "onenergyReducer",
+        (state = {
+            practiceReducer: {
+                routines: [],
+                guides: [],
+                groups: [],
+                routineUpdate: '',
+                guideUpdate: '',
+                groupUpdate: '',
+            },
+            progressReducer: {
+                points: {},
+                totalDuration: 0,
+                todayDuration: 0,
+                weekDuration: 0,
+                totalDays: 0,
+                latestUpdate:'',
+                lastUpload:'',
+                actionList:[],
+                practicesStats: [],
+                routinesStats: [],
+                gpStats: [],
+                progressUpdate: '',
+                completedLessons:[],
+                enrolledCourses:[],
+                completedCourses:[]
+            },
+            achievementReducer: {
+                weekly: [],
+                monthly: [],
+                achievements:[],
+                dailyNotify:0,
+                weeklyNotify:0,
+                monthlyNotify:0,
+                learnNotify:0,
+                startupNotify:0,
+                enduranceNotify:0,
+                achievementUpdate: ''
+            }
+        }, action) => {
+            switch (action.type) {
+                case "ONENERGY_INIT_DATA":
+                    const data = action.payload.data;
+                    const loadGroup = action.payload.loadGroup;
+                    const loadGuide = action.payload.loadGuide;
+                    const loadAchievement = action.payload.loadAchievement;
+                    const loadProgress = action.payload.loadProgress;
+
+                    let idPracticeReducer = state.practiceReducer;
+                    let idAchievementReducer = state.achievementReducer;
+                    let idProgressReducer = state.progressReducer;
+
+                    if(loadGroup) {
+                        if(data.groups){
+                            idPracticeReducer.groups = data.groups;
+                        }
+                        idPracticeReducer.groupUpdate = new Date().toISOString();
+                    }
+
+                    console.log("done1")
+                    if(loadGuide) {
+                        if (data.guides) {
+                            idPracticeReducer.guides = data.guides;
+                        }
+                        idPracticeReducer.guideUpdate = new Date().toISOString();
+                    }
+
+                    console.log("done2")
+                    if(loadAchievement) {
+                        if (data.achievements) {
+                            idAchievementReducer.achievements = data.achievements.achievements;
+                            idAchievementReducer.weekly = data.achievements.weekly;
+                            idAchievementReducer.monthly = data.achievements.monthly;
+                        }
+                        idAchievementReducer.achievementUpdate = new Date().toISOString();
+                    }
+
+                    console.log("done3")
+                    if(loadProgress) {
+                        if (data.progress) {
+                            idProgressReducer = data.progress;
+                        } else {
+                            idProgressReducer.points = {'qi': 0};
+                        }
+                        idProgressReducer.progressUpdate = new Date().toISOString();
+                    }
+
+                    console.log("done4")
+                    return {
+                        ...state,
+                        practiceReducer: idPracticeReducer,
+                        achievementReducer: idAchievementReducer,
+                        progressReducer: idProgressReducer,
+                    };
+                //Practice Reducer
+                case "ONENERGY_ROUTINE_UPDATE":
+                    return {
+                        ...state,
+                        practiceReducer: {
+                            ...state.practiceReducer,
+                            routines: action.payload,
+                            routineUpdate: new Date().toISOString()
+                        }
+                    };
+                case "ONENERGY_ROUTINE_SAVE":
+                    let routine = action.payload;
+                    let ors_tempState = [...state.practiceReducer.routines];
+                    let index = ors_tempState.findIndex(el => el.id === routine.id);
+                    if (index !== -1) {
+                        ors_tempState[index] = routine;
+                        return {
+                            ...state,
+                            practiceReducer: {
+                                ...state.practiceReducer,
+                                routines: ors_tempState,
+                                routineUpdate: new Date().toISOString()
+                            }
+                        };
                     } else {
                         return {
                             ...state,
-                            notification: {
-                                ...state.notification,
-                                'practice': [action.payload]
+                            practiceReducer: {
+                                ...state.practiceReducer,
+                                routines:
+                                    [
+                                        ...state.routines,
+                                        routine
+                                    ],
+                                routineUpdate: new Date().toISOString()
                             }
                         };
                     }
-                case "NOTIFICATION_PRACTICE_REMOVE":
-                    if (state.notification['practice'] && state.notification['practice'].length) {
-                        let arrayTemp = state.notification['practice'];
-                        let index = arrayTemp.indexOf(action.payload);
-                        if (index !== -1) {
-                            arrayTemp.splice(index, 1);
-                            return {
-                                ...state,
-                                notification: {
-                                    ...state.notification,
-                                    'practice': arrayTemp
-                                }
-                            };
-                        } else {
-                            return state;
+                case "ONENERGY_GUIDE_INIT":
+                    return {
+                        ...state,
+                        practiceReducer: {
+                            ...state.practiceReducer,
+                            guides: action.payload,
+                            guideUpdate: new Date().toISOString()
                         }
+                    };
+                case "ONENERGY_GUIDE_UPDATE":
+                    let sectionIndex;
+                    let guideIndex;
+                    let tempGuides = [...state.practiceReducer.guides];
+                    tempGuides.map((section, index) => {
+                        let tempIndex = section.data.findIndex(item => item.id === action.payload);
+                        if (tempIndex >= 0) {
+                            guideIndex = tempIndex
+                            sectionIndex = index;
+                        }
+                    });
+                    if (guideIndex >= 0) {
+                        tempGuides[sectionIndex].data[guideIndex].show = true;
+                        tempGuides[sectionIndex].data[guideIndex].new = true;
+                        return {
+                            ...state,
+                            practiceReducer: {
+                                ...state.practiceReducer,
+                                guides: tempGuides
+                            }
+                        };
                     } else {
                         return state;
                     }
-                case "NOTIFICATION_INCREMENT":
-                    count = state.notification[action.payload] ? state.notification[action.payload] : 0;
-                    return {
-                        ...state,
-                        notification: {...state.notification, [action.payload]: count + 1}
-                    };
-                case "NOTIFICATION_DECREMENT":
-                    count = state.notification[action.payload] ? state.notification[action.payload] : 0;
-                    count > 0 ?
-                        state = {
+                case "ONENERGY_GUIDE_LISTENED":
+                    let glSectionIndex;
+                    let glGuideIndex;
+                    let glTempGuides = [...state.practiceReducer.guides];
+                    glTempGuides.map((section, index) => {
+                        let tempIndex = section.data.findIndex(item => item.id === action.payload);
+                        if (tempIndex >= 0) {
+                            glGuideIndex = tempIndex
+                            glSectionIndex = index;
+                        }
+                    });
+                    if (glGuideIndex >= 0) {
+                        glTempGuides[glSectionIndex].data[glGuideIndex].new = false;
+                        return {
                             ...state,
-                            notification: {...state.notification, [action.payload]: count - 1}
-                        } : null;
-                    return state;
-                case "NOTIFICATION_CLEAR":
-                    count = state.notification[action.payload] ? state.notification[action.payload] : 0;
-                    count > 0 ?
-                        state = {
-                            ...state,
-                            notification: {...state.notification, [action.payload]: 0}
-                        } : null;
-                    return state;
-                case "NOTIFICATION_TIME":
-                    return {
-                        ...state,
-                        notification: {...state.notification, time: new Date().toLocaleString()}
-                    };
-                case "NOTIFICATION_RESET":
-                    return {
-                        ...state,
-                        notification: {}
+                            practiceReducer: {
+                                ...state.practiceReducer,
+                                guides: glTempGuides
+                            }
+                        };
+                    } else {
+                        return state;
                     }
-                default:
-                    return state;
-            }
-        }
-    );
+                case "ONENERGY_GROUP_INIT":
+                    return {
+                        ...state,
+                        practiceReducer: {
+                            ...state.practiceReducer,
+                            groups: action.payload,
+                            groupUpdate: new Date().toISOString()
+                        }
+                    };
+                case "ONENERGY_ROUTINE_RESET":
+                    return {
+                        ...state,
+                        practiceReducer: {
+                            routines: [],
+                            guides: [],
+                            groups: [],
+                            routineUpdate: '',
+                            guideUpdate: '',
+                            groupUpdate: ''
+                        }
+                    };
+                //Progress Reducer
+                case "ONENERGY_PROGRESS_UPDATE":
+                    let oruItemIndex;
+                    let totalDuration = state.progressReducer.totalDuration;
+                    let todayDuration = state.progressReducer.todayDuration;
+                    let weekDuration = state.progressReducer.weekDuration;
+                    let totalDays = state.progressReducer.totalDays;
+                    let practicesStats = state.progressReducer.practicesStats;
+                    let routinesStats = state.progressReducer.routinesStats;
+                    let gpStats = state.progressReducer.gpStats;
+                    let progressUpdate = state.progressReducer.progressUpdate;
+                    let latestUpdate = state.progressReducer.latestUpdate;
+                    let actionList = state.progressReducer.actionList;
+                    let completedLessons = state.progressReducer.completedLessons;
+                    let enrolledCourses = state.progressReducer.enrolledCourses;
+                    let completedCourses = state.progressReducer.completedCourses;
 
-    // Add quest reducer
-    externalCodeSetup.reduxApi.addReducer(
-        "questsReducer",
-        (state = {daily: [], weekly: [], monthly: [], weekly_log: '', monthly_log: ''}, action) => {
-            switch (action.type) {
-                case "QUEST_ADD":
-                    console.log("quest_add")
-                    let quests;
-                    if(action.quest_mode === "daily") {
-                        quests = action.payload.sort((a, b) => {
-                            return a.completed > b.completed
-                        }).sort((a, b) => {
-                            return a.awarded > b.awarded
-                        });
+                    let updatesList = action.payload;
+                    updatesList.map((list) => {
+                        if (list.mode.startsWith('P') && latestUpdate !== new moment().format('YYYY-MM-DD')) {
+                            totalDuration = 0;
+                            if (new Date().getDay() === 1) {
+                                weekDuration = 0;
+                            }
+                            totalDays += 1;
+                        }
+                        switch (list.mode) {
+                            case 'PG':
+                                oruItemIndex = gpStats.findIndex(item => item.id === list.data);
+                                if (oruItemIndex) {
+                                    gpStats[oruItemIndex].count += list.count;
+                                    gpStats[oruItemIndex].duration += list.duration;
+                                }
+                                latestUpdate = new moment().format('YYYY-MM-DD');
+                                break;
+                            case 'LC':
+                                completedLessons.push(action.payload.data);
+                                break;
+                            case 'CE':
+                                enrolledCourses.push(action.payload.data);
+                                break;
+                            case 'CC':
+                                completedCourses.push(action.payload.data);
+                                break;
+                        }
+                        actionList.push({
+                            'mode': action.payload.mode,
+                            'data': action.payload.data,
+                            'date': Math.floor(new Date().getTime() / 1000),
+                        })
+                    })
+                    return {
+                        ...state,
+                        progressReducer: {
+                            ...state.progressReducer,
+                            totalDuration: totalDuration,
+                            todayDuration: todayDuration,
+                            weekDuration: weekDuration,
+                            totalDays: totalDays,
+                            practicesStats: practicesStats,
+                            routinesStats: routinesStats,
+                            gpStats: gpStats,
+                            progressUpdate: progressUpdate,
+                            actionList: actionList,
+                            completedLessons: completedLessons,
+                            completedCourses: completedCourses,
+                        }
+                    };
+                case "ONENERGY_UPDATE_USER_POINTS":
+                    let awards = action.payload;
+                    let userPoints = state.progressReducer.points;
+                    Object.entries(awards).map(([key, point]) => {
+                        if(userPoints[key]) {
+                            userPoints[key] += point;
+                        }else{
+                            userPoints[key] = point;
+                        }
+                    });
+                    return {
+                        ...state,
+                        progressReducer: {
+                            ...state.progressReducer,
+                            points: userPoints,
+                        }
+                    }
+                case "ONENERGY_PROGRESS_UPLOADED":
+                    return {
+                        ...state,
+                        progressReducer: {
+                            ...state.progressReducer,
+                            actionList: [],
+                            lastUpload: Math.floor(new Date().getTime() / 1000)
+                        }
+                    };
+                case "ONENERGY_PROGRESS_INIT":
+                    return {
+                        ...state,
+                        progressReducer: {
+                            ...state.progressReducer,
+                            points: action.payload.points,
+                            totalDuration: action.payload.totalDuration,
+                            todayDuration: action.payload.todayDuration,
+                            weekDuration: action.payload.weekDuration,
+                            totalDays: action.payload.totalDays,
+                            practicesStats: action.payload.practicesStats,
+                            routinesStats: action.payload.routinesStats,
+                            gpStats: action.payload.gpStats,
+                            completedLessons: action.payload.completedLessons,
+                            completedCourses: action.payload.completedCourses,
+                            progressUpdate: new Date().toISOString()
+                        }
+                    };
+                case "ONENERGY_PROGRESS_RESET":
+                    return {
+                        ...state,
+                        progressReducer: {
+                            points: {},
+                            totalDuration: 0,
+                            todayDuration: 0,
+                            weekDuration: 0,
+                            totalDays: 0,
+                            latestUpdate:'',
+                            lastUpload:'',
+                            actionList:[],
+                            practicesStats: [],
+                            routinesStats: [],
+                            gpStats: [],
+                            completedLessons:[],
+                            enrolledCourses:[],
+                            completedCourses:[],
+                            progressUpdate: '',
+                        }
+                    }
+                //Achievement Reducer
+                case "ONENERGY_ACHIEVEMENT_INIT":
+                    return {
+                        ...state,
+                        achievementReducer: {
+                            ...state.achievementReducer,
+                            achievements:
+                                action.payload.achievements.sort((a, b) => {
+                                    return a.complete_date > b.complete_date
+                                }).sort((a, b) => {
+                                    return a.claim_date > b.claim_date
+                                }),
+                            weekly: action.payload.weekly,
+                            monthly: action.payload.monthly,
+                            achievementUpdate: new Date().toISOString()
+                        }
+                    };
+                case "ONENERGY_ACHIEVEMENT_COMPLETE_PRACTICE":
+                    let acpTempAchievementState = [...state.achievementReducer.achievements];
+                    let acpTempProgressState = [...state.progressReducer];
+                    let acpTempPracticeState = [...state.practiceReducer];
+                    let dailyNotify = [...state.achievementReducer.dailyNotify];
+                    let learnNotify = [...state.achievementReducer.learnNotify];
+                    let startupNotify = [...state.achievementReducer.startupNotify];
+                    let enduranceNotify = [...state.achievementReducer.enduranceNotify];
+                    let acpMode = action.payload.mode;
+                    let acpData = action.payload.data;
+                    let today = new moment().format('YYYY-MM-DD');
+                    let sectionId;
+                    let updateDaily;
+                    let acpSectionIndex;
+                    let acpGuideIndex;
+
+                    if(!state.progressReducer.latestUpdate)
+                    {
+                        updateDaily = true;
                     }else{
-                        quests = action.payload;
+                        if(today > state.progressReducer.latestUpdate)
+                            updateDaily = true;
                     }
+                    if(updateDaily)
+                    {
+                        acpTempProgressState.totalDay += 1;
+                        state.achievementReducer.achievements.map((achievement, index) =>
+                            (achievement.trigger === 'progress' && achievement.triggerField === 'totalDay' && !achievement.complete_date)
+                        ).map((acpIndex) => {
+                            if (parseInt(acpTempAchievementState[acpIndex].total) <= acpTempProgressState.totalDay) {
+                                acpTempAchievementState[acpIndex].complete_date = Math.floor(new Date().getTime() / 1000);
+                                acpTempAchievementState[acpIndex].awards.map(award => {
+                                    acpTempProgressState.points[award.name] += parseInt(award.point);
+                                })
+                            }
+                        })
+                    }
+                    switch (acpMode)
+                    {
+                        case 'single':
+                            //Get the section ID from the guide ID
+                            sectionId = state.practiceReducer.guides.find((section) => {
+                                if(section.data.find(guide => guide.id === acpData))
+                                    return section.id
+                            });
+                            state.achievementReducer.achievements.map((achievement, index) => {
+                                 if (achievement.trigger === 'practice' &&
+                                        ((achievement.triggerPracticeOption === 'single' && (parseInt(achievement.triggerSinglePractice) === acpData || !achievement.triggerSinglePractice)) ||
+                                            (achievement.triggerPracticeOption === 'section' && (parseInt(achievement.triggerSectionPractice) === sectionId || !achievement.triggerSectionPractice))) &&
+                                        !achievement.complete_date) {
+                                     return index;
+                                 }
+                            }).map((acpIndex) => {
+                                acpTempAchievementState[acpIndex].step += 1;
+                                if(acpTempAchievementState[acpIndex].total <= acpTempAchievementState[acpIndex].step) {
+                                    acpTempAchievementState[acpIndex].complete_date = new moment().format('YYYY-MM-DD');
+                                    acpTempAchievementState[acpIndex].claim_date = '';
+                                    switch(acpTempAchievementState[acpIndex].type)
+                                    {
+                                        case 'daily':
+                                            acpTempAchievementState[acpIndex].list.push(acpTempAchievementState[acpIndex].complete_date);
+                                            dailyNotify += 1;
+                                            break;
+                                        case 'learn':
+                                            learnNotify += 1;
+                                            break;
+                                        case 'startup':
+                                            startupNotify += 1;
+                                            break;
+                                        case 'endurance':
+                                            enduranceNotify += 1;
+                                            break;
+                                    }
+                                    acpTempAchievementState[acpIndex].awards.map(award => {
+                                        acpTempProgressState.points[award.name] += parseInt(award.point);
+                                    })
+                                }
+                            })
+                            acpTempPracticeState.guides.map((section, index) => {
+                                let tempIndex = section.data.findIndex(item => item.id === acpData);
+                                if (tempIndex >= 0) {
+                                    acpGuideIndex = tempIndex
+                                    acpSectionIndex = index;
+                                }
+                            });
+                            if (acpGuideIndex >= 0) {
+                                acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].new = false;
+                                acpTempProgressState.totalDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration;
+                                acpTempProgressState.todayDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration;
+                                acpTempProgressState.weekDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration;
+                                acpTempProgressState.practicesStats[acpSectionIndex].count += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count;
+                                acpTempProgressState.practicesStats[acpSectionIndex].duration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration;
+                                acpTempProgressState.latestUpdate = new moment().format('YYYY-MM-DD');
+                            }
+                            break;
+                        case 'routine':
+                            state.practiceReducer.routines.find(routine => routine.id === acpData).guides.map()
+
+
+                            //Get the section ID from the guide ID
+                            sectionId = state.practiceReducer.guides.find((section) => {
+                                if(section.data.find(guide => guide.id === acpData))
+                                    return section.id
+                            });
+                            state.achievementReducer.achievements.map((achievement, index) => {
+                                if (achievement.trigger === 'practice' &&
+                                    ((achievement.triggerPracticeOption === 'single' && (parseInt(achievement.triggerSinglePractice) === acpData || !achievement.triggerSinglePractice)) ||
+                                        (achievement.triggerPracticeOption === 'section' && (parseInt(achievement.triggerSectionPractice) === sectionId || !achievement.triggerSectionPractice))) &&
+                                    !achievement.complete_date) {
+                                    return index;
+                                }
+                            }).map((acpIndex) => {
+                                acpTempAchievementState[acpIndex].step += 1;
+                                if(acpTempAchievementState[acpIndex].total <= acpTempAchievementState[acpIndex].step) {
+                                    acpTempAchievementState[acpIndex].complete_date = new moment().format('YYYY-MM-DD');
+                                    acpTempAchievementState[acpIndex].claim_date = '';
+                                    switch(acpTempAchievementState[acpIndex].type)
+                                    {
+                                        case 'daily':
+                                            acpTempAchievementState[acpIndex].list.push(acpTempAchievementState[acpIndex].complete_date);
+                                            dailyNotify += 1;
+                                            break;
+                                        case 'learn':
+                                            learnNotify += 1;
+                                            break;
+                                        case 'startup':
+                                            startupNotify += 1;
+                                            break;
+                                        case 'endurance':
+                                            enduranceNotify += 1;
+                                            break;
+                                    }
+                                    acpTempAchievementState[acpIndex].awards.map(award => {
+                                        acpTempProgressState.points[award.name] += parseInt(award.point);
+                                    })
+                                }
+                            })
+                            acpTempPracticeState.guides.map((section, index) => {
+                                let tempIndex = section.data.findIndex(item => item.id === acpData);
+                                if (tempIndex >= 0) {
+                                    acpGuideIndex = tempIndex
+                                    acpSectionIndex = index;
+                                }
+                            });
+                            if (acpGuideIndex >= 0) {
+                                acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].new = false;
+                                acpTempProgressState.totalDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration;
+                                acpTempProgressState.todayDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration;
+                                acpTempProgressState.weekDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration;
+                                acpTempProgressState.practicesStats[acpSectionIndex].count += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count;
+                                acpTempProgressState.practicesStats[acpSectionIndex].duration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration;
+                                acpTempProgressState.latestUpdate = new moment().format('YYYY-MM-DD');
+                            }
+                            break;
+                    }
+
                     return {
                         ...state,
-                        [action.quest_mode]: quests
-                    };
-                case "QUEST_CLAIM":
-                    let tempState = [...state[action.quest_mode]];
-                    let questIndex = state[action.quest_mode].findIndex(quest => quest.id === action.payload);
-                    tempState[questIndex].awarded = true;
-                    tempState[questIndex].date = moment().format('YYYY-MM-DD');
-                    return {
-                        ...state,
-                        [action.quest_mode]: tempState.sort((a, b)=>{return a.completed > b.completed}).sort((a, b)=>{return a.awarded > b.awarded}),
-                    };
-                case "QUEST_WAIT_CLAIM":
-                    let tempQuestState = [...state[action.quest_mode]];
-                    let questItemIndex = state[action.quest_mode].findIndex(quest => quest.id === action.item);
-                    let waitItemIndex = tempQuestState[questItemIndex].wait.findIndex(waitItem => waitItem.log_id === action.log);
-                    tempQuestState[questItemIndex].wait.splice(waitItemIndex, 1);
-                    return {
-                        ...state,
-                        [action.quest_mode]: tempQuestState,
-                    };
-                case "QUEST_CLAIM_WEEKLY_MONTHLY":
-                    return {
-                        ...state,
-                        [action.quest_mode]: {
-                            ...state[action.quest_mode],
-                            log:''
+                        achievementReducer: {
+                            ...state.achievementReducer,
+                            achievements:
+                                acpTempAchievementState.sort((a, b) => {
+                                    return a.complete_date > b.complete_date
+                                }).sort((a, b) => {
+                                    return a.claim_date > b.claim_date
+                                }),
+                            dailyNotify: dailyNotify,
+                            learnNotify: learnNotify,
+                            startupNotify: startupNotify,
+                            enduranceNotify: enduranceNotify,
                         },
+                        progressReducer: acpTempProgressState,
+                        practiceReducer: acpTempPractice
                     };
-                case 'QUEST_RESET':
+                case "ONENERGY_ACHIEVEMENT_CLAIM":
+                    let acTempState = [...state.achievementReducer.achievements];
+                    let acAchievementIndex = acTempState.findIndex(achievement => achievement.id === action.payload);
+                    acTempState[acAchievementIndex].claim_date = Math.floor(new Date().getTime() / 1000);
                     return {
                         ...state,
-                        daily: [],
-                        weekly: [],
-                        monthly: []
+                        achievementReducer: {
+                            ...state.achievementReducer,
+                            achievements: acTempState.sort((a, b) => {
+                                return a.complete_date > b.complete_date
+                            }).sort((a, b) => {
+                                return a.claim_date > b.claim_date
+                            }),
+                        }
+                    };
+                case "ONENERGY_ACHIEVEMENT_WAIT_CLAIM":
+                    let awcTempQuestState = [...state.achievementReducer.achievements];
+                    let awcAchievementIndex = awcTempQuestState.findIndex(achievement => achievement.id === action.item);
+                    let awcWaitItemIndex = awcTempQuestState[awcAchievementIndex].list.findIndex(waitItem => waitItem.log_id === action.log);
+                    awcTempQuestState[awcAchievementIndex].list.splice(awcWaitItemIndex, 1);
+                    return {
+                        ...state,
+                        achievementReducer: {
+                            ...state.achievementReducer,
+                            achievements: awcTempQuestState,
+                        }
+                    };
+                case "ONENERGY_ACHIEVEMENT_CLAIM_WEEKLY_MONTHLY":
+                    return {
+                        ...state,
+                        achievementReducer: {
+                            ...state.achievementReducer,
+                            [action.quest_mode]: {
+                                ...state[action.quest_mode],
+                                list: ''
+                            },
+                        }
+                    };
+                case "ONENERGY_ACHIEVEMENT_COMPLETE_LESSON":
+                    let aclTempState = [...state.achievementReducer.achievements];
+                    let aclCourseIndex = aclTempState.findIndex(item => item.trigger === 'course' && parseInt(item.triggerCourse) === parseInt(action.payload.course));
+                    let aclLessonIndex = aclTempState[aclCourseIndex].step.findIndex(lesson => lesson.id === action.payload.lesson);
+                    aclTempState[aclCourseIndex].step[aclLessonIndex].completed = 1;
+                    if(action.payload.course_completed)
+                        aclTempState[aclCourseIndex].complete_date = Math.floor(new Date().getTime() / 1000);
+                    return {
+                        ...state,
+                        achievementReducer: {
+                            ...state.achievementReducer,
+                            achievements: aclTempState.sort((a, b) => {
+                                return a.complete_date > b.complete_date
+                            }).sort((a, b) => {
+                                return a.claim_date > b.claim_date
+                            }),
+                        }
+                    };
+                case 'ONENERGY_ACHIEVEMENT_RESET':
+                    return {
+                        ...state,
+                        achievementReducer: {
+                            achievements: [],
+                            weekly: [],
+                            monthly: [],
+                            achievementUpdate: ''
+                        }
                     }
-                default:
-                    return state;
-            }
-        }
-    );
-
-    // Add milestone reducer
-    externalCodeSetup.reduxApi.addReducer(
-        "milestonesReducer",
-        (state = {learn: [], startup: [], endurance: []}, action) => {
-            switch (action.type) {
-                case "MILESTONE_ADD":
-                    const milestones = action.payload.sort((a, b)=>{return a.completed > b.completed}).sort((a, b)=>{return a.awarded > b.awarded});
-                    return {
-                        ...state,
-                        [action.milestone_type]: milestones
-                    };
-                case "MILESTONE_CLAIM":
-                    let tempState = [...state[action.milestone_type]];
-                    let msIndex = state[action.milestone_type].findIndex(ms => ms.id === action.payload);
-                    tempState[msIndex].awarded = true;
-                    tempState[msIndex].date = moment().format('YYYY-MM-DD');
-                    return {
-                        ...state,
-                        [action.milestone_type]: tempState.sort((a, b)=>{return a.completed > b.completed}).sort((a, b)=>{return a.awarded > b.awarded}),
-                    };
-                case 'MILESTONE_RESET':
-                    return {
-                        ...state,
-                        learn: [],
-                        startup: [],
-                        endurance: []
-                    }
-                default:
-                    return state;
-            }
-        }
-    );
-
-    // Add Progress reducer for user practice status
-    externalCodeSetup.reduxApi.addReducer(
-        "progressReducer",
-        (state = {total_duration: 0, today_duration: 0, week_duration: 0, total_days:0, practices_stats:[], routines_stats:[],gp_stats:[]}, action) => {
-            switch (action.type) {
-                case "PROGRESS_ADD":
-                    return {
-                        ...state,
-                        total_duration: action.payload.total_duration,
-                        today_duration: action.payload.today_duration,
-                        week_duration: action.payload.week_duration,
-                        total_days: action.payload.total_days,
-                        practices_stats: action.payload.practices_stats,
-                        routines_stats: action.payload.routines_stats,
-                        gp_stats: action.payload.gp_stats,
-                    };
-                case "PROGRESS_RESET":
-                    return {
-                        ...state,
-                        total_duration: 0,
-                        today_duration: 0,
-                        week_duration: 0,
-                        total_days: 0,
-                        practices_stats: [],
-                        routines_stats: [],
-                        gp_stats: [],
-                    };
                 default:
                     return state;
             }
@@ -786,52 +1239,16 @@ export const applyCustomCode = externalCodeSetup => {
         "videoReducer",
         (state = {videoComplete: false}, action) => {
             switch (action.type) {
-                case "VIDEO_COMPLETED":
+                case "ONENERGY_VIDEO_COMPLETED":
                     return {
                         ...state,
                         videoComplete: true
                     };
-                case "VIDEO_RESET":
+                case "ONENERGY_VIDEO_RESET":
                     return {
                         ...state,
                         videoComplete: false
                     };
-                default:
-                    return state;
-            }
-        }
-    );
-
-// Add routine reducer
-    externalCodeSetup.reduxApi.addReducer(
-        "routinesReducer",
-        (state = {routines: [], guides: [], groups: [], routineUpdate: '', guideUpdate: '', groupUpdate: ''}, action) => {
-            const currentDate = new Date().toISOString();
-            switch (action.type) {
-                case "ONENERGY_ROUTINE_UPDATE":
-                    return {...state, routines: action.payload, routineUpdate: currentDate};
-                case "ONENERGY_ROUTINE_SAVE":
-                    let routine = action.payload;
-                    let tempState = [...state.routines];
-                    let index = tempState.findIndex(el => el.id === routine.id);
-                    if (index !== -1) {
-                        tempState[index] = routine;
-                        return {...state, routines: tempState, routineUpdate: currentDate};
-                    } else {
-                        return {...state, routines: [...state.routines, routine], routineUpdate: currentDate};
-                    }
-                case "ONENERGY_ROUTINE_REFRESH":
-                    return {...state, routineUpdate: ''};
-                case "ONENERGY_GUIDE_UPDATE":
-                    return {...state, guides: action.payload, guideUpdate: currentDate};
-                case "ONENERGY_GUIDE_REFRESH":
-                    return {...state, guideUpdate: ''};
-                case "ONENERGY_GROUP_UPDATE":
-                    return {...state, groups: action.payload, groupUpdate: currentDate};
-                case "ONENERGY_GROUP_REFRESH":
-                    return {...state, groupUpdate: ''};
-                case "ONENERGY_ROUTINE_RESET":
-                    return {...state, routines: [], guides: [], groups: [], routineUpdate: '', guideUpdate: '', groupUpdate: ''};
                 default:
                     return state;
             }
@@ -849,7 +1266,7 @@ export const applyCustomCode = externalCodeSetup => {
         "languagesReducer",
         (state = {languages: defaultLanguage}, action) => {
             switch (action.type) {
-                case "DEFAULT_LANGUAGE": {
+                case "ONENERGY_DEFAULT_LANGUAGE": {
                     return {
                         ...state,
                         languages: {
@@ -860,7 +1277,7 @@ export const applyCustomCode = externalCodeSetup => {
                         }
                     };
                 }
-                case "CHANGE_SUBTITLE": {
+                case "ONENERGY_CHANGE_SUBTITLE": {
                     return {
                         ...state,
                         languages: {
@@ -877,7 +1294,7 @@ export const applyCustomCode = externalCodeSetup => {
 
 // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
-        let whiteList = [...props.whitelist, "languagesReducer", "routinesReducer", "notifyReducer", "postsReducer", "progressReducer", "questsReducer", "milestonesReducer"];
+        let whiteList = [...props.whitelist, "languagesReducer", "postReducer", "onenergyReducer",];
 /*        let index = whiteList.indexOf('blog');
         if (index !== -1) {
             whiteList.splice(index, 1);
@@ -911,6 +1328,7 @@ export const applyCustomCode = externalCodeSetup => {
         priceComponentRender) => {
 
         const user = useSelector((state) => state.user.userObject);
+        const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
         const lesson_time = new moment.utc(courseVM.date);
         const current_time = new moment.utc();
         const diffMinutes = lesson_time.diff(current_time, 'minutes');
@@ -999,7 +1417,7 @@ export const applyCustomCode = externalCodeSetup => {
                 </View>
             ]
         } else {
-            if (user && courseVM.price.required_points > 0 && user.points.point < courseVM.price.required_points && courseVM.error.message) {
+            if (user && courseVM.price.required_points > 0 && progressReducer.points.qi < courseVM.price.required_points && courseVM.error.message) {
                 const Info =
                     <View style={{paddingHorizontal: 20, paddingVertical: 10}}>
                         <Text style={{color: "red", fontSize: scale(14)}}>{courseVM.error.message}</Text>
@@ -1038,8 +1456,8 @@ export const applyCustomCode = externalCodeSetup => {
                                 setButtonEnroll('Enrolling, please wait...');
                                 startCourse();
                                 dispatch({
-                                    type: 'UPDATE_USER_ENROLLED_COURSES',
-                                    payload: {"id": courseVM.id, "date": new Date().getTime() / 1000}
+                                    type: 'ONENERGY_PROGRESS_UPDATE',
+                                    payload: {"mode": "CE", "data": courseVM.id}
                                 });
                             }}
                             title={buttonEnroll}
@@ -1051,8 +1469,8 @@ export const applyCustomCode = externalCodeSetup => {
                                     setButtonEnroll('Enrolling, please wait...');
                                     startCourse();
                                     dispatch({
-                                        type: 'UPDATE_USER_ENROLLED_COURSES',
-                                        payload: {"id": courseVM.id, "date": new Date().getTime() / 1000}
+                                        type: 'ONENERGY_PROGRESS_UPDATE',
+                                        payload: {"mode": "CE", "data": courseVM.id}
                                     });
                                 }}>
                                 <FastImage style={{
@@ -1165,6 +1583,8 @@ export const applyCustomCode = externalCodeSetup => {
         }
 
     })
+
+
     externalCodeSetup.navigationApi.setAnimatedSwitchNavigator((routes, options, routeProps) => {
         const feature = routeProps.settings.features.multisite_network;
         const hasMultiSite = Platform.select({
@@ -1199,7 +1619,7 @@ export const applyCustomCode = externalCodeSetup => {
                 }
             } else {
                 return myCustomRoute; //Use my own custom route instead of the default "Auth" route
-                    //return defaultInitialRoute;
+                //return defaultInitialRoute;
             }
 
         };
@@ -1225,30 +1645,11 @@ export const applyCustomCode = externalCodeSetup => {
         }
 
     })
+
+
     externalCodeSetup.navigationApi.setBottomTabBarIcon((icon, iconProps) => {
         const routeLabel = iconProps.route.routes[0].params.item?.label;
         switch (routeLabel) {
-            case 'Home':
-                return <View
-                    style={{
-                        height: 30,
-                        width: 30,
-                        borderRadius: 58,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}>
-                    <Image
-                        source={require('./assets/images/home-outlined.png')}
-                        style={{
-                            width: 24,
-                            height: 24,
-                            tintColor: iconProps.tintColor,
-                            alignContent: 'center',
-                            marginBottom: 0,
-                        }}
-                    />
-                    <NotificationTabBarIcon notificationID={'left_menu'}  top={-3} right={-3} size={scale(10)} showNumber={false} />
-                </View>
             case "QiGong":
                 return <View
                     style={{
@@ -1298,81 +1699,6 @@ export const applyCustomCode = externalCodeSetup => {
         }
     });
 
-    const customUserReducer = reducer => (state = reducer(undefined, {}), action) => {
-        switch (action.type) {
-            case "UPDATE_POINTS":
-                const newPoint = {
-                    ...state,
-                    userObject: {
-                        ...state.userObject,
-                        points: {
-                            ...state.userObject.points,
-                            point: action.payload,
-                        }
-                    }
-                }
-                return reducer(newPoint, action);
-            case "UPDATE_USER_POINTS":
-                const newUserPoint = {
-                    ...state,
-                    userObject: {
-                        ...state.userObject,
-                        user_points: state.userObject.user_points.map(item => ({
-                            ...item,
-                            point: item.label === 'Qi' ? action.payload : item.point
-                        })),
-                    }
-                }
-                return reducer(newUserPoint, action);
-            case "UPDATE_USER_ROUTINE_STATUS":
-                const newUserState = {
-                    ...state,
-                    userObject: {
-                        ...state.userObject,
-                        hasRoutine: action.payload
-                    }
-                }
-                return reducer(newUserState, action);
-            case 'UPDATE_USER_COMPLETED_LESSONS':
-                const newUserLesson = {
-                    ...state,
-                    userObject: {
-                        ...state.userObject,
-                        completed_lessons: [...state.userObject.completed_lessons, action.payload]
-                    }
-                }
-                return reducer(newUserLesson, action);
-            case 'UPDATE_USER_ENROLLED_COURSES':
-                const newUserEnrolledCourse = {
-                    ...state,
-                    userObject: {
-                        ...state.userObject,
-                        enrolled_courses: [...state.userObject.enrolled_courses, action.payload]
-                    }
-                }
-                return reducer(newUserEnrolledCourse, action);
-            case 'UPDATE_USER_COMPLETED_COURSES':
-                const newUserCourse = {
-                    ...state,
-                    userObject: {
-                        ...state.userObject,
-                        completed_courses: [...state.userObject.completed_courses, action.payload]
-                    }
-                }
-                return reducer(newUserCourse, action);
-            case 'UPDATE_USER_COMPLETED_ACHIEVEMENTS':
-                const newUserAchievement = {
-                    ...state,
-                    userObject: {
-                        ...state.userObject,
-                        completed_achievements: action.payload
-                    }
-                }
-                return reducer(newUserAchievement, action);
-            default:
-                return reducer(state, action);
-        }
-    }
     externalCodeSetup.profileScreenHooksApi.setIgnoreTabsFilter((
         list,
         isOwnAccount
@@ -1380,11 +1706,10 @@ export const applyCustomCode = externalCodeSetup => {
         ...list,
         "activities",
         "friends",
-        "groups",
-        "gamipress_ranks",
-        "gamipress_achievements"
+        "groups"
     ])
-//Add new menu item to profile screen tab list
+
+    //Add new menu item to profile screen tab list
     externalCodeSetup.profileScreenHooksApi.setTabsList((
         list,
         navigation,
@@ -1398,7 +1723,7 @@ export const applyCustomCode = externalCodeSetup => {
                 label: "Achievement", //Set label of menu
                 onPress: () => navigation.navigate(
                     NavigationActions.navigate({
-                        routeName: "MyMilestonesScreen",
+                        routeName: "MilestonesScreen",
                     })
                 )
             },
@@ -1407,16 +1732,12 @@ export const applyCustomCode = externalCodeSetup => {
                 label: "Membership", //Set label of menu
                 onPress: () => navigation.navigate(
                     NavigationActions.navigate({
-                        routeName: "MyMembership",
+                        routeName: "Membership",
                     })
                 )
             },
         ]
     })
-    externalCodeSetup.reduxApi.wrapReducer(
-        'user',
-        customUserReducer
-    );
     externalCodeSetup.indexJsApi.addIndexJsFunction(() => {
         TrackPlayer.registerPlaybackService(() => require('./Components/TrackPlayerService'));
     })
@@ -1493,7 +1814,7 @@ export const applyCustomCode = externalCodeSetup => {
         )
     }
     externalCodeSetup.profileScreenHooksApi.setAfterDetailsComponent(AfterDetailsComponent);
-    externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "videoPlayer", "vimeoPlayer", "myMilestonesScreen", "myQuestsScreen", "myStatsScreen", "myVouchersScreen", "myFeedbackScreen", "SettingsScreen", "CoursesSingleScreen", "LessonSingleScreen"])
+    externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "VideoPlayer", "VimeoPlayer", "MilestonesScreen", "QuestsScreen", "StatsScreen", "myVouchersScreen", "FeedbackScreen", "SettingsScreen", "CoursesSingleScreen", "LessonSingleScreen"])
     externalCodeSetup.settingsScreenApi.setLogoutComponent(({
                                                                 global,
                                                                 t,
@@ -1515,19 +1836,19 @@ export const applyCustomCode = externalCodeSetup => {
                                 {
                                     text: "OK", onPress: () => {
                                         dispatch({
-                                            type: 'POSTS_CLEAR',
-                                        });
-                                        dispatch({
-                                            type: 'NOTIFICATION_RESET',
+                                            type: 'ONENERGY_POSTS_RESET',
                                         });
                                         dispatch({
                                             type: 'ONENERGY_ROUTINE_RESET',
                                         });
                                         dispatch({
-                                            type: 'MILESTONE_RESET',
+                                            type: 'ONENERGY_ACHIEVEMENT_RESET',
                                         });
                                         dispatch({
-                                            type: 'QUEST_RESET',
+                                            type: 'ONENERGY_ACHIEVEMENT_RESET',
+                                        });
+                                        dispatch({
+                                            type: 'ONENERGY_PROGRESS_RESET',
                                         });
                                         logout();
                                     }

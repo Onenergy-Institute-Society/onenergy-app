@@ -9,18 +9,14 @@ import { scale } from '../Utils/scale';
 import Video from 'react-native-video';
 import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 import TrackSlider from "./TrackSlider";
+import moment from 'moment';
 
 const AudioPlayerRoutine = (props) => {
     const user = useSelector((state) => state.user.userObject);
-    const {
-        playerMaxView,
-        buttonsSection,
-        progressBarSection,
-        buttonsCol,
-        playPauseButton,
-        stopButton,
-    } = styles;
-    const { routine, setMessageBarDisplay, totalDuration } = props;
+    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer.achievements);
+    const practiceReducer = useSelector((state) => state.onenergyReducer.practiceReducer);
+    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
+    const {routine, setMessageBarDisplay, totalDuration} = props;
     const [playing, setPlaying] = useState(false);
     const [stopped, setStopped] = useState(true)
     const [trackTitle, setTrackTitle] = useState('');
@@ -30,52 +26,131 @@ const AudioPlayerRoutine = (props) => {
 
     const updateProgress = async () => {
         try {
+            dispatch({
+                type: 'ONENERGY_ACHIEVEMENT_COMPLETE_PRACTICE',
+                payload: {
+                    mode: 'routine',
+                    data: routine.id
+                }
+            });
+
+
+            let achievements = [];
+            routine.routine.map((routine) =>{
+                let section_id;
+
+                practiceReducer.guides.map((section) => {
+                    let tempGuide = section.data.find(item => item.id === routine.id);
+                    if (tempGuide)
+                        section_id = section.id
+                });
+
+                    let tmpMilestone = achievementReducer.filter(achievement =>
+                        (achievement.trigger === 'practice' &&
+                            ((achievement.triggerPracticeOption === 'single' && (parseInt(achievement.triggerSinglePractice) === routine.id || !achievement.triggerSinglePractice)) ||
+                                (achievement.triggerPracticeOption === 'section' && (parseInt(achievement.triggerSectionPractice) === section_id || !achievement.triggerSectionPractice))) &&
+                            !achievement.complete_date)
+                    );
+                    tmpMilestone.map((item) => {
+                        let complete = false;
+                        if (parseInt(item.total) <= parseInt(item.step) + 1) {
+                            complete = true;
+                            achievements.push({
+                                [item.id]: {
+                                    "type": "milestone",
+                                    "complete_date": Math.floor(new Date().getTime() / 1000)
+                                }
+                            });
+                        }
+                        dispatch({
+                            type: 'ONENERGY_ACHIEVEMENT_COMPLETE_PRACTICE',
+                            payload: {
+                                "milestone": item.id,
+                                "step": item.step + 1,
+                                "complete": complete
+                            }
+                        });
+                    })
+
+                let tmpQuest = achievementReducer.daily.filter(achievement => {
+                    if ((achievement.trigger === 'practice' &&
+                        ((achievement.triggerPracticeOption === 'single' && (parseInt(achievement.triggerSinglePractice) === routine.id || !achievement.triggerSinglePractice)) ||
+                            (achievement.triggerPracticeOption === 'section' && (parseInt(achievement.triggerSectionPractice) === section_id || !achievement.triggerSectionPractice)))))
+                        if (!achievement.complete_date) {
+                            return true
+                        } else {
+                            let complete_date = new moment.unix(quest.complete_date).format('YYYY-MM-DD');
+                            let today = new moment().format('YYYY-MM-DD');
+                            return complete_date !== today;
+                        }
+                });
+
+                tmpQuest.map((item) => {
+                    let complete = false;
+                    if (parseInt(item.total) <= parseInt(item.step) + 1) {
+                        complete = true;
+                        achievements.push({
+                            [item.id]: {
+                                "type": "quest",
+                                "complete_date": Math.floor(new Date().getTime() / 1000)
+                            }
+                        });
+                    }
+                    dispatch({
+                        type: 'ONENERGY_ACHIEVEMENT_COMPLETE_PRACTICE',
+                        payload: {
+                            "quest": item.id,
+                            "step": parseInt(item.step) + 1,
+                            "complete": complete
+                        }
+                    });
+                })
+
+                dispatch({
+                    type: 'ONENERGY_PROGRESS_UPDATE',
+                    payload: {
+                        "mode": 'PP',
+                        "item": section_id,
+                        "count": 1,
+                        "duration": track.duration
+                    }
+                });
+            })
+
+            setMessageBarDisplay(true);
+
             const apiRequest = getApi(props.config);
-            await apiRequest.customRequest(
-                "wp-json/onenergy/v1/progress",
+            apiRequest.customRequest(
+                "wp-json/onenergy/v1/statsUpdate",
                 "post",
-                {"id":routine.id, "type":"Routine_End"},
+                {
+                    "mode": "PR",
+                    "data": routine.id,
+                    "stats": progressReducer,
+                    "achievements": achievements
+                },
                 null,
                 {},
                 false
-            ).then(response => {
-                if(response.data.updated.milestone) {
-                    dispatch({
-                        type: 'NOTIFICATION_INCREMENT',
-                        payload: 'achievement'
-                    });
-                }
-                if(response.data.updated.quest) {
-                    dispatch({
-                        type: 'NOTIFICATION_INCREMENT',
-                        payload: 'quest'
-                    });
-                }
-                if(response.data.achievements&&response.data.achievements.length)
-                {
-                    dispatch({
-                        type: 'UPDATE_USER_COMPLETED_ACHIEVEMENTS',
-                        payload:response.data.achievements
-                    });
-                }
-                setMessageBarDisplay(true);
-            });
+            );
         } catch (e) {
             console.error(e);
         }
     }
     useEffect(() => {
-        addTrack(routine.tracks).then(async ()=>{
-            await TrackPlayer.play().then();
+        addTrack(routine.tracks).then(async () => {
+            await TrackPlayer.play();
             setPlaying(true);
             setStopped(false);
         });
     }, [routine]);
-    async function addTrack(track){
+
+    async function addTrack(track) {
         await TrackPlayer.reset();
         return await TrackPlayer.add(track, -1);
     }
-    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.RemoteStop], (event) => {
+
+    useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.RemoteStop], async (event) => {
         if ((event.type === Event.PlaybackState) && ((event.state === State.Stopped) || (event.state === State.None))) {
             setTrackTitle('');
             deactivateKeepAwake();
@@ -87,19 +162,19 @@ const AudioPlayerRoutine = (props) => {
             deactivateKeepAwake();
         }
         if (event.type === Event.RemotePlay) {
-            TrackPlayer.play();
+            await TrackPlayer.play();
             setPlaying(true);
             setStopped(false);
             deactivateKeepAwake();
         }
         if (event.type === Event.RemotePause) {
-            TrackPlayer.pause();
+            await TrackPlayer.pause();
             setPlaying(false);
             setStopped(false);
             deactivateKeepAwake();
         }
         if (event.type === Event.RemoteStop) {
-            TrackPlayer.reset();
+            await TrackPlayer.reset();
             setPlaying(false);
             setStopped(true);
             setTrackTitle('');
@@ -116,14 +191,14 @@ const AudioPlayerRoutine = (props) => {
         }
     });
 
-    useTrackPlayerEvents([Event.PlaybackQueueEnded], (event) => {
-        if(event.type === 'playback-queue-ended') {
+    useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
+        if (event.type === 'playback-queue-ended') {
             if (Platform.OS === 'ios') {
                 if (nextTrack === routine.tracks.length - 1) {
                     setPlaying(false);
                     setStopped(true);
                     setTrackTitle('');
-                    TrackPlayer.reset();
+                    await TrackPlayer.reset();
                     setNextTrack(0);
                     updateProgress().then();
                 }
@@ -131,7 +206,7 @@ const AudioPlayerRoutine = (props) => {
                 setPlaying(false);
                 setStopped(true);
                 setTrackTitle('');
-                TrackPlayer.reset();
+                await TrackPlayer.reset();
                 setNextTrack(0);
                 updateProgress().then();
             }
@@ -170,10 +245,11 @@ const AudioPlayerRoutine = (props) => {
     };
 
     return (
-        <View style={playerMaxView}>
-            <View style={buttonsSection}>
-                <View style={buttonsCol}>
-                    <TouchableOpacity onPress={onPlayPausePress} style={playPauseButton} hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
+        <View style={styles.playerMaxView}>
+            <View style={styles.buttonsSection}>
+                <View style={styles.buttonsCol}>
+                    <TouchableOpacity onPress={onPlayPausePress} style={styles.playPauseButton}
+                                      hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
                         <IconButton
                             icon={playing ? require("@src/assets/img/music-pause.png") : require("@src/assets/img/music-play.png")}
                             tintColor={"black"}
@@ -183,23 +259,25 @@ const AudioPlayerRoutine = (props) => {
                             }}
                         />
                     </TouchableOpacity>
-                    {!stopped?(
-                    <TouchableOpacity onPress={onStopPress} style={stopButton} hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
-                        <IconButton
-                            icon={require("@src/assets/img/stop.png")}
-                            tintColor={"black"}
-                            style={{
-                                height: 24,
-                                width: 24,
-                            }}
-                        />
-                    </TouchableOpacity>
-                    ):null}
+                    {!stopped ? (
+                        <TouchableOpacity onPress={onStopPress} style={styles.stopButton}
+                                          hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
+                            <IconButton
+                                icon={require("@src/assets/img/stop.png")}
+                                tintColor={"black"}
+                                style={{
+                                    height: 24,
+                                    width: 24,
+                                }}
+                            />
+                        </TouchableOpacity>
+                    ) : null}
                 </View>
             </View>
-            <View style={progressBarSection}>
-                <Text>{trackTitle}</Text><TrackSlider type={"routine"} pastPosition={pastPosition} totalDuration={totalDuration} />
-                {!!routine.bgm?(
+            <View style={styles.progressBarSection}>
+                <Text>{trackTitle}</Text><TrackSlider type={"routine"} pastPosition={pastPosition}
+                                                      totalDuration={totalDuration}/>
+                {!!routine.bgm ? (
                     <Video
                         ref={videoPlayer => this.videoPlayer = videoPlayer}
                         audioOnly={true}
@@ -210,7 +288,7 @@ const AudioPlayerRoutine = (props) => {
                         paused={!playing}
                         source={{uri: routine.bgm_url}}   // Can be a URL or a local file.
                     />
-                ):null}
+                ) : null}
             </View>
         </View>
     );

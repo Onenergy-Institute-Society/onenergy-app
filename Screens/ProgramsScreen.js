@@ -1,196 +1,306 @@
-import React, {useEffect, useState} from "react";
+import * as React from 'react';
 import {
-    StyleSheet,
     View,
     Text,
+    ImageBackground,
     TouchableOpacity,
-    SafeAreaView,
-    Platform,
-    ScrollView
-} from "react-native";
-import {useSelector} from "react-redux";
-import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import {NavigationActions, withNavigation} from "react-navigation";
+    TouchableWithoutFeedback, SafeAreaView
+} from 'react-native';
+import { withNavigation } from 'react-navigation';
+import {
+    createDrawerNavigator,
+} from 'react-navigation-drawer';
+import { useSelector  } from "react-redux";
+import FastImage from 'react-native-fast-image';
+import { createStackNavigator } from 'react-navigation-stack';
+import ProgramsContent from './ProgramsContent';
 import IconButton from "@src/components/IconButton";
-import CoursesScreen from "@src/containers/Custom/CoursesScreen";
-import TouchableScale from "../Components/TouchableScale";
-import ImageCache from "../Components/ImageCache";
-import { scale, verticalScale } from '../Utils/scale';
-import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
-import BlockScreen from "@src/containers/Custom/BlockScreen";
-import { Modalize } from 'react-native-modalize';
-import EventList from "../Components/EventList";
-const ProgramsScreen = props => {
-    const { navigation, screenProps } = props;
+import {scale} from "../Utils/scale";
+import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
+
+const CustomDrawerContentComponent = (props) => {
+    const {navigation, screenProps} = props;
+    const {colors} = screenProps;
     const user = useSelector((state) => state.user.userObject);
+    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const [helpModal, setHelpModal] = useState({title:'',id:0});
-    const { global, colors } = screenProps;
-    const toggleHelpModal = () => {
-        this.popupProgramDialog.open();
-    }
-    useEffect(() => {
-        let helpIndex = optionData.helps.findIndex(el => el.name === 'program_popup');
-        setHelpModal({title:optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'',id:optionData.helps[helpIndex].id});
-        let titleIndex = optionData.titles.findIndex(el => el.id === 'programs_title');
-        props.navigation.setParams({
-            title: optionData.titles[titleIndex].title,
-            toggleHelpModal: toggleHelpModal,
-        });
-    },[]);
+
     return (
-        <SafeAreaView style={global.container}>
-            <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                <View style={{marginVertical: scale(5)}}>
-                    <EventList location={'program'} eventsDate={optionData.goals}/>
-                    <EventList location={'program'} eventsDate={optionData.webinars}/>
+        <SafeAreaView style={{flex:1, backgroundColor: colors.bodyBg}}>
+            <ImageBackground
+                source={require('../assets/images/1-1024x683.jpg')}
+                style={{height:scale(140), justifyContent:"center", alignItems:"center"}}>
+                {user?
+                    <>
+                        <View style={{flexDirection:'row', justifyContent:"space-between"}}>
+                            <View style={{justifyContent:"center", alignItems:"center"}}>
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate("ProfileScreen")}
+                                >
+                                    <FastImage
+                                        source={{uri: user&&user.avatar_urls['full']?user.avatar_urls['full']:user.avatar_urls['96']}}
+                                        style={{height: scale(80), width: scale(80), borderRadius: 100, margin: scale(10)}}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{paddingTop:20,}}>
+                                <Text
+                                    style={{
+                                        color: '#fff',
+                                        fontSize: scale(18),
+                                        textAlign:"right",
+                                        marginBottom:10,
+                                        textShadowColor: 'grey',
+                                        textShadowRadius: 1,
+                                        textShadowOffset: {
+                                            width: -1,
+                                            height: 1
+                                        }
+                                    }}>
+                                    {user.name}
+                                </Text>
+                                {user.rank?(
+                                    <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center"}}>
+                                        <FastImage source={{uri:optionData.ranks[user.rank].rankImage}} style={{width:24, height:24, alignSelf:"center"}} />
+                                        <Text
+                                            style={{
+                                                color: '#fff',
+                                                fontSize: scale(14),
+                                                marginLeft:5,
+                                                alignSelf:"center",
+                                                textShadowColor: 'grey',
+                                                textShadowRadius: 1,
+                                                textShadowOffset: {
+                                                    width: -1,
+                                                    height: 1
+                                                }
+                                            }}>
+                                            {optionData.ranks[user.rank].rankName}
+                                        </Text>
+                                    </View>
+                                ):null}
+                                {progressReducer.points&&progressReducer.points.length?Object.entries(progressReducer.points).map(([key, value])=>(
+                                    <View>
+                                        <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center"}}>
+                                            <FastImage source={{uri:'https://assets.onenergy.institute/wp-content/uploads/2020/07/gamipress-icon-ray-material-54x54.png'}} style={{width:16, height:16}} />
+                                            <Text
+                                                style={{
+                                                    color: '#fff',
+                                                    textAlign:"left",
+                                                    marginLeft:5,
+                                                    textShadowColor: 'grey',
+                                                    textShadowRadius: 1,
+                                                    textShadowOffset: {
+                                                        width: -1,
+                                                        height: 1
+                                                    }
+                                                }}>
+                                                {key} {value}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                )):null}
+                            </View>
+                        </View>
+                        {user.membership.length > 0 ?
+                            <Text style={{color:"#fff"}}>{user.membership[0].plan.name}</Text>
+                            : null}
+                    </>
+                    :null}
+            </ImageBackground>
+            <View style={{flex:1, justifyContent: "space-between"}}>
+                {(optionData && Object.keys(optionData).length > 0)?(
+                    <View style={{backgroundColor: colors.bodyFrontBg, margin:10, paddingLeft:10, borderRadius:9}}>
+                        {user?
+                            <>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    navigation.navigate('StatsScreen');
+                                }}>
+                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', borderTopRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                        <Text
+                                            style={{fontSize:scale(18)}}>
+                                            {optionData.titles.find(el => el.id === 'left_menu_progress').title}
+                                        </Text>
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight:10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    navigation.navigate('QuestsScreen');}}>
+                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                        <Text
+                                            style={{fontSize:scale(18)}}>
+                                            {optionData.titles.find(el => el.id === 'left_menu_quests').title}
+                                        </Text>
+                                        <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight:10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    navigation.navigate("MilestonesScreen");}}>
+                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                        <Text
+                                            style={{fontSize:scale(18)}}>
+                                            {optionData.titles.find(el => el.id === 'left_menu_achievements').title}
+                                        </Text>
+                                        <NotificationTabBarIcon notificationID={'achievement'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight:10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    navigation.navigate("VouchersScreen");}}>
+                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                        <Text
+                                            style={{fontSize:scale(18)}}>
+                                            {optionData.titles.find(el => el.id === 'left_menu_vouchers').title}
+                                        </Text>
+                                        <NotificationTabBarIcon notificationID={'voucher'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight:10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            </>
+                            :
+                            <>
+                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("SignupScreen");}}>
+                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                        <Text
+                                            style={{fontSize:scale(18)}}>
+                                            {optionData.titles.find(el => el.id === 'left_menu_signup').title}
+                                        </Text>
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight:10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("LoginScreen");}}>
+                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                        <Text
+                                            style={{fontSize:scale(18)}}>
+                                            {optionData.titles.find(el => el.id === 'left_menu_login').title}
+                                        </Text>
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight:10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            </>
+                        }
+                    </View>
+                ):null}
+                <View style={{justifyContent:"flex-end", marginBottom:scale(30),padding: 15, borderTopWidth: 1, borderTopColor: '#ccc'}}>
+                    {user?
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate("FeedbackScreen")}
+                            style={{marginBottom: 5}}
+                        >
+                            <View style={{flexDirection:"row",justifyContent:"flex-start",alignItems: 'center'}}>
+                                <IconButton
+                                    icon={require("@src/assets/img/feed-settings.png")}
+                                    tintColor={"#000"}
+                                    style={{
+                                        width:24,
+                                        height:24,
+                                    }}
+                                />
+                                <Text style={{fontSize:scale(14)}}>{optionData.titles.find(el => el.id === 'left_menu_feedback').title}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        :null}
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("AppPageScreen", {pageId: 30271, title: 'Q & A'})}
+                        style={{marginBottom: 5}}
+                    >
+                        <View style={{flexDirection:"row",justifyContent:"flex-start",alignItems: 'center'}}>
+                            <IconButton
+                                icon={require("@src/assets/img/help.png")}
+                                tintColor={"#000"}
+                                style={{
+                                    width:24,
+                                    height:24,
+                                }}
+                            />
+                            <Text style={{fontSize:scale(14)}}>{optionData.titles.find(el => el.id === 'left_menu_faq').title}</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("SettingsScreen")}
+                        style={{marginBottom: 5}}
+                    >
+                        <View style={{flexDirection:"row",justifyContent:"flex-start",alignItems: 'center'}}>
+                            <IconButton
+                                icon={require("@src/assets/img/ios-settings.png")}
+                                tintColor={"#000"}
+                                style={{
+                                    width:24,
+                                    height:24,
+                                }}
+                            />
+                            <Text style={{fontSize:scale(14)}}>{optionData.titles.find(el => el.id === 'left_menu_settings').title}</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
-                <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
-                               hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
-            </ScrollView>
-            <Modalize
-                ref={(popupProgramDialog) => { this.popupProgramDialog = popupProgramDialog; }}
-                modalHeight = {windowHeight*4/5}
-                childrenStyle = {{backgroundColor:"#f2f2f2"}}
-                handlePosition = "outside"
-                HeaderComponent={
-                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
-                        <Text style={{fontSize:24}}>{helpModal.title}</Text>
-                        <IconButton
-                            pressHandler={() => {this.popupProgramDialog.close();}}
-                            icon={require("@src/assets/img/close.png")}
-                            style={{ height: scale(16), width: scale(16) }}
-                            touchableStyle={{
-                                position:"absolute", top:10, right: 10,
-                                height: scale(24),
-                                width: scale(24),
-                                backgroundColor: "#e6e6e8",
-                                alignItems: "center",
-                                borderRadius: 100,
-                                padding: scale(5),
-                            }}
-                        /></View>
-                }
-            >
-                <View style={{flex: 1, width:windowWidth}} >
-                    <BlockScreen pageId={helpModal.id}
-                                 contentInsetTop={0}
-                                 contentOffsetY={0}
-                                 hideTitle={true}
-                                 hideNavigationHeader={true}
-                                 {...props} />
-                </View>
-            </Modalize>
+            </View>
         </SafeAreaView>
     );
-};
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    scroll_view: {
-        flex:1,
-    },
-    eventRow: {
-        marginHorizontal: 15,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    heading: {
-        fontSize: scale(18),
-        fontStyle: "italic",
-        fontWeight: "normal",
-        alignSelf: "baseline",
-    },
-    block_half: {
-        width: (windowWidth - scale(50)) / 2,
-        height: (windowWidth - scale(30)) / 2,
-        backgroundColor: 'white',
-        borderRadius: 9,
-        paddingVertical: 0,
-        paddingHorizontal: 0,
-    },
-    block_half_left: {
-        width: (windowWidth - scale(50)) / 2,
-        height: (windowWidth - scale(30)) / 2,
-        marginRight: 20,
-        marginVertical:scale(15),
-        backgroundColor: 'white',
-        borderRadius: 9,
-        paddingVertical: 0,
-        paddingHorizontal: 0,
-    },
-    row_intro: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    view_intro: {
-        marginTop:scale(15),
-        marginHorizontal:scale(15),
-        width:windowWidth-scale(30),
-        height:windowWidth-scale(30),
-        borderRadius: 9,
-    },
-    image_intro: {
-        width:windowWidth-scale(30),
-        height:windowWidth-scale(30),
-        borderRadius: 9,
-    },
-    image_half: {
-        width: (windowWidth - scale(50)) / 2,
-        height: (windowWidth - scale(30)) / 2,
-        flex: 1,
-        borderRadius: 9,
-        overflow: 'hidden',
-        resizeMode: "cover",
-    },
-    boxShadow: {
-        shadowColor: "#000",
-        shadowOffset: {width: -2, height: 4},
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-        elevation: 4,
-    },
-});
-ProgramsScreen.navigationOptions = ({ navigation }) => {
-    const {params = {}} = navigation.state;
-    let headerLeft = null;
-    let navRoutes = navigation.dangerouslyGetParent().state.routes;
-    if(navRoutes.length >= 2){
-        headerLeft =
-            <TouchableOpacity
-            onPress={() => {
-                navigation.goBack()
-            }}
-            >
-                <IconButton
-                    icon={require("@src/assets/img/arrow-back.png")}
-                    tintColor={"#4942e1"}
-                    style={{
-                        height: scale(16),
-                        marginLeft: scale(16),
-                    }}
-                />
-            </TouchableOpacity>
-    }
-    return {
-        title: navigation.getParam('title'),
-        headerLeft: headerLeft,
-        headerRight:
-            <View style={{flexDirection: "row", justifyContent:"flex-end"}}>
-                <TouchableOpacity
-                    onPress={() =>  params.toggleHelpModal()}
-                >
-                    <IconButton
-                        icon={require("@src/assets/img/help.png")}
-                        tintColor={"#4942e1"}
-                        style={{marginRight:25,height: 20}}
-                    />
-                </TouchableOpacity>
-            </View>
-    }
 }
+const Home = createStackNavigator(
+    {
+        Home: {screen:ProgramsContent},
+    }
+)
+const Drawer = createDrawerNavigator(
+    {
+        Home: Home,
+    },
+    {
+        edgeWidth: 140,
+        minSwipeDistance: 3,
+        contentOptions: {
+            activeTintColor: '#4942e1',
+        },
+        drawerType: 'slide',
+        contentComponent: props => <CustomDrawerContentComponent {...props} />,
+        navigationOptions : {header:null},
+    }
+);
+
+const ProgramsScreen = createStackNavigator({
+    Drawer: {
+        screen: Drawer,
+    },
+
+})
+
+ProgramsScreen.navigationOptions = {header:null};
 export default withNavigation(ProgramsScreen);

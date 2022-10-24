@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {
-    View, StyleSheet, TouchableOpacity, Image
+    View, StyleSheet, TouchableOpacity, Image, Text
 } from "react-native";
 import {useSelector} from "react-redux";
 import {NavigationActions, withNavigation} from "react-navigation";
@@ -10,7 +10,7 @@ import {scale} from "../Utils/scale";
 
 const VimeoBlock = props => {
     const {
-        navigation, video, thumbnail, textTracks, no_skip_forward, lesson_video, selectedCCUrl
+        navigation, video, duration, thumbnail, textTracks, no_skip_forward, lesson_video, selectedCCUrl
     } = props;
     const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
     const [visualGuide, setVisualGuide] = useState(false);
@@ -26,7 +26,7 @@ const VimeoBlock = props => {
                 onPress={() => {
                     navigation.dispatch(
                         NavigationActions.navigate({
-                            routeName: "vimeoPlayer",
+                            routeName: "VimeoPlayer",
                             params: {
                                 video: video,
                                 textTracks: textTracks,
@@ -43,6 +43,9 @@ const VimeoBlock = props => {
                     source={{uri: thumbnail}}
                     resizeMode={'cover'}
                 />
+                {duration?
+                    <Text style={styles.duration}>{new Date(duration * 1000).toISOString().substring(14, 19)}</Text>
+                :null}
                 {!videoComplete&&visualGuide?
                     <ImageCache style={[styles.tapFinger,{alignSelf:"center", marginTop:scale(60)}]} source={require('../assets/images/tapFinger.gif')} />
                     :null
@@ -93,6 +96,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#ebebeb',
+    },
+    duration: {
+      position: "absolute",
+      top: scale(10),
+      left: scale(10),
+      color: "white",
     },
     video: {
         position: 'relative',

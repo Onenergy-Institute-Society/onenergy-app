@@ -1,263 +1,305 @@
-import React, {useEffect, useState} from "react";
-import { useSelector } from "react-redux";
+import * as React from 'react';
 import {
-    StyleSheet,
     View,
-    SafeAreaView, Text, TouchableOpacity, Platform, ScrollView
-} from "react-native";
-import {NavigationActions} from "react-navigation";
-import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import ScalableImage from "../Components/ScalableImage";
-import TouchableScale from "../Components/TouchableScale";
+    Text,
+    ImageBackground,
+    TouchableOpacity,
+    TouchableWithoutFeedback, SafeAreaView
+} from 'react-native';
+import { withNavigation } from "react-navigation";
+import {
+    createDrawerNavigator
+} from 'react-navigation-drawer';
+import { useSelector } from "react-redux";
+import FastImage from 'react-native-fast-image';
+import { createStackNavigator } from 'react-navigation-stack';
+import PracticesContent from './PracticesContent';
 import IconButton from "@src/components/IconButton";
-import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
-import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
-import BlockScreen from "@src/containers/Custom/BlockScreen";
-import { Modalize } from 'react-native-modalize';
 import {scale} from "../Utils/scale";
-import EventList from "../Components/EventList";
-import PracticeTipsRow from "../Components/PracticeTipsRow";
-import LoginScreen from "@src/containers/Custom/LoginScreen";
+import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 
-const PracticesScreen = props => {
-    try {
-        const {navigation} = props;
-        const user = useSelector((state) => state.user.userObject);
-        const [helpModal, setHelpModal] = useState({title:'',id:0});
-        const optionData = useSelector((state) => state.settings.settings.onenergy_option);
 
-        useEffect(()=>{
-            let titleIndex = optionData.titles.findIndex(el => el.id === 'practices_title');
-            props.navigation.setParams({
-                title: optionData.titles[titleIndex].title,
-            });
-        },[])
+const CustomDrawerContentComponent = (props) => {
+    const {navigation, screenProps} = props;
+    const {colors} = screenProps;
+    const user = useSelector((state) => state.user.userObject);
+    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
 
-        const personalPracticePressed = () => {
-            if(user)
-            {
-                navigation.dispatch(
-                    NavigationActions.navigate({
-                        routeName: "PracticePersonal",
-                    })
-                )
-            }else{
-                let helpIndex = optionData.helps.findIndex(el => el.name === 'all_login_required_popup_guest');
-                setHelpModal({title: optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'', id: optionData.helps[helpIndex].id});
-                this.popupLoginDialog.open();
-            }
-        }
-
-        const groupPracticePressed = () => {
-            if(user)
-            {
-                navigation.dispatch(
-                    NavigationActions.navigate({
-                        routeName: "PracticeGroup",
-                    })
-                )
-            }else{
-                let helpIndex = optionData.helps.findIndex(el => el.name === 'all_login_required_popup_guest');
-                setHelpModal({title: optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'', id: optionData.helps[helpIndex].id});
-                this.popupLoginDialog.open();
-            }
-        }
-
-        const customPracticePressed = () => {
-            if(user) {
-                if (user.membership.length > 0) {
-                    navigation.dispatch(
-                        NavigationActions.navigate({
-                            routeName: "PracticeMember",
-                        })
-                    )
-                } else {
-                    let helpIndex = optionData.helps.findIndex(el => el.name === 'practice_customize_popup_nonmember');
-                    setHelpModal({title: optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'', id: optionData.helps[helpIndex].id});
-                    this.popupPracticeDialog.open();
-                }
-            }else{
-                let helpIndex = optionData.helps.findIndex(el => el.name === 'all_login_required_popup_guest');
-                setHelpModal({title: optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'', id: optionData.helps[helpIndex].id});
-                this.popupLoginDialog.open();
-            }
-        }
-
-        return (
-            <SafeAreaView style={styles.container}>
-                <ScrollView style={{flexGrow:1}} showsVerticalScrollIndicator={false}>
-                    {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
-                        <View>
-                            <EventList location={'practice'} eventsDate={optionData.goals}/>
-                            <EventList location={'practice'} eventsDate={optionData.challenges}/>
+    return (
+        <SafeAreaView style={{flex:1, backgroundColor: colors.bodyBg}}>
+            <ImageBackground
+                source={require('../assets/images/1-1024x683.jpg')}
+                style={{height:scale(140), justifyContent:"center", alignItems:"center"}}>
+                {user?
+                    <>
+                        <View style={{flexDirection:'row', justifyContent:"space-between"}}>
+                            <View style={{justifyContent:"center", alignItems:"center"}}>
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate("ProfileScreen")}
+                                >
+                                    <FastImage
+                                        source={{uri: user&&user.avatar_urls['full']?user.avatar_urls['full']:user.avatar_urls['96']}}
+                                        style={{height: scale(80), width: scale(80), borderRadius: 100, margin: scale(10)}}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{paddingTop:20,}}>
+                                <Text
+                                    style={{
+                                        color: '#fff',
+                                        fontSize: scale(18),
+                                        textAlign:"right",
+                                        marginBottom:10,
+                                        textShadowColor: 'grey',
+                                        textShadowRadius: 1,
+                                        textShadowOffset: {
+                                            width: -1,
+                                            height: 1
+                                        }
+                                    }}>
+                                    {user.name}
+                                </Text>
+                                {user.rank?(
+                                    <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center"}}>
+                                        <FastImage source={{uri:optionData.ranks[user.rank].rankImage}} style={{width:24, height:24, alignSelf:"center"}} />
+                                        <Text
+                                            style={{
+                                                color: '#fff',
+                                                fontSize: scale(14),
+                                                marginLeft:5,
+                                                alignSelf:"center",
+                                                textShadowColor: 'grey',
+                                                textShadowRadius: 1,
+                                                textShadowOffset: {
+                                                    width: -1,
+                                                    height: 1
+                                                }
+                                            }}>
+                                            {optionData.ranks[user.rank].rankName}
+                                        </Text>
+                                    </View>
+                                ):null}
+                                {progressReducer.points&&progressReducer.points.length?Object.entries(progressReducer.points).map(([key, value])=>(
+                                    <View>
+                                        <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center"}}>
+                                            <FastImage source={{uri:'https://assets.onenergy.institute/wp-content/uploads/2020/07/gamipress-icon-ray-material-54x54.png'}} style={{width:16, height:16}} />
+                                            <Text
+                                                style={{
+                                                    color: '#fff',
+                                                    textAlign:"left",
+                                                    marginLeft:5,
+                                                    textShadowColor: 'grey',
+                                                    textShadowRadius: 1,
+                                                    textShadowOffset: {
+                                                        width: -1,
+                                                        height: 1
+                                                    }
+                                                }}>
+                                                {key} {value}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                )):null}
+                            </View>
                         </View>
-                        : null
-                    }
-                    {
-                        user ?
-                            <PracticeTipsRow/>
-                            : null
-                    }
-                    <TouchableScale
-                        onPress={personalPracticePressed}>
-                        <View style={[styles.card, styles.boxShadow]}>
-                            <ScalableImage
-                                width={windowWidth - scale(30)}
-                                source={require('../assets/images/guided-practice-banner.png')}
-                                style={styles.image}
-                                background={true}
-                            />
-                            <NotificationTabBarIcon notificationID={'guide_personal'} top={3} right={3} size={scale(15)} fontSize={10} showNumber={true} />
-                        </View>
-                    </TouchableScale>
-
-                    <TouchableScale
-                        onPress={groupPracticePressed}>
-                        <View style={[styles.card, styles.boxShadow]}>
-                            <ScalableImage
-                                width={windowWidth - scale(30)}
-                                source={require('../assets/images/group-practice-banner.png')}
-                                style={styles.image}
-                                background={true}
-                            />
-                        </View>
-                    </TouchableScale>
-
-                    <TouchableScale
-                        onPress={customPracticePressed}>
-                        <View style={[styles.card, styles.boxShadow, {marginBottom:scale(15)}]}>
-                            <ScalableImage
-                                width={windowWidth - scale(30)}
-                                source={require('../assets/images/member-practice-banner.png')}
-                                style={styles.image}
-                                background={true}
-                            />
-                        </View>
-                    </TouchableScale>
-                </ScrollView>
-                <Modalize
-                    ref={(popupPracticeDialog) => { this.popupPracticeDialog = popupPracticeDialog; }}
-                    modalHeight = {windowHeight*4/5}
-                    handlePosition = "outside"
-                    childrenStyle = {{backgroundColor:"#f2f2f2"}}
-                    HeaderComponent={
-                        <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
-                            <Text style={{fontSize:24}}>{helpModal.title}</Text>
-                            <IconButton
-                                pressHandler={() => {this.popupPracticeDialog.close();}}
-                                icon={require("@src/assets/img/close.png")}
-                                style={{ height: scale(16), width: scale(16) }}
-                                touchableStyle={{
-                                    position:"absolute", top:10, right: 10,
-                                    height: scale(24),
-                                    width: scale(24),
-                                    backgroundColor: "#e6e6e8",
-                                    alignItems: "center",
-                                    borderRadius: 100,
-                                    padding: scale(5),
-                                }}
-                            /></View>
-                    }
-                >
-                    <View style={{flex: 1, backgroundColor:'#fff'}} >
-                        <BlockScreen pageId={helpModal.id}
-                                     contentInsetTop={0}
-                                     contentOffsetY={0}
-                                     hideTitle={true}
-                                     hideNavigationHeader={true}
-                                     {...props} />
+                        {user.membership.length > 0 ?
+                            <Text style={{color:"#fff"}}>{user.membership[0].plan.name}</Text>
+                            : null}
+                    </>
+                    :null}
+            </ImageBackground>
+            <View style={{flex:1, justifyContent: "space-between"}}>
+                {(optionData && Object.keys(optionData).length > 0)?(
+                    <View style={{backgroundColor: colors.bodyFrontBg, margin:10, paddingLeft:10, borderRadius:9}}>
+                        {user?
+                            <>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    navigation.navigate('StatsScreen');
+                                }}>
+                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', borderTopRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                        <Text
+                                            style={{fontSize:scale(18)}}>
+                                            {optionData.titles.find(el => el.id === 'left_menu_progress').title}
+                                        </Text>
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight:10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    navigation.navigate('QuestsScreen');}}>
+                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                        <Text
+                                            style={{fontSize:scale(18)}}>
+                                            {optionData.titles.find(el => el.id === 'left_menu_quests').title}
+                                        </Text>
+                                        <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight:10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    navigation.navigate("MilestonesScreen");}}>
+                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                        <Text
+                                            style={{fontSize:scale(18)}}>
+                                            {optionData.titles.find(el => el.id === 'left_menu_achievements').title}
+                                        </Text>
+                                        <NotificationTabBarIcon notificationID={'achievement'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight:10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    navigation.navigate("VouchersScreen");}}>
+                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                        <Text
+                                            style={{fontSize:scale(18)}}>
+                                            {optionData.titles.find(el => el.id === 'left_menu_vouchers').title}
+                                        </Text>
+                                        <NotificationTabBarIcon notificationID={'voucher'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight:10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            </>
+                            :
+                            <>
+                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("SignupScreen")}}>
+                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                        <Text
+                                            style={{fontSize:scale(18)}}>
+                                            {optionData.titles.find(el => el.id === 'left_menu_signup').title}
+                                        </Text>
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight:10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("LoginScreen")}}>
+                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                        <Text
+                                            style={{fontSize:scale(18)}}>
+                                            {optionData.titles.find(el => el.id === 'left_menu_login').title}
+                                        </Text>
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight:10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            </>
+                        }
                     </View>
-                </Modalize>
-                <Modalize
-                    ref={(popupLoginDialog) => { this.popupLoginDialog = popupLoginDialog; }}
-                    modalHeight = {windowHeight*4/5}
-                    handlePosition = "outside"
-                    childrenStyle = {{backgroundColor:"#f2f2f2"}}
-                    HeaderComponent={
-                        <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
-                            <Text style={{fontSize:24}}>{helpModal.title}</Text>
+                ):null}
+                <View style={{justifyContent:"flex-end", marginBottom:scale(30),padding: 15, borderTopWidth: 1, borderTopColor: '#ccc'}}>
+                    {user?
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate("FeedbackScreen")}
+                            style={{marginBottom: 5}}
+                        >
+                            <View style={{flexDirection:"row",justifyContent:"flex-start",alignItems: 'center'}}>
+                                <IconButton
+                                    icon={require("@src/assets/img/feed-settings.png")}
+                                    tintColor={"#000"}
+                                    style={{
+                                        width:24,
+                                        height:24,
+                                    }}
+                                />
+                                <Text style={{fontSize:scale(14)}}>{optionData.titles.find(el => el.id === 'left_menu_feedback').title}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        :null}
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("AppPageScreen", {pageId: 30271, title: 'Q & A'})}
+                        style={{marginBottom: 5}}
+                    >
+                        <View style={{flexDirection:"row",justifyContent:"flex-start",alignItems: 'center'}}>
                             <IconButton
-                                pressHandler={() => {this.popupLoginDialog.close();}}
-                                icon={require("@src/assets/img/close.png")}
-                                style={{ height: scale(16), width: scale(16) }}
-                                touchableStyle={{
-                                    position:"absolute", top:10, right: 10,
-                                    height: scale(24),
-                                    width: scale(24),
-                                    backgroundColor: "#e6e6e8",
-                                    alignItems: "center",
-                                    borderRadius: 100,
-                                    padding: scale(5),
+                                icon={require("@src/assets/img/help.png")}
+                                tintColor={"#000"}
+                                style={{
+                                    width:24,
+                                    height:24,
                                 }}
-                            /></View>
-                    }
-                >
-                    <LoginScreen {...props} />
-                </Modalize>
-            </SafeAreaView>
-        );
-    }catch (e) {
-        console.log(e)
+                            />
+                            <Text style={{fontSize:scale(14)}}>{optionData.titles.find(el => el.id === 'left_menu_faq').title}</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("SettingsScreen")}
+                        style={{marginBottom: 5}}
+                    >
+                        <View style={{flexDirection:"row",justifyContent:"flex-start",alignItems: 'center'}}>
+                            <IconButton
+                                icon={require("@src/assets/img/ios-settings.png")}
+                                tintColor={"#000"}
+                                style={{
+                                    width:24,
+                                    height:24,
+                                }}
+                            />
+                            <Text style={{fontSize:scale(14)}}>{optionData.titles.find(el => el.id === 'left_menu_settings').title}</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </SafeAreaView>
+    );
+}
+const Home = createStackNavigator(
+    {
+        Home: {screen:PracticesContent},
     }
+)
+const Drawer = createDrawerNavigator(
+    {
+        Home: Home,
+    },
+    {
+        edgeWidth: 140,
+        minSwipeDistance: 3,
+        contentOptions: {
+            activeTintColor: '#4942e1',
+        },
+        drawerType: 'slide',
+        contentComponent: props => <CustomDrawerContentComponent {...props} />,
+        navigationOptions : {header:null},
+    }
+);
 
-};
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
+const PracticesScreen = createStackNavigator({
+    Drawer: {
+        screen: Drawer,
     },
-    image: {
-        borderRadius: 9,
-        marginLeft: 0,
-        marginTop: 0,
-        overflow: 'hidden',
-        resizeMode: "contain",
-    },
-    card: {
-        backgroundColor: 'white',
-        borderRadius: 9,
-        paddingVertical: 0,
-        paddingHorizontal: 0,
-        marginTop: scale(15),
-        marginHorizontal: scale(15),
-    },
-    boxShadow: {
-        shadowColor: "#000",
-        shadowOffset: {width: -2, height: 4},
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-        elevation: 4,
-    },
-    eventRow: {
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        flexDirection: 'row',
-        marginLeft: 15,
-    },
-});
-PracticesScreen.navigationOptions  = ({ navigation }) => {
-    const {params = {}} = navigation.state;
-    let headerLeft = null;
-    let navRoutes = navigation.dangerouslyGetParent().state.routes;
-    if(navRoutes.length >= 2){
-        headerLeft =
-            <TouchableOpacity
-                onPress={() => {
-                    navigation.goBack()
-                }}
-            >
-                <IconButton
-                    icon={require("@src/assets/img/arrow-back.png")}
-                    tintColor={"#4942e1"}
-                    style={{
-                        height: scale(16),
-                        marginLeft: scale(16),
-                    }}
-                />
-            </TouchableOpacity>
-    }
-    return {
-        title: navigation.getParam('title'),
-        headerLeft: headerLeft,
-    }
-};
-export default PracticesScreen;
+})
+PracticesScreen.navigationOptions = {header:null};
+export default withNavigation(PracticesScreen);

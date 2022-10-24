@@ -6,7 +6,7 @@ import {
     View,
     Text,
     ScrollView,
-    Animated
+    Animated, Platform
 } from "react-native";
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
@@ -20,55 +20,28 @@ import { Modalize } from 'react-native-modalize';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
 import EventList from "../Components/EventList";
+import QiPointHeader from "../Components/QiPointHeader";
 
 const PracticePersonal = props => {
-    const dispatch = useDispatch();
-    const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const helpIndex = optionData.helps.findIndex(el => el.name === 'practice_guided_popup');
-    const helpData = {title:optionData.helps[helpIndex].title?optionData.helps[helpIndex].title:'',id:optionData.helps[helpIndex].id};
-    const helpPageIndex = optionData.helps.findIndex(el => el.name === 'practice_guided_empty');
-    const helpPageData = {title:optionData.helps[helpPageIndex].title?optionData.helps[helpPageIndex].title:'',id:optionData.helps[helpPageIndex].id};
-    const guideSelector = state => ({guidesReducer: state.routinesReducer.guides})
-    const {guidesReducer} = useSelector(guideSelector);
-    const guideUpdate = useSelector((state) => state.routinesReducer.guideUpdate);
+    const helpData = optionData.helps.find(el => el.name === 'practice_guided_popup');
+    const helpPageData = optionData.helps.find(el => el.name === 'practice_guided_empty');
+    const guideReducer = useSelector((state) => state.onenergyReducer.practiceReducer.guides);
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
+
     React.useEffect(() => {
         Animated.timing(fadeAnim, {
             toValue: 1,
             duration: 500,
         }).start();
     }, []);
-    const fetchTracks = async () => {
-        try {
-            const apiSlide = getApi(props.config);
-            const data = await apiSlide.customRequest(
-                "wp-json/onenergy/v1/audio",
-                "get",
-                {},
-                null,
-                {},
-                false
-            ).then(response => response.data);
-            dispatch({
-                type: "ONENERGY_GUIDE_UPDATE",
-                payload: data
-            });
-        } catch (e) {
-            console.error(e);
-        }
-    }
     const toggleHelpModal = () => {
         this.ppHelpModal.open();
     };
     useEffect(() => {
-        if(!guidesReducer||!guidesReducer.length||!guideUpdate) {
-            fetchTracks().then();
-        }
-        let titleIndex = optionData.titles.findIndex(el => el.id === 'practices_basic');
         props.navigation.setParams({
-            title: optionData.titles[titleIndex].title,
+            title: optionData.titles.find(el => el.id === 'practices_basic').title,
             toggleHelpModal: toggleHelpModal,
         });
     }, []);
@@ -82,7 +55,7 @@ const PracticePersonal = props => {
     },[messageBarDisplay])
     return (
         <SafeAreaView style={styles.container}>
-            {user&&user.hasGuide>0||(guidesReducer&&guidesReducer.length)?
+            {guideReducer&&guideReducer.length?
                 <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
                         <View>
@@ -91,7 +64,7 @@ const PracticePersonal = props => {
                         </View>
                         : null
                     }
-                    <TracksList tracks={guidesReducer} setMessageBarDisplay={setMessageBarDisplay} />
+                    <TracksList tracks={guideReducer} setMessageBarDisplay={setMessageBarDisplay} />
                 </ScrollView>
             :
                 <View style={{
@@ -141,7 +114,7 @@ const PracticePersonal = props => {
                 </View>
             </Modalize>
             {messageBarDisplay?
-            <Animated.View style={[styles.messageBar, {opacity: fadeAnim,}]}><Text style={styles.messageText}>Great! You just gather more qi. Keep it up!</Text></Animated.View>
+            <Animated.View style={[styles.messageBar, styles.boxShadow, {opacity: fadeAnim,}]}><Text style={styles.messageText}>Great! You earn more qi. Keep it up!</Text></Animated.View>
                 :null}
         </SafeAreaView>
     );
@@ -158,17 +131,24 @@ const styles = StyleSheet.create({
         flexGrow: 1,
     },
     messageText:{
-      fontSize:scale(14),
+      fontSize:scale(24),
         color: "white",
+    },
+    boxShadow: {
+        shadowColor: "#000",
+        shadowOffset: {width: -2, height: 4},
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 4,
     },
     messageBar:{
         position: "absolute",
-        top:10,
+        top:15,
         backgroundColor:"#737373",
         borderColor:"#404040",
         borderRadius:9,
-        paddingVertical:scale(5),
-        paddingHorizontal:scale(10),
+        paddingVertical:scale(10),
+        paddingHorizontal:scale(15),
     }
 });
 PracticePersonal.navigationOptions = ({ navigation }) => {
@@ -176,31 +156,25 @@ PracticePersonal.navigationOptions = ({ navigation }) => {
     return ({
         headerTitle: navigation.getParam('title'),
         headerLeft:
-            <TouchableOpacity
-                onPress={() => {
-                    TrackPlayer.reset();
-                    navigation.goBack()
-                }}
-            >
-                <IconButton
-                    icon={require("@src/assets/img/arrow-back.png")}
-                    tintColor={"#4942e1"}
-                    style={{
-                        height: scale(16),
-                        marginLeft: scale(16)
+            <View style={{flexDirection:"row"}}>
+                <TouchableOpacity
+                    onPress={() => {
+                        TrackPlayer.reset();
+                        navigation.goBack();
                     }}
-                />
-            </TouchableOpacity>,
+                >
+                    <IconButton
+                        icon={require("@src/assets/img/arrow-back.png")}
+                        tintColor={"#4942e1"}
+                        style={{
+                            height: scale(16),
+                            marginLeft: scale(16)
+                        }}
+                    />
+                </TouchableOpacity>
+            </View>,
         headerRight:
-            <TouchableOpacity
-                onPress={() => params.toggleHelpModal()}
-            >
-                <IconButton
-                    icon={require("@src/assets/img/help.png")}
-                    tintColor={"#4942e1"}
-                    style={{marginRight: 25, height: 20}}
-                />
-            </TouchableOpacity>
+            <QiPointHeader />
     });
 }
 const mapStateToProps = (state) => ({

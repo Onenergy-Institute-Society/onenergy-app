@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image, useWindowDimensions,} from 'react-native';
-import Video from "react-native-video";
 import {windowWidth} from "../Utils/Dimensions";
 import { scale } from '../Utils/scale';
 
@@ -9,15 +8,6 @@ const OnBoardingItem = ({item}) => {
     return (
         <View style={[styles.container, {width}]}>
             <Image style={styles.image} source={{uri: item.image?item.image:''}} />
-            {/*            <Video
-                source={{uri: item.video?item.video:''}}
-                style={styles.backgroundVideo}
-                muted={true}
-                repeat={true}
-                resizeMode={"contain"}
-                rate={1.0}
-                ignoreSilentSwitch={"obey"}
-            />*/}
             <View style={{flex:0.2, justifyContent:"flex-start", alignItems: "center"}}>
                 <Text style={styles.title}>{item.title}</Text>
             </View>

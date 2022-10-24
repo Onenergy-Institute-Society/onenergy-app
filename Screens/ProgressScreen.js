@@ -14,10 +14,9 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import Timeline from "../Components/Timeline";
 
-const MyProgressScreen = (props) => {
+const ProgressScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'achievement_progress_empty');
-    const emptyText = optionData.titles[emptyTextIndex].title
+    const emptyText = optionData.titles.find(el => el.id === 'achievement_progress_empty').title
 
     const [timelineData, setTimelineData] = useState([]);
     const [timelineLoading, setTimelineLoading] = useState(true);
@@ -42,9 +41,8 @@ const MyProgressScreen = (props) => {
     }
     useEffect(()=>{
         fetchTimelineData().then();
-        let titleIndex = optionData.titles.findIndex(el => el.id === 'progress_title');
         props.navigation.setParams({
-            title: optionData.titles[titleIndex].title,
+            title: optionData.titles.find(el => el.id === 'progress_title').title,
         });
     },[])
     return(
@@ -113,7 +111,7 @@ const mapStateToProps = (state) => ({
     config: state.config,  // not needed if axios or fetch is used
     accessToken: state.auth.token,
 });
-MyProgressScreen.navigationOptions = ({navigation}) => ({
+ProgressScreen.navigationOptions = ({navigation}) => ({
     title: navigation.getParam('title'),
     headerTitleStyle: {textAlign:'left'},
     headerLeft:
@@ -130,4 +128,4 @@ MyProgressScreen.navigationOptions = ({navigation}) => ({
             />
         </TouchableOpacity>,
 })
-export default connect(mapStateToProps)(MyProgressScreen);
+export default connect(mapStateToProps)(ProgressScreen);

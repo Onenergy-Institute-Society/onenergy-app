@@ -115,7 +115,7 @@ const TextBlock =(props) => {
                 case 'app':
                     navigation.dispatch(
                         NavigationActions.navigate({
-                            routeName: "MyAppPageScreen",
+                            routeName: "AppPageScreen",
                             params: {
                                 pageId: block.data.data.param,
                                 title: ''
@@ -126,7 +126,7 @@ const TextBlock =(props) => {
                 case 'blog':
                     navigation.dispatch(
                         NavigationActions.navigate({
-                            routeName: "MyBlogScreen",
+                            routeName: "BlogScreen",
                             params: {
                                 blogId: block.data.data.param,
                                 title: ''
@@ -137,7 +137,7 @@ const TextBlock =(props) => {
                 case 'course':
                     navigation.dispatch(
                         NavigationActions.navigate({
-                            routeName: "MyCourseScreen",
+                            routeName: "CourseScreen",
                             params: {
                                 courseId: block.data.data.param,
                             }

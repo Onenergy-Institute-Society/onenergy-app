@@ -19,10 +19,9 @@ import RNRestart from 'react-native-restart';
 import { BlurView } from "@react-native-community/blur";
 import ScalableImage from "../Components/ScalableImage";
 
-const MyVouchersScreen = (props) => {
+const VouchersScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const emptyTextIndex = optionData.titles.findIndex(el => el.id === 'voucher_empty');
-    const emptyText = optionData.titles[emptyTextIndex].title
+    const emptyText = optionData.titles.find(el => el.id === 'voucher_empty').title
     const [ loading, setLoading ] = useState(false);
     const [vouchers, setVouchers] = useState({});
     const [vouchersLoading, setVouchersLoading] = useState(true);
@@ -47,9 +46,8 @@ const MyVouchersScreen = (props) => {
     }
     useEffect(()=>{
         fetchVoucherData().then();
-        let titleIndex = optionData.titles.findIndex(el => el.id === 'voucher_title');
         props.navigation.setParams({
-            title: optionData.titles[titleIndex].title,
+            title: optionData.titles.find(el => el.id === 'voucher_title').title,
         });
     },[])
     const renderItem = ({ item }) => {
@@ -132,6 +130,7 @@ const MyVouchersScreen = (props) => {
                 :
                 vouchers.length?
                     <FlatList
+                        contentContainerStyle={{ paddingBottom: scale(20) }}
                         data={vouchers} renderItem={renderItem} keyExtractor={item => item.id}
                     />
                     :
@@ -227,7 +226,7 @@ const mapStateToProps = (state) => ({
     config: state.config,  // not needed if axios or fetch is used
     accessToken: state.auth.token,
 });
-MyVouchersScreen.navigationOptions = ({navigation}) => ({
+VouchersScreen.navigationOptions = ({navigation}) => ({
     title: navigation.getParam('title'),
     headerTitleStyle: {textAlign:'left'},
     headerLeft:
@@ -244,4 +243,4 @@ MyVouchersScreen.navigationOptions = ({navigation}) => ({
             />
         </TouchableOpacity>,
 })
-export default connect(mapStateToProps)(MyVouchersScreen);
+export default connect(mapStateToProps)(VouchersScreen);

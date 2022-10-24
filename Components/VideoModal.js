@@ -56,8 +56,7 @@ export const VideoModal = props => {
     useEffect(() => {
         Orientation.unlockAllOrientations();
         if(language.subtitle!==''){
-            let index = textTracks.findIndex(el => el.language === language.subtitle);
-            setSelectedCCUrl(textTracks[index].uri);
+            setSelectedCCUrl(textTracks.find(el => el.language === language.subtitle).uri);
         }
         return () => {
             Orientation.lockToPortrait();

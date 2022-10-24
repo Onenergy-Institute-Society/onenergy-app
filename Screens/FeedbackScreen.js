@@ -22,7 +22,7 @@ import { scale } from '../Utils/scale';
 import Recaptcha from "../Components/Recaptcha";
 import { BlurView } from "@react-native-community/blur";
 
-const MyFeedbackScreen = props => {
+const FeedbackScreen = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [ loading, setLoading ] = useState(false);
     const [content, setContent] = useState('');
@@ -52,9 +52,8 @@ const MyFeedbackScreen = props => {
         }
     }
     useEffect(() => {
-        let titleIndex = optionData.titles.findIndex(el => el.id === 'feedback_title');
         props.navigation.setParams({
-            title: optionData.titles[titleIndex].title,
+            title: optionData.titles.find(el => el.id === 'feedback_title').title,
             onSendPress: onSendPress
         });
     }, [])
@@ -263,7 +262,7 @@ const styles = StyleSheet.create({
         flex:4,
     },
 });
-MyFeedbackScreen.navigationOptions = ({ navigation }) => {
+FeedbackScreen.navigationOptions = ({ navigation }) => {
     const {params = {}} = navigation.state;
     return({
         headerTitle: params.title?params.title:navigation.getParam('title'),
@@ -293,4 +292,4 @@ const mapStateToProps = (state) => ({
     config: state.config,
     accessToken: state.auth.token,
 });
-export default connect(mapStateToProps)(MyFeedbackScreen);
+export default connect(mapStateToProps)(FeedbackScreen);

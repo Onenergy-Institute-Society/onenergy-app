@@ -27,8 +27,7 @@ const MemberTracksList = (props) => {
         if(!selectedRoutine || routine.id !== selectedRoutine.id) {
 
             if(routine.bgm !== 'No Sound') {
-                let index = optionData.routine_bgm.findIndex(el => el.name === routine.bgm);
-                routine.bgm_url = optionData.routine_bgm[index].bgm;
+                routine.bgm_url = optionData.routine_bgm.find(el => el.name === routine.bgm).bgm;
             }else{
                 routine.bgm_url = '';
             }
@@ -88,7 +87,7 @@ const MemberTracksList = (props) => {
                                 <View style={styles.titleBox}>
                                     <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center", width:"100%"}}>
                                         <Text style={styles.title}>{item.title}</Text>
-                                        <Text style={styles.duration}>{new Date(totalDuration * 1000).toISOString().substr(14, 5)}</Text>
+                                        <Text style={styles.duration}>{new Date(totalDuration * 1000).toISOString().substring(14, 19)}</Text>
                                     </View>
                                     <View style={styles.detail}>
                                     {
@@ -138,7 +137,7 @@ const MemberTracksList = (props) => {
     }
     return (
         <SafeAreaView style={styles.container}>
-            <FlatList style={styles.trackList} data={routines} renderItem={renderItem} keyExtractor={item => item.id} />
+            <FlatList contentContainerStyle={{ paddingBottom: scale(20) }} style={styles.trackList} data={routines} renderItem={renderItem} keyExtractor={item => item.id} />
         </SafeAreaView>
     );
 };
@@ -226,6 +225,13 @@ const styles = StyleSheet.create({
     title: {
         fontSize: scale(16),
         fontWeight: 'bold',
+        color: "white",
+        textShadowColor: 'grey',
+        textShadowRadius: 1,
+        textShadowOffset: {
+            width: -1,
+            height: 1
+        }
     },
     detail:{
         flexDirection:"row",
@@ -238,13 +244,20 @@ const styles = StyleSheet.create({
         color:"white",
         backgroundColor:'rgba(0,0,0,0.2)',
         borderRadius:9,
+        shadowRadius:9,
         paddingHorizontal:4,
         marginRight:2,
         marginBottom:2,
     },
     duration: {
         fontSize: scale(12),
-        color: "white"
+        color: "white",
+        textShadowColor: 'grey',
+        textShadowRadius: 1,
+        textShadowOffset: {
+            width: -1,
+            height: 1
+        }
     },
     listBox: {
         height: '100%',
