@@ -112,7 +112,7 @@ const EditRoutine = props => {
         }
     },[routineDetail])
     const removeItem = (id) => {
-        let array = [...routineSettings]; // make a separate copy of the array
+        let array = routineSettings; // make a separate copy of the array
         if (id !== -1) {
             let index = array.findIndex(el => el.id === id);
             array.splice(index, 1);
@@ -288,7 +288,7 @@ const EditRoutine = props => {
         }
         return (
             <TouchableWithoutFeedback onPress={() => {
-                let tempSettings = [...routineSettings];
+                let tempSettings = routineSettings;
                 tempSettings[currentTrack.index] = {...tempSettings[currentTrack.index], count:item.item};
                 setRoutineSettings(tempSettings);
                 setRoutineDetail(prevState => ({...prevState, routine:tempSettings}));
@@ -353,7 +353,7 @@ const EditRoutine = props => {
         );
     }
     const renderColor = () => {
-        return backgroundImages.map((image, index) => {
+        return backgroundImages.map((image) => {
             let imageSelected;
             if (image === routineDetail.image) {
                 imageSelected = {borderWidth: 5, borderColor: '#4942e1'};

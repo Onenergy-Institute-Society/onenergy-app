@@ -1,5 +1,4 @@
-import React, {useEffect} from 'react';
-import {getApi} from "@src/services";
+import React from 'react';
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
     View,
@@ -10,10 +9,11 @@ import {
 } from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
+import moment from 'moment';
 
 const QuestsWeekly = (props) => {
-    const user = useSelector((state) => state.user.userObject);
     const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer.weekly);
+    const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
     return(
         <SafeAreaView style={styles.container}>
@@ -39,85 +39,75 @@ const QuestsWeekly = (props) => {
                         </View>
                     )
                 })}
-                {achievementReducer.log?
-                    <View style={[styles.boxShadow, styles.rowReward]}>
-                        <View style={styles.rowLeft}>
-                            <Text style={styles.title}>Practice for a week</Text>
-                            <View style={{marginVertical: 10}}>
-                                <View
-                                    style={{justifyContent: 'center', alignItems: 'center'}}>
-                                    <Text style={{color:"#ED57E1"}}>Expire in {achievementReducer.log.days} days</Text></View>
-                            </View>
-                        </View>
-                        <TouchableWithoutFeedback
-                            onPress={() => {
-                                dispatch({
-                                    type: "ONENERGY_UPDATE_USER_POINTS",
-                                    payload: {'qi': 20}
-                                });
-                                dispatch({
-                                    type: "ONENERGY_ACHIEVEMENT_CLAIM_WEEKLY_MONTHLY",
-                                    quest_mode: "weekly",
-                                });
-                                const apiQuotes = getApi(props.config);
-                                apiQuotes.customRequest(
-                                    "wp-json/onenergy/v1/awardClaim",
-                                    "post",
-                                    {"id":32270, "log_id":achievementReducer.log.log_id},
-                                    null,
-                                    {},
-                                    false
-                                ).then();
-                            }}
-                        >
-                            <View style={[styles.rowRight, {backgroundColor:'gold'}]}>
-                                <Text
-                                    style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                            width: -1,
-                                            height: 1
-                                        }}}
-                                >
-                                    CLAIM
-                                </Text>
-                                <Text
-                                    style={{fontSize:24, fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                            width: -1,
-                                            height: 1
-                                        }}}
-                                >
-                                    +20 Qi
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>:null
-                }
                 {achievementReducer.list?
                     achievementReducer.list.map(listItem => (
-                        <View style={[styles.boxShadow, styles.rowReward]}>
-                            <View style={styles.rowLeft}>
-                                <Text style={styles.title}>Practice for a week</Text>
+                        listItem.claim_date?
+                            <View style={[styles.boxShadow, styles.rowReward]}>
+                                <View style={styles.rowLeft}>
+                                    <Text style={styles.title}>Practice for a week</Text>
+                                </View>
+                                <View style={[styles.rowRight, {backgroundColor:'grey'}]}>
+                                    <Text
+                                        style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                width: -1,
+                                                height: 1
+                                            }}}
+                                    >
+                                        CLAIMED
+                                    </Text>
+                                    <Text
+                                        numberOfLines={1}
+                                        style={{fontSize:11, fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                width: -1,
+                                                height: 1
+                                            }}}
+                                    >
+                                        {listItem.complete_date}
+                                    </Text>
+                                </View>
                             </View>
-                            <View style={[styles.rowRight, {backgroundColor:'grey'}]}>
-                                <Text
-                                    style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                            width: -1,
-                                            height: 1
-                                        }}}
+                        :
+                            <View style={[styles.boxShadow, styles.rowReward]}>
+                                <View style={styles.rowLeft}>
+                                    <Text style={styles.title}>Practice for a week</Text>
+                                    <View style={{marginVertical: 10}}>
+                                        <View
+                                            style={{justifyContent: 'center', alignItems: 'center'}}>
+                                            <Text style={{color:"#ED57E1"}}>Expire in {7 - moment(today).diff(moment(achievementReducer.complete_date), 'days')} days</Text></View>
+                                    </View>
+                                </View>
+                                <TouchableWithoutFeedback
+                                    onPress={() => {
+                                        dispatch({
+                                            type: "ONENERGY_ACHIEVEMENT_CLAIM_WEEKLY_MONTHLY",
+                                            payload:{
+                                                mode: "weekly",
+                                                date: listItem.complete_date,
+                                            },
+                                        });
+                                    }}
                                 >
-                                    CLEARED
-                                </Text>
-                                <Text
-                                    numberOfLines={1}
-                                    style={{fontSize:11, fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                            width: -1,
-                                            height: 1
-                                        }}}
-                                >
-                                    {listItem.date}
-                                </Text>
+                                    <View style={[styles.rowRight, {backgroundColor:'gold'}]}>
+                                        <Text
+                                            style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                    width: -1,
+                                                    height: 1
+                                                }}}
+                                        >
+                                            CLAIM
+                                        </Text>
+                                        <Text
+                                            style={{fontSize:24, fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                    width: -1,
+                                                    height: 1
+                                                }}}
+                                        >
+                                            +20 Qi
+                                        </Text>
+                                    </View>
+                                </TouchableWithoutFeedback>
                             </View>
-                        </View>
-                    ))
+                        ))
                     :null
                 }
             </ScrollView>

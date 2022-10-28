@@ -27,7 +27,6 @@ const PracticeMember = props => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const helpPageData = optionData.helps.find(el => el.name === 'practice_guided_empty');
     const emptyData = optionData.helps.find(el => el.name === 'practice_customize_empty_member');
     const practiceReducer = useSelector((state) => state.onenergyReducer.practiceReducer);
     const [helpModal, setHelpModal] = useState({title:'',id:0});
@@ -36,7 +35,7 @@ const PracticeMember = props => {
     React.useEffect(() => {
         Animated.timing(fadeAnim, {
             toValue: 1,
-            duration: 500,
+            duration: 2000,
         }).start();
     }, []);
     const fetchTracks = async () => {
@@ -104,7 +103,7 @@ const PracticeMember = props => {
     const onRemoveRoutine = async (item) => {
         await TrackPlayer.reset();
 
-        let array = [...practiceReducer.routines]; // make a separate copy of the array
+        let array = practiceReducer.routines; // make a separate copy of the array
         let index = array.indexOf(item);
         if (index !== -1) {
             array.splice(index, 1);
@@ -241,17 +240,24 @@ const styles = StyleSheet.create({
         flexGrow: 1,
     },
     messageText:{
-        fontSize:scale(14),
+        fontSize:scale(18),
         color: "white",
+    },
+    boxShadow: {
+        shadowColor: "#000",
+        shadowOffset: {width: -2, height: 4},
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 4,
     },
     messageBar:{
         position: "absolute",
-        top:10,
+        top:15,
         backgroundColor:"#737373",
         borderColor:"#404040",
         borderRadius:9,
-        paddingVertical:scale(5),
-        paddingHorizontal:scale(10),
+        paddingVertical:scale(10),
+        paddingHorizontal:scale(15),
     }
 });
 PracticeMember.navigationOptions = ({ navigation }) => {

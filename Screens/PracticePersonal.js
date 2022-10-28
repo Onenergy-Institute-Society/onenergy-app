@@ -6,10 +6,9 @@ import {
     View,
     Text,
     ScrollView,
-    Animated, Platform
+    Animated
 } from "react-native";
-import {getApi} from "@src/services";
-import {connect, useSelector, useDispatch} from "react-redux";
+import {connect, useSelector} from "react-redux";
 import TracksList from '../Components/TracksList';
 import IconButton from "@src/components/IconButton";
 import {withNavigation} from "react-navigation";
@@ -33,7 +32,7 @@ const PracticePersonal = props => {
     React.useEffect(() => {
         Animated.timing(fadeAnim, {
             toValue: 1,
-            duration: 500,
+            duration: 2000,
         }).start();
     }, []);
     const toggleHelpModal = () => {
@@ -55,7 +54,9 @@ const PracticePersonal = props => {
     },[messageBarDisplay])
     return (
         <SafeAreaView style={styles.container}>
-            {guideReducer&&guideReducer.length?
+            {guideReducer.map(section => {
+                return section.data.find(guide => guide.show === true);
+            }).length?
                 <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
                         <View>
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
     },
     messageText:{
-      fontSize:scale(24),
+      fontSize:scale(18),
         color: "white",
     },
     boxShadow: {
@@ -152,7 +153,6 @@ const styles = StyleSheet.create({
     }
 });
 PracticePersonal.navigationOptions = ({ navigation }) => {
-    const {params = {}} = navigation.state;
     return ({
         headerTitle: navigation.getParam('title'),
         headerLeft:

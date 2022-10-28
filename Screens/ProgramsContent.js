@@ -5,16 +5,14 @@ import {
     Text,
     TouchableOpacity,
     SafeAreaView,
-    Platform,
     ScrollView
 } from "react-native";
 import {useSelector} from "react-redux";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import {NavigationActions, withNavigation} from "react-navigation";
+import {withNavigation} from "react-navigation";
 import IconButton from "@src/components/IconButton";
 import CoursesScreen from "@src/containers/Custom/CoursesScreen";
 import TouchableScale from "../Components/TouchableScale";
-import ImageCache from "../Components/ImageCache";
 import { scale } from '../Utils/scale';
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
@@ -23,10 +21,9 @@ import EventList from "../Components/EventList";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 const ProgramsContent = props => {
     const { navigation, screenProps } = props;
-    const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [helpModal, setHelpModal] = useState({title:'',id:0});
-    const { global, colors } = screenProps;
+    const { global } = screenProps;
     const toggleHelpModal = () => {
         this.popupProgramDialog.open();
     }
@@ -55,6 +52,9 @@ const ProgramsContent = props => {
             <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                 <View style={{marginVertical: scale(5)}}>
                     <EventList location={'program'} eventsDate={optionData.goals}/>
+                </View>
+                <View style={styles.heading_title}>
+                    <Text style={styles.heading}>Preparatory Courses</Text>
                 </View>
                 <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
                                hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
@@ -109,6 +109,13 @@ const styles = StyleSheet.create({
         marginHorizontal: 15,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    heading_title: {
+        flexDirection: 'row',
+        left: scale(15),
+        right: 0,
+        width: windowWidth - scale(30),
+        justifyContent: "space-between",
     },
     heading: {
         fontSize: scale(18),
@@ -168,7 +175,7 @@ const styles = StyleSheet.create({
 });
 ProgramsContent.navigationOptions = ({ navigation }) => {
     const {params = {}} = navigation.state;
-    let headerLeft = null;
+    let headerLeft;
     let navRoutes = navigation.dangerouslyGetParent().state.routes;
     if(navRoutes.length >= 2){
         headerLeft =
@@ -208,6 +215,36 @@ ProgramsContent.navigationOptions = ({ navigation }) => {
         headerLeft: headerLeft,
         headerRight:
             <View style={{flexDirection: "row", justifyContent:"flex-end"}}>
+                <TouchableScale
+                    onPress={() => {
+                        navigation.navigate("MilestonesScreen")
+                    }}
+                >
+                    <IconButton
+                        icon={require("@src/assets/img/certificate.png")}
+                        tintColor={"#4942e1"}
+                        style={{
+                            height: 20,
+                            marginRight: 5,
+                        }}
+                    />
+                    <NotificationTabBarIcon notificationID={'milestone'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                </TouchableScale>
+                <TouchableScale
+                    onPress={() => {
+                        navigation.navigate("QuestsScreen")
+                    }}
+                >
+                    <IconButton
+                        icon={require("@src/assets/img/achievement-action-icon.png")}
+                        tintColor={"#4942e1"}
+                        style={{
+                            height: 20,
+                            marginRight: 5,
+                        }}
+                    />
+                    <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                </TouchableScale>
                 <TouchableOpacity
                     onPress={() =>  params.toggleHelpModal()}
                 >

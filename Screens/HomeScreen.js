@@ -22,6 +22,7 @@ const CustomDrawerContentComponent = (props) => {
     const user = useSelector((state) => state.user.userObject);
     const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    console.log(progressReducer)
     return (
         <SafeAreaView style={{flex:1, backgroundColor: colors.bodyBg}}>
             <ImageBackground
@@ -76,7 +77,7 @@ const CustomDrawerContentComponent = (props) => {
                                         </Text>
                                     </View>
                                 ):null}
-                                {progressReducer.points&&progressReducer.points.length?Object.entries(progressReducer.points).map(([key, value])=>(
+                                {Object.entries(progressReducer.points).map(([key, value])=>(
                                     <View>
                                         <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center"}}>
                                             <FastImage source={{uri:'https://assets.onenergy.institute/wp-content/uploads/2020/07/gamipress-icon-ray-material-54x54.png'}} style={{width:16, height:16}} />
@@ -92,11 +93,11 @@ const CustomDrawerContentComponent = (props) => {
                                                         height: 1
                                                     }
                                                 }}>
-                                                {key} {value}
+                                                {value} {optionData.points.find(pt => pt.pointName === key).pointTitle}
                                             </Text>
                                         </View>
                                     </View>
-                                )):null}
+                                ))}
                             </View>
                         </View>
                     {user.membership.length > 0 ?
@@ -114,10 +115,20 @@ const CustomDrawerContentComponent = (props) => {
                                     navigation.navigate('StatsScreen');
                                     }}>
                                     <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', borderTopRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                                        <Text
-                                            style={{fontSize:scale(18)}}>
-                                            {optionData.titles.find(el => el.id === 'left_menu_progress').title}
-                                        </Text>
+                                        <View style={{flexDirection:"row",alignItems:"center"}}>
+                                            <IconButton
+                                                icon={require("@src/assets/img/progress.png")}
+                                                style={{
+                                                    height: 32,
+                                                    marginRight:5,
+                                                }}
+                                                tintColor={"black"}
+                                            />
+                                            <Text
+                                                style={{fontSize:scale(18)}}>
+                                                {optionData.titles.find(el => el.id === 'left_menu_progress').title}
+                                            </Text>
+                                        </View>
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
                                             style={{
@@ -130,10 +141,20 @@ const CustomDrawerContentComponent = (props) => {
                                 <TouchableWithoutFeedback onPress={() => {
                                     navigation.navigate('QuestsScreen');}}>
                                     <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                                        <Text
-                                            style={{fontSize:scale(18)}}>
-                                            {optionData.titles.find(el => el.id === 'left_menu_quests').title}
-                                        </Text>
+                                        <View style={{flexDirection:"row",alignItems:"center"}}>
+                                            <IconButton
+                                                icon={require("@src/assets/img/achievement-action-icon.png")}
+                                                style={{
+                                                    height: 32,
+                                                    marginRight:5,
+                                                }}
+                                                tintColor={"black"}
+                                            />
+                                            <Text
+                                                style={{fontSize:scale(18)}}>
+                                                {optionData.titles.find(el => el.id === 'left_menu_quests').title}
+                                            </Text>
+                                        </View>
                                         <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
@@ -147,11 +168,21 @@ const CustomDrawerContentComponent = (props) => {
                                 <TouchableWithoutFeedback onPress={() => {
                                     navigation.navigate("MilestonesScreen");}}>
                                     <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                                        <Text
-                                            style={{fontSize:scale(18)}}>
-                                            {optionData.titles.find(el => el.id === 'left_menu_achievements').title}
-                                        </Text>
-                                        <NotificationTabBarIcon notificationID={'achievement'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                                        <View style={{flexDirection:"row",alignItems:"center"}}>
+                                            <IconButton
+                                                icon={require("@src/assets/img/certificate.png")}
+                                                style={{
+                                                    height: 32,
+                                                    marginRight:5,
+                                                }}
+                                                tintColor={"black"}
+                                            />
+                                            <Text
+                                                style={{fontSize:scale(18)}}>
+                                                {optionData.titles.find(el => el.id === 'left_menu_achievements').title}
+                                            </Text>
+                                        </View>
+                                        <NotificationTabBarIcon notificationID={'milestone'}  top={0} right={0} size={scale(10)} showNumber={false} />
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
                                             style={{
@@ -164,10 +195,20 @@ const CustomDrawerContentComponent = (props) => {
                                 <TouchableWithoutFeedback onPress={() => {
                                     navigation.navigate("VouchersScreen");}}>
                                     <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                                        <Text
-                                            style={{fontSize:scale(18)}}>
-                                            {optionData.titles.find(el => el.id === 'left_menu_vouchers').title}
-                                        </Text>
+                                        <View style={{flexDirection:"row",alignItems:"center"}}>
+                                            <IconButton
+                                                icon={require("@src/assets/img/tags.png")}
+                                                style={{
+                                                    height: 32,
+                                                    marginRight:5,
+                                                }}
+                                                tintColor={"black"}
+                                            />
+                                            <Text
+                                                style={{fontSize:scale(18)}}>
+                                                {optionData.titles.find(el => el.id === 'left_menu_vouchers').title}
+                                            </Text>
+                                        </View>
                                         <NotificationTabBarIcon notificationID={'voucher'}  top={0} right={0} size={scale(10)} showNumber={false} />
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}

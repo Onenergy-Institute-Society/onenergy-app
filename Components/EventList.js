@@ -66,7 +66,7 @@ const EventList = props => {
                         break;
                     case 'course':
                         if (item.showCourseOption === 'enrolled') {
-                            let showCourse = user&&progressReducer.enrolledCourses.find(course => course.id === parseInt(item.showCourse));
+                            let showCourse = progressReducer.enrolledCourses.find(course => course.id === parseInt(item.showCourse));
                             if (showCourse) {
                                 showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
                                 if (current_time > showDate) {
@@ -74,7 +74,7 @@ const EventList = props => {
                                 }
                             }
                         } else if (item.showCourseOption === 'completed') {
-                            let showCourse = user&&progressReducer.completedCourses.find(course => course.id === parseInt(item.showCourse));
+                            let showCourse = progressReducer.completedCourses.find(course => course.id === parseInt(item.showCourse));
                             if (showCourse) {
                                 showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
                                 if (current_time > showDate) {
@@ -84,7 +84,7 @@ const EventList = props => {
                         }
                         break;
                     case 'lesson':
-                        let showLesson = user&&progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.showLesson));
+                        let showLesson = progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.showLesson));
                         if (showLesson) {
                             showDate = new moment.unix(showLesson['date']).add(item.delay, 'd');
                             if (current_time > showDate) {
@@ -125,22 +125,22 @@ const EventList = props => {
                             break;
                         case 'course':
                             if (item.hideCourseOption === 'enrolled') {
-                                if (user&&progressReducer.enrolledCourses.find(course => course.id === parseInt(item.hideCourse))) {
+                                if (progressReducer.enrolledCourses.find(course => course.id === parseInt(item.hideCourse))) {
                                     show = false;
                                 }
                             } else if (item.hideCourseOption === 'completed') {
-                                if (user&&progressReducer.completedCourses.find(course => course.id === parseInt(item.hideCourse))) {
+                                if (progressReducer.completedCourses.find(course => course.id === parseInt(item.hideCourse))) {
                                     show = false;
                                 }
                             }
                             break;
                         case 'lesson':
-                            if (user&&progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
+                            if (progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
                                 show = false;
                             }
                             break;
                         case 'achievement':
-                            if (user&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.hideAchievement))) {
+                            if (achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.hideAchievement))) {
                                 show = false;
                             }
                             break;

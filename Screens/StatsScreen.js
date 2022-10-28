@@ -16,7 +16,8 @@ const StatsScreen = (props) => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
-
+    const practiceReducer = useSelector((state) => state.onenergyReducer.practiceReducer);
+console.log(progressReducer, user)
     useEffect(() => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'progress_title').title,
@@ -45,11 +46,13 @@ const StatsScreen = (props) => {
                                 <Text style={styles.title}>Registered:</Text>
                                 <Text style={styles.text}> {new Date(user.registered_date).toLocaleDateString()}</Text>
                             </View>
+                            {user.rank?<>
                             <View style={[styles.rowHr, {backgroundColor: "#fafaf9"}]}/>
                             <View style={styles.row}>
                                 <Text style={styles.title}>Rank:</Text>
                                 <Text style={styles.text}> {optionData.ranks[user.rank].rankName}</Text>
                             </View>
+                            </>:null}
                             <View style={[styles.rowHr, {backgroundColor: "#fafaf9"}]}/>
                             <View style={[styles.row, styles.lastRow]}>
                                 <Text style={styles.title}>Qi Points:</Text>
@@ -137,7 +140,7 @@ const StatsScreen = (props) => {
                                 <View style={[styles.rowHr, {backgroundColor: "#fff7ed"}]}/>
                                 <View style={[styles.row, styles.lastRow]}>
                                     <Text style={styles.title}>Customized Routine:</Text>
-                                    <Text style={styles.text}> {progressReducer.routinesStats?progressReducer.routinesStats.length:''}</Text>
+                                    <Text style={styles.text}> {practiceReducer.routines?practiceReducer.routines.length:''}</Text>
                                 </View>
                             </LinearGradient>
                         </View>
@@ -191,7 +194,7 @@ const StatsScreen = (props) => {
                     </View>
                 </>
                     :null}
-                {progressReducer.gpStats&&progressReducer.gpStats.length?
+                {progressReducer.groupStats&&progressReducer.groupStats.length?
                 <View style={[styles.boxShadow, styles.card]}>
                     <View style={[styles.header,{backgroundColor:"#c4b5fd"}]}>
                         <Text style={styles.headerText}>
@@ -206,7 +209,7 @@ const StatsScreen = (props) => {
                                 borderBottomLeftRadius:9,
                             }]}
                             colors={['#ddd6fe', '#ede9fe']}>
-                            {progressReducer.gpStats.map((item, index)=> {
+                            {progressReducer.groupStats.map((item, index)=> {
                                 return (
                                     <>
                                         <View style={styles.row}>
@@ -214,7 +217,7 @@ const StatsScreen = (props) => {
                                             <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
                                             <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                         </View>
-                                        {index<progressReducer.gpStats.length-1?
+                                        {index<progressReducer.groupStats.length-1?
                                             <View style={[styles.rowHr, {backgroundColor: "#f5f3ff"}]}/>
                                             :
                                             <View style={{marginBottom:scale(10)}} />}
@@ -240,7 +243,7 @@ const StatsScreen = (props) => {
                             }]}
                             colors={['#d1fae5', '#a7f3d0']}>
                             {progressReducer.practicesStats&&progressReducer.practicesStats.length?
-                                progressReducer.practicesStats.map((item, index)=> {
+                                progressReducer.practicesStats.filter(item=> item.type==='PP_SECTION').map((item, index)=> {
                                     return (
                                         <>
                                             <View style={styles.row}>
@@ -248,7 +251,7 @@ const StatsScreen = (props) => {
                                                 <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
                                                 <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                             </View>
-                                            {index<progressReducer.practicesStats.length-1?
+                                            {index<progressReducer.practicesStats.filter(item=> item.type==='PP_SECTION').length-1?
                                             <View style={[styles.rowHr, {backgroundColor: "#ecfdf5"}]}/>
                                                 :
                                             <View style={{marginBottom:scale(10)}} />}

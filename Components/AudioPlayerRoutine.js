@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
 import { Text, TouchableOpacity, View, Platform} from 'react-native';
 import TrackPlayer, {State, Event, useTrackPlayerEvents} from 'react-native-track-player';
@@ -9,13 +8,9 @@ import { scale } from '../Utils/scale';
 import Video from 'react-native-video';
 import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 import TrackSlider from "./TrackSlider";
-import moment from 'moment';
 
 const AudioPlayerRoutine = (props) => {
     const user = useSelector((state) => state.user.userObject);
-    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer.achievements);
-    const practiceReducer = useSelector((state) => state.onenergyReducer.practiceReducer);
-    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
     const {routine, setMessageBarDisplay, totalDuration} = props;
     const [playing, setPlaying] = useState(false);
     const [stopped, setStopped] = useState(true)
@@ -27,112 +22,13 @@ const AudioPlayerRoutine = (props) => {
     const updateProgress = async () => {
         try {
             dispatch({
-                type: 'ONENERGY_ACHIEVEMENT_COMPLETE_PRACTICE',
+                type: 'ONENERGY_PRACTICE_COMPLETED',
                 payload: {
                     mode: 'routine',
                     data: routine.id
                 }
             });
-
-
-            let achievements = [];
-            routine.routine.map((routine) =>{
-                let section_id;
-
-                practiceReducer.guides.map((section) => {
-                    let tempGuide = section.data.find(item => item.id === routine.id);
-                    if (tempGuide)
-                        section_id = section.id
-                });
-
-                    let tmpMilestone = achievementReducer.filter(achievement =>
-                        (achievement.trigger === 'practice' &&
-                            ((achievement.triggerPracticeOption === 'single' && (parseInt(achievement.triggerSinglePractice) === routine.id || !achievement.triggerSinglePractice)) ||
-                                (achievement.triggerPracticeOption === 'section' && (parseInt(achievement.triggerSectionPractice) === section_id || !achievement.triggerSectionPractice))) &&
-                            !achievement.complete_date)
-                    );
-                    tmpMilestone.map((item) => {
-                        let complete = false;
-                        if (parseInt(item.total) <= parseInt(item.step) + 1) {
-                            complete = true;
-                            achievements.push({
-                                [item.id]: {
-                                    "type": "milestone",
-                                    "complete_date": Math.floor(new Date().getTime() / 1000)
-                                }
-                            });
-                        }
-                        dispatch({
-                            type: 'ONENERGY_ACHIEVEMENT_COMPLETE_PRACTICE',
-                            payload: {
-                                "milestone": item.id,
-                                "step": item.step + 1,
-                                "complete": complete
-                            }
-                        });
-                    })
-
-                let tmpQuest = achievementReducer.daily.filter(achievement => {
-                    if ((achievement.trigger === 'practice' &&
-                        ((achievement.triggerPracticeOption === 'single' && (parseInt(achievement.triggerSinglePractice) === routine.id || !achievement.triggerSinglePractice)) ||
-                            (achievement.triggerPracticeOption === 'section' && (parseInt(achievement.triggerSectionPractice) === section_id || !achievement.triggerSectionPractice)))))
-                        if (!achievement.complete_date) {
-                            return true
-                        } else {
-                            let complete_date = new moment.unix(quest.complete_date).format('YYYY-MM-DD');
-                            let today = new moment().format('YYYY-MM-DD');
-                            return complete_date !== today;
-                        }
-                });
-
-                tmpQuest.map((item) => {
-                    let complete = false;
-                    if (parseInt(item.total) <= parseInt(item.step) + 1) {
-                        complete = true;
-                        achievements.push({
-                            [item.id]: {
-                                "type": "quest",
-                                "complete_date": Math.floor(new Date().getTime() / 1000)
-                            }
-                        });
-                    }
-                    dispatch({
-                        type: 'ONENERGY_ACHIEVEMENT_COMPLETE_PRACTICE',
-                        payload: {
-                            "quest": item.id,
-                            "step": parseInt(item.step) + 1,
-                            "complete": complete
-                        }
-                    });
-                })
-
-                dispatch({
-                    type: 'ONENERGY_PROGRESS_UPDATE',
-                    payload: {
-                        "mode": 'PP',
-                        "item": section_id,
-                        "count": 1,
-                        "duration": track.duration
-                    }
-                });
-            })
-
             setMessageBarDisplay(true);
-
-            const apiRequest = getApi(props.config);
-            apiRequest.customRequest(
-                "wp-json/onenergy/v1/statsUpdate",
-                "post",
-                {
-                    "mode": "PR",
-                    "data": routine.id,
-                    "stats": progressReducer,
-                    "achievements": achievements
-                },
-                null,
-                {},
-                false
-            );
         } catch (e) {
             console.error(e);
         }

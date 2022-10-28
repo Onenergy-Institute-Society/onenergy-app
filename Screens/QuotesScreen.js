@@ -24,7 +24,7 @@ const QuotesScreen = props => {
     const [ page, setPage] = useState(1);
     const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState(true);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const quoteReducer = useSelector((state) => state.onenergyReducer.quoteReducer.quotes);
+    const quoteReducer = useSelector((state) => state.quoteReducer.quotes);
     const dispatch = useDispatch();
 
     const fetchQuote = async () => {

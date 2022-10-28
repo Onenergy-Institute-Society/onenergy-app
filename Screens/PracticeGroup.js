@@ -11,7 +11,7 @@ import {
     ScrollView,
     ActivityIndicator
 } from "react-native";
-import {connect, useSelector, useDispatch} from "react-redux";
+import {connect, useSelector} from "react-redux";
 import {getApi} from "@src/services";
 import IconButton from "@src/components/IconButton";
 import {NavigationActions, withNavigation} from "react-navigation";
@@ -116,7 +116,7 @@ const PracticeGroup = props => {
     const renderItem = ({item}) => {
 
         let detail = item.detail;
-        const conditionLessons = item.lessons.every(value => progressReducer.completedLessons.some(lesson => (lesson.id === value)));
+        const conditionLessons = item.lessons.every(value => progressReducer.completedLessons.some(lesson => lesson.id === value));
         user && progressReducer.completedLessons.map((lesson) => {
             detail = detail.replace('<span id="' + lesson.id + '"></span>', '<span style="color:green">(Passed)</span>')
         })
@@ -170,7 +170,7 @@ const PracticeGroup = props => {
                             width: windowWidth - scale(30)
                         }}>
                             <View>
-                                <Text style={styles.title}>{item.title.rendered}</Text>
+                                <Text style={styles.title}>{item.name}</Text>
                                 <View style={{flexDirection: "row", justifyContent: "space-between",marginHorizontal: scale(15)}}>
                                     <View style={{flexDirection: "row", justifyContent: "flex-start",}}>
                                         <FastImage tintColor="black" source={require("@src/assets/img/stopwatch.png")} style={{width:16, height:16}} />

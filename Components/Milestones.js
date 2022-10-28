@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {View, Text, StyleSheet, SafeAreaView, FlatList, TouchableWithoutFeedback} from 'react-native';
@@ -11,7 +11,6 @@ import moment from 'moment';
 const Milestones = (props) => {
     const {type} = props;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const user = useSelector((state) => state.user.userObject);
     const emptyText = optionData.titles.find(el => el.id === 'achievement_milestone_empty').title
     const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
     const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === type));
@@ -20,13 +19,11 @@ const Milestones = (props) => {
     const handleOnPress = (item) => {
         if(item.complete_date&&!item.claim_date) {
             dispatch({
-                type: "ONENERGY_UPDATE_USER_POINTS",
-                payload: {'qi': item.points}
-            });
-            dispatch({
                 type: "ONENERGY_ACHIEVEMENT_CLAIM",
-                milestone_type: type,
-                payload: item.id
+                payload: {
+                    'mode': type,
+                    'id': item.id
+                }
             });
         }
         const apiMilestone = getApi(props.config);

@@ -8,7 +8,7 @@ const NotificationTabBarIcon = props => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const postReducer = useSelector((state) => state.postReducer);
-    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer.achievements);
+    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer);
     const guideReducer = useSelector((state) => state.onenergyReducer.practiceReducer.guides);
     const {notificationID, top, right, size, fontSize=8, showNumber=false, data=''} = props;
 
@@ -80,6 +80,18 @@ const NotificationTabBarIcon = props => {
                     }
                 }
             }
+            break;
+        case 'quest_daily':
+            if(user)
+                notificationCount = achievementReducer.dailyNotify?achievementReducer.dailyNotify:0
+            break;
+        case 'quest_weekly':
+            if(user)
+                notificationCount = achievementReducer.weeklyNotify?achievementReducer.weeklyNotify:0
+            break;
+        case 'quest_monthly':
+            if(user)
+                notificationCount = achievementReducer.monthlyNotify?achievementReducer.monthlyNotify:0
             break;
         case 'quest':
             if(user)

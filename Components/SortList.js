@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, ScrollView, TouchableOpacity, Text} from 'react-native';
+import {View, ScrollView} from 'react-native';
 // Components
 import SortListItem from "./SortListItem";
 
@@ -90,7 +90,7 @@ export default function SortList(props)
     {
         if(isMoving === false)
             setIsMoving(true);
-        const newItems = [...items];
+        const newItems = items;
         let shiftingItem = newItems.filter(x => x.id === id)[0];
         // Calculate shiftingItem new index
         let shiftingItemIndex = Math.trunc((draggablePosition + (itemSize / 2)) / itemSize);

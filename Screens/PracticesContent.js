@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import {
     StyleSheet,
     View,
-    SafeAreaView, Text, TouchableOpacity, Platform, ScrollView
+    SafeAreaView, Text, TouchableOpacity, ScrollView
 } from "react-native";
 import {NavigationActions} from "react-navigation";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
@@ -242,8 +242,7 @@ const styles = StyleSheet.create({
     },
 });
 PracticesContent.navigationOptions  = ({ navigation }) => {
-    const {params = {}} = navigation.state;
-    let headerLeft = null;
+    let headerLeft;
     let navRoutes = navigation.dangerouslyGetParent().state.routes;
     if(navRoutes.length >= 2){
         headerLeft =
@@ -281,6 +280,39 @@ PracticesContent.navigationOptions  = ({ navigation }) => {
     return {
         title: navigation.getParam('title'),
         headerLeft: headerLeft,
+        headerRight:
+            <View style={{justifyContent:"flex-end", flexDirection:"row", marginRight:15}}>
+                <TouchableScale
+                    onPress={() => {
+                        navigation.navigate("MilestonesScreen")
+                    }}
+                >
+                    <IconButton
+                        icon={require("@src/assets/img/certificate.png")}
+                        tintColor={"#4942e1"}
+                        style={{
+                            height: 20,
+                            marginRight: 5,
+                        }}
+                    />
+                    <NotificationTabBarIcon notificationID={'milestone'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                </TouchableScale>
+                <TouchableScale
+                    onPress={() => {
+                        navigation.navigate("QuestsScreen")
+                    }}
+                >
+                    <IconButton
+                        icon={require("@src/assets/img/achievement-action-icon.png")}
+                        tintColor={"#4942e1"}
+                        style={{
+                            height: 20,
+                            marginRight: 5,
+                        }}
+                    />
+                    <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                </TouchableScale>
+            </View>
     }
 };
 export default PracticesContent;

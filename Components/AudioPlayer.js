@@ -17,7 +17,7 @@ const AudioPlayer = (props) => {
     const updateProgress = () => {
         try {
             dispatch({
-                type: 'ONENERGY_ACHIEVEMENT_COMPLETE_PRACTICE',
+                type: 'ONENERGY_PRACTICE_COMPLETED',
                 payload: {
                     mode: 'single',
                     data: track.id

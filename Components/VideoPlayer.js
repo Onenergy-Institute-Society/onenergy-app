@@ -9,20 +9,14 @@ import {
     Alert,
     BackHandler
 } from "react-native";
-import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
 import Video from "react-native-video";
 import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
 import WaitingGroupPractice from "./WaitingGroupPractice";
-import moment from 'moment';
 
 const VideoPlayer = (props) => {
-    const user = useSelector((state) => state.user.userObject);
-    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer.achievements);
-    const practiceReducer = useSelector((state) => state.onenergyReducer.practiceReducer);
-    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
     const [paused, setPaused] = useState(false);
     const {navigation} = props;
     const seek = navigation.getParam('seek');
@@ -56,107 +50,14 @@ const VideoPlayer = (props) => {
     const updateProgress = async () => {
         try
         {
-            let achievements = [];
-
-            let completedAchievements;
-
-            groupPractice.meta_box.guides.map(guideId =>{
-                let sectionId;
-                let tempGuide;
-
-                practiceReducer.guides.map((section) => {
-                    tempGuide = section.data.find(item => item.id === guideId);
-                    if (tempGuide)
-                        sectionId = section.id
-                });
-
-                    let tmpMilestone = achievementReducer.filter(milestone =>
-                        (milestone.trigger === 'practice' &&
-                            ((milestone.triggerPracticeOption === 'single' && (parseInt(milestone.triggerSinglePractice) === guideId || !milestone.triggerSinglePractice)) ||
-                                (milestone.triggerPracticeOption === 'section' && (parseInt(milestone.triggerSectionPractice) === sectionId || !milestone.triggerSectionPractice))) &&
-                            !milestone.complete_date)
-                    );
-                    tmpMilestone.map((item) => {
-                        let complete = false;
-                        if (parseInt(item.total) <= parseInt(item.step) + 1) {
-                            complete = true;
-                            achievements.push({
-                                [item.id]: {
-                                    "type": "milestone",
-                                    "complete_date": Math.floor(new Date().getTime() / 1000)
-                                }
-                            });
-                        }
-                        dispatch({
-                            type: 'ONENERGY_ACHIEVEMENT_COMPLETE_PRACTICE',
-                            payload: {
-                                "milestone": item.id,
-                                "step": item.step + 1,
-                                "complete": complete
-                            }
-                        });
-                    })
-
-                let tmpQuest = achievementReducer.daily.filter(quest => {
-                    if ((quest.trigger === 'practice' &&
-                        ((quest.triggerPracticeOption === 'single' && (parseInt(quest.triggerSinglePractice) === guideId || !quest.triggerSinglePractice)) ||
-                            (quest.triggerPracticeOption === 'section' && (parseInt(quest.triggerSectionPractice) === sectionId || !quest.triggerSectionPractice)))))
-                        if (!quest.complete_date) {
-                            return true
-                        } else {
-                            let complete_date = new moment.unix(quest.complete_date).format('YYYY-MM-DD');
-                            let today = new moment().format('YYYY-MM-DD');
-                            return complete_date !== today;
-                        }
-                });
-
-                tmpQuest.map((item) => {
-                    let complete = false;
-                    if (parseInt(item.total) <= parseInt(item.step) + 1) {
-                        complete = true;
-                        achievements.push({
-                            [item.id]: {
-                                "type": "quest",
-                                "complete_date": Math.floor(new Date().getTime() / 1000)
-                            }
-                        });
-                    }
-                    dispatch({
-                        type: 'ONENERGY_ACHIEVEMENT_COMPLETE_PRACTICE',
-                        payload: {
-                            "quest": item.id,
-                            "step": parseInt(item.step) + 1,
-                            "complete": complete
-                        }
-                    });
-                })
-
-                dispatch({
-                    type: 'ONENERGY_PROGRESS_UPDATE',
-                    payload: {
-                        "mode": 'PP',
-                        "item": sectionId,
-                        "count": 1,
-                        "duration": tempGuide.duration
-                    }
-                });
-
-                const apiRequest = getApi(props.config);
-                apiRequest.customRequest(
-                    "wp-json/onenergy/v1/statsUpdate",
-                    "post",
-                    {
-                        "mode": "PP",
-                        "data": guideId,
-                        "stats": progressReducer,
-                        "achievements": achievements
-                    },
-                    null,
-                    {},
-                    false
-                );
-            })
-
+            console.log('start')
+            dispatch({
+                type: 'ONENERGY_PRACTICE_COMPLETED',
+                payload: {
+                    'mode': 'group',
+                    'data': groupPractice.id
+                }
+            });
         } catch (e) {
             console.error(e);
         }
@@ -169,8 +70,8 @@ const VideoPlayer = (props) => {
             [
                 {
                     text: "OK", onPress: () => {
-/*                        optionData.testing_mode?
-                            updateProgress().then():null;*/
+                        optionData.testing_mode?
+                            updateProgress().then():null;
                         navigation.goBack();
                     }
                 },
@@ -195,7 +96,7 @@ const VideoPlayer = (props) => {
                     onEnd={onVideoEnd.bind(this)}
                     onLoad={onVideoLoad.bind(this)}
                     audioOnly={false}
-                    source={{uri: groupPractice.meta_box.url}}   // Can be a URL or a local file.
+                    source={{uri: groupPractice.url}}   // Can be a URL or a local file.
                     paused={paused}
                     resizeMode={"cover"}
                     style={styles.videoStyle} />

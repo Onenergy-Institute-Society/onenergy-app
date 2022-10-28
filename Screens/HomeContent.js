@@ -6,7 +6,7 @@ import {
     View,
     SafeAreaView,
     Text,
-    AppState, Alert
+    AppState
 } from "react-native";
 import {getApi} from "@src/services";
 import IconButton from "@src/components/IconButton";
@@ -25,7 +25,6 @@ import EventList from "../Components/EventList";
 import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 
 const HomeContent = (props) => {
-    const appState = useRef(AppState.currentState);
     const {navigation, screenProps} = props;
     const {global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
@@ -39,18 +38,18 @@ const HomeContent = (props) => {
         try
         {
             navigation.closeDrawer();
-
         }catch (e) {
-
         }
     }
     const _handleAppStateChange = async () => {
-        if (appState.current === 'background' && progressReducer.latestUpdate > progressReducer.lastUpload) {
+        console.log(progressReducer.latestUpdate, progressReducer.lastUpload)
+        if (progressReducer.latestUpdate > progressReducer.lastUpload) {
             let achievements = {
                 'achievements': [],
                 'weekly': achievementReducer.weekly,
                 'monthly': achievementReducer.monthly
             }
+            console.log('step 1')
             achievementReducer.achievements.map((achievement) => {
                 achievements.achievements.push({
                     'id': achievement.id,
@@ -60,14 +59,13 @@ const HomeContent = (props) => {
                     'list': achievement.list
                 });
             });
+            console.log(achievements)
             const apiRequest = getApi(props.config);
             await apiRequest.customRequest(
                 "wp-json/onenergy/v1/statsUpdate",
                 "post",
                 {
-                    "actionList": progressReducer.actionList,
-                    "points": progressReducer.points,
-                    "stats": progressReducer,
+                    "progress": progressReducer,
                     "achievements": achievements
                 },
                 null,
@@ -85,8 +83,8 @@ const HomeContent = (props) => {
     useEffect(() => {
         navigation.addListener('willFocus', onFocusHandler)
         const subscription = AppState.addEventListener("change", _handleAppStateChange);
+        console.log('action')
         props.navigation.setParams({
-            showNotification: !!user,
             title: optionData.titles.find(el => el.id === 'home_title').title,
         });
         if(user) {
@@ -136,10 +134,12 @@ const HomeContent = (props) => {
             }
         }
         return () => {
-            navigation.removeListener('willFocus', onFocusHandler);
             subscription.remove();
+            navigation.removeListener('willFocus', onFocusHandler);
         }
+
     }, []);
+
     const OnPress = async (item, typeName) => {
         if (item) {
             switch (item[typeName]) {
@@ -523,22 +523,38 @@ HomeContent.navigationOptions = ({navigation}) => {
                 <NotificationTabBarIcon notificationID={'left_menu'}  top={0} right={0} size={scale(10)} showNumber={false} />
             </TouchableScale>,
         headerRight:
-            showNotification?
-            <TouchableScale
-                onPress={() => {
-                    navigation.navigate("NotificationsScreen")
-                }}
-            >
-                <IconButton
-                    icon={require("@src/assets/img/notification-icon.png")}
-                    tintColor={"#4942e1"}
-                    style={{
-                        height: 20,
-                        marginRight: 20,
+            <View style={{justifyContent:"flex-end", flexDirection:"row", marginRight:15}}>
+                <TouchableScale
+                    onPress={() => {
+                        navigation.navigate("MilestonesScreen")
                     }}
-                />
-            </TouchableScale>
-                :null
+                >
+                    <IconButton
+                        icon={require("@src/assets/img/certificate.png")}
+                        tintColor={"#4942e1"}
+                        style={{
+                            height: 20,
+                            marginRight: 5,
+                        }}
+                    />
+                    <NotificationTabBarIcon notificationID={'milestone'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                </TouchableScale>
+                <TouchableScale
+                    onPress={() => {
+                        navigation.navigate("QuestsScreen")
+                    }}
+                >
+                    <IconButton
+                        icon={require("@src/assets/img/achievement-action-icon.png")}
+                        tintColor={"#4942e1"}
+                        style={{
+                            height: 20,
+                            marginRight: 5,
+                        }}
+                    />
+                    <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                </TouchableScale>
+            </View>
     })
 }
 const mapStateToProps = (state) => ({
