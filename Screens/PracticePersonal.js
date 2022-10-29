@@ -20,6 +20,7 @@ import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
 import EventList from "../Components/EventList";
 import QiPointHeader from "../Components/QiPointHeader";
+import analytics from '@react-native-firebase/analytics';
 
 const PracticePersonal = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);

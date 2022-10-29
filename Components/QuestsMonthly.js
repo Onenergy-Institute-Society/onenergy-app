@@ -47,7 +47,7 @@ const QuestsMonthly = (props) => {
                     justifyContent: 'center',backgroundColor: '#e6e6e8',
                     marginTop: scale(2),}}><Text style={{color:"green"}}>Practice consecutively 30 days REWARD +100 Qi</Text></View>
 
-                {achievementReducer.list?
+                {achievementReducer&&achievementReducer.list?
                     achievementReducer.list.map(listItem => (
                         listItem.claim_date?
                             <View style={[styles.boxShadow, styles.rowReward]}>

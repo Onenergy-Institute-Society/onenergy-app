@@ -7,6 +7,7 @@ import ImageCache from '../Components/ImageCache';
 import PostList from "../Components/PostList";
 import {windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
+import analytics from '@react-native-firebase/analytics';
 
 const CategoryScreen = props => {
     const { navigation, screenProps } = props;
@@ -14,6 +15,11 @@ const CategoryScreen = props => {
     const [categoryData, setCategoryData] = useState([]);
     const [categoryBanner, setCategoryBanner] = useState('');
     const category = navigation.getParam('category')
+    analytics().logScreenView({
+        screen_class: 'MainActivity',
+        screen_name: 'Category: '+ navigation.getParam("name"),
+    });
+
     const fetchCategoryData = async () => {
         try {
             const apiSlide = getApi(props.config);

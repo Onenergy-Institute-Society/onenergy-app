@@ -64,6 +64,8 @@ import LoginScreen from "@src/containers/Custom/LoginScreen";
 import SignupScreen from "@src/containers/Custom/SignupScreen";
 import PracticesContent from "./Screens/PracticesContent";
 import ProgramsContent from "./Screens/ProgramsContent";
+import ForumItem from "./Components/ForumItem";
+
 export const applyCustomCode = externalCodeSetup => {
     externalCodeSetup.navigationApi.addNavigationRoute(
         "homePage",

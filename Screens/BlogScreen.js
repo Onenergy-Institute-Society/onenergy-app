@@ -1,12 +1,16 @@
 import React from 'react';
 import {View, ActivityIndicator} from 'react-native';
 import MyBlogScreen from "@src/containers/Custom/BlogSingleScreen";
+import analytics from '@react-native-firebase/analytics';
 
 const BlogScreen = (props) => {
     const { navigation } = props;
     const blogId = navigation.getParam('blogId');
     let title = navigation.getParam('title').replace(/[‘’“”]+/g, '\'');
-
+    analytics().logScreenView({
+        screen_class: 'MainActivity',
+        screen_name: 'Blog: '+ title,
+    });
     if (!props.isFocused)
         return null;
     const loading = (

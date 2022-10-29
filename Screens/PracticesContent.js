@@ -18,6 +18,7 @@ import {scale} from "../Utils/scale";
 import EventList from "../Components/EventList";
 import PracticeTipsRow from "../Components/PracticeTipsRow";
 import LoginScreen from "@src/containers/Custom/LoginScreen";
+import analytics from '@react-native-firebase/analytics';
 
 const PracticesContent = props => {
     try {
@@ -34,9 +35,14 @@ const PracticesContent = props => {
 
             }
         }
+        analytics().logScreenView({
+            screen_class: 'PracticeScreen',
+            screen_name: 'Practice Screen',
+        });
         useEffect(()=>{
             props.navigation.setParams({
                 title: optionData.titles.find(el => el.id === 'practices_title').title,
+                user: user
             });
             navigation.addListener('willFocus', onFocusHandler)
             return () => {
@@ -281,6 +287,7 @@ PracticesContent.navigationOptions  = ({ navigation }) => {
         title: navigation.getParam('title'),
         headerLeft: headerLeft,
         headerRight:
+            navigation.getParam('user')?
             <View style={{justifyContent:"flex-end", flexDirection:"row", marginRight:15}}>
                 <TouchableScale
                     onPress={() => {
@@ -307,12 +314,13 @@ PracticesContent.navigationOptions  = ({ navigation }) => {
                         tintColor={"#4942e1"}
                         style={{
                             height: 20,
-                            marginRight: 5,
+                            marginRight: 0,
                         }}
                     />
                     <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
                 </TouchableScale>
             </View>
+            :null
     }
 };
 export default PracticesContent;

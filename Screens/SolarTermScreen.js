@@ -7,6 +7,7 @@ import ImageCache from '../Components/ImageCache';
 import {windowWidth} from "../Utils/Dimensions";
 import PostRow from "../Components/PostRow";
 import {scale} from "../Utils/scale";
+import analytics from '@react-native-firebase/analytics';
 
 const SolarTermScreen = props => {
     const { navigation, screenProps } = props;
@@ -14,6 +15,10 @@ const SolarTermScreen = props => {
     const [postData, setPostData] = useState([]);
     const [currentTermBanner, setCurrentTermBanner] = useState('');
     const [nextTermBanner, setNextTermBanner] = useState('');
+    analytics().logScreenView({
+        screen_class: 'MainActivity',
+        screen_name: 'Solar Term Screen',
+    });
     const fetchPostData = async () => {
         try {
             const apiPage = getApi(props.config);

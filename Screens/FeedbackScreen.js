@@ -21,6 +21,7 @@ import IconButton from "@src/components/IconButton";
 import { scale } from '../Utils/scale';
 import Recaptcha from "../Components/Recaptcha";
 import { BlurView } from "@react-native-community/blur";
+import analytics from '@react-native-firebase/analytics';
 
 const FeedbackScreen = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
@@ -28,7 +29,10 @@ const FeedbackScreen = props => {
     const [content, setContent] = useState('');
     const [subject, setSubject] = useState('Choose a subject');
     const recaptcha = useRef();
-
+    analytics().logScreenView({
+        screen_class: 'MainActivity',
+        screen_name: 'Feedback Screen',
+    });
     const subjects = optionData.subjects;
     const sendFeedback = async () => {
         try {

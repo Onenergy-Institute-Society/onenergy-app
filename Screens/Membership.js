@@ -13,11 +13,15 @@ import {windowWidth} from "../Utils/Dimensions";
 import moment from 'moment';
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
+import analytics from '@react-native-firebase/analytics';
 
 const Membership = (props) => {
     const {navigation} = props;
     const user = useSelector((state) => state.user.userObject);
-
+    analytics().logScreenView({
+        screen_class: 'MainActivity',
+        screen_name: 'Membership Screen',
+    });
     let start_date;
     let expiry_date;
     if(user.membership.length > 0){

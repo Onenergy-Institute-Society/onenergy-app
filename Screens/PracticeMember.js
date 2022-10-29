@@ -21,6 +21,7 @@ import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
 import TrackPlayer from 'react-native-track-player';
 import EventList from "../Components/EventList";
+import analytics from '@react-native-firebase/analytics';
 
 const PracticeMember = props => {
     const { navigation } = props;
@@ -32,6 +33,11 @@ const PracticeMember = props => {
     const [helpModal, setHelpModal] = useState({title:'',id:0});
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
+    analytics().logScreenView({
+        screen_class: 'MainActivity',
+        screen_name: 'Custom Routine Screen',
+    });
+
     React.useEffect(() => {
         Animated.timing(fadeAnim, {
             toValue: 1,

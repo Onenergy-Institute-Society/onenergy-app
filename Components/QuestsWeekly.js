@@ -39,7 +39,7 @@ const QuestsWeekly = (props) => {
                         </View>
                     )
                 })}
-                {achievementReducer.list?
+                {achievementReducer&&achievementReducer.list?
                     achievementReducer.list.map(listItem => (
                         listItem.claim_date?
                             <View style={[styles.boxShadow, styles.rowReward]}>

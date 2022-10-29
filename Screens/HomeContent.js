@@ -6,7 +6,7 @@ import {
     View,
     SafeAreaView,
     Text,
-    AppState
+    AppState, TouchableOpacity
 } from "react-native";
 import {getApi} from "@src/services";
 import IconButton from "@src/components/IconButton";
@@ -23,6 +23,8 @@ import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHand
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import EventList from "../Components/EventList";
 import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
+import analytics from '@react-native-firebase/analytics';
+import ForumsScreen from "@src/containers/Custom/ForumsScreen";
 
 const HomeContent = (props) => {
     const {navigation, screenProps} = props;
@@ -34,6 +36,7 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer);
     const postReducer = useSelector((state) => state.postReducer);
     const dispatch = useDispatch();
+
     const onFocusHandler=() =>{
         try
         {
@@ -41,6 +44,10 @@ const HomeContent = (props) => {
         }catch (e) {
         }
     }
+    analytics().logScreenView({
+       screen_class: 'MainActivity',
+       screen_name: 'Home Screen',
+     });
     const _handleAppStateChange = async () => {
         console.log(progressReducer.latestUpdate, progressReducer.lastUpload)
         if (progressReducer.latestUpdate > progressReducer.lastUpload) {
@@ -86,6 +93,7 @@ const HomeContent = (props) => {
         console.log('action')
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
+            user: user
         });
         if(user) {
             TrackPlayer.setupPlayer();
@@ -253,48 +261,23 @@ const HomeContent = (props) => {
                         )}
                     </View>
                 )}
-                {optionData.show.includes('entries') && (
-                    <View style={styles.eventRow}>
-                        {optionData.entries && (
-                            <TouchableScale
-                                onPress={
-                                    () => {
-                                        navigation.dispatch(
-                                            NavigationActions.navigate({
-                                                routeName: "ProgramsScreen"
-                                            })
-                                        )
-                                    }
-                                }>
-                                <View style={[styles.block_half_left, styles.boxShadow]}>
-                                    <ImageCache
-                                        source={{uri: optionData.entries.courseImage ? optionData.entries.courseImage : ''}}
-                                        style={styles.image_half}
-                                    />
-                                </View>
-                            </TouchableScale>
-                        )}
-                        {optionData.entries && (
-                            <TouchableScale
-                                onPress={
-                                    () => {
-                                        navigation.dispatch(
-                                            NavigationActions.navigate({
-                                                routeName: "PracticesScreen"
-                                            })
-                                        )
-                                    }
-                                }>
-                                <View style={[styles.block_half, styles.boxShadow]}>
-                                    <ImageCache
-                                        source={{uri: optionData.entries.practiceImage ? optionData.entries.practiceImage : ''}}
-                                        style={styles.image_half}
-                                    />
-                                </View>
-                            </TouchableScale>
-                        )}
-                    </View>
-                )}
+                <View style={styles.programRow}>
+                    <TouchableScale onPress={
+                        () => {
+                            navigation.dispatch(
+                                NavigationActions.navigate({
+                                    routeName: "HomeForumsScreen",
+                                })
+                            )
+                        }
+                    }>
+                        <View style={styles.view_blog_title}>
+                            <Text style={styles.heading}>Q & A</Text>
+                            <Text style={styles.heading_more}>See All ></Text>
+                        </View>
+                    </TouchableScale>
+                </View>
+                <ForumsScreen {...props} headerHeight={0} hideFilters={true} hideNavigationHeader={true} hideTitle={true} showSearch={false} screenTitle="My Forums" />
                 {optionData.show.includes('blogs') && (
                     <View style={styles.blogRow}>
                         {optionData.blogs.map((blog) => (
@@ -373,6 +356,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     programRow: {
+        flex:1,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -504,7 +488,6 @@ const styles = StyleSheet.create({
 });
 
 HomeContent.navigationOptions = ({navigation}) => {
-    const showNotification = navigation.getParam('showNotification');
     return ({
         title: navigation.getParam('title'),
         headerLeft:
@@ -520,9 +503,10 @@ HomeContent.navigationOptions = ({navigation}) => {
                         marginLeft: 20,
                     }}
                 />
-                <NotificationTabBarIcon notificationID={'left_menu'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                <NotificationTabBarIcon notificationID={'left_menu'} top={0} right={0} size={scale(10)} showNumber={false} />
             </TouchableScale>,
         headerRight:
+            navigation.getParam('user')?
             <View style={{justifyContent:"flex-end", flexDirection:"row", marginRight:15}}>
                 <TouchableScale
                     onPress={() => {
@@ -537,7 +521,7 @@ HomeContent.navigationOptions = ({navigation}) => {
                             marginRight: 5,
                         }}
                     />
-                    <NotificationTabBarIcon notificationID={'milestone'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                    <NotificationTabBarIcon notificationID={'milestone'} top={0} right={0} size={scale(10)} showNumber={false} />
                 </TouchableScale>
                 <TouchableScale
                     onPress={() => {
@@ -552,9 +536,24 @@ HomeContent.navigationOptions = ({navigation}) => {
                             marginRight: 5,
                         }}
                     />
-                    <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                    <NotificationTabBarIcon notificationID={'quest'} top={0} right={0} size={scale(10)} showNumber={false} />
+                </TouchableScale>
+                <TouchableScale
+                    onPress={() => {
+                        navigation.navigate("NotificationsScreen")
+                    }}
+                >
+                    <IconButton
+                        icon={require("@src/assets/img/notification-icon.png")}
+                        tintColor={"#4942e1"}
+                        style={{
+                            height: 20,
+                            marginRight: 0,
+                        }}
+                    />
                 </TouchableScale>
             </View>
+            :null
     })
 }
 const mapStateToProps = (state) => ({

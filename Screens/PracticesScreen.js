@@ -18,14 +18,13 @@ import IconButton from "@src/components/IconButton";
 import {scale} from "../Utils/scale";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 
-
 const CustomDrawerContentComponent = (props) => {
     const {navigation, screenProps} = props;
     const {colors} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-console.log(progressReducer.points)
+
     return (
         <SafeAreaView style={{flex:1, backgroundColor: colors.bodyBg}}>
             <ImageBackground
@@ -110,114 +109,57 @@ console.log(progressReducer.points)
                     :null}
             </ImageBackground>
             <View style={{flex:1, justifyContent: "space-between"}}>
-                {(optionData && Object.keys(optionData).length > 0)?(
-                    <View style={{backgroundColor: colors.bodyFrontBg, margin:10, paddingLeft:10, borderRadius:9}}>
-                        {user?
+                {(optionData && Object.keys(optionData).length > 0) ? (
+                    <View style={{backgroundColor: colors.bodyFrontBg, margin: 10, paddingLeft: 10, borderRadius: 9}}>
+                        {!user ?
                             <>
                                 <TouchableWithoutFeedback onPress={() => {
-                                    navigation.navigate('StatsScreen');
+                                    navigation.navigate("SignupScreen")
                                 }}>
-                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', borderTopRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                                        <View style={{flexDirection:"row",alignItems:"center"}}>
-                                            <IconButton
-                                                icon={require("@src/assets/img/progress.png")}
-                                                style={{
-                                                    height: 32,
-                                                    marginRight:5,
-                                                }}
-                                                tintColor={"black"}
-                                            />
-                                            <Text
-                                                style={{fontSize:scale(18)}}>
-                                                {optionData.titles.find(el => el.id === 'left_menu_progress').title}
-                                            </Text>
-                                        </View>
+                                    <View style={{
+                                        paddingHorizontal: 5,
+                                        paddingVertical: 10,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: '#ccc',
+                                        borderTopRightRadius: 9,
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                        <Text
+                                            style={{fontSize: scale(18)}}>
+                                            {optionData.titles.find(el => el.id === 'left_menu_signup').title}
+                                        </Text>
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
                                             style={{
                                                 height: 32,
-                                                marginRight:10,
+                                                marginRight: 10,
                                             }}
                                         />
                                     </View>
                                 </TouchableWithoutFeedback>
                                 <TouchableWithoutFeedback onPress={() => {
-                                    navigation.navigate('QuestsScreen');}}>
-                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                                        <View style={{flexDirection:"row",alignItems:"center"}}>
-                                            <IconButton
-                                                icon={require("@src/assets/img/achievement-action-icon.png")}
-                                                style={{
-                                                    height: 32,
-                                                    marginRight:5,
-                                                }}
-                                                tintColor={"black"}
-                                            />
-                                            <Text
-                                                style={{fontSize:scale(18)}}>
-                                                {optionData.titles.find(el => el.id === 'left_menu_quests').title}
-                                            </Text>
-                                        </View>
-                                        <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                                    navigation.navigate("LoginScreen")
+                                }}>
+                                    <View style={{
+                                        paddingHorizontal: 5,
+                                        paddingVertical: 10,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: '#ccc',
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                        <Text
+                                            style={{fontSize: scale(18)}}>
+                                            {optionData.titles.find(el => el.id === 'left_menu_login').title}
+                                        </Text>
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
                                             style={{
                                                 height: 32,
-                                                marginRight:10,
-                                            }}
-                                        />
-                                    </View>
-                                </TouchableWithoutFeedback>
-                                <TouchableWithoutFeedback onPress={() => {
-                                    navigation.navigate("MilestonesScreen");}}>
-                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#ccc', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                                        <View style={{flexDirection:"row",alignItems:"center"}}>
-                                            <IconButton
-                                                icon={require("@src/assets/img/certificate.png")}
-                                                style={{
-                                                    height: 32,
-                                                    marginRight:5,
-                                                }}
-                                                tintColor={"black"}
-                                            />
-                                            <Text
-                                                style={{fontSize:scale(18)}}>
-                                                {optionData.titles.find(el => el.id === 'left_menu_achievements').title}
-                                            </Text>
-                                        </View>
-                                        <NotificationTabBarIcon notificationID={'milestone'}  top={0} right={0} size={scale(10)} showNumber={false} />
-                                        <IconButton
-                                            icon={require("@src/assets/img/arrow-right.png")}
-                                            style={{
-                                                height: 32,
-                                                marginRight:10,
-                                            }}
-                                        />
-                                    </View>
-                                </TouchableWithoutFeedback>
-                                <TouchableWithoutFeedback onPress={() => {
-                                    navigation.navigate("VouchersScreen");}}>
-                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                                        <View style={{flexDirection:"row",alignItems:"center"}}>
-                                            <IconButton
-                                                icon={require("@src/assets/img/tags.png")}
-                                                style={{
-                                                    height: 32,
-                                                    marginRight:5,
-                                                }}
-                                                tintColor={"black"}
-                                            />
-                                            <Text
-                                                style={{fontSize:scale(18)}}>
-                                                {optionData.titles.find(el => el.id === 'left_menu_vouchers').title}
-                                            </Text>
-                                        </View>
-                                        <NotificationTabBarIcon notificationID={'voucher'}  top={0} right={0} size={scale(10)} showNumber={false} />
-                                        <IconButton
-                                            icon={require("@src/assets/img/arrow-right.png")}
-                                            style={{
-                                                height: 32,
-                                                marginRight:10,
+                                                marginRight: 10,
                                             }}
                                         />
                                     </View>
@@ -225,92 +167,261 @@ console.log(progressReducer.points)
                             </>
                             :
                             <>
-                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("SignupScreen")}}>
-                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                                        <Text
-                                            style={{fontSize:scale(18)}}>
-                                            {optionData.titles.find(el => el.id === 'left_menu_signup').title}
-                                        </Text>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    navigation.navigate('StatsScreen');
+                                }}>
+                                    <View style={{
+                                        paddingHorizontal: 5,
+                                        paddingVertical: 10,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: '#ccc',
+                                        borderTopRightRadius: 9,
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                        <View style={{flexDirection: "row", alignItems: "center"}}>
+                                            <IconButton
+                                                icon={require("@src/assets/img/progress.png")}
+                                                style={{
+                                                    height: 32,
+                                                    marginRight: 5,
+                                                }}
+                                                tintColor={"black"}
+                                            />
+                                            <Text
+                                                style={{fontSize: scale(18)}}>
+                                                {optionData.titles.find(el => el.id === 'left_menu_progress').title}
+                                            </Text>
+                                        </View>
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
                                             style={{
                                                 height: 32,
-                                                marginRight:10,
+                                                marginRight: 10,
                                             }}
                                         />
                                     </View>
                                 </TouchableWithoutFeedback>
-                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("LoginScreen")}}>
-                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                                        <Text
-                                            style={{fontSize:scale(18)}}>
-                                            {optionData.titles.find(el => el.id === 'left_menu_login').title}
-                                        </Text>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    navigation.navigate('QuestsScreen');
+                                }}>
+                                    <View style={{
+                                        paddingHorizontal: 5,
+                                        paddingVertical: 10,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: '#ccc',
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                        <View style={{flexDirection: "row", alignItems: "center"}}>
+                                            <IconButton
+                                                icon={require("@src/assets/img/achievement-action-icon.png")}
+                                                style={{
+                                                    height: 32,
+                                                    marginRight: 5,
+                                                }}
+                                                tintColor={"black"}
+                                            />
+                                            <Text
+                                                style={{fontSize: scale(18)}}>
+                                                {optionData.titles.find(el => el.id === 'left_menu_quests').title}
+                                            </Text>
+                                        </View>
+                                        <NotificationTabBarIcon notificationID={'quest'} top={0} right={0}
+                                                                size={scale(10)} showNumber={false}/>
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
                                             style={{
                                                 height: 32,
-                                                marginRight:10,
+                                                marginRight: 10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    navigation.navigate("MilestonesScreen");
+                                }}>
+                                    <View style={{
+                                        paddingHorizontal: 5,
+                                        paddingVertical: 10,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: '#ccc',
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                        <View style={{flexDirection: "row", alignItems: "center"}}>
+                                            <IconButton
+                                                icon={require("@src/assets/img/certificate.png")}
+                                                style={{
+                                                    height: 32,
+                                                    marginRight: 5,
+                                                }}
+                                                tintColor={"black"}
+                                            />
+                                            <Text
+                                                style={{fontSize: scale(18)}}>
+                                                {optionData.titles.find(el => el.id === 'left_menu_achievements').title}
+                                            </Text>
+                                        </View>
+                                        <NotificationTabBarIcon notificationID={'milestone'} top={0} right={0}
+                                                                size={scale(10)} showNumber={false}/>
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight: 10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    navigation.navigate("VouchersScreen");
+                                }}>
+                                    <View style={{
+                                        paddingHorizontal: 5,
+                                        paddingVertical: 10,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: '#ccc',
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                        <View style={{flexDirection: "row", alignItems: "center"}}>
+                                            <IconButton
+                                                icon={require("@src/assets/img/tags.png")}
+                                                style={{
+                                                    height: 32,
+                                                    marginRight: 5,
+                                                }}
+                                                tintColor={"black"}
+                                            />
+                                            <Text
+                                                style={{fontSize: scale(18)}}>
+                                                {optionData.titles.find(el => el.id === 'left_menu_vouchers').title}
+                                            </Text>
+                                        </View>
+                                        <NotificationTabBarIcon notificationID={'voucher'} top={0} right={0}
+                                                                size={scale(10)} showNumber={false}/>
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight: 10,
                                             }}
                                         />
                                     </View>
                                 </TouchableWithoutFeedback>
                             </>
                         }
-                    </View>
-                ):null}
-                <View style={{justifyContent:"flex-end", marginBottom:scale(30),padding: 15, borderTopWidth: 1, borderTopColor: '#ccc'}}>
-                    {user?
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate("FeedbackScreen")}
-                            style={{marginBottom: 5}}
-                        >
-                            <View style={{flexDirection:"row",justifyContent:"flex-start",alignItems: 'center'}}>
+                        <TouchableWithoutFeedback onPress={() => {
+                            navigation.navigate("ForumsScreen");
+                        }}>
+                            <View style={{
+                                paddingHorizontal: 5,
+                                paddingVertical: 10,
+                                borderBottomWidth: 1,
+                                borderBottomColor: '#ccc',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'space-between'
+                            }}>
+                                <View style={{flexDirection: "row", alignItems: "center"}}>
+                                    <IconButton
+                                        icon={require("@src/assets/img/help.png")}
+                                        style={{
+                                            height: 32,
+                                            marginRight: 5,
+                                        }}
+                                        tintColor={"black"}
+                                    />
+                                    <Text
+                                        style={{fontSize: scale(18)}}>
+                                        {optionData.titles.find(el => el.id === 'left_menu_faq').title}
+                                    </Text>
+                                </View>
                                 <IconButton
-                                    icon={require("@src/assets/img/feed-settings.png")}
-                                    tintColor={"#000"}
+                                    icon={require("@src/assets/img/arrow-right.png")}
                                     style={{
-                                        width:24,
-                                        height:24,
+                                        height: 32,
+                                        marginRight: 10,
                                     }}
                                 />
-                                <Text style={{fontSize:scale(14)}}>{optionData.titles.find(el => el.id === 'left_menu_feedback').title}</Text>
                             </View>
-                        </TouchableOpacity>
-                        :null}
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate("AppPageScreen", {pageId: 30271, title: 'Q & A'})}
-                        style={{marginBottom: 5}}
-                    >
-                        <View style={{flexDirection:"row",justifyContent:"flex-start",alignItems: 'center'}}>
-                            <IconButton
-                                icon={require("@src/assets/img/help.png")}
-                                tintColor={"#000"}
-                                style={{
-                                    width:24,
-                                    height:24,
-                                }}
-                            />
-                            <Text style={{fontSize:scale(14)}}>{optionData.titles.find(el => el.id === 'left_menu_faq').title}</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate("SettingsScreen")}
-                        style={{marginBottom: 5}}
-                    >
-                        <View style={{flexDirection:"row",justifyContent:"flex-start",alignItems: 'center'}}>
-                            <IconButton
-                                icon={require("@src/assets/img/ios-settings.png")}
-                                tintColor={"#000"}
-                                style={{
-                                    width:24,
-                                    height:24,
-                                }}
-                            />
-                            <Text style={{fontSize:scale(14)}}>{optionData.titles.find(el => el.id === 'left_menu_settings').title}</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={() => {
+                            navigation.navigate("FeedbackScreen");
+                        }}>
+                            <View style={{
+                                paddingHorizontal: 5,
+                                paddingVertical: 10,
+                                borderBottomWidth: 1,
+                                borderBottomColor: '#ccc',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'space-between'
+                            }}>
+                                <View style={{flexDirection: "row", alignItems: "center"}}>
+                                    <IconButton
+                                        icon={require("@src/assets/img/feed-settings.png")}
+                                        style={{
+                                            height: 32,
+                                            marginRight: 5,
+                                        }}
+                                        tintColor={"black"}
+                                    />
+                                    <Text
+                                        style={{fontSize: scale(18)}}>
+                                        {optionData.titles.find(el => el.id === 'left_menu_feedback').title}
+                                    </Text>
+                                </View>
+                                <IconButton
+                                    icon={require("@src/assets/img/arrow-right.png")}
+                                    style={{
+                                        height: 32,
+                                        marginRight: 10,
+                                    }}
+                                />
+                            </View>
+                        </TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback onPress={() =>
+                            navigation.navigate("SettingsScreen")}>
+                            <View style={{
+                                paddingHorizontal: 5,
+                                paddingVertical: 10,
+                                borderBottomRightRadius: 9,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'space-between'
+                            }}>
+                                <View style={{flexDirection: "row", justifyContent:"flex-start", alignItems: "center"}}>
+                                    <IconButton
+                                        icon={require("@src/assets/img/ios-settings.png")}
+                                        style={{
+                                            height: 24,
+                                            width:32,
+                                            marginRight: 5,
+                                        }}
+                                        tintColor={"black"}
+                                    />
+                                    <Text
+                                        style={{fontSize: scale(18)}}>
+                                        {optionData.titles.find(el => el.id === 'left_menu_settings').title}
+                                    </Text>
+                                </View>
+                                <IconButton
+                                    icon={require("@src/assets/img/arrow-right.png")}
+                                    style={{
+                                        height: 32,
+                                        marginRight: 10,
+                                    }}
+                                />
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>
+                ) : null}
             </View>
         </SafeAreaView>
     );

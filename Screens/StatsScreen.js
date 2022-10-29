@@ -11,13 +11,18 @@ import {
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import LinearGradient from 'react-native-linear-gradient';
+import analytics from '@react-native-firebase/analytics';
 
 const StatsScreen = (props) => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
     const practiceReducer = useSelector((state) => state.onenergyReducer.practiceReducer);
-console.log(progressReducer, user)
+
+    analytics().logScreenView({
+        screen_class: 'MainActivity',
+        screen_name: 'Progress Screen',
+    });
     useEffect(() => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'progress_title').title,

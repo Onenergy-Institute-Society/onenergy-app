@@ -18,6 +18,7 @@ import IconButton from "@src/components/IconButton";
 import {scale} from "../Utils/scale";
 import ScalableImage from "../Components/ScalableImage";
 import RNFetchBlob from 'rn-fetch-blob';
+import analytics from '@react-native-firebase/analytics';
 
 const QuotesScreen = props => {
     const [loading, setLoading] = useState(false);
@@ -26,6 +27,10 @@ const QuotesScreen = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const quoteReducer = useSelector((state) => state.quoteReducer.quotes);
     const dispatch = useDispatch();
+    analytics().logScreenView({
+        screen_class: 'MainActivity',
+        screen_name: 'Quotes Screen',
+    });
 
     const fetchQuote = async () => {
         const api = getApi(props.config);

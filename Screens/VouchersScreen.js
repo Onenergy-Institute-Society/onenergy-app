@@ -18,6 +18,7 @@ import moment from 'moment';
 import RNRestart from 'react-native-restart';
 import { BlurView } from "@react-native-community/blur";
 import ScalableImage from "../Components/ScalableImage";
+import analytics from '@react-native-firebase/analytics';
 
 const VouchersScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
@@ -26,6 +27,10 @@ const VouchersScreen = (props) => {
     const [vouchers, setVouchers] = useState({});
     const [vouchersLoading, setVouchersLoading] = useState(true);
 
+    analytics().logScreenView({
+        screen_class: 'MainActivity',
+        screen_name: 'Voucher Screen',
+    });
     const fetchVoucherData = async () => {
         try {
             const apiVoucher = getApi(props.config);

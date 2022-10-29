@@ -1,19 +1,24 @@
 import React from 'react';
 import {
     View,
-    Platform,
     TouchableOpacity
 } from "react-native";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {windowWidth} from "../Utils/Dimensions";
 import IconButton from "@src/components/IconButton";
-import {scale,verticalScale} from "../Utils/scale";
+import {scale} from "../Utils/scale";
+import analytics from '@react-native-firebase/analytics';
 
 const AppPageScreen = (props) => {
     if (!props.isFocused)
         return null;
     const {navigation} = props;
+    analytics().logScreenView({
+        screen_class: 'MainActivity',
+        screen_name: 'App Page: '+ navigation.getParam('title'),
+    });
+
     return (
         <View style={{
             flex: 1,

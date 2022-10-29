@@ -15,6 +15,7 @@ import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
 import WaitingGroupPractice from "./WaitingGroupPractice";
+import analytics from '@react-native-firebase/analytics';
 
 const VideoPlayer = (props) => {
     const [paused, setPaused] = useState(false);
@@ -24,6 +25,10 @@ const VideoPlayer = (props) => {
     const gp_time = navigation.getParam('gp_time');
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const dispatch = useDispatch();
+    analytics().logScreenView({
+        screen_class: 'MainActivity',
+        screen_name: 'Group Practice: '+ groupPractice.name,
+    });
 
     useEffect(()=>{
         activateKeepAwake();

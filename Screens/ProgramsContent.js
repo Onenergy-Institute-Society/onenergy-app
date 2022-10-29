@@ -19,8 +19,10 @@ import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { Modalize } from 'react-native-modalize';
 import EventList from "../Components/EventList";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
+import analytics from '@react-native-firebase/analytics';
 const ProgramsContent = props => {
     const { navigation, screenProps } = props;
+    const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [helpModal, setHelpModal] = useState({title:'',id:0});
     const { global } = screenProps;
@@ -36,10 +38,15 @@ const ProgramsContent = props => {
 
         }
     }
+    analytics().logScreenView({
+        screen_class: 'ProgramsScreen',
+        screen_name: 'Program Screen',
+    });
     useEffect(() => {
         setHelpModal(optionData.helps.find(el => el.name === 'program_popup'));
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'programs_title').title,
+            user: user,
             toggleHelpModal: toggleHelpModal,
         });
         navigation.addListener('willFocus', onFocusHandler)
@@ -214,7 +221,8 @@ ProgramsContent.navigationOptions = ({ navigation }) => {
         title: navigation.getParam('title'),
         headerLeft: headerLeft,
         headerRight:
-            <View style={{flexDirection: "row", justifyContent:"flex-end"}}>
+            navigation.getParam('user')?
+            <View style={{flexDirection: "row", justifyContent:"flex-end", marginRight:15}}>
                 <TouchableScale
                     onPress={() => {
                         navigation.navigate("MilestonesScreen")
@@ -240,7 +248,7 @@ ProgramsContent.navigationOptions = ({ navigation }) => {
                         tintColor={"#4942e1"}
                         style={{
                             height: 20,
-                            marginRight: 5,
+                            marginRight: 0,
                         }}
                     />
                     <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
@@ -251,10 +259,14 @@ ProgramsContent.navigationOptions = ({ navigation }) => {
                     <IconButton
                         icon={require("@src/assets/img/help.png")}
                         tintColor={"#4942e1"}
-                        style={{marginRight:25,height: 20}}
+                        style={{
+                            height: 20,
+                            marginRight:0,
+                        }}
                     />
                 </TouchableOpacity>
             </View>
+            :null
     }
 }
 export default withNavigation(ProgramsContent);

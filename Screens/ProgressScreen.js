@@ -13,6 +13,7 @@ import {
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import Timeline from "../Components/Timeline";
+import analytics from '@react-native-firebase/analytics';
 
 const ProgressScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
@@ -20,7 +21,10 @@ const ProgressScreen = (props) => {
 
     const [timelineData, setTimelineData] = useState([]);
     const [timelineLoading, setTimelineLoading] = useState(true);
-
+    analytics().logScreenView({
+        screen_class: 'MainActivity',
+        screen_name: 'Progress Screen',
+    });
     const fetchTimelineData = async () => {
         try {
             const apiSlide = getApi(props.config);
