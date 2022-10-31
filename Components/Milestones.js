@@ -12,10 +12,9 @@ const Milestones = (props) => {
     const {type} = props;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyText = optionData.titles.find(el => el.id === 'achievement_milestone_empty').title
-    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
-    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === type));
+    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
+    const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === type):null);
     const dispatch = useDispatch();
-
     const handleOnPress = (item) => {
         if(item.complete_date&&!item.claim_date) {
             dispatch({
@@ -38,9 +37,8 @@ const Milestones = (props) => {
     }
 
     const renderItem = ({ item }) => {
+        console.log(item, item.title)
         let show = -1;
-        let complete_date = '';
-        let claim_date = '';
         switch(item.show){
             case 'course':
                 switch(item.showCourseOption){
@@ -62,8 +60,6 @@ const Milestones = (props) => {
                 show = 1;
                 break;
         }
-        if(item.complete_date) complete_date = new moment.unix(item.complete_date).format('YYYY-MM-DD');
-        if(item.claim_date) claim_date = new moment.unix(item.claim_date).format('YYYY-MM-DD');
         return (
             show >= 0?
                 Array.isArray(item.step)?
@@ -72,16 +68,16 @@ const Milestones = (props) => {
                     <View style={[styles.boxShadow, styles.row]}>
                         <View style={styles.rowLeft}>
                             <Text style={styles.title}>{item.title}</Text>
-                            {!claim_date?
+                            {!item.claim_date?
                                 <View style={{marginTop:10}}>
-                                    <Progress.Bar showsText={true} borderColor={"#4942e1"} color={complete_date?"lightgreen":"#7de7fa"} unfilledColor={"black"} borderRadius={9}
+                                    <Progress.Bar showsText={true} borderColor={"#4942e1"} color={item.complete_date?"lightgreen":"#7de7fa"} unfilledColor={"black"} borderRadius={9}
                                                   progress={item.step / item.total}
                                                   width={windowWidth/2} height={scale(16)}/>
                                     <View
                                         style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}><Text style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
                                         width: -1,
                                         height: 1
-                                    }}}>{complete_date?"completed":item.step + ' / ' + item.total}</Text></View>
+                                    }}}>{item.complete_date?"completed":item.step + ' / ' + item.total}</Text></View>
                                 </View>
                             :null}
                         </View>
@@ -90,9 +86,9 @@ const Milestones = (props) => {
                                 handleOnPress(item);
                             }}
                         >
-                            <View style={[styles.rowRight, {backgroundColor:claim_date?'gray':complete_date?'gold':'#7de7fa'}]}>
+                            <View style={[styles.rowRight, {backgroundColor:item.claim_date?'gray':item.complete_date?'gold':'#7de7fa'}]}>
                                 {
-                                    claim_date ?
+                                    item.claim_date ?
                                         <>
                                             <Text
                                                 style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
@@ -109,11 +105,11 @@ const Milestones = (props) => {
                                                         height: 1
                                                     }}}
                                             >
-                                                {claim_date}
+                                                {item.claim_date}
                                             </Text>
                                         </>
                                         :
-                                    complete_date ?
+                                        item.complete_date ?
                                         <>
                                             <Text
                                                 style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {

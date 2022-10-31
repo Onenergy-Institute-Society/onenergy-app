@@ -17,7 +17,7 @@ import NotificationTabBarIcon from "./NotificationTabBarIcon";
 const TracksList = (props) => {
     const {tracks, setMessageBarDisplay} = props;
     const [selectedTrack, setSelectedTrack] = useState(null);
-    console.log(tracks)
+
     const onTrackItemPress = async (track) => {
         if(!selectedTrack || track.id !== selectedTrack.id) {
             setSelectedTrack(track);

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
     StyleSheet,
@@ -25,19 +25,21 @@ import EventList from "../Components/EventList";
 import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 import analytics from '@react-native-firebase/analytics';
 import ForumsScreen from "@src/containers/Custom/ForumsScreen";
+import moment from 'moment';
 
 const HomeContent = (props) => {
     const {navigation, screenProps} = props;
     const {global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const practiceReducer = useSelector((state) => state.onenergyReducer.practiceReducer);
-    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
-    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer);
+    const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
+    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
+    const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer);
     const dispatch = useDispatch();
-
-    const onFocusHandler=() =>{
+    const [topSlides, setTopSlides] = useState([]);
+    const onFocusHandler=() =>
+    {
         try
         {
             navigation.closeDrawer();
@@ -49,48 +51,46 @@ const HomeContent = (props) => {
        screen_name: 'Home Screen',
      });
     const _handleAppStateChange = async () => {
-        console.log(progressReducer.latestUpdate, progressReducer.lastUpload)
-        if (progressReducer.latestUpdate > progressReducer.lastUpload) {
-            let achievements = {
-                'achievements': [],
-                'weekly': achievementReducer.weekly,
-                'monthly': achievementReducer.monthly
-            }
-            console.log('step 1')
-            achievementReducer.achievements.map((achievement) => {
-                achievements.achievements.push({
-                    'id': achievement.id,
-                    'step': achievement.step,
-                    'complete_date': achievement.complete_date,
-                    'claim_date': achievement.claim_date,
-                    'list': achievement.list
-                });
-            });
-            console.log(achievements)
-            const apiRequest = getApi(props.config);
-            await apiRequest.customRequest(
-                "wp-json/onenergy/v1/statsUpdate",
-                "post",
-                {
-                    "progress": progressReducer,
-                    "achievements": achievements
-                },
-                null,
-                {},
-                false
-            ).then(response => {
-                if(response.data){
-                    dispatch({
-                        type: 'ONENERGY_PROGRESS_UPLOADED'
-                    });
+        if(user) {
+            if (progressReducer.latestUpdate > progressReducer.lastUpload) {
+                let achievements = {
+                    'achievements': [],
+                    'weekly': achievementReducer.weekly,
+                    'monthly': achievementReducer.monthly
                 }
-            });
+                achievementReducer.achievements.map((achievement) => {
+                    achievements.achievements.push({
+                        'id': achievement.id,
+                        'step': achievement.step,
+                        'complete_date': achievement.complete_date,
+                        'claim_date': achievement.claim_date,
+                        'list': achievement.list
+                    });
+                });
+                const apiRequest = getApi(props.config);
+                await apiRequest.customRequest(
+                    "wp-json/onenergy/v1/statsUpdate",
+                    "post",
+                    {
+                        "progress": progressReducer,
+                        "achievements": achievements
+                    },
+                    null,
+                    {},
+                    false
+                ).then(response => {
+                    if (response.data) {
+                        dispatch({
+                            type: 'ONENERGY_PROGRESS_UPLOADED'
+                        });
+                    }
+                });
+            }
         }
     };
     useEffect(() => {
         navigation.addListener('willFocus', onFocusHandler)
         const subscription = AppState.addEventListener("change", _handleAppStateChange);
-        console.log('action')
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
             user: user
@@ -114,26 +114,21 @@ const HomeContent = (props) => {
                 ],
             });
             TrackPlayer.setRepeatMode(RepeatMode.Off);
-            console.log("1", optionData.cache.guide, practiceReducer.guideUpdate, practiceReducer);
             let load = false;
             if (optionData.cache.guide && practiceReducer.guideUpdate && optionData.cache.guide > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
                 load = true;
             }
-            console.log("2", optionData.cache.group, practiceReducer.groupUpdate, practiceReducer);
             if (optionData.cache.group && practiceReducer.groupUpdate && optionData.cache.group > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
                 load = true;
             }
-            console.log("3", optionData.cache.post, postReducer.postUpdate, postReducer);
             if (optionData.cache.post && postReducer.postUpdate && optionData.cache.post > postReducer.postUpdate || !postReducer.postUpdate) {
                 dispatch({
                     type: 'ONENERGY_POSTS_RESET',
                 });
             }
-            console.log("4", optionData.cache.achievement, achievementReducer.achievementUpdate, achievementReducer);
             if (optionData.cache.achievement && achievementReducer.achievementUpdate && optionData.cache.achievement > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
                 load = true;
             }
-            console.log("5", optionData.cache.progress, progressReducer.progressUpdate, progressReducer);
             if (optionData.cache.progress && progressReducer.progressUpdate && optionData.cache.progress > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
                 load = true;
             }
@@ -148,27 +143,38 @@ const HomeContent = (props) => {
 
     }, []);
 
-    const OnPress = async (item, typeName) => {
+    const OnPress = async (item) => {
         if (item) {
-            switch (item[typeName]) {
-                case 'post':
+            switch(item.link)
+            {
+                case 'app':
                     navigation.dispatch(
                         NavigationActions.navigate({
-                            routeName: "BlogScreen",
+                            routeName: "AppPageScreen",
                             params: {
-                                blogId: item.post,
+                                pageId: item.param,
                                 title: item.title
                             }
                         })
                     )
                     break;
-                case 'page':
+                case 'blog':
                     navigation.dispatch(
                         NavigationActions.navigate({
-                            routeName: "AppPageScreen",
+                            routeName: "BlogScreen",
                             params: {
-                                pageId: item.page,
+                                blogId: item.param,
                                 title: item.title
+                            }
+                        })
+                    )
+                    break;
+                case 'course':
+                    navigation.dispatch(
+                        NavigationActions.navigate({
+                            routeName: "CourseScreen",
+                            params: {
+                                courseId: parseInt(item.param),
                             }
                         })
                     )
@@ -177,35 +183,183 @@ const HomeContent = (props) => {
                     let secTimer = setInterval(() => {
                         clearInterval(secTimer);
                     }, 1000)
-                    await props.attemptDeepLink(false)(null, item.link);
+                    await props.attemptDeepLink(false)(null, item.param);
+                    break;
+                case 'screen':
+                    navigation.dispatch(
+                        NavigationActions.navigate({
+                            routeName: item.param
+                        })
+                    )
                     break;
                 default:
                     break;
             }
         }
     }
+
+    useEffect(() => {
+        console.log(optionData.goals);
+        let tmpTopSlides = [];
+        let displayGroup = [];
+        tmpTopSlides = optionData.goals.filter(item => {
+            let show = false;
+            let showDate;
+            const current_time = new moment.utc();
+            if(item.location.includes('top')) {
+                switch (item.permission.toString()) {
+                    case 'all':
+                        show = true;
+                        break;
+                    case 'guest':
+                        user ? show = false : show = true;
+                        break;
+                    case 'login':
+                        user ? show = true : show = false;
+                        break;
+                    case 'user':
+                        user && !(user.membership && user.membership.length) ? show = true : show = false;
+                        break;
+                    case 'member':
+                        user && (user.membership && user.membership.length) ? show = true : show = false;
+                        break;
+                    default:
+                        break;
+                }
+                if(show) {
+                    console.log('1',item)
+                    show = false;
+                    switch (item.show) {
+                        case 'date':
+                            let date2 = new moment.utc(item.showDate);
+                            if (current_time >= date2) {
+                                showDate = item.showDate;
+                                show = true
+                            }
+                            break;
+                        case 'course':
+                            if (item.showCourseOption === 'enrolled') {
+                                let showCourse = progressReducer.enrolledCourses.find(course => course.id === parseInt(item.showCourse));
+                                if (showCourse) {
+                                    showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
+                                    if (current_time > showDate) {
+                                        show = true;
+                                    }
+                                }
+                            } else if (item.showCourseOption === 'completed') {
+                                let showCourse = progressReducer.completedCourses.find(course => course.id === parseInt(item.showCourse));
+                                if (showCourse) {
+                                    showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
+                                    if (current_time > showDate) {
+                                        show = true;
+                                    }
+                                }
+                            }
+                            break;
+                        case 'lesson':
+                            let showLesson = progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.showLesson));
+                            if (showLesson) {
+                                showDate = new moment.unix(showLesson['date']).add(item.delay, 'd');
+                                if (current_time > showDate) {
+                                    show = true;
+                                }
+                            }
+                            break;
+                        case 'achievement':
+                            let showAchievement = user&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.showAchievement));
+                            if (showAchievement) {
+                                showDate = new moment.unix(showAchievement['date']).add(item.delay, 'd');
+                                if (current_time > showDate) {
+                                    show = true;
+                                }
+                            }
+                            break;
+                        default:
+                            show = true;
+                            break;
+                    }
+                    if (show) {
+                        console.log('2', item)
+                        switch (item.hide) {
+                            case 'date':
+                                switch (item.hideDateOption.hideDateType) {
+                                    case 'fix':
+                                        let date2 = new moment.utc(item.hideDateOption.date);
+                                        if (current_time >= date2) {
+                                            show = false
+                                        }
+                                        break;
+                                    case 'days':
+                                        let diffDays = current_time.diff(showDate, 'days');
+                                        if (diffDays >= parseInt(item.hideDateOption.days)) {
+                                            show = false
+                                        }
+                                        break;
+                                }
+                                break;
+                            case 'course':
+                                if (item.hideCourseOption === 'enrolled') {
+                                    if (progressReducer.enrolledCourses.find(course => course.id === parseInt(item.hideCourse))) {
+                                        show = false;
+                                    }
+                                } else if (item.hideCourseOption === 'completed') {
+                                    if (progressReducer.completedCourses.find(course => course.id === parseInt(item.hideCourse))) {
+                                        show = false;
+                                    }
+                                }
+                                break;
+                            case 'lesson':
+                                if (progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
+                                    show = false;
+                                }
+                                break;
+                            case 'achievement':
+                                if (achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.hideAchievement))) {
+                                    show = false;
+                                }
+                                break;
+                            default:
+                                show = true;
+                                break;
+                        }
+                    }
+                    if(show) {
+                        console.log('3', item)
+                        if (item.group) {
+                            if (displayGroup.includes(item.group)) {
+                                show = false;
+                            } else {
+                                displayGroup = [...displayGroup, item.group];
+                            }
+                        }
+                    }
+                }
+            }
+            return show;
+        })
+        setTopSlides(tmpTopSlides);
+        console.log(tmpTopSlides)
+    },[optionData.goals]);
     return (
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                {optionData.show.includes('slider') && (
+                {optionData.show.includes('slider') && topSlides && topSlides.length?
                     <View style={[styles.slideRow, styles.boxShadow]}>
-                        {optionData.topSlides && (
-                            <TopSlider
-                                data={optionData.topSlides}
-                                loop={true}
-                                timer={5000}
-                                onPress={(item) => {
-                                    OnPress(item, 'slideType').then();
-                                }}
-                                indicatorContainerStyle={{position: 'absolute', bottom: -10}}
-                                indicatorActiveColor={'#8e44ad'}
-                                indicatorInActiveColor={'#ffffff'}
-                                indicatorActiveWidth={30}
-                                animation
-                            />
-                        )}
-                    </View>
-                )}
+                        <TopSlider
+                            loop={true}
+                            data={topSlides}
+                            timer={5000}
+                            onPress={(item) => {
+                                OnPress(item).then();
+                            }}
+                            indicatorContainerStyle={{position: 'absolute', bottom: -10}}
+                            indicatorActiveColor={'#8e44ad'}
+                            indicatorInActiveColor={'#ffffff'}
+                            indicatorActiveWidth={30}
+                            animation
+                        />
+                    </View>:null
+                }
                 {optionData.show.includes('quotes') && optionData.quote && (
                     <View style={[styles.quoteRow, styles.boxShadow]}>
                         <DailyQuotes quote={optionData.quote}/>
@@ -261,23 +415,27 @@ const HomeContent = (props) => {
                         )}
                     </View>
                 )}
-                <View style={styles.programRow}>
-                    <TouchableScale onPress={
-                        () => {
-                            navigation.dispatch(
-                                NavigationActions.navigate({
-                                    routeName: "HomeForumsScreen",
-                                })
-                            )
-                        }
-                    }>
-                        <View style={styles.view_blog_title}>
-                            <Text style={styles.heading}>Q & A</Text>
-                            <Text style={styles.heading_more}>See All ></Text>
+                {user?
+                    <>
+                        <View style={styles.programRow}>
+                            <TouchableScale onPress={
+                                () => {
+                                    navigation.dispatch(
+                                        NavigationActions.navigate({
+                                            routeName: "HomeForumsScreen",
+                                        })
+                                    )
+                                }
+                            }>
+                                <View style={styles.view_blog_title}>
+                                    <Text style={styles.heading}>Q & A</Text>
+                                    <Text style={styles.heading_more}>See All ></Text>
+                                </View>
+                            </TouchableScale>
                         </View>
-                    </TouchableScale>
-                </View>
-                <ForumsScreen {...props} headerHeight={0} hideFilters={true} hideNavigationHeader={true} hideTitle={true} showSearch={false} screenTitle="My Forums" />
+                        <ForumsScreen {...props} headerHeight={0} hideFilters={true} hideNavigationHeader={true} hideTitle={true} showSearch={false} screenTitle="My Forums" />
+                    </>
+                    :null}
                 {optionData.show.includes('blogs') && (
                     <View style={styles.blogRow}>
                         {optionData.blogs.map((blog) => (

@@ -30,7 +30,7 @@ const EditRoutine = props => {
     const [ loading, setLoading ] = useState(false);
     const [routineDetail, setRoutineDetail] = useState(navigation.getParam('routine')?navigation.getParam('routine'):{id:0,title:'',image:optionData.routine_image[0],bgm:optionData.routine_bgm[0].name,tracks:[],routine:[]});
     const [selectBgm, setSelectBgm] = useState('');
-    const guideReducer = useSelector((state) => state.onenergyReducer.practiceReducer.guides);
+    const guideReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer.guides:null);
     const [tracksLoading, setTracksLoading] = useState(true);
     const [routineSettings, setRoutineSettings] = useState(routineDetail.routine);
     const [currentTrack, setCurrentTrack] = useState({index:-1, detail:{}});

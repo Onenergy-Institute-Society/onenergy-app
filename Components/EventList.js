@@ -17,8 +17,8 @@ import FastImage from "react-native-fast-image";
 const EventList = props => {
     const {navigation, location, eventsDate} = props;
     const user = useSelector((state) => state.user.userObject);
-    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
-    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer.achievements);
+    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
+    const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements:null);
     const [showAlert, setShowAlert] = useState(false);
     const [alertTitle, setAlertTitle] = useState('');
     const [alertBody, setAlertBody] = useState('');

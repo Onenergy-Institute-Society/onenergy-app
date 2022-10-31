@@ -19,7 +19,7 @@ const AudioPlayer = (props) => {
             dispatch({
                 type: 'ONENERGY_PRACTICE_COMPLETED',
                 payload: {
-                    mode: 'single',
+                    mode: 'PP',
                     data: track.id
                 }
             });

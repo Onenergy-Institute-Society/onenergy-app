@@ -55,11 +55,10 @@ const VideoPlayer = (props) => {
     const updateProgress = async () => {
         try
         {
-            console.log('start')
             dispatch({
                 type: 'ONENERGY_PRACTICE_COMPLETED',
                 payload: {
-                    'mode': 'group',
+                    'mode': 'PG',
                     'data': groupPractice.id
                 }
             });

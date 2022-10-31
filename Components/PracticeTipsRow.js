@@ -17,7 +17,7 @@ import {windowWidth} from "../Utils/Dimensions";
 const PracticeTipsRow = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const user = useSelector((state) => state.user.userObject);
-    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
+    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const postReducer = useSelector((state) => state.postReducer);
     const [ dataPosts, setPostsData ] = useState([]);
     const [ showTitle, setShowTitle ] = useState(false);

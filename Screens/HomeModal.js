@@ -13,9 +13,9 @@ const HomeModal = (props) => {
     const {navigation, screenProps} = props;
     const {global} = screenProps;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const practiceReducer = useSelector((state) => state.onenergyReducer.practiceReducer);
-    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
-    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer);
+    const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
+    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
+    const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer);
     const dispatch = useDispatch();
 
@@ -98,13 +98,7 @@ const HomeModal = (props) => {
     return (
         <SafeAreaView style={global.container}>
             <ImageBackground resizeMode="cover" style={{flex:1, justifyContent:"center", alignItems:"center"}} source={require('../assets/images/5-1024x683.jpg')}>
-{/*
-                <View style={{backgroundColor:"rgba(0,0,0,0.7)", borderRadius:9, width: windowWidth-30, height:scale(80), marginHorizontal:scale(15), justifyContent:"center", alignItems:"center"}}>
-*/}
-                    <Text style={{fontWeight: "700", fontSize: scale(18), textAlign: 'center', margin:10, color:"white"}}>Loading data...</Text><ActivityIndicator size="large"/>
-{/*
-                </View>
-*/}
+                <Text style={{fontWeight: "700", fontSize: scale(18), textAlign: 'center', margin:10, color:"white"}}>Loading data...</Text><ActivityIndicator size="large"/>
             </ImageBackground>
         </SafeAreaView>
     );

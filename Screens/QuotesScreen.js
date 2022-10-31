@@ -58,7 +58,6 @@ const QuotesScreen = props => {
                     })
                 }
             })
-            console.log(quotes)
             if (quotes && quotes.length > 0) {
                 dispatch({
                     type: 'ONENERGY_QUOTES_ADD',

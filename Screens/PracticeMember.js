@@ -29,7 +29,7 @@ const PracticeMember = props => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyData = optionData.helps.find(el => el.name === 'practice_customize_empty_member');
-    const practiceReducer = useSelector((state) => state.onenergyReducer.practiceReducer);
+    const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
     const [helpModal, setHelpModal] = useState({title:'',id:0});
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));

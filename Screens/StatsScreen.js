@@ -16,8 +16,8 @@ import analytics from '@react-native-firebase/analytics';
 const StatsScreen = (props) => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
-    const practiceReducer = useSelector((state) => state.onenergyReducer.practiceReducer);
+    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
+    const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
 
     analytics().logScreenView({
         screen_class: 'MainActivity',

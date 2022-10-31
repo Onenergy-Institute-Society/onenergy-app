@@ -87,7 +87,6 @@ class TopSlider extends Component {
                     windowSize={1}
                     initialNumToRender={1}
                     maxToRenderPerBatch={1}
-                    removeClippedSubviews={this.props.removeClippedSubviews}
                     horizontal
                     pagingEnabled={true}
                     snapToInterval={totalItemWidth}

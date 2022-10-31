@@ -24,7 +24,7 @@ const AudioPlayerRoutine = (props) => {
             dispatch({
                 type: 'ONENERGY_PRACTICE_COMPLETED',
                 payload: {
-                    mode: 'routine',
+                    mode: 'PR',
                     data: routine.id
                 }
             });

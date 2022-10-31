@@ -11,7 +11,7 @@ import {scale} from "../Utils/scale";
 const LessonButton = (props) => {
     const { global, colors, lesson } = props;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
+    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
     const [completing, setCompleting] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
@@ -29,12 +29,10 @@ const LessonButton = (props) => {
     },[])
     const completeLesson = async () => {
         try {
-            console.log('start', lesson);
             dispatch({
                 type: 'ONENERGY_LESSON_COMPLETED',
                 payload: lesson,
             });
-            console.log('start2')
             if (lesson.settings.guide) {
                 dispatch({
                     type: 'ONENERGY_GUIDE_UPDATE',
@@ -108,19 +106,6 @@ const LessonButton = (props) => {
             console.error(e);
         }
     }
-/*    useEffect(() =>{
-        if(showAlert){
-            Alert.alert(alertTitle, alertBody,
-                [
-                    {
-                        text: alertConfirmText, onPress: () => {
-                            alertConfirmPressed().then();
-                        }
-                    }
-                ]
-            )
-        }
-    },[showAlert])*/
 
     const alertConfirmPressed = async () => {
         await setShowAlert(false);

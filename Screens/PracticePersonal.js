@@ -6,7 +6,8 @@ import {
     View,
     Text,
     ScrollView,
-    Animated
+    Animated,
+    Easing
 } from "react-native";
 import {connect, useSelector} from "react-redux";
 import TracksList from '../Components/TracksList';
@@ -26,7 +27,8 @@ const PracticePersonal = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const helpData = optionData.helps.find(el => el.name === 'practice_guided_popup');
     const helpPageData = optionData.helps.find(el => el.name === 'practice_guided_empty');
-    const guideReducer = useSelector((state) => state.onenergyReducer.practiceReducer.guides);
+    const guideReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer.guides:null);
+    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
 
@@ -34,6 +36,7 @@ const PracticePersonal = props => {
         Animated.timing(fadeAnim, {
             toValue: 1,
             duration: 2000,
+            easing: Easing.bounce
         }).start();
     }, []);
     const toggleHelpModal = () => {
@@ -55,9 +58,7 @@ const PracticePersonal = props => {
     },[messageBarDisplay])
     return (
         <SafeAreaView style={styles.container}>
-            {guideReducer.map(section => {
-                return section.data.find(guide => guide.show === true);
-            }).length?
+            {progressReducer.completedLessons.length?
                 <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
                         <View>

@@ -22,7 +22,7 @@ const CustomDrawerContentComponent = (props) => {
     const {navigation, screenProps} = props;
     const {colors} = screenProps;
     const user = useSelector((state) => state.user.userObject);
-    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
+    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
 
     return (
@@ -61,13 +61,13 @@ const CustomDrawerContentComponent = (props) => {
                                 </Text>
                                 {user.rank?(
                                     <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center"}}>
-                                        <FastImage source={{uri:optionData.ranks[user.rank].rankImage}} style={{width:24, height:24, alignSelf:"center"}} />
+                                        <FastImage source={{uri: optionData.ranks[parseInt(user.rank)].rankImage}}
+                                                   style={{width: 24, height: 24, alignSelf: "center"}}/>
                                         <Text
                                             style={{
                                                 color: '#fff',
                                                 fontSize: scale(14),
                                                 marginLeft:5,
-                                                alignSelf:"center",
                                                 textShadowColor: 'grey',
                                                 textShadowRadius: 1,
                                                 textShadowOffset: {
@@ -75,11 +75,11 @@ const CustomDrawerContentComponent = (props) => {
                                                     height: 1
                                                 }
                                             }}>
-                                            {optionData.ranks[user.rank].rankName}
+                                            {optionData.ranks[parseInt(user.rank)].rankName}
                                         </Text>
                                     </View>
                                 ):null}
-                                {Object.entries(progressReducer.points).map(([key, value])=>(
+                                {progressReducer?Object.entries(progressReducer.points).map(([key, value]) => (
                                     <View>
                                         <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center"}}>
                                             <FastImage source={{uri:'https://assets.onenergy.institute/wp-content/uploads/2020/07/gamipress-icon-ray-material-54x54.png'}} style={{width:16, height:16}} />
@@ -99,7 +99,7 @@ const CustomDrawerContentComponent = (props) => {
                                             </Text>
                                         </View>
                                     </View>
-                                ))}
+                                )):null}
                             </View>
                         </View>
                         {user.membership.length > 0 ?
@@ -113,57 +113,6 @@ const CustomDrawerContentComponent = (props) => {
                     <View style={{backgroundColor: colors.bodyFrontBg, margin: 10, paddingLeft: 10, borderRadius: 9}}>
                         {!user ?
                             <>
-                                <TouchableWithoutFeedback onPress={() => {
-                                    navigation.navigate("SignupScreen")
-                                }}>
-                                    <View style={{
-                                        paddingHorizontal: 5,
-                                        paddingVertical: 10,
-                                        borderBottomWidth: 1,
-                                        borderBottomColor: '#ccc',
-                                        borderTopRightRadius: 9,
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between'
-                                    }}>
-                                        <Text
-                                            style={{fontSize: scale(18)}}>
-                                            {optionData.titles.find(el => el.id === 'left_menu_signup').title}
-                                        </Text>
-                                        <IconButton
-                                            icon={require("@src/assets/img/arrow-right.png")}
-                                            style={{
-                                                height: 32,
-                                                marginRight: 10,
-                                            }}
-                                        />
-                                    </View>
-                                </TouchableWithoutFeedback>
-                                <TouchableWithoutFeedback onPress={() => {
-                                    navigation.navigate("LoginScreen")
-                                }}>
-                                    <View style={{
-                                        paddingHorizontal: 5,
-                                        paddingVertical: 10,
-                                        borderBottomWidth: 1,
-                                        borderBottomColor: '#ccc',
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between'
-                                    }}>
-                                        <Text
-                                            style={{fontSize: scale(18)}}>
-                                            {optionData.titles.find(el => el.id === 'left_menu_login').title}
-                                        </Text>
-                                        <IconButton
-                                            icon={require("@src/assets/img/arrow-right.png")}
-                                            style={{
-                                                height: 32,
-                                                marginRight: 10,
-                                            }}
-                                        />
-                                    </View>
-                                </TouchableWithoutFeedback>
                             </>
                             :
                             <>

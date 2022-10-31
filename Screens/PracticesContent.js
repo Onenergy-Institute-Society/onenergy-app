@@ -97,6 +97,7 @@ const PracticesContent = props => {
         }
 
         return (
+            user?
             <SafeAreaView style={styles.container}>
                 <ScrollView style={{flexGrow:1}} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
@@ -208,6 +209,8 @@ const PracticesContent = props => {
                     <LoginScreen {...props} hideForgotPassword={true} />
                 </Modalize>
             </SafeAreaView>
+                :
+                <LoginScreen {...props} hideForgotPassword={true} />
         );
     }catch (err) {
         console.log(`${err}`);

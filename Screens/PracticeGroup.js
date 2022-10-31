@@ -36,8 +36,8 @@ const PracticeGroup = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const helpData = optionData.helps.find(el => el.name === 'practice_group_popup');
     const [loading, setLoading] = useState(false);
-    const groupReducer = useSelector((state) => state.onenergyReducer.practiceReducer.groups);
-    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
+    const groupReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer.groups:null);
+    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const [groupPracticeDetail, setGroupPracticeDetail] = useState(0);
     const [currentMinutes, setCurrentMinutes] = useState(new Date().getMinutes());
     analytics().logScreenView({

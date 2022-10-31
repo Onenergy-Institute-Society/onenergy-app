@@ -6,7 +6,8 @@ import {
     StyleSheet,
     SafeAreaView,
     FlatList,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    Animated
 } from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
@@ -16,14 +17,12 @@ import moment from 'moment';
 const QuestsDaily = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyText = optionData.titles.find(el => el.id === 'achievement_quest_empty').title
-    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
-    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === 'daily'));
+    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
+    const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === 'daily'):null);
     const dispatch = useDispatch();
 
     const renderItem = ({item}) => {
         let show = false;
-        let complete_date = '';
-        let claim_date = '';
         let today = new moment().format('YYYY-MM-DD');
 
         switch(item.show){
@@ -47,31 +46,29 @@ const QuestsDaily = (props) => {
                 show = 1;
                 break;
         }
-        if(item.complete_date) complete_date = new moment.unix(item.complete_date).format('YYYY-MM-DD');
-        if(item.claim_date) claim_date = new moment.unix(item.claim_date).format('YYYY-MM-DD');
-console.log(item, item.title)
+console.log(show, item, item.title)
         return (
             show >= 0?
                 <>
                 <View style={[styles.boxShadow, styles.row]}>
                     <View style={styles.rowLeft}>
                         <Text style={styles.title}>{item.title}</Text>
-                        {claim_date !== today?
+                        {item.claim_date !== today?
                             <View style={{marginTop: 10}}>
-                                <Progress.Bar showsText={true} borderColor={"#4942e1"} color={complete_date===today?"lightgreen":"#7de7fa"} unfilledColor={"black"} borderRadius={9}
+                                <Progress.Bar showsText={true} borderColor={"#4942e1"} color={item.complete_date===today?"lightgreen":"#7de7fa"} unfilledColor={"black"} borderRadius={9}
                                               progress={item.step / item.total}
                                               width={windowWidth/2} height={scale(16)}/>
                                 <View
                                     style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}><Text style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
                                         width: -1,
                                         height: 1
-                                    }}}>{complete_date===today?"completed!":item.step + ' / ' + item.total}</Text></View>
+                                    }}}>{item.complete_date===today?"completed!":item.step + ' / ' + item.total}</Text></View>
                             </View>
                         :null}
                     </View>
                     <TouchableWithoutFeedback
                         onPress={() => {
-                            if(complete_date===today&&claim_date!==today) {
+                            if(item.complete_date===today&&item.claim_date!==today) {
                                 dispatch({
                                     type: "ONENERGY_ACHIEVEMENT_CLAIM",
                                     payload: {
@@ -82,9 +79,9 @@ console.log(item, item.title)
                             }
                         }}
                     >
-                        <View style={[styles.rowRight, {backgroundColor:claim_date===today?'gray':complete_date===today?'gold':'#7de7fa'}]}>
+                        <View style={[styles.rowRight, {backgroundColor:item.claim_date===today?'gray':item.complete_date===today?'gold':'#7de7fa'}]}>
                             {
-                                claim_date === today ?
+                                item.claim_date === today ?
                                     <>
                                         <Text
                                             style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
@@ -101,11 +98,11 @@ console.log(item, item.title)
                                                     height: 1
                                                 }}}
                                         >
-                                            {claim_date}
+                                            {item.claim_date}
                                         </Text>
                                     </>
                                     :
-                                    complete_date === today?
+                                    item.complete_date === today?
                                         <>
                                             <Text
                                                 style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
@@ -153,8 +150,8 @@ console.log(item, item.title)
                 </View>
 
                 {item.list.map(date => {
-                    console.log(date, moment(today).diff(moment(date), 'days'))
                     let dayDiff = moment(today).diff(moment(date), 'days');
+                    console.log(dayDiff)
                     if(dayDiff <= 7){
                         return (
                             <View style={[styles.boxShadow, styles.row]}>

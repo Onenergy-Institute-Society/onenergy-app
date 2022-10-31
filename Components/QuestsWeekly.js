@@ -12,7 +12,7 @@ import {windowWidth} from "../Utils/Dimensions";
 import moment from 'moment';
 
 const QuestsWeekly = (props) => {
-    const achievementReducer = useSelector((state) => state.onenergyReducer.achievementReducer.weekly);
+    const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.weekly:null);
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
     return(
