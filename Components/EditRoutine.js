@@ -20,6 +20,7 @@ import {scale} from "../Utils/scale";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import { BlurView } from "@react-native-community/blur";
+import analytics from '@react-native-firebase/analytics';
 
 const EditRoutine = props => {
     const {navigation} = props;
@@ -30,46 +31,44 @@ const EditRoutine = props => {
     const [ loading, setLoading ] = useState(false);
     const [routineDetail, setRoutineDetail] = useState(navigation.getParam('routine')?navigation.getParam('routine'):{id:0,title:'',image:optionData.routine_image[0],bgm:optionData.routine_bgm[0].name,tracks:[],routine:[]});
     const [selectBgm, setSelectBgm] = useState('');
-    const guideReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer.guides:null);
-    const [tracksLoading, setTracksLoading] = useState(true);
+    const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
     const [routineSettings, setRoutineSettings] = useState(routineDetail.routine);
     const [currentTrack, setCurrentTrack] = useState({index:-1, detail:{}});
     const [changedStatus, setChangedStatus] = useState(false);
     const [routineHelpModal, setHelpModal] = useState({title:'',id:0});
     const [cancelContentTouches, setCancelContentTouches ] = useState(true);
 
+    analytics().logScreenView({
+        screen_class: 'MainActivity',
+        screen_name: 'Routine Edit Screen',
+    });
+
     const updateTracks = async () => {
         try {
-            const apiSlide = getApi(props.config);
-            await apiSlide.customRequest(
+            const apiRoutine = getApi(props.config);
+            await apiRoutine.customRequest(
                 "wp-json/onenergy/v1/editRoutine/",
                 "post",
                 {"routine":routineDetail},
                 null,
                 {},
                 false
-            ).then(response => {
-                setRoutineDetail(prevState => {return {...prevState, tracks: response.data}});
-                setTracksLoading(false)
-            });
+            ).then();
         } catch (e) {
             console.error(e);
         }
     }
     const addTracks = async () => {
         try {
-            const apiSlide = getApi(props.config);
-            await apiSlide.customRequest(
+            const apiRoutine = getApi(props.config);
+            await apiRoutine.customRequest(
                 "wp-json/onenergy/v1/addRoutine",
                 "post",
                 {"routine":routineDetail},
                 null,
                 {},
                 false
-            ).then(response => {
-                setRoutineDetail(prevState => {return {...prevState, id: response.data.id, tracks: response.data.tracks}});
-                setTracksLoading(false)
-            });
+            ).then();
         } catch (e) {
             console.error(e);
         }
@@ -83,16 +82,6 @@ const EditRoutine = props => {
             title: optionData.titles.find(el => el.id === 'home_title').title,
         });
     },[])
-    useEffect(()=>{
-        if(!tracksLoading) {
-            dispatch({
-                type: "ONENERGY_ROUTINE_SAVE",
-                payload: routineDetail,
-            })
-            setChangedStatus(false);
-            navigation.goBack();
-        }
-    },[tracksLoading])
     useEffect(()=>{
         if(routineDetail) {
             props.navigation.setParams({
@@ -147,25 +136,128 @@ const EditRoutine = props => {
                 return false;
             }
             setLoading(true);
+            console.log(createTracks(routineDetail.routine))
+            dispatch({
+                type: "ONENERGY_ROUTINE_SAVE",
+                payload: routineDetail
+            })
+            setChangedStatus(false);
             if(navigation.getParam('routine')) {
                 updateTracks().then();
             }else{
                 addTracks().then();
             }
-        }else{
-            navigation.goBack();
         }
+        navigation.goBack();
+    }
+    const createTracks = (routine) => {
+        let tracks = [];
+        let id = 1;
+        const min1 = "https://media.onenergy.institute/audios/preparatory_practices/members/1min.mp3";
+        if(routine.length > 0){
+            tracks.push({
+                id: 1,
+                title: 'Opening',
+                url: 'https://media.onenergy.institute/audios/preparatory_practices/members/Opening_Member.mp3',
+                artist: '',
+                artwork: '',
+                duration: 25,
+            });
+            routine.map(item => {
+                let tmpGuide;
+                practiceReducer.guides.map(section => {
+                    section.data.map(guide => {
+                        if(guide.id === item.id){
+                            tmpGuide = guide;
+                        }
+                    })
+                })
+                console.log(tmpGuide)
+                if(tmpGuide){
+                    tmpGuide.parts.map(part => {
+                        if(part.start){
+                            id++;
+                            tracks.push({
+                                id: id,
+                                title: tmpGuide.title,
+                                url: part.start,
+                                artist: '',
+                                artwork: '',
+                                duration: parseInt(tmpGuide.start_duration),
+                            });
+                            switch(tmpGuide.mode){
+                                case '0':
+                                    if(part.repeat)
+                                    {
+                                        for(let i = 1; i< parseInt(routine.count); i++)
+                                        {
+                                            id++;
+                                            tracks.push({
+                                                id: id,
+                                                title: tmpGuide.title,
+                                                url: part.repeat,
+                                                artist: '',
+                                                artwork: '',
+                                                duration: parseInt(tmpGuide.repeat_duration),
+                                            });
+                                        }
+                                    }
+                                    break;
+                                case '1':
+                                    for(let i = 0; i< parseInt(routine.count); i++)
+                                    {
+                                        id++;
+                                        tracks.push({
+                                            id: id,
+                                            title: tmpGuide.title,
+                                            url: min1,
+                                            artist: '',
+                                            artwork: '',
+                                            duration: 60,
+                                        });
+                                    }
+                                    break
+                            }
+                        }
+                    })
+                    if(tmpGuide.end)
+                    {
+                        id++;
+                        tracks.push({
+                            id: id,
+                            title: tmpGuide.title,
+                            url: tmpGuide.end,
+                            artist: '',
+                            artwork: '',
+                            duration: parseInt(tmpGuide.end_duration),
+                        });
+                    }
+                }
+            })
+            id++
+            tracks.push({
+                id: id,
+                title: 'Closing',
+                url: 'https://media.onenergy.institute/audios/preparatory_practices/members/Closing_Member.mp3',
+                artist: '',
+                artwork: '',
+                duration: 13,
+            });
+        }
+        return tracks;
     }
     const addGuideToRoutine = (item) => {
         item.count = 1;
         setRoutineSettings((current) => [...current, item]);
-        setRoutineDetail(prevState => {return {
-            ...prevState,
-            routine:[
-                ...prevState.routine,
-                item
-            ]
-        }});
+        setRoutineDetail(prevState => {
+            return {
+                ...prevState,
+                routine: [
+                    ...prevState.routine,
+                    item
+                ],
+            }
+        });
         this.addGuideModal.close();
     }
 
@@ -289,11 +381,12 @@ const EditRoutine = props => {
         return (
             <TouchableWithoutFeedback onPress={() => {
                 let tempSettings = routineSettings;
-                tempSettings[currentTrack.index] = {...tempSettings[currentTrack.index], count:item.item};
+                tempSettings[currentTrack.index] = {...tempSettings[currentTrack.index], count: item.item};
                 setRoutineSettings(tempSettings);
-                setRoutineDetail(prevState => ({...prevState, routine:tempSettings}));
+                setRoutineDetail(prevState => ({...prevState, routine: tempSettings}));
                 setChangedStatus(true);
-                this.countDialog.close();}
+                this.countDialog.close();
+            }
             }>
                 <View style={[cornerStyle,bottomStyle, {width: windowWidth-50, marginHorizontal:25, paddingHorizontal:25, backgroundColor:"#F2F2F2", paddingVertical:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
                     <Text
@@ -575,7 +668,7 @@ const EditRoutine = props => {
                 }
                 sectionListProps = {{
                     stickySectionHeadersEnabled:false,
-                    sections:guideReducer,
+                    sections:practiceReducer.guides,
                     renderItem:renderGuides,
                     renderSectionHeader:renderSectionHeader,
                     keyExtractor:(item, index) => `${item.title}-${index}`,

@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import OnBoarding from './Screens/OnBoarding';
 import {
     Image,
     Platform,
@@ -17,7 +18,6 @@ import {useDispatch, useSelector} from "react-redux";
 import moment from 'moment';
 import Share from "react-native-share";
 import IconButton from "@src/components/IconButton";
-
 import BlogsScreen from './Screens/BlogsScreen';
 import PracticesScreen from './Screens/PracticesScreen';
 import CategoryScreen from './Screens/CategoryScreen';
@@ -30,7 +30,6 @@ import VimeoBlockLoader from "./Components/VimeoBlockLoader";
 import PracticePersonal from './Screens/PracticePersonal';
 import PracticeGroup from './Screens/PracticeGroup';
 import PracticeMember from './Screens/PracticeMember';
-import OnBoarding from './Screens/OnBoarding';
 import BlogScreen from './Screens/BlogScreen';
 import CourseScreen from './Screens/CourseScreen';
 import ChooseLanguage from './Screens/ChooseLanguage';
@@ -234,6 +233,18 @@ export const applyCustomCode = externalCodeSetup => {
         StatsScreen,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
+/*    externalCodeSetup.navigationApi.addNavigationRoute(
+        "MySignupScreen",
+        "MySignupScreen",
+        MySignupScreen,
+        "All" // "Auth" | "noAuth" | "Main" | "All"
+    );
+    externalCodeSetup.navigationApi.addNavigationRoute(
+        "MyLoginScreen",
+        "MyLoginScreen",
+        MyLoginScreen,
+        "All" // "Auth" | "noAuth" | "Main" | "All"
+    );*/
     externalCodeSetup.navigationApi.addNavigationRoute(
         "HomeModal",
         "HomeModal",
@@ -1659,68 +1670,6 @@ export const applyCustomCode = externalCodeSetup => {
 
     })
 
-
-    externalCodeSetup.navigationApi.setAnimatedSwitchNavigator((routes, options, routeProps) => {
-        const feature = routeProps.settings.features.multisite_network;
-        const hasMultiSite = Platform.select({
-            ios: feature.is_enabled_ios,
-            android: feature.is_enabled_android
-        })
-
-// Get the initial switch route based on state data.
-// getInitialSwitchRoute() is based on BB App's AppNavigator.js
-// Feel free to copy and paste this to your own code
-
-        const getInitialSwitchRoute = () => {
-
-            const defaultInitialRoute = "Auth";
-
-            const myCustomRoute = "ChooseLanguage"
-
-            if (!routeProps.hasValidSigning) {
-                return "InvalidSigningScreen";
-            }
-
-            if (routeProps.shouldEnforceVersionControl) {
-                return "VersionControlScreen";
-            } else if (routeProps.isLoggedIn) {
-                if (
-                    routeProps.isFeatureEnabled(hasMultiSite) &&
-                    routeProps.sites.selectedSite === null
-                ) {
-                    return "AuthSiteSelectionScreen";
-                } else {
-                    return routeProps.shouldLockApp ? "AppLockScreen" : "noAuth";
-                }
-            } else {
-                return myCustomRoute; //Use my own custom route instead of the default "Auth" route
-                //return defaultInitialRoute;
-            }
-
-        };
-
-        const newRoutes = {
-            ...routes,
-            ChooseLanguage: {
-                screen: ChooseLanguage
-            },
-            OnBoarding: {
-                screen: OnBoarding
-            }
-        }
-
-        const newOptions = {
-            ...options,
-            initialRouteName: getInitialSwitchRoute()
-        }
-
-        return {
-            routes: newRoutes,
-            options: newOptions,
-        }
-
-    })
-
     externalCodeSetup.navigationApi.setBottomTabBarIcon((icon, iconProps) => {
         const routeLabel = iconProps.route.routes[0].params.item?.label;
         switch (routeLabel) {
@@ -1925,6 +1874,66 @@ export const applyCustomCode = externalCodeSetup => {
                 )}
             </AppTouchableOpacity>
         </View>
+    })
+    externalCodeSetup.navigationApi.setAnimatedSwitchNavigator((routes, options, routeProps) => {
+        const feature = routeProps.settings.features.multisite_network;
+        const hasMultiSite = Platform.select({
+            ios: feature.is_enabled_ios,
+            android: feature.is_enabled_android
+        })
+
+// Get the initial switch route based on state data.
+// getInitialSwitchRoute() is based on BB App's AppNavigator.js
+// Feel free to copy and paste this to your own code
+
+        const getInitialSwitchRoute = () => {
+
+            const defaultInitialRoute = "Auth";
+
+            const myCustomRoute = "OnBoarding"
+
+            if (!routeProps.hasValidSigning) {
+                return "InvalidSigningScreen";
+            }
+
+            if (routeProps.shouldEnforceVersionControl) {
+                return "VersionControlScreen";
+            } else if (routeProps.isLoggedIn) {
+                if (
+                    routeProps.isFeatureEnabled(hasMultiSite) &&
+                    routeProps.sites.selectedSite === null
+                ) {
+                    return "AuthSiteSelectionScreen";
+                } else {
+                    return routeProps.shouldLockApp ? "AppLockScreen" : "noAuth";
+                }
+            } else {
+                return myCustomRoute; //Use my own custom route instead of the default "Auth" route
+                //return defaultInitialRoute;
+            }
+
+        };
+
+        const newRoutes = {
+            ...routes,
+/*            ChooseLanguage: {
+                screen: ChooseLanguage
+            },*/
+            OnBoarding: {
+                screen: OnBoarding
+            }
+        }
+
+        const newOptions = {
+            ...options,
+            initialRouteName: getInitialSwitchRoute()
+        }
+
+        return {
+            routes: newRoutes,
+            options: newOptions,
+        }
+
     })
 };
 

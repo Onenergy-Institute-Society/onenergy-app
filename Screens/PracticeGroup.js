@@ -241,10 +241,9 @@ const PracticeGroup = props => {
         <SafeAreaView style={styles.container}>
             {groupReducer&&groupReducer.length ? (
                 <ScrollView nestedScrollEnabled={true} styles={styles.scrollView} showsVerticalScrollIndicator={false}>
-                    {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
+                    {(optionData.goals && optionData.goals.length)?
                         <View>
                             <EventList location={'practice_group'} eventsDate={optionData.goals}/>
-                            <EventList location={'practice_group'} eventsDate={optionData.challenges}/>
                         </View>
                         : null
                     }

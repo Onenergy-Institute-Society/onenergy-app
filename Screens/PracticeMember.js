@@ -33,6 +33,7 @@ const PracticeMember = props => {
     const [helpModal, setHelpModal] = useState({title:'',id:0});
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
+
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Custom Routine Screen',
@@ -46,8 +47,8 @@ const PracticeMember = props => {
     }, []);
     const fetchTracks = async () => {
         try {
-            const apiSlide = getApi(props.config);
-            const data = await apiSlide.customRequest(
+            const apiRoutines = getApi(props.config);
+            const data = await apiRoutines.customRequest(
                 "wp-json/onenergy/v1/routine",
                 "get",
                 {},
@@ -121,9 +122,8 @@ const PracticeMember = props => {
         removeRoutine(item).then();
     }
     useEffect(() => {
-        if(!practiceReducer.routines||!practiceReducer.routines.length||!practiceReducer.routineUpdate) {
+        if(!practiceReducer||!practiceReducer.routines||!practiceReducer.routines.length)
             fetchTracks().then();
-        }
         if(user&&user.membership.length > 0) {
             setHelpModal(optionData.helps.find(el => el.name === 'practice_customize_popup_member'));
         }else{
@@ -145,17 +145,16 @@ const PracticeMember = props => {
     },[messageBarDisplay])
     return (
         <SafeAreaView style={styles.container}>
-            {practiceReducer.guides&&practiceReducer.guides.length>0?
-                practiceReducer.routines&&practiceReducer.routines.length ?
+            {practiceReducer&&practiceReducer.guides&&practiceReducer.guides.length?
+                practiceReducer&&practiceReducer.routines&&practiceReducer.routines.length?
                     <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                        {(optionData.goals && optionData.goals.length) || (optionData.challenges && optionData.challenges.length) ?
+                        {optionData.goals && optionData.goals.length?
                             <View>
                                 <EventList location={'practice_member'} eventsDate={optionData.goals}/>
-                                <EventList location={'practice_member'} eventsDate={optionData.challenges}/>
                             </View>
                             : null
                         }
-                        <MemberTracksList routines={practiceReducer} onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine} setMessageBarDisplay={setMessageBarDisplay} />
+                        <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine} setMessageBarDisplay={setMessageBarDisplay} />
                     </ScrollView>
                     :
                     <ActivityIndicator size="large"/>
@@ -172,7 +171,7 @@ const PracticeMember = props => {
                                  {...props} />
                 </View>
             }
-            {(practiceReducer.routines && practiceReducer.routines.length<5) || !practiceReducer.routines?
+            {(practiceReducer && practiceReducer.routines && practiceReducer.routines.length<5) || !practiceReducer.routines?
                 <IconButton
                     pressHandler={() => {onAddPressed().then()}}
                     icon={require("@src/assets/img/add.png")}

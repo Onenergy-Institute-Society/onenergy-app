@@ -46,7 +46,6 @@ const QuestsDaily = (props) => {
                 show = 1;
                 break;
         }
-console.log(show, item, item.title)
         return (
             show >= 0?
                 <>

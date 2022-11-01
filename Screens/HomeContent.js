@@ -37,7 +37,7 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer);
     const dispatch = useDispatch();
-    const [topSlides, setTopSlides] = useState([]);
+
     const onFocusHandler=() =>
     {
         try
@@ -140,7 +140,6 @@ const HomeContent = (props) => {
             subscription.remove();
             navigation.removeListener('willFocus', onFocusHandler);
         }
-
     }, []);
 
     const OnPress = async (item) => {
@@ -198,176 +197,32 @@ const HomeContent = (props) => {
         }
     }
 
-    useEffect(() => {
-        console.log(optionData.goals);
-        let tmpTopSlides = [];
-        let displayGroup = [];
-        tmpTopSlides = optionData.goals.filter(item => {
-            let show = false;
-            let showDate;
-            const current_time = new moment.utc();
-            if(item.location.includes('top')) {
-                switch (item.permission.toString()) {
-                    case 'all':
-                        show = true;
-                        break;
-                    case 'guest':
-                        user ? show = false : show = true;
-                        break;
-                    case 'login':
-                        user ? show = true : show = false;
-                        break;
-                    case 'user':
-                        user && !(user.membership && user.membership.length) ? show = true : show = false;
-                        break;
-                    case 'member':
-                        user && (user.membership && user.membership.length) ? show = true : show = false;
-                        break;
-                    default:
-                        break;
-                }
-                if(show) {
-                    console.log('1',item)
-                    show = false;
-                    switch (item.show) {
-                        case 'date':
-                            let date2 = new moment.utc(item.showDate);
-                            if (current_time >= date2) {
-                                showDate = item.showDate;
-                                show = true
-                            }
-                            break;
-                        case 'course':
-                            if (item.showCourseOption === 'enrolled') {
-                                let showCourse = progressReducer.enrolledCourses.find(course => course.id === parseInt(item.showCourse));
-                                if (showCourse) {
-                                    showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
-                                    if (current_time > showDate) {
-                                        show = true;
-                                    }
-                                }
-                            } else if (item.showCourseOption === 'completed') {
-                                let showCourse = progressReducer.completedCourses.find(course => course.id === parseInt(item.showCourse));
-                                if (showCourse) {
-                                    showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
-                                    if (current_time > showDate) {
-                                        show = true;
-                                    }
-                                }
-                            }
-                            break;
-                        case 'lesson':
-                            let showLesson = progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.showLesson));
-                            if (showLesson) {
-                                showDate = new moment.unix(showLesson['date']).add(item.delay, 'd');
-                                if (current_time > showDate) {
-                                    show = true;
-                                }
-                            }
-                            break;
-                        case 'achievement':
-                            let showAchievement = user&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.showAchievement));
-                            if (showAchievement) {
-                                showDate = new moment.unix(showAchievement['date']).add(item.delay, 'd');
-                                if (current_time > showDate) {
-                                    show = true;
-                                }
-                            }
-                            break;
-                        default:
-                            show = true;
-                            break;
-                    }
-                    if (show) {
-                        console.log('2', item)
-                        switch (item.hide) {
-                            case 'date':
-                                switch (item.hideDateOption.hideDateType) {
-                                    case 'fix':
-                                        let date2 = new moment.utc(item.hideDateOption.date);
-                                        if (current_time >= date2) {
-                                            show = false
-                                        }
-                                        break;
-                                    case 'days':
-                                        let diffDays = current_time.diff(showDate, 'days');
-                                        if (diffDays >= parseInt(item.hideDateOption.days)) {
-                                            show = false
-                                        }
-                                        break;
-                                }
-                                break;
-                            case 'course':
-                                if (item.hideCourseOption === 'enrolled') {
-                                    if (progressReducer.enrolledCourses.find(course => course.id === parseInt(item.hideCourse))) {
-                                        show = false;
-                                    }
-                                } else if (item.hideCourseOption === 'completed') {
-                                    if (progressReducer.completedCourses.find(course => course.id === parseInt(item.hideCourse))) {
-                                        show = false;
-                                    }
-                                }
-                                break;
-                            case 'lesson':
-                                if (progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
-                                    show = false;
-                                }
-                                break;
-                            case 'achievement':
-                                if (achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.hideAchievement))) {
-                                    show = false;
-                                }
-                                break;
-                            default:
-                                show = true;
-                                break;
-                        }
-                    }
-                    if(show) {
-                        console.log('3', item)
-                        if (item.group) {
-                            if (displayGroup.includes(item.group)) {
-                                show = false;
-                            } else {
-                                displayGroup = [...displayGroup, item.group];
-                            }
-                        }
-                    }
-                }
-            }
-            return show;
-        })
-        setTopSlides(tmpTopSlides);
-        console.log(tmpTopSlides)
-    },[optionData.goals]);
     return (
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                {optionData.show.includes('slider') && topSlides && topSlides.length?
-                    <View style={[styles.slideRow, styles.boxShadow]}>
-                        <TopSlider
-                            loop={true}
-                            data={topSlides}
-                            timer={5000}
-                            onPress={(item) => {
-                                OnPress(item).then();
-                            }}
-                            indicatorContainerStyle={{position: 'absolute', bottom: -10}}
-                            indicatorActiveColor={'#8e44ad'}
-                            indicatorInActiveColor={'#ffffff'}
-                            indicatorActiveWidth={30}
-                            animation
-                        />
-                    </View>:null
+                {optionData.show.includes('slider')&&achievementReducer.achievements&&progressReducer.progressUpdate&&practiceReducer.guideUpdate?
+                    <TopSlider
+                        loop={true}
+                        timer={5000}
+                        onPress={(item) => {
+                            OnPress(item).then();
+                        }}
+                        indicatorContainerStyle={{position: 'absolute', bottom: -10}}
+                        indicatorActiveColor={'#8e44ad'}
+                        indicatorInActiveColor={'#ffffff'}
+                        indicatorActiveWidth={30}
+                        animation
+                    />:null
                 }
                 {optionData.show.includes('quotes') && optionData.quote && (
                     <View style={[styles.quoteRow, styles.boxShadow]}>
                         <DailyQuotes quote={optionData.quote}/>
                     </View>
                 )}
+                {achievementReducer.achievements&&progressReducer.progressUpdate&&practiceReducer.guideUpdate?
                 <View style={styles.programRow}>
                     <EventList location={'home'} eventsDate={optionData.goals}/>
-                </View>
+                </View>:null}
                 {optionData.show.includes('events') && (
                     <View style={styles.eventRow}>
                         {optionData.events && (

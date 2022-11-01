@@ -18,8 +18,9 @@ import IconButton from "@src/components/IconButton";
 import TouchableScale from "./TouchableScale";
 
 const MemberTracksList = (props) => {
-    const {routines, setMessageBarDisplay} = props;
+    const {setMessageBarDisplay} = props;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
     const [selectedRoutine, setSelectedRoutine] = useState(null);
 
     // state vars
@@ -137,7 +138,9 @@ const MemberTracksList = (props) => {
     }
     return (
         <SafeAreaView style={styles.container}>
-            <FlatList contentContainerStyle={{ paddingBottom: scale(20) }} style={styles.trackList} data={routines} renderItem={renderItem} keyExtractor={item => item.id} />
+            {practiceReducer&&practiceReducer.routines&&practiceReducer.routines.length?
+            <FlatList contentContainerStyle={{ paddingBottom: scale(20) }} style={styles.trackList} data={practiceReducer.routines} renderItem={renderItem} keyExtractor={item => item.id} />
+                :null}
         </SafeAreaView>
     );
 };

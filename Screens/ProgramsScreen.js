@@ -113,6 +113,36 @@ const CustomDrawerContentComponent = (props) => {
                     <View style={{backgroundColor: colors.bodyFrontBg, margin: 10, paddingLeft: 10, borderRadius: 9}}>
                         {!user ?
                             <>
+                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("SignupScreen");}}>
+                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                        <Text
+                                            style={{fontSize:scale(18)}}>
+                                            {optionData.titles.findIndex(el => el.id === 'left_menu_signup')?optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_signup')].title:'Create an Account'}
+                                        </Text>
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight:10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("LoginScreen");}}>
+                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                        <Text
+                                            style={{fontSize:scale(18)}}>
+                                            {optionData.titles.findIndex(el => el.id === 'left_menu_login')?optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_login')].title:'Login My Account'}
+                                        </Text>
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight:10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
                             </>
                             :
                             <>

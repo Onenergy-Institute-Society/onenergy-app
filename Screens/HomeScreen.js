@@ -6,12 +6,14 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback, SafeAreaView
 } from 'react-native';
-import { withNavigation } from "react-navigation";
+import { StackActions, NavigationActions, withNavigation} from "react-navigation";
 import {createDrawerNavigator} from 'react-navigation-drawer';
 import {useSelector} from "react-redux";
 import FastImage from 'react-native-fast-image';
 import {createStackNavigator} from 'react-navigation-stack';
 import HomeContent from './HomeContent';
+import MySignupScreen from "../Components/MySignupScreen";
+import MyLoginScreen from "../Components/MyLoginScreen";
 import IconButton from "@src/components/IconButton";
 import {scale} from "../Utils/scale";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
@@ -20,7 +22,7 @@ const CustomDrawerContentComponent = (props) => {
     const {navigation, screenProps} = props;
     const {colors} = screenProps;
     const user = useSelector((state) => state.user.userObject);
-    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
+    const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
 
     return (
@@ -86,7 +88,7 @@ const CustomDrawerContentComponent = (props) => {
                                         </Text>
                                     </View>
                                 ) : null}
-                                {progressReducer?Object.entries(progressReducer.points).map(([key, value]) => (
+                                {progressReducer ? Object.entries(progressReducer.points).map(([key, value]) => (
                                     <View>
                                         <View style={{
                                             flexDirection: "row",
@@ -112,7 +114,7 @@ const CustomDrawerContentComponent = (props) => {
                                             </Text>
                                         </View>
                                     </View>
-                                )):null}
+                                )) : null}
                             </View>
                         </View>
                         {user.membership.length > 0 ?
@@ -126,6 +128,78 @@ const CustomDrawerContentComponent = (props) => {
                     <View style={{backgroundColor: colors.bodyFrontBg, margin: 10, paddingLeft: 10, borderRadius: 9}}>
                         {!user ?
                             <>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    navigation.navigate("MySignupScreen");
+                                }}>
+                                    <View style={{
+                                        paddingHorizontal: 5,
+                                        paddingVertical: 10,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: '#ccc',
+                                        borderBottomRightRadius: 9,
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                        <View style={{flexDirection: "row", alignItems: "center"}}>
+                                            <IconButton
+                                                icon={require("@src/assets/img/email-invites-send.png")}
+                                                style={{
+                                                    height: 32,
+                                                    marginRight: 5,
+                                                }}
+                                                tintColor={"black"}
+                                            />
+                                            <Text
+                                                style={{fontSize: scale(18)}}>
+                                                {optionData.titles.findIndex(el => el.id === 'left_menu_signup') ? optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_signup')].title : 'Create an Account'}
+                                            </Text>
+                                        </View>
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight: 10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    navigation.navigate("MyLoginScreen");
+                                }}>
+                                    <View style={{
+                                        paddingHorizontal: 5,
+                                        paddingVertical: 10,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: '#ccc',
+                                        borderBottomRightRadius: 9,
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                        <View style={{flexDirection: "row", alignItems: "center"}}>
+                                            <IconButton
+                                                icon={require("@src/assets/img/lock.png")}
+                                                style={{
+                                                    height: 32,
+                                                    marginRight: 5,
+                                                }}
+                                                tintColor={"black"}
+                                            />
+                                            <Text
+                                                style={{fontSize: scale(18)}}>
+                                                {optionData.titles.findIndex(el => el.id === 'left_menu_login') ? optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_login')].title : 'Login My Account'}
+                                            </Text>
+                                        </View>
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight: 10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
                             </>
                             :
                             <>
@@ -358,12 +432,13 @@ const CustomDrawerContentComponent = (props) => {
                                 alignItems: 'center',
                                 justifyContent: 'space-between'
                             }}>
-                                <View style={{flexDirection: "row", justifyContent:"flex-start", alignItems: "center"}}>
+                                <View
+                                    style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
                                     <IconButton
                                         icon={require("@src/assets/img/ios-settings.png")}
                                         style={{
                                             height: 24,
-                                            width:32,
+                                            width: 32,
                                             marginRight: 5,
                                         }}
                                         tintColor={"black"}
@@ -391,6 +466,8 @@ const CustomDrawerContentComponent = (props) => {
 const Home = createStackNavigator(
     {
         Home: {screen: HomeContent},
+        MyLoginScreen: {screen: MyLoginScreen},
+        MySignupScreen: {screen: MySignupScreen}
     }
 )
 const Drawer = createDrawerNavigator(
@@ -409,12 +486,13 @@ const Drawer = createDrawerNavigator(
     }
 );
 
-const HomeScreen = createStackNavigator({
-    Drawer: {
-        screen: Drawer,
-    },
+const HomeScreen = createStackNavigator(
+    {
+        Drawer: {
+            screen: Drawer,
+        },
 
-})
-
+    }
+)
 HomeScreen.navigationOptions = {header: null};
 export default withNavigation(HomeScreen);
