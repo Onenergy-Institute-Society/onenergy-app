@@ -86,10 +86,11 @@ const QuestsDaily = (props) => {
                 show = 1;
                 break;
         }
+        if(show) console.log(item)
         return (
             show >= 0?
                 <>
-                    <AchievementItem mode = {''} item = {item} handleOnPress = {handleOnPress} />
+                    <AchievementItem mode = {'daily'} item = {item} handleOnPress = {handleOnPress} />
                     {item.list.map(date => {
                         let dayDiff = moment(today).diff(moment(date), 'days');
                         if(dayDiff <= 7 && dayDiff >= 1){

@@ -9,11 +9,37 @@ import {
 import {scale, windowWidth} from "../Utils/scale";
 import * as Progress from 'react-native-progress';
 import moment from 'moment';
+import dings from '../android/src/main/res/raw/bonus_claim.mp3';
+var Sound = require('react-native-sound');
+Sound.setCategory('Playback');
 
 const AchievementItem = props => {
     const { mode, item, date, handleOnPress } = props;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const today = new moment().format('YYYY-MM-DD');
+
+    const playPause = () => {
+        var ding = new Sound(dings, error => {
+            if (error) {
+                console.log('failed to load the sound', error);
+                return;
+            }
+            // if loaded successfully
+            console.log(
+                'duration in seconds: ' +
+                ding.getDuration() +
+                'number of channels: ' +
+                ding.getNumberOfChannels(),
+            );
+            ding.play(success => {
+                if (success) {
+                    console.log('successfully finished playing');
+                } else {
+                    console.log('playback failed due to audio decoding errors');
+                }
+            });
+        });
+    };
     return (
         <View style={[styles.boxShadow, styles.row]}>
             <View style={styles.rowLeft}>
@@ -40,10 +66,11 @@ const AchievementItem = props => {
             </View>
             <TouchableOpacity
                 onPress={() => {
-                    handleOnPress(item, mode)
+                    playPause();
+                    handleOnPress(item, mode);
                 }}
             >
-                <View style={[styles.rowRight, {backgroundColor:item.claim_date!==''?'gray':item.complete_date!==''||mode==='past'?'gold':'#7de7fa'}]}>
+                <View style={[styles.rowRight, {backgroundColor:item.complete_date===''?'#7de7fa':mode==='past'||item.claim_date===''?'gold':'gray'}]}>
                     {mode!=='past'&&item.claim_date!==''?
                         <>
                             <Text
