@@ -10,15 +10,17 @@ import {scale, windowWidth} from "../Utils/scale";
 import * as Progress from 'react-native-progress';
 import moment from 'moment';
 import dings from '../android/src/main/res/raw/bonus_claim.mp3';
+/*
 var Sound = require('react-native-sound');
 Sound.setCategory('Playback');
+*/
 
 const AchievementItem = props => {
     const { mode, item, date, handleOnPress } = props;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const today = new moment().format('YYYY-MM-DD');
 
-    const playPause = () => {
+/*    const playPause = () => {
         var ding = new Sound(dings, error => {
             if (error) {
                 console.log('failed to load the sound', error);
@@ -39,7 +41,7 @@ const AchievementItem = props => {
                 }
             });
         });
-    };
+    };*/
     return (
         <View style={[styles.boxShadow, styles.row]}>
             <View style={styles.rowLeft}>
@@ -66,7 +68,7 @@ const AchievementItem = props => {
             </View>
             <TouchableOpacity
                 onPress={() => {
-                    playPause();
+/*                    playPause();*/
                     handleOnPress(item, mode);
                 }}
             >
