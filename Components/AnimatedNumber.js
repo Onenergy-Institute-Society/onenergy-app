@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { TextInput, TextInputProps } from 'react-native';
 
+
 interface AnimatedNumberProps
     extends Omit<TextInputProps, 'editable' | 'value'> {
     formatter?: (value: number) => string;
@@ -76,6 +77,7 @@ export default function AnimatedNumber({
     return (
         <TextInput
             {...restProps}
+            textAlign={'center'}
             ref={textInputRef}
             editable={false}
             value={formatter(viewValue.current)}

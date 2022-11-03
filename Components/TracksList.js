@@ -13,6 +13,7 @@ import {scale} from '../Utils/scale';
 import AudioPlayer from './AudioPlayer';
 import {windowWidth} from "../Utils/Dimensions";
 import NotificationTabBarIcon from "./NotificationTabBarIcon";
+import AuthWrapper from "@src/components/AuthWrapper";
 
 const TracksList = (props) => {
     const {tracks, setMessageBarDisplay} = props;
@@ -71,8 +72,10 @@ const TracksList = (props) => {
                                 </View>
                             </View>
                         </ImageBackground>
-                        <NotificationTabBarIcon notificationID={'practice'} top={3} right={3} size={scale(15)}
-                                                fontSize={10} showNumber={false} data={item.id}/>
+                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                            <NotificationTabBarIcon notificationID={'practice'} top={3} right={3} size={scale(15)}
+                                                    fontSize={10} showNumber={false} data={item.id}/>
+                        </AuthWrapper>
                     </TouchableOpacity>
                     {showPlayer ? (
                         <AudioPlayer track={selectedTrack} setMessageBarDisplay={setMessageBarDisplay}/>

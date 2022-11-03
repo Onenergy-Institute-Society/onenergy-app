@@ -11,10 +11,11 @@ import {
     Alert
 } from "react-native";
 import Icon from "@src/components/Icon";
-import HomeModal from "./Screens/HomeModal";
+import InitData from "./Screens/InitData";
 import AppTouchableOpacity from "@src/components/AppTouchableOpacity";
 import {NavigationActions} from "react-navigation";
 import {useDispatch, useSelector} from "react-redux";
+import AuthWrapper from "@src/components/AuthWrapper";
 import moment from 'moment';
 import Share from "react-native-share";
 import IconButton from "@src/components/IconButton";
@@ -62,6 +63,8 @@ import FastImage from 'react-native-fast-image';
 import PracticesContent from "./Screens/PracticesContent";
 import ProgramsContent from "./Screens/ProgramsContent";
 import HomeScreen from './Screens/HomeScreen';
+import ForumItem from "./Components/ForumItem";
+
 export const applyCustomCode = externalCodeSetup => {
     externalCodeSetup.navigationApi.addNavigationRoute(
         "homePage",
@@ -70,12 +73,17 @@ export const applyCustomCode = externalCodeSetup => {
         "Main" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
+        "OnBoarding",
+        "OnBoarding",
+        OnBoarding,
+        "All"
+    );
+    externalCodeSetup.navigationApi.addNavigationRoute(
         "wisdom",
         "Wisdom",
         BlogsScreen,
         "Main" // "Auth" | "noAuth" | "Main" | "All"
     );
-
     externalCodeSetup.navigationApi.addNavigationRoute(
         "programs",
         "Programs",
@@ -110,13 +118,6 @@ export const applyCustomCode = externalCodeSetup => {
         "ChooseLanguage",
         "ChooseLanguage",
         ChooseLanguage,
-        "All"
-    );
-
-    externalCodeSetup.navigationApi.addNavigationRoute(
-        "OnBoarding",
-        "OnBoarding",
-        OnBoarding,
         "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
@@ -233,22 +234,10 @@ export const applyCustomCode = externalCodeSetup => {
         StatsScreen,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
-/*    externalCodeSetup.navigationApi.addNavigationRoute(
-        "MySignupScreen",
-        "MySignupScreen",
-        MySignupScreen,
-        "All" // "Auth" | "noAuth" | "Main" | "All"
-    );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "MyLoginScreen",
-        "MyLoginScreen",
-        MyLoginScreen,
-        "All" // "Auth" | "noAuth" | "Main" | "All"
-    );*/
-    externalCodeSetup.navigationApi.addNavigationRoute(
-        "HomeModal",
-        "HomeModal",
-        HomeModal,
+        "InitData",
+        "InitData",
+        InitData,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.blocksApi.addCustomBlockRender(
@@ -658,65 +647,67 @@ export const applyCustomCode = externalCodeSetup => {
                 weekly: {days:[], list:[]},
                 monthly: {days:[], list:[]},
                 achievements:[],
-                dailyNotify:0,
-                weeklyNotify:0,
-                monthlyNotify:0,
-                learnNotify:0,
-                startupNotify:0,
-                enduranceNotify:0,
                 achievementUpdate: ''
             }
         }, action) => {
             switch (action.type) {
                 case "ONENERGY_INIT_DATA":
+                    console.log('1')
                     const data = action.payload.data;
                     const loadGroup = action.payload.loadGroup;
                     const loadGuide = action.payload.loadGuide;
                     const loadAchievement = action.payload.loadAchievement;
                     const loadProgress = action.payload.loadProgress;
-
+                    console.log('2')
                     let idPracticeReducer = state.practiceReducer;
                     let idAchievementReducer = state.achievementReducer;
                     let idProgressReducer = state.progressReducer;
-
+                    console.log('3')
                     if(loadGroup) {
                         if(data.groups){
                             idPracticeReducer.groups = data.groups;
                         }
                         idPracticeReducer.groupUpdate = new Date().toISOString();
                     }
-
+                    console.log('4')
                     if(loadGuide) {
                         if (data.guides) {
                             idPracticeReducer.guides = data.guides;
                         }
                         idPracticeReducer.guideUpdate = new Date().toISOString();
                     }
-
+                    console.log('5')
                     if(loadAchievement) {
                         if (data.achievements) {
                             idAchievementReducer.achievements = data.achievements.achievements;
                             idAchievementReducer.weekly = data.achievements.weekly?data.achievements.weekly:{days:[], list:[]};
                             idAchievementReducer.monthly = data.achievements.monthly?data.achievements.monthly:{days:[], list:[]};
-                            idAchievementReducer.dailyNotify=0;
-                            idAchievementReducer.weeklyNotify=0;
-                            idAchievementReducer.monthlyNotify=0;
-                            idAchievementReducer.learnNotify=0;
-                            idAchievementReducer.startupNotify=0;
-                            idAchievementReducer.enduranceNotify=0;
                         }
                         idAchievementReducer.achievementUpdate = new Date().toISOString();
                     }
-
+                    console.log('6')
                     if(loadProgress) {
                         if (data.progress) {
                             idProgressReducer = data.progress;
                         } else {
                             idProgressReducer.points = {'qi': 0};
+                            idProgressReducer.totalDuration =  0;
+                            idProgressReducer.todayDuration = 0;
+                            idProgressReducer.weekDuration = 0;
+                            idProgressReducer.totalDays = 0;
+                            idProgressReducer.latestUpdate ='';
+                            idProgressReducer.lastUpload = '';
+                            idProgressReducer.practicesStats = [];
+                            idProgressReducer.routinesStats = [];
+                            idProgressReducer.groupStats = [];
+                            idProgressReducer.completedLessons = [];
+                            idProgressReducer.enrolledCourses = [];
+                            idProgressReducer.completedCourses = [];
                         }
+                        idProgressReducer.actionList = [];
                         idProgressReducer.progressUpdate = new Date().toISOString();
                     }
-
+                    console.log('7', idPracticeReducer, idAchievementReducer, idProgressReducer)
                     return {
                         ...state,
                         practiceReducer: idPracticeReducer,
@@ -778,6 +769,7 @@ export const applyCustomCode = externalCodeSetup => {
                         }
                     };
                 case "ONENERGY_PROGRESS_UPLOADED":
+                    console.log('upload_done')
                     return {
                         ...state,
                         progressReducer: {
@@ -790,20 +782,15 @@ export const applyCustomCode = externalCodeSetup => {
                     let acpTempPracticeState = state.practiceReducer;
                     let acpTempProgressState = state.progressReducer;
                     let acpTempAchievementState = state.achievementReducer;
-                    let acpDailyNotify = state.achievementReducer.dailyNotify;
-                    let acpWeeklyNotify = state.achievementReducer.weeklyNotify;
-                    let acpMonthlyNotify = state.achievementReducer.monthlyNotify;
-                    let acpLearnNotify = state.achievementReducer.learnNotify;
-                    let acpStartupNotify = state.achievementReducer.startupNotify;
-                    let acpEnduranceNotify = state.achievementReducer.enduranceNotify;
                     let acpMode = action.payload.mode;
                     let acpData = action.payload.data;
                     let today = new moment().format('YYYY-MM-DD');
-                    let sectionId;
+                    let tempSection;
                     let updateDaily;
                     let tmpAchievements;
                     let acpTempIndex;
 
+                    console.log('1')
                     if(!state.progressReducer.latestUpdate)
                     {
                         updateDaily = true;
@@ -812,17 +799,20 @@ export const applyCustomCode = externalCodeSetup => {
                             updateDaily = true;
                         }
                     }
+
+                    console.log('2')
                     if(updateDaily)
                     {
+                        console.log('21')
                         acpTempProgressState.todayDuration = 0;
                         if (new Date().getDay() === 1) {
                             acpTempProgressState.weekDuration = 0;
                         }
                         acpTempProgressState.totalDays += 1;
+                        console.log('22')
 
                         acpTempAchievementState.achievements.map((item, tempIndex) => {
                             if(item.type === 'daily') {
-                                acpTempAchievementState.achievements[tempIndex].step = 0;
                                 acpTempAchievementState.achievements[tempIndex].complete_date = '';
                                 acpTempAchievementState.achievements[tempIndex].claim_date = '';
                             }
@@ -832,11 +822,19 @@ export const applyCustomCode = externalCodeSetup => {
                                     acpTempAchievementState.achievements[tempIndex].complete_date = Math.floor(new Date().getTime() / 1000);
                                     if(acpTempAchievementState.achievements[tempIndex].type === 'daily')
                                     {
-                                        acpTempAchievementState.achievements[tempIndex].list.push(today)
+                                        acpTempAchievementState.achievements[tempIndex].step = 0;
+                                        acpTempAchievementState.achievements[tempIndex].list.push(today);
                                     }
+                                    acpTempProgressState.actionList.push({
+                                        'mode': 'CA',
+                                        'data': {'id':item.id, 'points':item.awards},
+                                        'time': Math.floor(new Date().getTime() / 1000)
+                                    });
                                 }
                             }
                         })
+
+                        console.log('23')
 
                         //weekly
                         if(acpTempAchievementState.weekly.days&&acpTempAchievementState.weekly.days.length)
@@ -850,12 +848,12 @@ export const applyCustomCode = externalCodeSetup => {
                                 acpTempAchievementState.weekly.days.push(today);
                                 if(acpTempAchievementState.weekly.days.length===7){
                                     acpTempAchievementState.weekly.list.push({completed_date:today, claim_date:''})
-                                    acpWeeklyNotify += 1;
                                 }
                             }
                         }else{
                             acpTempAchievementState.weekly.days=[today];
                         }
+                        console.log('24')
 
                         //monthly
                         if(acpTempAchievementState.monthly.days&&acpTempAchievementState.monthly.days.length)
@@ -869,20 +867,25 @@ export const applyCustomCode = externalCodeSetup => {
                                 acpTempAchievementState.monthly.days.push(today);
                                 if(acpTempAchievementState.monthly.days.length===30){
                                     acpTempAchievementState.monthly.list.push({"completed_date":today, claim_date:''})
-                                    acpMonthlyNotify +=1;
                                 }
                             }
                         }else{
                             acpTempAchievementState.monthly.days=[today];
                         }
                     }
+                    console.log('3')
+
                     let tempArray = [];
                     switch (acpMode)
                     {
                         case 'PP':
+                            console.log('31')
+
                             tempArray.push({'id':acpData, 'count':1});
                             break;
                         case 'PR':
+                            console.log('32')
+
                             let routineIndex;
                             routineIndex = state.practiceReducer.routines.findIndex((temp) => temp.id === acpData);
                             tempArray = state.practiceReducer.routines[routineIndex].routine;
@@ -901,6 +904,7 @@ export const applyCustomCode = externalCodeSetup => {
                             }
                             break;
                         case 'PG':
+                            console.log('33')
 
                             let groupIndex;
                             groupIndex = state.practiceReducer.groups.findIndex((temp) => temp.id === acpData);
@@ -921,21 +925,8 @@ export const applyCustomCode = externalCodeSetup => {
                                 if(acpTempAchievementState.achievements[tempIndex].total <= acpTempAchievementState.achievements[tempIndex].step) {
                                     acpTempAchievementState.achievements[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
                                     acpTempAchievementState.achievements[tempIndex].claim_date = '';
-                                    switch(acpTempAchievementState.achievements[tempIndex].type)
-                                    {
-                                        case 'daily':
-                                            acpTempAchievementState.achievements[tempIndex].list.push(acpTempAchievementState.achievements[tempIndex].complete_date);
-                                            acpDailyNotify += 1;
-                                            break;
-                                        case 'learn':
-                                            acpLearnNotify += 1;
-                                            break;
-                                        case 'startup':
-                                            acpStartupNotify += 1;
-                                            break;
-                                        case 'endurance':
-                                            acpEnduranceNotify += 1;
-                                            break;
+                                    if(acpTempAchievementState.achievements[tempIndex].type==='daily') {
+                                        acpTempAchievementState.achievements[tempIndex].list.push(acpTempAchievementState.achievements[tempIndex].complete_date);
                                     }
                                     acpTempAchievementState.achievements[tempIndex].awards.map(award => {
                                         if(acpTempProgressState.points[award.name]){
@@ -943,8 +934,12 @@ export const applyCustomCode = externalCodeSetup => {
                                         }else{
                                             acpTempProgressState.points[award.name] = parseInt(award.point);
                                         }
-
                                     })
+                                    acpTempProgressState.actionList.push({
+                                        'mode': 'CA',
+                                        'data': {'id':item.id, 'points':item.awards},
+                                        'time': Math.floor(new Date().getTime() / 1000)
+                                    });
                                 }
                             })
 
@@ -962,21 +957,27 @@ export const applyCustomCode = externalCodeSetup => {
                             }
                             break;
                     }
-
+                    console.log('4')
+                    console.log(tempArray);
                     tempArray.map(tempGuide => {
                         //Get the section ID from the guide ID
-                        sectionId = state.practiceReducer.guides.find((section) => {
+                        tempSection = state.practiceReducer.guides.find((section) => {
                             if(section.data.find(guide => guide.id === tempGuide.id))
-                                return section.id
+                                return true
                         });
+                        console.log('41', tempSection)
 
-                        tmpAchievements = state.achievementReducer.achievements.filter((item) =>
-                            (item.trigger === 'practice' &&
+                        tmpAchievements = state.achievementReducer.achievements.filter((item) => {
+                            if(item.trigger === 'practice' &&
                                 (
                                     (item.triggerPracticeOption === 'single' && (parseInt(item.triggerSinglePractice) === tempGuide.id || !item.triggerSinglePractice)) ||
-                                    (item.triggerPracticeOption === 'section' && (parseInt(item.triggerSectionPractice) === sectionId))
+                                    (item.triggerPracticeOption === 'section' && (parseInt(item.triggerSectionPractice) === tempSection.id))
                                 ) &&
-                                !item.complete_date));
+                                !item.complete_date)
+                            {
+                                return true;
+                            }});
+                        console.log('42',state.achievementReducer.achievements, tmpAchievements)
 
                         tmpAchievements.map((item) => {
                             let tempIndex = acpTempAchievementState.achievements.findIndex(achievement => achievement.id === item.id);
@@ -984,21 +985,8 @@ export const applyCustomCode = externalCodeSetup => {
                             if(acpTempAchievementState.achievements[tempIndex].total <= acpTempAchievementState.achievements[tempIndex].step) {
                                 acpTempAchievementState.achievements[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
                                 acpTempAchievementState.achievements[tempIndex].claim_date = '';
-                                switch(acpTempAchievementState.achievements[tempIndex].type)
-                                {
-                                    case 'daily':
-                                        acpTempAchievementState.achievements[tempIndex].list.push(acpTempAchievementState.achievements[tempIndex].complete_date);
-                                        acpDailyNotify += 1;
-                                        break;
-                                    case 'learn':
-                                        acpLearnNotify += 1;
-                                        break;
-                                    case 'startup':
-                                        acpStartupNotify += 1;
-                                        break;
-                                    case 'endurance':
-                                        acpEnduranceNotify += 1;
-                                        break;
+                                if(acpTempAchievementState.achievements[tempIndex].type==='daily') {
+                                    acpTempAchievementState.achievements[tempIndex].list.push(acpTempAchievementState.achievements[tempIndex].complete_date);
                                 }
                                 acpTempAchievementState.achievements[tempIndex].awards.map(award => {
                                     if(acpTempProgressState.points[award.name]){
@@ -1006,10 +994,15 @@ export const applyCustomCode = externalCodeSetup => {
                                     }else{
                                         acpTempProgressState.points[award.name] = parseInt(award.point);
                                     }
-
                                 })
+                                acpTempProgressState.actionList.push({
+                                    'mode': 'CA',
+                                    'data': {'id':item.id, 'points':item.awards},
+                                    'time': Math.floor(new Date().getTime() / 1000)
+                                });
                             }
                         })
+                        console.log('43')
 
                         acpTempPracticeState.guides.map((section, acpSectionIndex) => {
                             let acpGuideIndex = section.data.findIndex(item => item.id === tempGuide.id);
@@ -1033,6 +1026,7 @@ export const applyCustomCode = externalCodeSetup => {
                                         'duration': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count
                                     })
                                 }
+                                console.log(acpTempPracticeState.guides[acpSectionIndex])
                                 acpTempIndex = acpTempProgressState.practicesStats.findIndex(item => item.id === acpTempPracticeState.guides[acpSectionIndex].id)
                                 if(acpTempIndex >= 0)
                                 {
@@ -1047,16 +1041,19 @@ export const applyCustomCode = externalCodeSetup => {
                                         'duration': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count
                                     })
                                 }
-                                acpTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
+
                             }
                         });
                     })
+                    console.log('5', acpTempProgressState)
 
                     acpTempProgressState.actionList.push({
                         'mode': acpMode,
                         'data': acpData,
                         'time': Math.floor(new Date().getTime() / 1000)
                     });
+                    console.log('6')
+                    acpTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
 
                     return {
                         ...state,
@@ -1068,12 +1065,6 @@ export const applyCustomCode = externalCodeSetup => {
                                 }).sort((a, b) => {
                                     return a.claim_date > b.claim_date
                                 }),
-                            dailyNotify: acpDailyNotify,
-                            weeklyNotify: acpWeeklyNotify,
-                            monthlyNotify: acpMonthlyNotify,
-                            learnNotify: acpLearnNotify,
-                            startupNotify: acpStartupNotify,
-                            enduranceNotify: acpEnduranceNotify,
                         },
                         progressReducer: acpTempProgressState,
                         practiceReducer: acpTempPracticeState
@@ -1081,36 +1072,24 @@ export const applyCustomCode = externalCodeSetup => {
                 case "ONENERGY_ACHIEVEMENT_CLAIM":
                     let acTempAchievementState = state.achievementReducer.achievements;
                     let acTempProgressState = state.progressReducer;
-                    let acDailyNotify = state.achievementReducer.dailyNotify;
-                    let acWeeklyNotify = state.achievementReducer.weeklyNotify;
-                    let acMonthlyNotify = state.achievementReducer.monthlyNotify;
-                    let acLearnNotify = state.achievementReducer.learnNotify;
-                    let acStartupNotify = state.achievementReducer.startupNotify;
-                    let acEnduranceNotify = state.achievementReducer.enduranceNotify;
                     let acAchievementIndex = acTempAchievementState.findIndex(achievement => achievement.id === action.payload.id);
                     acTempAchievementState[acAchievementIndex].claim_date = new moment().format('YYYY-MM-DD');
-                    switch(action.payload.mode)
-                    {
-                        case 'daily':
-                            let dailyListItemIndex =  acTempAchievementState[acAchievementIndex].list.findIndex(item => item === action.payload.date)
-                            if(dailyListItemIndex >=0 ){
-                                acTempAchievementState[acAchievementIndex].list.splice(dailyListItemIndex, 1);
-                            }
-                            acDailyNotify -= 1;
-                            break;
-                        case 'learn':
-                            acLearnNotify -= 1;
-                            break;
-                        case 'startup':
-                            acStartupNotify -= 1;
-                            break;
-                        case 'endurance':
-                            acEnduranceNotify -= 1;
-                            break;
+                    console.log('claim');
+                    if(action.payload.mode==='daily'){
+                        let dailyListItemIndex =  acTempAchievementState[acAchievementIndex].list.findIndex(item => item === action.payload.date)
+                        if(dailyListItemIndex >=0 ){
+                            acTempAchievementState[acAchievementIndex].list.splice(dailyListItemIndex, 1);
+                        }
                     }
                     acTempAchievementState[acAchievementIndex].awards.map(award => {
                         acTempProgressState.points[award.name] += parseInt(award.point);
                     })
+                    acTempProgressState.actionList.push({
+                        'mode': 'CM',
+                        'data': {'id':action.payload.id, 'points':acTempAchievementState[acAchievementIndex].awards},
+                        'time': Math.floor(new Date().getTime() / 1000)
+                    });
+                    acTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
 
                     return {
                         ...state,
@@ -1121,12 +1100,6 @@ export const applyCustomCode = externalCodeSetup => {
                             }).sort((a, b) => {
                                 return a.claim_date > b.claim_date
                             }),
-                            dailyNotify: acDailyNotify,
-                            weeklyNotify: acWeeklyNotify,
-                            monthlyNotify: acMonthlyNotify,
-                            learnNotify: acLearnNotify,
-                            startupNotify: acStartupNotify,
-                            enduranceNotify: acEnduranceNotify,
                         },
                         progressReducer: acTempProgressState
                     };
@@ -1140,6 +1113,12 @@ export const applyCustomCode = externalCodeSetup => {
                         awcTempQuestState[awcAchievementIndex].awards.map(award => {
                             awcTempProgressState.points[award.name] += parseInt(award.point);
                         })
+                        awcTempProgressState.actionList.push({
+                            'mode': 'CM',
+                            'data': {'id':action.payload.id, 'points':awcTempQuestState[awcAchievementIndex].awards},
+                            'time': Math.floor(new Date().getTime() / 1000)
+                        });
+                        awcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     }
                     return {
                         ...state,
@@ -1150,33 +1129,38 @@ export const applyCustomCode = externalCodeSetup => {
                     };
                 case "ONENERGY_ACHIEVEMENT_CLAIM_WEEKLY_MONTHLY":
                     let acwTempAchievementState = state.achievementReducer;
-                    let acwWeeklyNotify = state.achievementReducer.weeklyNotify;
-                    let acwMonthlyNotify = state.achievementReducer.monthlyNotify;
                     let acwTempProgressState = state.progressReducer;
                     switch(action.payload.mode) {
                         case 'weekly':
                             let weeklyListItemIndex = acwTempAchievementState.weekly.list.findIndex(item => item.completed_date === action.payload.date)
                             if (weeklyListItemIndex >= 0) {
                                 acwTempAchievementState.weekly.list[weeklyListItemIndex].claim_date = new moment().format('YYYY-MM-DD');
-                                acwTempProgressState.points += 20;
+                                acwTempProgressState.points.qi += 20;
+                                acwTempProgressState.actionList.push({
+                                    'mode': 'CM',
+                                    'data': {'id':action.payload.id, 'points':{'qi':20}},
+                                    'time': Math.floor(new Date().getTime() / 1000)
+                                });
                             }
-                            acwWeeklyNotify -= 1;
                             break;
                         case 'monthly':
                             let monthlyListItemIndex = acwTempAchievementState.monthly.list.findIndex(item => item.completed_date === action.payload.date)
                             if (monthlyListItemIndex >= 0) {
                                 acwTempAchievementState.monthly.list[monthlyListItemIndex].claim_date = new moment().format('YYYY-MM-DD');
-                                acwTempProgressState.points += 100;
+                                acwTempProgressState.points.qi += 100;
+                                acwTempProgressState.actionList.push({
+                                    'mode': 'CM',
+                                    'data': {'id':action.payload.id, 'points':{'qi':100}},
+                                    'time': Math.floor(new Date().getTime() / 1000)
+                                });
                             }
-                            acwMonthlyNotify -= 1;
                             break;
                     }
+                    acwTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     return {
                         ...state,
                         achievementReducer: {
                             ...state.achievementReducer,
-                            weeklyNotify: acwWeeklyNotify,
-                            monthlyNotify: acwMonthlyNotify,
                         },
                         progressReducer: acwTempProgressState
                     };
@@ -1184,10 +1168,6 @@ export const applyCustomCode = externalCodeSetup => {
                     let olcTempProgressState = state.progressReducer;
                     let olcTempAchievementState = state.achievementReducer.achievements;
                     let lesson = action.payload;
-                    let olcDailyNotify;
-                    let olcLearnNotify;
-                    let olcStartupNotify;
-                    let olcEnduranceNotify;
                     let olcTempAchievements = state.achievementReducer.achievements.filter(item =>
                         (item.trigger === 'course' &&
                         (
@@ -1206,21 +1186,8 @@ export const applyCustomCode = externalCodeSetup => {
                         if(!lesson.settings.next_lesson) {
                             olcTempAchievementState[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
                             olcTempAchievementState[tempIndex].claim_date = '';
-                            switch(olcTempAchievementState[tempIndex].type)
-                            {
-                                case 'daily':
-                                    olcTempAchievementState[tempIndex].list.push(olcTempAchievementState[tempIndex].complete_date);
-                                    olcDailyNotify += 1;
-                                    break;
-                                case 'learn':
-                                    olcLearnNotify += 1;
-                                    break;
-                                case 'startup':
-                                    olcStartupNotify += 1;
-                                    break;
-                                case 'endurance':
-                                    olcEnduranceNotify += 1;
-                                    break;
+                            if(olcTempAchievementState[tempIndex].type==='daily'){
+                                olcTempAchievementState[tempIndex].list.push(olcTempAchievementState[tempIndex].complete_date);
                             }
                             console.log('4');
 
@@ -1230,8 +1197,12 @@ export const applyCustomCode = externalCodeSetup => {
                                 }else{
                                     olcTempProgressState.points[award.name] = parseInt(award.point);
                                 }
-
                             })
+                            olcTempProgressState.actionList.push({
+                                'mode': 'CA',
+                                'data': {'id':item.id, 'points':item.awards},
+                                'time': Math.floor(new Date().getTime() / 1000)
+                            });
                         }
                     })
                     console.log('5')
@@ -1250,6 +1221,7 @@ export const applyCustomCode = externalCodeSetup => {
                             'time': Math.floor(new Date().getTime() / 1000)
                         });
                     }
+                    olcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     return {
                         ...state,
                         achievementReducer: {
@@ -1260,10 +1232,6 @@ export const applyCustomCode = externalCodeSetup => {
                                 }).sort((a, b) => {
                                     return a.claim_date > b.claim_date
                                 }),
-                            dailyNotify: olcDailyNotify,
-                            learnNotify: olcLearnNotify,
-                            startupNotify: olcStartupNotify,
-                            enduranceNotify: olcEnduranceNotify,
                         },
                         progressReducer: olcTempProgressState
                     };
@@ -1271,10 +1239,11 @@ export const applyCustomCode = externalCodeSetup => {
                     let oceTempProgressState = state.progressReducer;
                     oceTempProgressState.enrolledCourses.push({"id":action.payload, "date":Math.floor(new Date().getTime() / 1000)});
                     oceTempProgressState.actionList.push({
-                        'mode': 'course_enrolled',
+                        'mode': 'CE',
                         'data': action.payload,
                         'time': Math.floor(new Date().getTime() / 1000)
                     });
+                    oceTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     return {
                         ...state,
                         progressReducer: oceTempProgressState
@@ -1503,7 +1472,7 @@ export const applyCustomCode = externalCodeSetup => {
                 </View>
             ]
         } else {
-            if (user && courseVM.price.required_points > 0 && progressReducer.points.qi < courseVM.price.required_points && courseVM.error.message) {
+            if (user && courseVM.price.required_points > 0 && progressReducer&&progressReducer.points&&progressReducer.points.length?progressReducer.points.qi:0 < courseVM.price.required_points && courseVM.error.message) {
                 const Info =
                     <View style={{paddingHorizontal: 20, paddingVertical: 10}}>
                         <Text style={{color: "red", fontSize: scale(14)}}>{courseVM.error.message}</Text>
@@ -1692,8 +1661,10 @@ export const applyCustomCode = externalCodeSetup => {
                             marginBottom: 0,
                         }}
                     />
-                    <NotificationTabBarIcon notificationID={'guide_page'} top={-3} right={-3} size={scale(10)}
-                                            showNumber={false}/>
+                    <AuthWrapper actionOnGuestLogin={'hide'}>
+                        <NotificationTabBarIcon notificationID={'guide_page'} top={-3} right={-3} size={scale(10)}
+                                                showNumber={false}/>
+                    </AuthWrapper>
                 </View>
             case "Wisdom":
                 return <View
@@ -1714,8 +1685,10 @@ export const applyCustomCode = externalCodeSetup => {
                             marginBottom: 0,
                         }}
                     />
-                    <NotificationTabBarIcon notificationID={'blog'} top={-3} right={-3} size={scale(10)}
-                                            showNumber={false}/>
+                    <AuthWrapper actionOnGuestLogin={'hide'}>
+                        <NotificationTabBarIcon notificationID={'blog'} top={-3} right={-3} size={scale(10)}
+                                                showNumber={false}/>
+                    </AuthWrapper>
                 </View>
             default:
                 return icon;
@@ -1875,6 +1848,7 @@ export const applyCustomCode = externalCodeSetup => {
             </AppTouchableOpacity>
         </View>
     })
+    externalCodeSetup.forumsHooksApi.setForumItemComponent(props => <ForumItem {...props} />)
     externalCodeSetup.navigationApi.setAnimatedSwitchNavigator((routes, options, routeProps) => {
         const feature = routeProps.settings.features.multisite_network;
         const hasMultiSite = Platform.select({
@@ -1916,7 +1890,7 @@ export const applyCustomCode = externalCodeSetup => {
 
         const newRoutes = {
             ...routes,
-/*            ChooseLanguage: {
+            /*  ChooseLanguage: {
                 screen: ChooseLanguage
             },*/
             OnBoarding: {
@@ -1933,9 +1907,8 @@ export const applyCustomCode = externalCodeSetup => {
             routes: newRoutes,
             options: newOptions,
         }
-
     })
-};
+}
 
 
 

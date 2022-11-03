@@ -136,7 +136,6 @@ const EditRoutine = props => {
                 return false;
             }
             setLoading(true);
-            console.log(createTracks(routineDetail.routine))
             dispatch({
                 type: "ONENERGY_ROUTINE_SAVE",
                 payload: routineDetail
@@ -172,7 +171,6 @@ const EditRoutine = props => {
                         }
                     })
                 })
-                console.log(tmpGuide)
                 if(tmpGuide){
                     tmpGuide.parts.map(part => {
                         if(part.start){

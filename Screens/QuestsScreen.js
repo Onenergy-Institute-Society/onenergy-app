@@ -11,6 +11,7 @@ import DailyQuests from "../Components/QuestsDaily";
 import WeeklyQuests from "../Components/QuestsWeekly";
 import MonthlyQuests from "../Components/QuestsMonthly";
 import QiPointHeader from "../Components/QiPointHeader";
+import AuthWrapper from "@src/components/AuthWrapper";
 
 const QuestsDaily = () => {
     try {
@@ -53,7 +54,9 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'quest_daily_tab'} />
-                        <NotificationTabBarIcon notificationID={'quest_daily'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                            <NotificationTabBarIcon notificationID={'quest_daily'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        </AuthWrapper>
                     </View>
                 ),
             }
@@ -64,7 +67,9 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'quest_weekly_tab'} />
-                        <NotificationTabBarIcon notificationID={'quest_weekly'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                            <NotificationTabBarIcon notificationID={'quest_weekly'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        </AuthWrapper>
                     </View>
                 ),
             }
@@ -75,7 +80,9 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'quest_monthly_tab'} />
-                        <NotificationTabBarIcon notificationID={'quest_monthly'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                            <NotificationTabBarIcon notificationID={'quest_monthly'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        </AuthWrapper>
                     </View>
                 ),
             }

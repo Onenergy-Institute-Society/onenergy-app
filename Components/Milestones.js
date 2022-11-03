@@ -1,12 +1,25 @@
 import React from 'react';
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
-import {View, Text, StyleSheet, SafeAreaView, FlatList, TouchableWithoutFeedback} from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    SafeAreaView,
+    FlatList,
+    LayoutAnimation,
+    Platform, UIManager
+} from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import MilestonesAccordian from "./MilestonesAccordian";
-import * as Progress from 'react-native-progress';
-import moment from 'moment';
+import AchievementItem from "./AchievementItem";
+if (
+    Platform.OS === "android" &&
+    UIManager.setLayoutAnimationEnabledExperimental
+) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 const Milestones = (props) => {
     const {type} = props;
@@ -15,25 +28,22 @@ const Milestones = (props) => {
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === type):null);
     const dispatch = useDispatch();
-    const handleOnPress = (item) => {
+
+    const handleOnPress = (item, mode) => {
+        if (Platform.OS !== "android") {
+            LayoutAnimation.configureNext(
+                LayoutAnimation.Presets.spring
+            );
+        }
         if(item.complete_date&&!item.claim_date) {
             dispatch({
                 type: "ONENERGY_ACHIEVEMENT_CLAIM",
                 payload: {
-                    'mode': type,
+                    'mode': mode,
                     'id': item.id
                 }
             });
         }
-        const apiMilestone = getApi(props.config);
-        apiMilestone.customRequest(
-            "wp-json/onenergy/v1/awardClaim",
-            "post",
-            {"id":item.id},
-            null,
-            {},
-            false
-        ).then();
     }
 
     const renderItem = ({ item }) => {
@@ -42,18 +52,18 @@ const Milestones = (props) => {
             case 'course':
                 switch(item.showCourseOption){
                     case 'enrolled':
-                        show = progressReducer.enrolledCourses.findIndex(course => course.id === parseInt(item.showCourse));
+                        show = progressReducer.enrolledCourses&&progressReducer.enrolledCourses.findIndex(course => course.id === parseInt(item.showCourse));
                         break;
                     case 'completed':
-                        show = progressReducer.completedCourses.findIndex(course => course.id === parseInt(item.showCourse));
+                        show = progressReducer.completedCourses&&progressReducer.completedCourses.findIndex(course => course.id === parseInt(item.showCourse));
                         break;
                 }
                 break;
             case 'lesson':
-                show = progressReducer.completedLessons.findIndex(lesson => lesson.id === parseInt(item.showLesson));
+                show = progressReducer.completedLessons&&progressReducer.completedLessons.findIndex(lesson => lesson.id === parseInt(item.showLesson));
                 break;
             case 'achievement':
-                show = achievementReducer.findIndex(achievement => (achievement.id === parseInt(item.showAchievement) && achievement.complete_date));
+                show = achievementReducer&&achievementReducer.findIndex(achievement => (achievement.id === parseInt(item.showAchievement) && achievement.complete_date));
                 break;
             default:
                 show = 1;
@@ -64,96 +74,7 @@ const Milestones = (props) => {
                 Array.isArray(item.step)?
                     <MilestonesAccordian item={item} handleOnPress={handleOnPress} optionData={optionData} />
                     :
-                    <View style={[styles.boxShadow, styles.row]}>
-                        <View style={styles.rowLeft}>
-                            <Text style={styles.title}>{item.title}</Text>
-                            {!item.claim_date?
-                                <View style={{marginTop:10}}>
-                                    <Progress.Bar showsText={true} borderColor={"#4942e1"} color={item.complete_date?"lightgreen":"#7de7fa"} unfilledColor={"black"} borderRadius={9}
-                                                  progress={item.step / item.total}
-                                                  width={windowWidth/2} height={scale(16)}/>
-                                    <View
-                                        style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}><Text style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
-                                        width: -1,
-                                        height: 1
-                                    }}}>{item.complete_date?"completed":item.step + ' / ' + item.total}</Text></View>
-                                </View>
-                            :null}
-                        </View>
-                        <TouchableWithoutFeedback
-                            onPress={() => {
-                                handleOnPress(item);
-                            }}
-                        >
-                            <View style={[styles.rowRight, {backgroundColor:item.claim_date?'gray':item.complete_date?'gold':'#7de7fa'}]}>
-                                {
-                                    item.claim_date ?
-                                        <>
-                                            <Text
-                                                style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                        width: -1,
-                                                        height: 1
-                                                    }}}
-                                            >
-                                                CLEARED
-                                            </Text>
-                                            <Text
-                                                numberOfLines={1}
-                                                style={{flexWrap: "nowrap", fontSize:scale(11), fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                        width: -1,
-                                                        height: 1
-                                                    }}}
-                                            >
-                                                {item.claim_date}
-                                            </Text>
-                                        </>
-                                        :
-                                        item.complete_date ?
-                                        <>
-                                            <Text
-                                                style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                        width: -1,
-                                                        height: 1
-                                                    }}}
-                                            >
-                                                CLAIM
-                                            </Text>
-                                            {item.awards.map(point =>
-                                                <Text
-                                                    style={{flexWrap: "nowrap", fontSize:scale(24), fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                            width: -1,
-                                                            height: 1
-                                                        }}}
-                                                >
-                                                    +{point.point} {optionData.points.find(pt => pt.pointName === point.name).pointTitle}
-                                                </Text>
-                                            )}
-                                        </>
-                                        :
-                                        <>
-                                            <Text
-                                                style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                        width: -1,
-                                                        height: 1
-                                                    }}}
-                                            >
-                                                REWARD
-                                            </Text>
-                                            {item.awards.map(point =>
-                                                <Text
-                                                    style={{flexWrap: "nowrap", fontSize:scale(24), fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                            width: -1,
-                                                            height: 1
-                                                        }}}
-                                                >
-                                                    +{point.point} {optionData.points.find(pt => pt.pointName === point.name).pointTitle}
-                                                </Text>
-                                            )}
-                                        </>
-                                }
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
+                    <AchievementItem mode = {type} item = {item} handleOnPress = {handleOnPress} />
             :null
         );
     };

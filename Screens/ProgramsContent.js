@@ -20,6 +20,7 @@ import { Modalize } from 'react-native-modalize';
 import EventList from "../Components/EventList";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import analytics from '@react-native-firebase/analytics';
+import AuthWrapper from "@src/components/AuthWrapper";
 const ProgramsContent = props => {
     const { navigation, screenProps } = props;
     const user = useSelector((state) => state.user.userObject);
@@ -46,19 +47,20 @@ const ProgramsContent = props => {
         setHelpModal(optionData.helps.find(el => el.name === 'program_popup'));
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'programs_title').title,
-            user: user,
             toggleHelpModal: toggleHelpModal,
         });
-        navigation.addListener('willFocus', onFocusHandler)
-        return () => {
-            navigation.removeListener('willFocus', onFocusHandler)
+        if(user) {
+            navigation.addListener('willFocus', onFocusHandler)
+            return () => {
+                navigation.removeListener('willFocus', onFocusHandler)
+            }
         }
     },[]);
     return (
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                 <View style={{marginVertical: scale(5)}}>
-                    <EventList location={'program'} eventsDate={optionData.goals}/>
+                    <EventList location={'program'} />
                 </View>
                 <View style={styles.heading_title}>
                     <Text style={styles.heading}>Preparatory Courses</Text>
@@ -214,59 +216,61 @@ ProgramsContent.navigationOptions = ({ navigation }) => {
                         marginLeft: 20,
                     }}
                 />
-                <NotificationTabBarIcon notificationID={'left_menu'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                <AuthWrapper actionOnGuestLogin={'hide'}>
+                    <NotificationTabBarIcon notificationID={'left_menu'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                </AuthWrapper>
             </TouchableScale>
     }
     return {
         title: navigation.getParam('title'),
         headerLeft: headerLeft,
         headerRight:
-            navigation.getParam('user')?
-            <View style={{flexDirection: "row", justifyContent:"flex-end", marginRight:15}}>
-                <TouchableScale
-                    onPress={() => {
-                        navigation.navigate("MilestonesScreen")
-                    }}
-                >
-                    <IconButton
-                        icon={require("@src/assets/img/certificate.png")}
-                        tintColor={"#4942e1"}
-                        style={{
-                            height: 20,
-                            marginRight: 5,
+            <AuthWrapper actionOnGuestLogin={'hide'}>
+                <View style={{flexDirection: "row", justifyContent:"flex-end", marginRight:15}}>
+                    <TouchableScale
+                        onPress={() => {
+                            navigation.navigate("MilestonesScreen")
                         }}
-                    />
-                    <NotificationTabBarIcon notificationID={'milestone'}  top={0} right={0} size={scale(10)} showNumber={false} />
-                </TouchableScale>
-                <TouchableScale
-                    onPress={() => {
-                        navigation.navigate("QuestsScreen")
-                    }}
-                >
-                    <IconButton
-                        icon={require("@src/assets/img/achievement-action-icon.png")}
-                        tintColor={"#4942e1"}
-                        style={{
-                            height: 20,
-                            marginRight: 0,
+                    >
+                        <IconButton
+                            icon={require("@src/assets/img/certificate.png")}
+                            tintColor={"#4942e1"}
+                            style={{
+                                height: 20,
+                                marginRight: 5,
+                            }}
+                        />
+                        <NotificationTabBarIcon notificationID={'milestone'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                    </TouchableScale>
+                    <TouchableScale
+                        onPress={() => {
+                            navigation.navigate("QuestsScreen")
                         }}
-                    />
-                    <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
-                </TouchableScale>
-                <TouchableOpacity
-                    onPress={() =>  params.toggleHelpModal()}
-                >
-                    <IconButton
-                        icon={require("@src/assets/img/help.png")}
-                        tintColor={"#4942e1"}
-                        style={{
-                            height: 20,
-                            marginRight:0,
-                        }}
-                    />
-                </TouchableOpacity>
-            </View>
-            :null
+                    >
+                        <IconButton
+                            icon={require("@src/assets/img/achievement-action-icon.png")}
+                            tintColor={"#4942e1"}
+                            style={{
+                                height: 20,
+                                marginRight: 0,
+                            }}
+                        />
+                        <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                    </TouchableScale>
+                    <TouchableOpacity
+                        onPress={() =>  params.toggleHelpModal()}
+                    >
+                        <IconButton
+                            icon={require("@src/assets/img/help.png")}
+                            tintColor={"#4942e1"}
+                            style={{
+                                height: 20,
+                                marginRight:0,
+                            }}
+                        />
+                    </TouchableOpacity>
+                </View>
+            </AuthWrapper>
     }
 }
 export default withNavigation(ProgramsContent);

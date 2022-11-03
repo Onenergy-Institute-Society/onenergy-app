@@ -120,8 +120,8 @@ const PracticeGroup = props => {
     const renderItem = ({item}) => {
 
         let detail = item.detail;
-        const conditionLessons = item.lessons.every(value => progressReducer.completedLessons.some(lesson => lesson.id === value));
-        user && progressReducer.completedLessons.map((lesson) => {
+        const conditionLessons = item.lessons.every(value => progressReducer.completedLessons&&progressReducer.completedLessons.some(lesson => lesson.id === value));
+        user && progressReducer.completedLessons&&progressReducer.completedLessons.map((lesson) => {
             detail = detail.replace('<span id="' + lesson.id + '"></span>', '<span style="color:green">(Passed)</span>')
         })
         const date = new Date().getDate(); //To get the Current Date
@@ -243,7 +243,7 @@ const PracticeGroup = props => {
                 <ScrollView nestedScrollEnabled={true} styles={styles.scrollView} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length)?
                         <View>
-                            <EventList location={'practice_group'} eventsDate={optionData.goals}/>
+                            <EventList location={'practice_group'} />
                         </View>
                         : null
                     }

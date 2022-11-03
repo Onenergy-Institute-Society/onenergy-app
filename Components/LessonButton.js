@@ -141,7 +141,7 @@ const LessonButton = (props) => {
 
     return (
         <View style={[global.row, {paddingHorizontal: 20, paddingVertical: 15}]}>
-            {progressReducer.completedLessons.includes(lesson.id)?
+            {progressReducer.completedLessons&&progressReducer.completedLessons.includes(lesson.id)?
                 <View style={[
                     global.completeLessonButtonW,
                     { flex: 1, backgroundColor: colors.secondaryButtonBg }

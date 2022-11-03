@@ -15,8 +15,9 @@ import moment from 'moment';
 import FastImage from "react-native-fast-image";
 
 const EventList = props => {
-    const {navigation, location, eventsDate} = props;
+    const {navigation, location} = props;
     const user = useSelector((state) => state.user.userObject);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements:null);
     const [showAlert, setShowAlert] = useState(false);
@@ -31,7 +32,7 @@ const EventList = props => {
         }, 10000);
     },[])
     const renderItem = () => {
-        return eventsDate.map((item) => {
+        return optionData.goals.map((item) => {
             let showDate = null;
             let show = false;
             switch(item.permission.toString())
@@ -66,7 +67,7 @@ const EventList = props => {
                         break;
                     case 'course':
                         if (item.showCourseOption === 'enrolled') {
-                            let showCourse = progressReducer.enrolledCourses.find(course => course.id === parseInt(item.showCourse));
+                            let showCourse = progressReducer.enrolledCourses&&progressReducer.enrolledCourses.find(course => course.id === parseInt(item.showCourse));
                             if (showCourse) {
                                 showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
                                 if (current_time > showDate) {
@@ -74,7 +75,7 @@ const EventList = props => {
                                 }
                             }
                         } else if (item.showCourseOption === 'completed') {
-                            let showCourse = progressReducer.completedCourses.find(course => course.id === parseInt(item.showCourse));
+                            let showCourse = progressReducer.completedCourses&&progressReducer.completedCourses.find(course => course.id === parseInt(item.showCourse));
                             if (showCourse) {
                                 showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
                                 if (current_time > showDate) {
@@ -84,7 +85,7 @@ const EventList = props => {
                         }
                         break;
                     case 'lesson':
-                        let showLesson = progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.showLesson));
+                        let showLesson = progressReducer.completedLessons&&progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.showLesson));
                         if (showLesson) {
                             showDate = new moment.unix(showLesson['date']).add(item.delay, 'd');
                             if (current_time > showDate) {
@@ -93,7 +94,7 @@ const EventList = props => {
                         }
                         break;
                     case 'achievement':
-                        let showAchievement = user&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.showAchievement));
+                        let showAchievement = user&&achievementReducer&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.showAchievement));
                         if (showAchievement) {
                             showDate = new moment.unix(showAchievement['date']).add(item.delay, 'd');
                             if (current_time > showDate) {
@@ -106,6 +107,7 @@ const EventList = props => {
                         break;
                 }
                 if (show) {
+
                     switch (item.hide) {
                         case 'date':
                             switch (item.hideDateOption.hideDateType) {
@@ -125,22 +127,22 @@ const EventList = props => {
                             break;
                         case 'course':
                             if (item.hideCourseOption === 'enrolled') {
-                                if (progressReducer.enrolledCourses.find(course => course.id === parseInt(item.hideCourse))) {
+                                if (progressReducer.enrolledCourses&&progressReducer.enrolledCourses.find(course => course.id === parseInt(item.hideCourse))) {
                                     show = false;
                                 }
                             } else if (item.hideCourseOption === 'completed') {
-                                if (progressReducer.completedCourses.find(course => course.id === parseInt(item.hideCourse))) {
+                                if (progressReducer.completedCourses&&progressReducer.completedCourses.find(course => course.id === parseInt(item.hideCourse))) {
                                     show = false;
                                 }
                             }
                             break;
                         case 'lesson':
-                            if (progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
+                            if (progressReducer.completedLessons&&progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
                                 show = false;
                             }
                             break;
                         case 'achievement':
-                            if (achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.hideAchievement))) {
+                            if (achievementReducer&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.hideAchievement))) {
                                 show = false;
                             }
                             break;
@@ -161,7 +163,6 @@ const EventList = props => {
             }else{
                 show = false;
             }
-            if(show)
             return (
                 show?
                     <View style={styles.container}>
@@ -272,7 +273,7 @@ const EventList = props => {
         })
     }
     return (
-        eventsDate?renderItem():null
+        renderItem()
     );
 };
 

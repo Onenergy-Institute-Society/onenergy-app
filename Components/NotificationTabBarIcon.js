@@ -9,7 +9,7 @@ const NotificationTabBarIcon = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const guideReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer.guides:null);
-    const postReducer = useSelector((state) => state.postReducer);
+    const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const {notificationID, top, right, size, fontSize=8, showNumber=false, data=''} = props;
 
     let notificationCount=0;
@@ -91,39 +91,50 @@ const NotificationTabBarIcon = props => {
                 break;
             case 'quest_daily':
                 if (user&&achievementReducer)
-                    notificationCount = achievementReducer.dailyNotify ? achievementReducer.dailyNotify : 0
+                    notificationCount = achievementReducer.achievements.filter(item => item.type==='daily'&&item.complete_date!==''&&item.claim_date==='').length;
                 break;
             case 'quest_weekly':
                 if (user&&achievementReducer)
-                    notificationCount = achievementReducer.weeklyNotify ? achievementReducer.weeklyNotify : 0
+                    notificationCount = achievementReducer.weekly.list.filter(item => item.complete_date!==''&&item.claim_date==='').length;
                 break;
             case 'quest_monthly':
                 if (user&&achievementReducer)
-                    notificationCount = achievementReducer.monthlyNotify ? achievementReducer.monthlyNotify : 0
+                    notificationCount = achievementReducer.monthly.list.filter(item => item.complete_date!==''&&item.claim_date==='').length;
                 break;
             case 'quest':
-                if (user&&achievementReducer)
-                    notificationCount = achievementReducer.dailyNotify ? achievementReducer.dailyNotify : 0 + achievementReducer.weeklyNotify ? achievementReducer.weeklyNotify : 0 + achievementReducer.monthlyNotify ? achievementReducer.monthlyNotify : 0
+                if (user&&achievementReducer){
+                    let dailyCount = achievementReducer.achievements.filter(item => item.type==='daily' && item.complete_date!=='' && item.claim_date==='').length;
+                    let weeklyCount = achievementReducer.weekly.list.filter(item => item.complete_date!=='' && item.claim_date==='').length;
+                    let monthlyCount = achievementReducer.monthly.list.filter(item => item.complete_date!=='' && item.claim_date==='').length;
+                    notificationCount = dailyCount+weeklyCount+monthlyCount;
+                }
                 break;
             case 'milestone':
                 if (user&&achievementReducer)
-                    notificationCount = achievementReducer.learnNotify ? achievementReducer.learnNotify : 0 + achievementReducer.startupNotify ? achievementReducer.startupNotify : 0 + achievementReducer.enduranceNotify ? achievementReducer.enduranceNotify : 0;
+                    notificationCount = achievementReducer.achievements.filter(item => item.type!=='daily'&&item.complete_date!==''&&item.claim_date==='').length;
                 break;
             case 'milestone_learn':
                 if (user&&achievementReducer)
-                    notificationCount = achievementReducer.learnNotify ? achievementReducer.learnNotify : 0;
+                    notificationCount = achievementReducer.achievements.filter(item => item.type==='learn'&&item.complete_date!==''&&item.claim_date==='').length;
+                console.log(achievementReducer.achievements.filter(item => item.type==='learn'&&item.complete_date!==''&&item.claim_date===''))
                 break;
             case 'milestone_startup':
                 if (user&&achievementReducer)
-                    notificationCount = achievementReducer.startupNotify ? achievementReducer.startupNotify : 0;
+                    notificationCount = achievementReducer.achievements.filter(item => item.type==='startup'&&item.complete_date!==''&&item.claim_date==='').length;
+                console.log(achievementReducer.achievements.filter(item => item.type==='startup'&&item.complete_date!==''&&item.claim_date===''))
                 break;
             case 'milestone_endurance':
                 if (user&&achievementReducer)
-                    notificationCount = achievementReducer.enduranceNotify ? achievementReducer.enduranceNotify : 0;
+                    notificationCount = achievementReducer.achievements.filter(item => item.type==='endurance'&&item.complete_date!==''&&item.claim_date==='').length;
                 break;
             case 'left_menu':
-                if (user&&achievementReducer)
-                    notificationCount = achievementReducer.dailyNotify ? achievementReducer.dailyNotify : 0 + achievementReducer.weeklyNotify ? achievementReducer.weeklyNotify : 0 + achievementReducer.monthlyNotify ? achievementReducer.monthlyNotify : 0 + achievementReducer.learnNotify ? achievementReducer.learnNotify : 0 + achievementReducer.startupNotify ? achievementReducer.startupNotify : 0 + achievementReducer.enduranceNotify ? achievementReducer.enduranceNotify : 0;
+                if (user&&achievementReducer){
+                    let dailyCount = achievementReducer.achievements.filter(item => item.type==='daily' && item.complete_date!=='' && item.claim_date==='').length;
+                    let weeklyCount = achievementReducer.weekly.list.filter(item => item.complete_date!=='' && item.claim_date==='').length;
+                    let monthlyCount = achievementReducer.monthly.list.filter(item => item.complete_date!=='' && item.claim_date==='').length;
+                    let milestoneCount = achievementReducer.achievements.filter(item => item.type!=='daily'&&item.complete_date!==''&&item.claim_date==='').length;
+                    notificationCount = dailyCount+weeklyCount+monthlyCount+milestoneCount;
+                }
                 break;
             case 'practice':
                 if(guideReducer) {

@@ -6,17 +6,18 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback, SafeAreaView
 } from 'react-native';
-import { StackActions, NavigationActions, withNavigation} from "react-navigation";
+import { withNavigation } from "react-navigation";
 import {createDrawerNavigator} from 'react-navigation-drawer';
 import {useSelector} from "react-redux";
 import FastImage from 'react-native-fast-image';
 import {createStackNavigator} from 'react-navigation-stack';
 import HomeContent from './HomeContent';
-import MySignupScreen from "../Components/MySignupScreen";
-import MyLoginScreen from "../Components/MyLoginScreen";
 import IconButton from "@src/components/IconButton";
 import {scale} from "../Utils/scale";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
+import AuthWrapper from "@src/components/AuthWrapper";
+import MyLoginScreen from "../Components/MyLoginScreen";
+import MySignupScreen from "../Components/MySignupScreen";
 
 const CustomDrawerContentComponent = (props) => {
     const {navigation, screenProps} = props;
@@ -88,7 +89,7 @@ const CustomDrawerContentComponent = (props) => {
                                         </Text>
                                     </View>
                                 ) : null}
-                                {progressReducer ? Object.entries(progressReducer.points).map(([key, value]) => (
+                                {progressReducer&&progressReducer.points&&progressReducer.points.length?Object.entries(progressReducer.points).map(([key, value]) => (
                                     <View>
                                         <View style={{
                                             flexDirection: "row",
@@ -265,8 +266,10 @@ const CustomDrawerContentComponent = (props) => {
                                                 {optionData.titles.find(el => el.id === 'left_menu_quests').title}
                                             </Text>
                                         </View>
-                                        <NotificationTabBarIcon notificationID={'quest'} top={0} right={0}
-                                                                size={scale(10)} showNumber={false}/>
+                                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                                            <NotificationTabBarIcon notificationID={'quest'} top={0} right={0}
+                                                                    size={scale(10)} showNumber={false}/>
+                                        </AuthWrapper>
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
                                             style={{
@@ -302,8 +305,10 @@ const CustomDrawerContentComponent = (props) => {
                                                 {optionData.titles.find(el => el.id === 'left_menu_achievements').title}
                                             </Text>
                                         </View>
-                                        <NotificationTabBarIcon notificationID={'milestone'} top={0} right={0}
-                                                                size={scale(10)} showNumber={false}/>
+                                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                                            <NotificationTabBarIcon notificationID={'milestone'} top={0} right={0}
+                                                                    size={scale(10)} showNumber={false}/>
+                                        </AuthWrapper>
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
                                             style={{
@@ -339,8 +344,10 @@ const CustomDrawerContentComponent = (props) => {
                                                 {optionData.titles.find(el => el.id === 'left_menu_vouchers').title}
                                             </Text>
                                         </View>
-                                        <NotificationTabBarIcon notificationID={'voucher'} top={0} right={0}
-                                                                size={scale(10)} showNumber={false}/>
+                                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                                            <NotificationTabBarIcon notificationID={'voucher'} top={0} right={0}
+                                                                    size={scale(10)} showNumber={false}/>
+                                        </AuthWrapper>
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
                                             style={{

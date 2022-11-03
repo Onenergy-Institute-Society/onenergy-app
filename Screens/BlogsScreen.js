@@ -8,6 +8,7 @@ import {useSelector} from "react-redux";
 import IconButton from "@src/components/IconButton";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import {scale} from "../Utils/scale";
+import AuthWrapper from "@src/components/AuthWrapper";
 
 const CategoryPageRead = () => {
     try {
@@ -41,7 +42,9 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'blog_watch_tab'} />
-                        <NotificationTabBarIcon notificationID={'blog_watch'} top={-10} right={-10} size={scale(10)} showNumber={false} />
+                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                            <NotificationTabBarIcon notificationID={'blog_watch'} top={-10} right={-10} size={scale(10)} showNumber={false} />
+                        </AuthWrapper>
                     </View>
                 ),
             }
@@ -52,7 +55,9 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'blog_read_tab'} />
-                        <NotificationTabBarIcon notificationID={'blog_read'} top={-10} right={-10} size={scale(10)} showNumber={false} />
+                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                            <NotificationTabBarIcon notificationID={'blog_read'} top={-10} right={-10} size={scale(10)} showNumber={false} />
+                        </AuthWrapper>
                     </View>
                 ),
             }

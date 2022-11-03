@@ -6,7 +6,7 @@ import {
     View,
     SafeAreaView,
     Text,
-    AppState, TouchableOpacity
+    AppState, Platform
 } from "react-native";
 import {getApi} from "@src/services";
 import IconButton from "@src/components/IconButton";
@@ -25,7 +25,6 @@ import EventList from "../Components/EventList";
 import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 import analytics from '@react-native-firebase/analytics';
 import ForumsScreen from "@src/containers/Custom/ForumsScreen";
-import moment from 'moment';
 
 const HomeContent = (props) => {
     const {navigation, screenProps} = props;
@@ -35,9 +34,8 @@ const HomeContent = (props) => {
     const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
-    const postReducer = useSelector((state) => state.postReducer);
+    const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
-
     const onFocusHandler=() =>
     {
         try
@@ -50,52 +48,59 @@ const HomeContent = (props) => {
        screen_class: 'MainActivity',
        screen_name: 'Home Screen',
      });
+
     const _handleAppStateChange = async () => {
         if(user) {
-            if (progressReducer.latestUpdate > progressReducer.lastUpload) {
-                let achievements = {
-                    'achievements': [],
-                    'weekly': achievementReducer.weekly,
-                    'monthly': achievementReducer.monthly
-                }
-                achievementReducer.achievements.map((achievement) => {
-                    achievements.achievements.push({
-                        'id': achievement.id,
-                        'step': achievement.step,
-                        'complete_date': achievement.complete_date,
-                        'claim_date': achievement.claim_date,
-                        'list': achievement.list
-                    });
-                });
-                const apiRequest = getApi(props.config);
-                await apiRequest.customRequest(
-                    "wp-json/onenergy/v1/statsUpdate",
-                    "post",
-                    {
-                        "progress": progressReducer,
-                        "achievements": achievements
-                    },
-                    null,
-                    {},
-                    false
-                ).then(response => {
-                    if (response.data) {
-                        dispatch({
-                            type: 'ONENERGY_PROGRESS_UPLOADED'
-                        });
+            if((Platform.OS === "android" && AppState.currentState==='background') || (Platform.OS === "ios" && AppState.currentState==='inactive')) {
+                console.log(AppState.currentState)
+                console.log('do_upload', progressReducer.latestUpdate, progressReducer.lastUpload)
+                if (progressReducer.latestUpdate && progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
+                    let achievements = {
+                        'achievements': [],
+                        'weekly': achievementReducer.weekly,
+                        'monthly': achievementReducer.monthly
                     }
-                });
+                    achievementReducer.achievements.map((achievement) => {
+                        achievements.achievements.push({
+                            'id': achievement.id,
+                            'step': achievement.step,
+                            'complete_date': achievement.complete_date,
+                            'claim_date': achievement.claim_date,
+                            'list': achievement.list
+                        });
+                    });
+                    console.log(progressReducer, achievements)
+                    const apiRequest = getApi(props.config);
+                    await apiRequest.customRequest(
+                        "wp-json/onenergy/v1/statsUpdate",
+                        "post",
+                        {
+                            "progress": progressReducer,
+                            "achievements": achievements
+                        },
+                        null,
+                        {},
+                        false
+                    ).then(response => {
+                        console.log(response.data)
+                        if (response.data) {
+                            dispatch({
+                                type: 'ONENERGY_PROGRESS_UPLOADED'
+                            });
+                        }
+                    });
+                }
             }
         }
     };
+
     useEffect(() => {
-        navigation.addListener('willFocus', onFocusHandler)
-        const subscription = AppState.addEventListener("change", _handleAppStateChange);
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
-            user: user
         });
         if(user) {
+            navigation.addListener('willFocus', onFocusHandler)
+            const subscription = AppState.addEventListener("change", _handleAppStateChange);
             TrackPlayer.setupPlayer();
             TrackPlayer.updateOptions({
                 stoppingAppPausesPlayback: true,
@@ -133,12 +138,12 @@ const HomeContent = (props) => {
                 load = true;
             }
             if (load) {
-                props.navigation.navigate("HomeModal", { transition: 'fade' });
+                props.navigation.navigate("InitData", { transition: 'fade' });
             }
-        }
-        return () => {
-            subscription.remove();
-            navigation.removeListener('willFocus', onFocusHandler);
+            return () => {
+                navigation.removeListener('willFocus', onFocusHandler);
+                subscription.remove();
+            }
         }
     }, []);
 
@@ -197,10 +202,11 @@ const HomeContent = (props) => {
         }
     }
 
+
     return (
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                {optionData.show.includes('slider')&&achievementReducer.achievements&&progressReducer.progressUpdate&&practiceReducer.guideUpdate?
+                {optionData.show.includes('slider')?
                     <TopSlider
                         loop={true}
                         timer={5000}
@@ -219,9 +225,9 @@ const HomeContent = (props) => {
                         <DailyQuotes quote={optionData.quote}/>
                     </View>
                 )}
-                {achievementReducer.achievements&&progressReducer.progressUpdate&&practiceReducer.guideUpdate?
+                {optionData.goals&&optionData.goals.length?
                 <View style={styles.programRow}>
-                    <EventList location={'home'} eventsDate={optionData.goals}/>
+                    <EventList location={'home'} />
                 </View>:null}
                 {optionData.show.includes('events') && (
                     <View style={styles.eventRow}>
@@ -270,27 +276,23 @@ const HomeContent = (props) => {
                         )}
                     </View>
                 )}
-                {user?
-                    <>
-                        <View style={styles.programRow}>
-                            <TouchableScale onPress={
-                                () => {
-                                    navigation.dispatch(
-                                        NavigationActions.navigate({
-                                            routeName: "HomeForumsScreen",
-                                        })
-                                    )
-                                }
-                            }>
-                                <View style={styles.view_blog_title}>
-                                    <Text style={styles.heading}>Q & A</Text>
-                                    <Text style={styles.heading_more}>See All ></Text>
-                                </View>
-                            </TouchableScale>
+                <View style={styles.programRow}>
+                    <TouchableScale onPress={
+                        () => {
+                            navigation.dispatch(
+                                NavigationActions.navigate({
+                                    routeName: "HomeForumsScreen",
+                                })
+                            )
+                        }
+                    }>
+                        <View style={styles.view_blog_title}>
+                            <Text style={styles.heading}>Q & A</Text>
+                            <Text style={styles.heading_more}>See All ></Text>
                         </View>
-                        <ForumsScreen {...props} headerHeight={0} hideFilters={true} hideNavigationHeader={true} hideTitle={true} showSearch={false} screenTitle="My Forums" />
-                    </>
-                    :null}
+                    </TouchableScale>
+                </View>
+                <ForumsScreen {...props} headerHeight={0} hideFilters={true} hideNavigationHeader={true} hideTitle={true} showSearch={false} screenTitle="My Forums" />
                 {optionData.show.includes('blogs') && (
                     <View style={styles.blogRow}>
                         {optionData.blogs.map((blog) => (
@@ -516,57 +518,59 @@ HomeContent.navigationOptions = ({navigation}) => {
                         marginLeft: 20,
                     }}
                 />
-                <NotificationTabBarIcon notificationID={'left_menu'} top={0} right={0} size={scale(10)} showNumber={false} />
+                <AuthWrapper actionOnGuestLogin={'hide'}>
+                    <NotificationTabBarIcon notificationID={'left_menu'} top={0} right={0} size={scale(10)} showNumber={false} />
+                </AuthWrapper>
             </TouchableScale>,
         headerRight:
-            navigation.getParam('user')?
-            <View style={{justifyContent:"flex-end", flexDirection:"row", marginRight:15}}>
-                <TouchableScale
-                    onPress={() => {
-                        navigation.navigate("MilestonesScreen")
-                    }}
-                >
-                    <IconButton
-                        icon={require("@src/assets/img/certificate.png")}
-                        tintColor={"#4942e1"}
-                        style={{
-                            height: 20,
-                            marginRight: 5,
+            <AuthWrapper actionOnGuestLogin={'hide'}>
+                <View style={{justifyContent:"flex-end", flexDirection:"row", marginRight:15}}>
+                    <TouchableScale
+                        onPress={() => {
+                            navigation.navigate("MilestonesScreen")
                         }}
-                    />
-                    <NotificationTabBarIcon notificationID={'milestone'} top={0} right={0} size={scale(10)} showNumber={false} />
-                </TouchableScale>
-                <TouchableScale
-                    onPress={() => {
-                        navigation.navigate("QuestsScreen")
-                    }}
-                >
-                    <IconButton
-                        icon={require("@src/assets/img/achievement-action-icon.png")}
-                        tintColor={"#4942e1"}
-                        style={{
-                            height: 20,
-                            marginRight: 5,
+                    >
+                        <IconButton
+                            icon={require("@src/assets/img/certificate.png")}
+                            tintColor={"#4942e1"}
+                            style={{
+                                height: 20,
+                                marginRight: 5,
+                            }}
+                        />
+                        <NotificationTabBarIcon notificationID={'milestone'} top={0} right={0} size={scale(10)} showNumber={false} />
+                    </TouchableScale>
+                    <TouchableScale
+                        onPress={() => {
+                            navigation.navigate("QuestsScreen")
                         }}
-                    />
-                    <NotificationTabBarIcon notificationID={'quest'} top={0} right={0} size={scale(10)} showNumber={false} />
-                </TouchableScale>
-                <TouchableScale
-                    onPress={() => {
-                        navigation.navigate("NotificationsScreen")
-                    }}
-                >
-                    <IconButton
-                        icon={require("@src/assets/img/notification-icon.png")}
-                        tintColor={"#4942e1"}
-                        style={{
-                            height: 20,
-                            marginRight: 0,
+                    >
+                        <IconButton
+                            icon={require("@src/assets/img/achievement-action-icon.png")}
+                            tintColor={"#4942e1"}
+                            style={{
+                                height: 20,
+                                marginRight: 5,
+                            }}
+                        />
+                        <NotificationTabBarIcon notificationID={'quest'} top={0} right={0} size={scale(10)} showNumber={false} />
+                    </TouchableScale>
+                    <TouchableScale
+                        onPress={() => {
+                            navigation.navigate("NotificationsScreen")
                         }}
-                    />
-                </TouchableScale>
-            </View>
-            :null
+                    >
+                        <IconButton
+                            icon={require("@src/assets/img/notification-icon.png")}
+                            tintColor={"#4942e1"}
+                            style={{
+                                height: 20,
+                                marginRight: 0,
+                            }}
+                        />
+                    </TouchableScale>
+                </View>
+            </AuthWrapper>
     })
 }
 const mapStateToProps = (state) => ({

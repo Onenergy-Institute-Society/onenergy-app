@@ -150,7 +150,7 @@ const PracticeMember = props => {
                     <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                         {optionData.goals && optionData.goals.length?
                             <View>
-                                <EventList location={'practice_member'} eventsDate={optionData.goals}/>
+                                <EventList location={'practice_member'} />
                             </View>
                             : null
                         }

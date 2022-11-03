@@ -9,6 +9,7 @@ import {useSelector} from "react-redux";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import {scale} from "../Utils/scale";
 import QiPointHeader from "../Components/QiPointHeader";
+import AuthWrapper from "@src/components/AuthWrapper";
 
 const MilestonesLearn = () => {
     try {
@@ -52,7 +53,9 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'milestone_learn_tab'} />
-                        <NotificationTabBarIcon notificationID={'milestone_learn'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                            <NotificationTabBarIcon notificationID={'milestone_learn'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        </AuthWrapper>
                     </View>
                 ),
             }
@@ -63,7 +66,9 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'milestone_startup_tab'} />
-                        <NotificationTabBarIcon notificationID={'milestone_startup'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                            <NotificationTabBarIcon notificationID={'milestone_startup'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        </AuthWrapper>
                     </View>
                 ),
             }
@@ -74,7 +79,9 @@ const Tabs = createMaterialTopTabNavigator(
                 tabBarLabel: ({ tintColor }) => (
                     <View>
                         <TabTitle tintColor={tintColor} name={'milestone_stamina_tab'} />
-                        <NotificationTabBarIcon notificationID={'milestone_endurance'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                            <NotificationTabBarIcon notificationID={'milestone_endurance'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                        </AuthWrapper>
                     </View>
                 ),
             }

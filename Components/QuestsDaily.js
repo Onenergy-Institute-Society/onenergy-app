@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
     View,
@@ -6,20 +6,60 @@ import {
     StyleSheet,
     SafeAreaView,
     FlatList,
-    TouchableWithoutFeedback,
-    Animated
+    UIManager,
+    LayoutAnimation,
+    Platform
 } from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
-import * as Progress from 'react-native-progress';
+import AchievementItem from "./AchievementItem";
 import moment from 'moment';
+if (
+    Platform.OS === "android" &&
+    UIManager.setLayoutAnimationEnabledExperimental
+) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 const QuestsDaily = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyText = optionData.titles.find(el => el.id === 'achievement_quest_empty').title
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === 'daily'):null);
+    const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
+    const handleOnPress = (item, mode) => {
+        if (Platform.OS !== "android") {
+            LayoutAnimation.configureNext(
+                LayoutAnimation.Presets.spring
+            );
+        }
+        if(item.complete_date&&!item.claim_date) {
+            switch (mode) {
+                case 'past':
+                    dispatch({
+                        type: "ONENERGY_ACHIEVEMENT_CLAIM_DAILY",
+                        payload: {
+                            'id': item.id,
+                            'date': item.complete_date,
+                            'mode': 'daily'
+                        },
+                    });
+                    break;
+                default:
+                    if (item.complete_date === today && item.claim_date !== today) {
+                        dispatch({
+                            type: "ONENERGY_ACHIEVEMENT_CLAIM",
+                            payload: {
+                                'id': item.id,
+                                'mode': mode
+                            },
+                        });
+                    }
+                    break;
+            }
+        }
+    }
 
     const renderItem = ({item}) => {
         let show = false;
@@ -29,18 +69,18 @@ const QuestsDaily = (props) => {
             case 'course':
                 switch(item.showCourseOption){
                     case 'enrolled':
-                        show = progressReducer.enrolledCourses.findIndex(course => course.id === parseInt(item.showCourse));
+                        show = progressReducer.enrolledCourses&&progressReducer.enrolledCourses.findIndex(course => course.id === parseInt(item.showCourse));
                         break;
                     case 'completed':
-                        show = progressReducer.completedCourses.findIndex(course => course.id === parseInt(item.showCourse));
+                        show = progressReducer.completedCourses&&progressReducer.completedCourses.findIndex(course => course.id === parseInt(item.showCourse));
                         break;
                 }
                 break;
             case 'lesson':
-                show = progressReducer.completedLessons.findIndex(lesson => lesson.id === parseInt(item.showLesson));
+                show = progressReducer.completedLessons&&progressReducer.completedLessons.findIndex(lesson => lesson.id === parseInt(item.showLesson));
                 break;
             case 'achievement':
-                show = achievementReducer.findIndex(achievement => (achievement.id === parseInt(item.showAchievement) && achievement.complete_date));
+                show = achievementReducer&&achievementReducer.findIndex(achievement => (achievement.id === parseInt(item.showAchievement) && achievement.complete_date));
                 break;
             default:
                 show = 1;
@@ -49,156 +89,15 @@ const QuestsDaily = (props) => {
         return (
             show >= 0?
                 <>
-                <View style={[styles.boxShadow, styles.row]}>
-                    <View style={styles.rowLeft}>
-                        <Text style={styles.title}>{item.title}</Text>
-                        {item.claim_date !== today?
-                            <View style={{marginTop: 10}}>
-                                <Progress.Bar showsText={true} borderColor={"#4942e1"} color={item.complete_date===today?"lightgreen":"#7de7fa"} unfilledColor={"black"} borderRadius={9}
-                                              progress={item.step / item.total}
-                                              width={windowWidth/2} height={scale(16)}/>
-                                <View
-                                    style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}><Text style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
-                                        width: -1,
-                                        height: 1
-                                    }}}>{item.complete_date===today?"completed!":item.step + ' / ' + item.total}</Text></View>
-                            </View>
-                        :null}
-                    </View>
-                    <TouchableWithoutFeedback
-                        onPress={() => {
-                            if(item.complete_date===today&&item.claim_date!==today) {
-                                dispatch({
-                                    type: "ONENERGY_ACHIEVEMENT_CLAIM",
-                                    payload: {
-                                        'id': item.id,
-                                        'mode': 'daily'
-                                    },
-                                });
-                            }
-                        }}
-                    >
-                        <View style={[styles.rowRight, {backgroundColor:item.claim_date===today?'gray':item.complete_date===today?'gold':'#7de7fa'}]}>
-                            {
-                                item.claim_date === today ?
-                                    <>
-                                        <Text
-                                            style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                    width: -1,
-                                                    height: 1
-                                                }}}
-                                        >
-                                            CLEARED
-                                        </Text>
-                                        <Text
-                                            numberOfLines={1}
-                                            style={{flexWrap: "nowrap", fontSize:scale(11), fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                    width: -1,
-                                                    height: 1
-                                                }}}
-                                        >
-                                            {item.claim_date}
-                                        </Text>
-                                    </>
-                                    :
-                                    item.complete_date === today?
-                                        <>
-                                            <Text
-                                                style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                        width: -1,
-                                                        height: 1
-                                                    }}}
-                                            >
-                                                CLAIM
-                                            </Text>
-                                            {item.awards.map(point =>
-                                                <Text
-                                                    style={{flexWrap: "nowrap", fontSize:scale(24), fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                            width: -1,
-                                                            height: 1
-                                                        }}}
-                                                >
-                                                    +{point.point} {optionData.points.find(pt => pt.pointName === point.name).pointTitle}
-                                                </Text>
-                                            )}
-                                        </>
-                                        :
-                                        <>
-                                            <Text
-                                                style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                        width: -1,
-                                                        height: 1
-                                                    }}}
-                                            >
-                                                REWARD
-                                            </Text>
-                                            {item.awards.map(point =>
-                                                <Text
-                                                    style={{flexWrap: "nowrap", fontSize:scale(24), fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                            width: -1,
-                                                            height: 1
-                                                        }}}
-                                                >
-                                                    +{point.point} {optionData.points.find(pt => pt.pointName === point.name).pointTitle}
-                                                </Text>
-                                            )}
-                                        </>
-                            }
-                        </View>
-                    </TouchableWithoutFeedback>
-                </View>
-
-                {item.list.map(date => {
-                    let dayDiff = moment(today).diff(moment(date), 'days');
-                    console.log(dayDiff)
-                    if(dayDiff <= 7){
-                        return (
-                            <View style={[styles.boxShadow, styles.row]}>
-                                <View style={styles.rowLeft}>
-                                    <Text style={styles.title}>{item.title}</Text>
-                                        <View style={{marginVertical: 10}}>
-                                            <View
-                                                style={{justifyContent: 'center', alignItems: 'center'}}>
-                                                <Text style={{color:"#ED57E1"}}>Expire in {7 - dayDiff} days</Text></View>
-                                        </View>
-                                </View>
-                                <TouchableWithoutFeedback
-                                    onPress={() => {
-                                        dispatch({
-                                            type: "ONENERGY_ACHIEVEMENT_CLAIM_DAILY",
-                                            payload: {
-                                                'id': item.id,
-                                                'date': date,
-                                                'mode': 'daily'
-                                            },
-                                        });
-                                    }}
-                                >
-                                    <View style={[styles.rowRight, {backgroundColor:'gold'}]}>
-                                        <Text
-                                            style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                    width: -1,
-                                                    height: 1
-                                                }}}
-                                        >
-                                            CLAIM
-                                        </Text>
-                                        {item.awards.map(point =>
-                                            <Text
-                                                style={{flexWrap: "nowrap", fontSize:scale(24), fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                        width: -1,
-                                                        height: 1
-                                                    }}}
-                                            >
-                                                +{point.point} {optionData.points.find(pt => pt.pointName === point.name).pointTitle}
-                                            </Text>
-                                        )}
-                                    </View>
-                                </TouchableWithoutFeedback>
-                            </View>
-                        )
-                    }
-                })}
+                    <AchievementItem mode = {''} item = {item} handleOnPress = {handleOnPress} />
+                    {item.list.map(date => {
+                        let dayDiff = moment(today).diff(moment(date), 'days');
+                        if(dayDiff <= 7 && dayDiff >= 1){
+                            return (
+                                <AchievementItem mode = {'past'} item = {item} date = {date} handleOnPress = {handleOnPress} />
+                            )
+                        }
+                    })}
                 </>
             :null
         )

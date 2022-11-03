@@ -1,4 +1,5 @@
 import React from 'react';
+import AuthWrapper from "@src/components/AuthWrapper";
 import SignupScreen from "@src/containers/Custom/SignupScreen";
 
 const MySignupScreen = (props) => {

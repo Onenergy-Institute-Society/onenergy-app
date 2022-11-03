@@ -5,18 +5,16 @@ import {
     SafeAreaView, View, Text, Modal, ImageBackground, BackHandler, ActivityIndicator
 } from "react-native";
 import {getApi} from "@src/services";
-import {windowWidth} from "../Utils/Dimensions";
 import {scale} from '../Utils/scale';
 
-
-const HomeModal = (props) => {
+const InitData = (props) => {
     const {navigation, screenProps} = props;
     const {global} = screenProps;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
-    const postReducer = useSelector((state) => state.postReducer);
+    const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
 
     const fetchInitDate = async (loadGroup, loadGuide, loadAchievement, loadProgress) => {
@@ -61,8 +59,7 @@ const HomeModal = (props) => {
         if (optionData.cache.progress && progressReducer.progressUpdate && optionData.cache.progress > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
             loadProgress = true;
         }
-        if(loadGuide || loadGroup || loadAchievement || loadProgress)
-        {
+        if (loadGuide || loadGroup || loadAchievement || loadProgress) {
             fetchInitDate(loadGroup, loadGuide, loadAchievement, loadProgress).then();
         }
         if (optionData.cache.post && postReducer.postUpdate && optionData.cache.post > postReducer.postUpdate || !postReducer.postUpdate) {
@@ -78,22 +75,26 @@ const HomeModal = (props) => {
     useEffect(()=>
     {
         let loaded = true;
-        if(achievementReducer.achievementUpdate < optionData.cache.achievement){
+        console.log(achievementReducer.achievementUpdate, optionData.cache.achievement)
+        if (achievementReducer.achievementUpdate < optionData.cache.achievement) {
             loaded = false;
         }
-        if(progressReducer.progressUpdate < optionData.cache.progress){
+        console.log(achievementReducer.progressUpdate, optionData.cache.progress)
+        if (progressReducer.progressUpdate < optionData.cache.progress) {
             loaded = false;
         }
-        if(practiceReducer.guideUpdate < optionData.cache.guide){
+        console.log(achievementReducer.guideUpdate, optionData.cache.guide)
+        if (practiceReducer.guideUpdate < optionData.cache.guide) {
             loaded = false;
         }
-        if(practiceReducer.groupUpdate < optionData.cache.group){
+        console.log(achievementReducer.groupUpdate, optionData.cache.group)
+        if (practiceReducer.groupUpdate < optionData.cache.group) {
             loaded = false;
         }
-        if(loaded){
+        if (loaded) {
             navigation.goBack();
         }
-    },[achievementReducer.achievementUpdate,  progressReducer.progressUpdate, practiceReducer.groupUpdate, practiceReducer.guideUpdate])
+    },[achievementReducer.achievementUpdate, progressReducer.progressUpdate, practiceReducer.groupUpdate, practiceReducer.guideUpdate])
 
     return (
         <SafeAreaView style={global.container}>
@@ -103,9 +104,9 @@ const HomeModal = (props) => {
         </SafeAreaView>
     );
 };
-HomeModal.navigationOptions = {header: null,initialRouteParams: { transition: 'fade' },};
+InitData.navigationOptions = {header: null,initialRouteParams: { transition: 'fade' },};
 const mapStateToProps = (state) => ({
     config: state.config?state.config:null,
     accessToken: state.auth.token?state.auth.token:null,
 });
-export default connect(mapStateToProps)(HomeModal);
+export default connect(mapStateToProps)(InitData);

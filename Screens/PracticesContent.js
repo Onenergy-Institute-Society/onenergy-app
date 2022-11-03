@@ -19,8 +19,10 @@ import EventList from "../Components/EventList";
 import PracticeTipsRow from "../Components/PracticeTipsRow";
 import LoginScreen from "@src/containers/Custom/LoginScreen";
 import analytics from '@react-native-firebase/analytics';
+import AuthWrapper from "@src/components/AuthWrapper";
 
 const PracticesContent = props => {
+
     try {
         const {navigation} = props;
         const user = useSelector((state) => state.user.userObject);
@@ -30,7 +32,6 @@ const PracticesContent = props => {
             try
             {
                 navigation.closeDrawer();
-
             }catch (e) {
 
             }
@@ -42,14 +43,14 @@ const PracticesContent = props => {
         useEffect(()=>{
             props.navigation.setParams({
                 title: optionData.titles.find(el => el.id === 'practices_title').title,
-                user: user
             });
-            navigation.addListener('willFocus', onFocusHandler)
-            return () => {
-                navigation.removeListener('willFocus', onFocusHandler)
+            if(user) {
+                navigation.addListener('willFocus', onFocusHandler)
+                return () => {
+                    navigation.removeListener('willFocus', onFocusHandler)
+                }
             }
         },[])
-
         const personalPracticePressed = () => {
             if(user)
             {
@@ -101,7 +102,7 @@ const PracticesContent = props => {
                 <ScrollView style={{flexGrow:1}} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length)?
                         <View>
-                            <EventList location={'practice'} eventsDate={optionData.goals}/>
+                            <EventList location={'practice'} />
                         </View>
                         : null
                     }
@@ -119,7 +120,9 @@ const PracticesContent = props => {
                                 style={styles.image}
                                 background={true}
                             />
-                            <NotificationTabBarIcon notificationID={'guide_personal'} top={3} right={3} size={scale(15)} fontSize={10} showNumber={true} />
+                            <AuthWrapper actionOnGuestLogin={'hide'}>
+                                <NotificationTabBarIcon notificationID={'guide_personal'} top={3} right={3} size={scale(15)} fontSize={10} showNumber={true} />
+                            </AuthWrapper>
                         </View>
                     </TouchableScale>
 
@@ -182,7 +185,7 @@ const PracticesContent = props => {
                 </Modalize>
                 <Modalize
                     ref={(popupLoginDialog) => { this.popupLoginDialog = popupLoginDialog; }}
-                    modalHeight = {windowHeight*2/3}
+                    modalHeight = {windowHeight*4/5}
                     handlePosition = "outside"
                     childrenStyle = {{backgroundColor:"#f2f2f2"}}
                     HeaderComponent={
@@ -279,47 +282,49 @@ PracticesContent.navigationOptions  = ({ navigation }) => {
                         marginLeft: 20,
                     }}
                 />
-                <NotificationTabBarIcon notificationID={'left_menu'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                <AuthWrapper actionOnGuestLogin={'hide'}>
+                    <NotificationTabBarIcon notificationID={'left_menu'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                </AuthWrapper>
             </TouchableScale>
     }
     return {
         title: navigation.getParam('title'),
         headerLeft: headerLeft,
         headerRight:
-            navigation.getParam('user')?
-            <View style={{justifyContent:"flex-end", flexDirection:"row", marginRight:15}}>
-                <TouchableScale
-                    onPress={() => {
-                        navigation.navigate("MilestonesScreen")
-                    }}
-                >
-                    <IconButton
-                        icon={require("@src/assets/img/certificate.png")}
-                        tintColor={"#4942e1"}
-                        style={{
-                            height: 20,
-                            marginRight: 5,
+            <AuthWrapper actionOnGuestLogin={'hide'}>
+                <View style={{justifyContent:"flex-end", flexDirection:"row", marginRight:15}}>
+                    <TouchableScale
+                        onPress={() => {
+                            navigation.navigate("MilestonesScreen")
                         }}
-                    />
-                    <NotificationTabBarIcon notificationID={'milestone'}  top={0} right={0} size={scale(10)} showNumber={false} />
-                </TouchableScale>
-                <TouchableScale
-                    onPress={() => {
-                        navigation.navigate("QuestsScreen")
-                    }}
-                >
-                    <IconButton
-                        icon={require("@src/assets/img/achievement-action-icon.png")}
-                        tintColor={"#4942e1"}
-                        style={{
-                            height: 20,
-                            marginRight: 0,
+                    >
+                        <IconButton
+                            icon={require("@src/assets/img/certificate.png")}
+                            tintColor={"#4942e1"}
+                            style={{
+                                height: 20,
+                                marginRight: 5,
+                            }}
+                        />
+                        <NotificationTabBarIcon notificationID={'milestone'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                    </TouchableScale>
+                    <TouchableScale
+                        onPress={() => {
+                            navigation.navigate("QuestsScreen")
                         }}
-                    />
-                    <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
-                </TouchableScale>
-            </View>
-            :null
+                    >
+                        <IconButton
+                            icon={require("@src/assets/img/achievement-action-icon.png")}
+                            tintColor={"#4942e1"}
+                            style={{
+                                height: 20,
+                                marginRight: 0,
+                            }}
+                        />
+                        <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                    </TouchableScale>
+                </View>
+            </AuthWrapper>
     }
 };
 export default PracticesContent;

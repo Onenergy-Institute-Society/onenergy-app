@@ -61,7 +61,7 @@ const StatsScreen = (props) => {
                             <View style={[styles.rowHr, {backgroundColor: "#fafaf9"}]}/>
                             <View style={[styles.row, styles.lastRow]}>
                                 <Text style={styles.title}>Qi Points:</Text>
-                                <Text style={styles.text}> {progressReducer.points.qi}</Text>
+                                <Text style={styles.text}> {progressReducer&&progressReducer.points&&progressReducer.points.length?progressReducer.points.qi:0}</Text>
                             </View>
                         </LinearGradient>
                     </View>
@@ -82,17 +82,17 @@ const StatsScreen = (props) => {
                             colors={['#a5f3fc', '#cffafe']}>
                             <View style={styles.row}>
                                 <Text style={styles.title}>Course Enrolled:</Text>
-                                <Text style={styles.text}> {progressReducer.enrolledCourses.length}</Text>
+                                <Text style={styles.text}> {progressReducer.enrolledCourses?progressReducer.enrolledCourses.length:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
                             <View style={styles.row}>
                                 <Text style={styles.title}>Course Completed:</Text>
-                                <Text style={styles.text}> {progressReducer.completedCourses.length}</Text>
+                                <Text style={styles.text}> {progressReducer.completedCourses?progressReducer.completedCourses.length:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
                             <View style={styles.row}>
                                 <Text style={styles.title}>Lesson Completed:</Text>
-                                <Text style={styles.text}> {progressReducer.completedLessons.length}</Text>
+                                <Text style={styles.text}> {progressReducer.completedLessons?progressReducer.completedLessons.length:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
                            <View style={styles.row}>

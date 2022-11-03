@@ -6,10 +6,8 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback, SafeAreaView
 } from 'react-native';
-import { withNavigation } from 'react-navigation';
-import {
-    createDrawerNavigator,
-} from 'react-navigation-drawer';
+import { withNavigation } from "react-navigation";
+import {createDrawerNavigator} from 'react-navigation-drawer';
 import { useSelector  } from "react-redux";
 import FastImage from 'react-native-fast-image';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -17,6 +15,9 @@ import ProgramsContent from './ProgramsContent';
 import IconButton from "@src/components/IconButton";
 import {scale} from "../Utils/scale";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
+import AuthWrapper from "@src/components/AuthWrapper";
+import MyLoginScreen from "../Components/MyLoginScreen";
+import MySignupScreen from "../Components/MySignupScreen";
 
 const CustomDrawerContentComponent = (props) => {
     const {navigation, screenProps} = props;
@@ -79,7 +80,7 @@ const CustomDrawerContentComponent = (props) => {
                                         </Text>
                                     </View>
                                 ):null}
-                                {progressReducer?Object.entries(progressReducer.points).map(([key, value]) => (
+                                {progressReducer&&progressReducer.points&&progressReducer.points.length?Object.entries(progressReducer.points).map(([key, value]) => (
                                     <View>
                                         <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center"}}>
                                             <FastImage source={{uri:'https://assets.onenergy.institute/wp-content/uploads/2020/07/gamipress-icon-ray-material-54x54.png'}} style={{width:16, height:16}} />
@@ -113,12 +114,31 @@ const CustomDrawerContentComponent = (props) => {
                     <View style={{backgroundColor: colors.bodyFrontBg, margin: 10, paddingLeft: 10, borderRadius: 9}}>
                         {!user ?
                             <>
-                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("SignupScreen");}}>
-                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("MySignupScreen");}}>
+                                    <View style={{
+                                        paddingHorizontal: 5,
+                                        paddingVertical: 10,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: '#ccc',
+                                        borderBottomRightRadius: 9,
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                        <View style={{flexDirection: "row", alignItems: "center"}}>
+                                            <IconButton
+                                                icon={require("@src/assets/img/email-invites-send.png")}
+                                                style={{
+                                                    height: 32,
+                                                    marginRight: 5,
+                                                }}
+                                                tintColor={"black"}
+                                            />
                                         <Text
                                             style={{fontSize:scale(18)}}>
                                             {optionData.titles.findIndex(el => el.id === 'left_menu_signup')?optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_signup')].title:'Create an Account'}
                                         </Text>
+                                        </View>
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
                                             style={{
@@ -128,12 +148,31 @@ const CustomDrawerContentComponent = (props) => {
                                         />
                                     </View>
                                 </TouchableWithoutFeedback>
-                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("LoginScreen");}}>
-                                    <View style={{paddingHorizontal:5, paddingVertical:10, borderBottomRightRadius:9, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                                <TouchableWithoutFeedback onPress={() => {navigation.navigate("MyLoginScreen");}}>
+                                    <View style={{
+                                        paddingHorizontal: 5,
+                                        paddingVertical: 10,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: '#ccc',
+                                        borderBottomRightRadius: 9,
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                        <View style={{flexDirection: "row", alignItems: "center"}}>
+                                            <IconButton
+                                                icon={require("@src/assets/img/lock.png")}
+                                                style={{
+                                                    height: 32,
+                                                    marginRight: 5,
+                                                }}
+                                                tintColor={"black"}
+                                            />
                                         <Text
                                             style={{fontSize:scale(18)}}>
                                             {optionData.titles.findIndex(el => el.id === 'left_menu_login')?optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_login')].title:'Login My Account'}
                                         </Text>
+                                        </View>
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
                                             style={{
@@ -208,8 +247,10 @@ const CustomDrawerContentComponent = (props) => {
                                                 {optionData.titles.find(el => el.id === 'left_menu_quests').title}
                                             </Text>
                                         </View>
-                                        <NotificationTabBarIcon notificationID={'quest'} top={0} right={0}
-                                                                size={scale(10)} showNumber={false}/>
+                                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                                            <NotificationTabBarIcon notificationID={'quest'} top={0} right={0}
+                                                                    size={scale(10)} showNumber={false}/>
+                                        </AuthWrapper>
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
                                             style={{
@@ -245,8 +286,10 @@ const CustomDrawerContentComponent = (props) => {
                                                 {optionData.titles.find(el => el.id === 'left_menu_achievements').title}
                                             </Text>
                                         </View>
-                                        <NotificationTabBarIcon notificationID={'milestone'} top={0} right={0}
-                                                                size={scale(10)} showNumber={false}/>
+                                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                                            <NotificationTabBarIcon notificationID={'milestone'} top={0} right={0}
+                                                                    size={scale(10)} showNumber={false}/>
+                                        </AuthWrapper>
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
                                             style={{
@@ -282,8 +325,10 @@ const CustomDrawerContentComponent = (props) => {
                                                 {optionData.titles.find(el => el.id === 'left_menu_vouchers').title}
                                             </Text>
                                         </View>
-                                        <NotificationTabBarIcon notificationID={'voucher'} top={0} right={0}
-                                                                size={scale(10)} showNumber={false}/>
+                                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                                            <NotificationTabBarIcon notificationID={'voucher'} top={0} right={0}
+                                                                    size={scale(10)} showNumber={false}/>
+                                        </AuthWrapper>
                                         <IconButton
                                             icon={require("@src/assets/img/arrow-right.png")}
                                             style={{
@@ -408,6 +453,8 @@ const CustomDrawerContentComponent = (props) => {
 const Home = createStackNavigator(
     {
         Home: {screen:ProgramsContent},
+        MyLoginScreen: {screen: MyLoginScreen},
+        MySignupScreen: {screen: MySignupScreen}
     }
 )
 const Drawer = createDrawerNavigator(
