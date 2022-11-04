@@ -14,50 +14,64 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import AchievementItem from "./AchievementItem";
 import moment from 'moment';
-if (
+import Sound from 'react-native-sound';
+Sound.setCategory('Playback');
+
+/*if (
     Platform.OS === "android" &&
     UIManager.setLayoutAnimationEnabledExperimental
 ) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
-}
+}*/
 
 const QuestsDaily = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyText = optionData.titles.find(el => el.id === 'achievement_quest_empty').title
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === 'daily'):null);
-    const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
-    const handleOnPress = (item, mode) => {
+    const playPause = () => {
+        let ding = new Sound('bonus_point.mp3', Sound.MAIN_BUNDLE,error => {
+            if (error) {
+                console.log('failed to load the sound', error);
+                return;
+            }
+            ding.play(success => {
+                ding.release();
+            });
+        });
+    };
+    const handleOnPress = (item, date, mode) => {
+        playPause();
         if (Platform.OS !== "android") {
             LayoutAnimation.configureNext(
                 LayoutAnimation.Presets.spring
             );
         }
-        if(item.complete_date&&!item.claim_date) {
-            switch (mode) {
-                case 'past':
+        switch (mode) {
+            case 'past':
+                if(item.complete_date!=='') {
                     dispatch({
                         type: "ONENERGY_ACHIEVEMENT_CLAIM_DAILY",
                         payload: {
                             'id': item.id,
-                            'date': item.complete_date,
+                            'date': date,
                             'mode': 'daily'
                         },
                     });
-                    break;
-                default:
-                    if (item.complete_date === today && item.claim_date !== today) {
-                        dispatch({
-                            type: "ONENERGY_ACHIEVEMENT_CLAIM",
-                            payload: {
-                                'id': item.id,
-                                'mode': mode
-                            },
-                        });
-                    }
-                    break;
-            }
+                }
+                break;
+            default:
+                if (item.complete_date !== '' && item.claim_date === '') {
+                    dispatch({
+                        type: "ONENERGY_ACHIEVEMENT_CLAIM",
+                        payload: {
+                            'id': item.id,
+                            'mode': mode
+                        },
+                    });
+                }
+                break;
         }
     }
 
@@ -86,11 +100,10 @@ const QuestsDaily = (props) => {
                 show = 1;
                 break;
         }
-        if(show) console.log(item)
         return (
             show >= 0?
                 <>
-                    <AchievementItem mode = {'daily'} item = {item} handleOnPress = {handleOnPress} />
+                    <AchievementItem mode = {'daily'} item = {item} date = {item.complete_date} handleOnPress = {handleOnPress} />
                     {item.list.map(date => {
                         let dayDiff = moment(today).diff(moment(date), 'days');
                         if(dayDiff <= 7 && dayDiff >= 1){

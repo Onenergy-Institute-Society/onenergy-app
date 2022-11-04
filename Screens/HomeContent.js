@@ -36,6 +36,7 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
+    console.log(achievementReducer)
     const onFocusHandler=() =>
     {
         try
@@ -52,8 +53,6 @@ const HomeContent = (props) => {
     const _handleAppStateChange = async () => {
         if(user) {
             if((Platform.OS === "android" && AppState.currentState==='background') || (Platform.OS === "ios" && AppState.currentState==='inactive')) {
-                console.log(AppState.currentState)
-                console.log('do_upload', progressReducer.latestUpdate, progressReducer.lastUpload)
                 if (progressReducer.latestUpdate && progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
                     let achievements = {
                         'achievements': [],
@@ -69,7 +68,6 @@ const HomeContent = (props) => {
                             'list': achievement.list
                         });
                     });
-                    console.log(progressReducer, achievements)
                     const apiRequest = getApi(props.config);
                     await apiRequest.customRequest(
                         "wp-json/onenergy/v1/statsUpdate",
@@ -82,7 +80,6 @@ const HomeContent = (props) => {
                         {},
                         false
                     ).then(response => {
-                        console.log(response.data)
                         if (response.data) {
                             dispatch({
                                 type: 'ONENERGY_PROGRESS_UPLOADED'

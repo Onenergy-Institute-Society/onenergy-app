@@ -10,6 +10,7 @@ import {
     ActivityIndicator,
     Alert
 } from "react-native";
+import {getApi} from "@src/services";
 import Icon from "@src/components/Icon";
 import InitData from "./Screens/InitData";
 import AppTouchableOpacity from "@src/components/AppTouchableOpacity";
@@ -632,6 +633,7 @@ export const applyCustomCode = externalCodeSetup => {
                 todayDuration: 0,
                 weekDuration: 0,
                 totalDays: 0,
+                lastPractice:'',
                 latestUpdate:'',
                 lastUpload:'',
                 actionList:[],
@@ -661,6 +663,7 @@ export const applyCustomCode = externalCodeSetup => {
                     console.log('2')
                     let idPracticeReducer = state.practiceReducer;
                     let idAchievementReducer = state.achievementReducer;
+                    console.log(data.achievements)
                     let idProgressReducer = state.progressReducer;
                     console.log('3')
                     if(loadGroup) {
@@ -695,6 +698,7 @@ export const applyCustomCode = externalCodeSetup => {
                             idProgressReducer.todayDuration = 0;
                             idProgressReducer.weekDuration = 0;
                             idProgressReducer.totalDays = 0;
+                            idProgressReducer.lastPractice ='';
                             idProgressReducer.latestUpdate ='';
                             idProgressReducer.lastUpload = '';
                             idProgressReducer.practicesStats = [];
@@ -790,17 +794,7 @@ export const applyCustomCode = externalCodeSetup => {
                     let tmpAchievements;
                     let acpTempIndex;
 
-                    console.log('1')
-                    if(!state.progressReducer.latestUpdate)
-                    {
-                        updateDaily = true;
-                    }else{
-                        if(today > new moment.unix(state.progressReducer.latestUpdate).format('YYYY-MM-DD')){
-                            updateDaily = true;
-                        }
-                    }
-
-                    console.log('2')
+                    updateDaily = today !== new moment.unix(state.progressReducer.lastPractice).format('YYYY-MM-DD');
                     if(updateDaily)
                     {
                         console.log('21')
@@ -839,40 +833,52 @@ export const applyCustomCode = externalCodeSetup => {
                         //weekly
                         if(acpTempAchievementState.weekly.days&&acpTempAchievementState.weekly.days.length)
                         {
+                            console.log('w1')
                             let lastDay = acpTempAchievementState.weekly.days[acpTempAchievementState.weekly.days.length-1];
                             if(moment(today).diff(moment(lastDay), 'days') > 1){
-                                acpTempAchievementState.weekly.days=[today];
+                                console.log('w2')
+                                acpTempAchievementState.weekly.days = [];
+                                acpTempAchievementState.weekly.days.push(today);
                             }else if(acpTempAchievementState.weekly.days.length>7) {
-                                acpTempAchievementState.weekly.days = [today];
+                                console.log('w3')
+                                acpTempAchievementState.weekly.days = [];
+                                acpTempAchievementState.weekly.days.push(today);
                             }else{
+                                console.log('w4')
                                 acpTempAchievementState.weekly.days.push(today);
                                 if(acpTempAchievementState.weekly.days.length===7){
-                                    acpTempAchievementState.weekly.list.push({completed_date:today, claim_date:''})
+                                    acpTempAchievementState.weekly.list.push({complete_date:today, claim_date:''})
                                 }
                             }
                         }else{
-                            acpTempAchievementState.weekly.days=[today];
+                            console.log('w5')
+                            acpTempAchievementState.weekly.days = [];
+                            acpTempAchievementState.weekly.days.push(today);
                         }
-                        console.log('24')
 
                         //monthly
                         if(acpTempAchievementState.monthly.days&&acpTempAchievementState.monthly.days.length)
                         {
                             let lastDay = acpTempAchievementState.monthly.days[acpTempAchievementState.monthly.days.length-1];
                             if(moment(today).diff(moment(lastDay), 'days') > 1){
-                                acpTempAchievementState.monthly.days=[today];
+                                acpTempAchievementState.monthly.days=[];
+                                acpTempAchievementState.monthly.days.push(today);
                             }else if(acpTempAchievementState.monthly.days.length>30) {
-                                acpTempAchievementState.monthly.days = [today];
+                                acpTempAchievementState.monthly.days=[];
+                                acpTempAchievementState.monthly.days.push(today);
                             }else{
                                 acpTempAchievementState.monthly.days.push(today);
                                 if(acpTempAchievementState.monthly.days.length===30){
-                                    acpTempAchievementState.monthly.list.push({"completed_date":today, claim_date:''})
+                                    acpTempAchievementState.monthly.list.push({"complete_date":today, claim_date:''})
                                 }
                             }
                         }else{
-                            acpTempAchievementState.monthly.days=[today];
+                            acpTempAchievementState.monthly.days=[];
+                            acpTempAchievementState.monthly.days.push(today)
                         }
                     }
+
+                    console.log('24')
                     console.log('3')
 
                     let tempArray = [];
@@ -928,13 +934,6 @@ export const applyCustomCode = externalCodeSetup => {
                                     if(acpTempAchievementState.achievements[tempIndex].type==='daily') {
                                         acpTempAchievementState.achievements[tempIndex].list.push(acpTempAchievementState.achievements[tempIndex].complete_date);
                                     }
-                                    acpTempAchievementState.achievements[tempIndex].awards.map(award => {
-                                        if(acpTempProgressState.points[award.name]){
-                                            acpTempProgressState.points[award.name] += parseInt(award.point);
-                                        }else{
-                                            acpTempProgressState.points[award.name] = parseInt(award.point);
-                                        }
-                                    })
                                     acpTempProgressState.actionList.push({
                                         'mode': 'CA',
                                         'data': {'id':item.id, 'points':item.awards},
@@ -988,13 +987,6 @@ export const applyCustomCode = externalCodeSetup => {
                                 if(acpTempAchievementState.achievements[tempIndex].type==='daily') {
                                     acpTempAchievementState.achievements[tempIndex].list.push(acpTempAchievementState.achievements[tempIndex].complete_date);
                                 }
-                                acpTempAchievementState.achievements[tempIndex].awards.map(award => {
-                                    if(acpTempProgressState.points[award.name]){
-                                        acpTempProgressState.points[award.name] += parseInt(award.point);
-                                    }else{
-                                        acpTempProgressState.points[award.name] = parseInt(award.point);
-                                    }
-                                })
                                 acpTempProgressState.actionList.push({
                                     'mode': 'CA',
                                     'data': {'id':item.id, 'points':item.awards},
@@ -1053,6 +1045,7 @@ export const applyCustomCode = externalCodeSetup => {
                         'time': Math.floor(new Date().getTime() / 1000)
                     });
                     console.log('6')
+                    acpTempProgressState.lastPractice = new moment().format('YYYY-MM-DD');
                     acpTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
 
                     return {
@@ -1082,7 +1075,11 @@ export const applyCustomCode = externalCodeSetup => {
                         }
                     }
                     acTempAchievementState[acAchievementIndex].awards.map(award => {
-                        acTempProgressState.points[award.name] += parseInt(award.point);
+                        if(acTempProgressState.points[award.name]) {
+                            acTempProgressState.points[award.name] += parseInt(award.point);
+                        }else{
+                            acTempProgressState.points[award.name] = parseInt(award.point);
+                        }
                     })
                     acTempProgressState.actionList.push({
                         'mode': 'CM',
@@ -1108,10 +1105,16 @@ export const applyCustomCode = externalCodeSetup => {
                     let awcAchievementIndex = awcTempQuestState.findIndex(achievement => achievement.id === action.payload.id);
                     let awcTempProgressState = state.progressReducer;
                     let awcWaitItemIndex = awcTempQuestState[awcAchievementIndex].list.findIndex(waitItem => waitItem === action.payload.date);
+                    console.log('claim daily')
+                    console.log(awcTempQuestState[awcAchievementIndex], awcAchievementIndex, awcWaitItemIndex)
                     if(awcAchievementIndex>=0) {
                         awcTempQuestState[awcAchievementIndex].list.splice(awcWaitItemIndex, 1);
                         awcTempQuestState[awcAchievementIndex].awards.map(award => {
-                            awcTempProgressState.points[award.name] += parseInt(award.point);
+                            if(awcTempProgressState.points[award.name]) {
+                                awcTempProgressState.points[award.name] += parseInt(award.point);
+                            }else{
+                                awcTempProgressState.points[award.name] = parseInt(award.point);
+                            }
                         })
                         awcTempProgressState.actionList.push({
                             'mode': 'CM',
@@ -1132,7 +1135,8 @@ export const applyCustomCode = externalCodeSetup => {
                     let acwTempProgressState = state.progressReducer;
                     switch(action.payload.mode) {
                         case 'weekly':
-                            let weeklyListItemIndex = acwTempAchievementState.weekly.list.findIndex(item => item.completed_date === action.payload.date)
+                            let weeklyListItemIndex = acwTempAchievementState.weekly.list.findIndex(item => item.complete_date === action.payload.date)
+                            console.log(acwTempAchievementState.weekly, weeklyListItemIndex, action.payload.date)
                             if (weeklyListItemIndex >= 0) {
                                 acwTempAchievementState.weekly.list[weeklyListItemIndex].claim_date = new moment().format('YYYY-MM-DD');
                                 acwTempProgressState.points.qi += 20;
@@ -1144,7 +1148,7 @@ export const applyCustomCode = externalCodeSetup => {
                             }
                             break;
                         case 'monthly':
-                            let monthlyListItemIndex = acwTempAchievementState.monthly.list.findIndex(item => item.completed_date === action.payload.date)
+                            let monthlyListItemIndex = acwTempAchievementState.monthly.list.findIndex(item => item.complete_date === action.payload.date)
                             if (monthlyListItemIndex >= 0) {
                                 acwTempAchievementState.monthly.list[monthlyListItemIndex].claim_date = new moment().format('YYYY-MM-DD');
                                 acwTempProgressState.points.qi += 100;
@@ -1159,9 +1163,7 @@ export const applyCustomCode = externalCodeSetup => {
                     acwTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     return {
                         ...state,
-                        achievementReducer: {
-                            ...state.achievementReducer,
-                        },
+                        achievementReducer: acwTempAchievementState,
                         progressReducer: acwTempProgressState
                     };
                 case "ONENERGY_LESSON_COMPLETED":
@@ -1181,7 +1183,7 @@ export const applyCustomCode = externalCodeSetup => {
                         let tempIndex = olcTempAchievementState.findIndex(achievement => achievement.id === item.id);
                         let tempLessonIndex = olcTempAchievementState[tempIndex].step.findIndex(item => item.id === lesson.id);
                         olcTempAchievementState[tempIndex].step[tempLessonIndex].completed = 1;
-                        console.log('3');
+                        console.log('3', lesson.settings.next_lesson);
 
                         if(!lesson.settings.next_lesson) {
                             olcTempAchievementState[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
@@ -1189,15 +1191,7 @@ export const applyCustomCode = externalCodeSetup => {
                             if(olcTempAchievementState[tempIndex].type==='daily'){
                                 olcTempAchievementState[tempIndex].list.push(olcTempAchievementState[tempIndex].complete_date);
                             }
-                            console.log('4');
 
-                            olcTempAchievementState[tempIndex].awards.map(award => {
-                                if(olcTempProgressState.points[award.name]){
-                                    olcTempProgressState.points[award.name] += parseInt(award.point);
-                                }else{
-                                    olcTempProgressState.points[award.name] = parseInt(award.point);
-                                }
-                            })
                             olcTempProgressState.actionList.push({
                                 'mode': 'CA',
                                 'data': {'id':item.id, 'points':item.awards},
@@ -1789,6 +1783,9 @@ export const applyCustomCode = externalCodeSetup => {
                                                                 logout
                                                             }) => {
         const dispatch = useDispatch();
+        const config = useSelector((state) => state.config?state.config:null);
+        const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
+        const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
         return <View style={global.tabLinksContainer}>
             <AppTouchableOpacity
                 style={global.logout}
@@ -1802,6 +1799,34 @@ export const applyCustomCode = externalCodeSetup => {
                                 },
                                 {
                                     text: "OK", onPress: () => {
+                                        if (progressReducer.latestUpdate && progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
+                                            let achievements = {
+                                                'achievements': [],
+                                                'weekly': achievementReducer.weekly,
+                                                'monthly': achievementReducer.monthly
+                                            }
+                                            achievementReducer.achievements.map((achievement) => {
+                                                achievements.achievements.push({
+                                                    'id': achievement.id,
+                                                    'step': achievement.step,
+                                                    'complete_date': achievement.complete_date,
+                                                    'claim_date': achievement.claim_date,
+                                                    'list': achievement.list
+                                                });
+                                            });
+                                            const apiRequest = getApi(config);
+                                            apiRequest.customRequest(
+                                                "wp-json/onenergy/v1/statsUpdate",
+                                                "post",
+                                                {
+                                                    "progress": progressReducer,
+                                                    "achievements": achievements
+                                                },
+                                                null,
+                                                {},
+                                                false
+                                            ).then();
+                                        }
                                         dispatch({
                                             type: 'ONENERGY_POSTS_RESET',
                                         });

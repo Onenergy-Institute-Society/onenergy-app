@@ -116,12 +116,10 @@ const NotificationTabBarIcon = props => {
             case 'milestone_learn':
                 if (user&&achievementReducer)
                     notificationCount = achievementReducer.achievements.filter(item => item.type==='learn'&&item.complete_date!==''&&item.claim_date==='').length;
-                console.log(achievementReducer.achievements.filter(item => item.type==='learn'&&item.complete_date!==''&&item.claim_date===''))
                 break;
             case 'milestone_startup':
                 if (user&&achievementReducer)
                     notificationCount = achievementReducer.achievements.filter(item => item.type==='startup'&&item.complete_date!==''&&item.claim_date==='').length;
-                console.log(achievementReducer.achievements.filter(item => item.type==='startup'&&item.complete_date!==''&&item.claim_date===''))
                 break;
             case 'milestone_endurance':
                 if (user&&achievementReducer)

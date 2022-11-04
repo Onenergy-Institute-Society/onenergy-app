@@ -14,12 +14,15 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import MilestonesAccordian from "./MilestonesAccordian";
 import AchievementItem from "./AchievementItem";
-if (
+import Sound from 'react-native-sound';
+Sound.setCategory('Playback');
+
+/*if (
     Platform.OS === "android" &&
     UIManager.setLayoutAnimationEnabledExperimental
 ) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
-}
+}*/
 
 const Milestones = (props) => {
     const {type} = props;
@@ -29,7 +32,19 @@ const Milestones = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === type):null);
     const dispatch = useDispatch();
 
+    const playPause = () => {
+        let ding = new Sound('bonus_point.mp3', Sound.MAIN_BUNDLE,error => {
+            if (error) {
+                console.log('failed to load the sound', error);
+                return;
+            }
+            ding.play(success => {
+                ding.release();
+            });
+        });
+    };
     const handleOnPress = (item, mode) => {
+        playPause();
         if (Platform.OS !== "android") {
             LayoutAnimation.configureNext(
                 LayoutAnimation.Presets.spring
@@ -69,6 +84,7 @@ const Milestones = (props) => {
                 show = 1;
                 break;
         }
+        if(show) console.log(item, item.title)
         return (
             show >= 0?
                 Array.isArray(item.step)?

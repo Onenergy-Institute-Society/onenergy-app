@@ -26,10 +26,6 @@ class MilestonesAccordian extends Component {
             claim_date: props.item.claim_date,
             expanded: false,
         }
-
-        if (Platform.OS === 'android') {
-            UIManager.setLayoutAnimationEnabledExperimental(true);
-        }
     }
 
     render() {
@@ -91,7 +87,7 @@ class MilestonesAccordian extends Component {
                                                     height: 1
                                                 }}}
                                         >
-                                            {claim_date}
+                                            {this.props.item.claim_date}
                                         </Text>
                                     </>
                                     :
@@ -147,7 +143,7 @@ class MilestonesAccordian extends Component {
                         backgroundColor: "#f2f2f2",
                         borderBottomRightRadius: 9,
                         borderBottomLeftRadius: 9,
-                        paddingBottom: 9,
+                        paddingBottom: scale(20),
                         width: windowWidth - scale(30),
                         alignItems: "center",
                         justifyContent: "flex-start"

@@ -10,11 +10,24 @@ import {
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import moment from 'moment';
+import Sound from "react-native-sound";
+Sound.setCategory('Playback');
 
 const QuestsMonthly = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.monthly:null);
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
+    const playPause = () => {
+        let ding = new Sound('bonus_point.mp3', Sound.MAIN_BUNDLE,error => {
+            if (error) {
+                console.log('failed to load the sound', error);
+                return;
+            }
+            ding.play(success => {
+                ding.release();
+            });
+        });
+    };
     return(
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.containerStyle}>
@@ -22,7 +35,7 @@ const QuestsMonthly = (props) => {
                 <View style={styles.daysContainer}>
                 {Array(30).fill().map((_, idx) => 1 + idx).map((day,index)=>{
                     return (
-                        <View style={styles.row} >
+                        <View style={[styles.row, styles.boxShadow, {backgroundColor: achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?'#7de7fa':'#e6e6e8':'#e6e6e8':'#e6e6e8'}]} >
                             <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
                                 {
 
@@ -36,17 +49,17 @@ const QuestsMonthly = (props) => {
                                     <Image source={require("@src/assets/img/radio_unchecked_icon.png")}/>
                                 }
                             </View>
-                            <Text style={{color:day===30?"green":null}}>Day {day}</Text>
+                            <Text style={{textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===30?"gold":achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?'white':'black':'black':'black'}}>Day {day}</Text>
                         </View>
                     )
                 })}
                 </View>
-                <View style={{marginHorizontal: scale(15), paddingHorizontal:scale(10),
+                <View style={[styles.boxShadow, {marginHorizontal: scale(15), paddingHorizontal:scale(10),
                     paddingVertical:scale(10),
                     borderRadius: 9, alignItems: 'center',
                     justifyContent: 'center',backgroundColor: '#e6e6e8',
-                    marginTop: scale(2),}}><Text style={{color:"green"}}>Practice consecutively 30 days REWARD +100 Qi</Text></View>
-
+                    marginTop: scale(5),}]}><Text style={{color:"green"}}>Practice consecutively 30 days REWARD +100 Qi</Text></View>
+                <View style={{paddingBottom: scale(20)}}>
                 {achievementReducer&&achievementReducer.list?
                     achievementReducer.list.map(listItem => (
                         listItem.claim_date?
@@ -86,6 +99,7 @@ const QuestsMonthly = (props) => {
                                 </View>
                                 <TouchableWithoutFeedback
                                     onPress={() => {
+                                        playPause();
                                         dispatch({
                                             type: "ONENERGY_ACHIEVEMENT_CLAIM_WEEKLY_MONTHLY",
                                             payload: {
@@ -127,6 +141,7 @@ const QuestsMonthly = (props) => {
                         ))
                     :null
                 }
+                </View>
             </ScrollView>
         </SafeAreaView>
     )
@@ -154,9 +169,9 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         alignItems: 'center',
         justifyContent: 'center',
-        width: (windowWidth-46)/5,
+        width: (windowWidth-60)/5,
         backgroundColor: '#e6e6e8',
-        marginTop: scale(2),
+        marginTop: scale(5),
     },
     achievementItemBox: {
         marginTop:scale(50),

@@ -10,21 +10,34 @@ import {
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import moment from 'moment';
+import Sound from "react-native-sound";
+Sound.setCategory('Playback');
 
 const QuestsWeekly = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.weekly:null);
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
+    const playPause = () => {
+        let ding = new Sound('bonus_point.mp3', Sound.MAIN_BUNDLE,error => {
+            if (error) {
+                console.log('failed to load the sound', error);
+                return;
+            }
+            ding.play(success => {
+                ding.release();
+            });
+        });
+    };
     return(
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.containerStyle}>
                 <Text style={styles.titleText}>Practice consecutively for 7 days to unlock this reward. Miss one day will reset the progress.</Text>
                 {Array(7).fill().map((_, idx) => 1 + idx).map((day,index)=>{
                     return (
-                        <View style={styles.row} >
-                            <Text style={[styles.title,{color:index===6?"green":null}]}>Day {day} {index===6?'REWARD +20 Qi':''}</Text>
+                        <View style={[styles.row, styles.boxShadow, {backgroundColor: achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?'#7de7fa':'#e6e6e8':'#e6e6e8':'#e6e6e8'}]} >
+                            <Text style={[styles.title,{textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===6?"gold":achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?'white':'black':'black':'black'}]}>Day {day} {index===6?'REWARD +20 Qi':''}</Text>
                             <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
-                                <Text style={{marginRight:10}}>{achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?achievementReducer.days[index]:'':'':''}</Text>
+                                <Text style={{marginRight:10, color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}}}>{achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?achievementReducer.days[index]:'':'':''}</Text>
                                 {
                                     achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?
                                         <Image source={require("@src/assets/img/check2.png")} />
@@ -39,6 +52,7 @@ const QuestsWeekly = (props) => {
                         </View>
                     )
                 })}
+                <View style={{paddingBottom: scale(20)}}>
                 {achievementReducer&&achievementReducer.list?
                     achievementReducer.list.map(listItem => (
                         listItem.claim_date?
@@ -53,7 +67,7 @@ const QuestsWeekly = (props) => {
                                                 height: 1
                                             }}}
                                     >
-                                        CLAIMED
+                                        CLEARED
                                     </Text>
                                     <Text
                                         numberOfLines={1}
@@ -78,6 +92,7 @@ const QuestsWeekly = (props) => {
                                 </View>
                                 <TouchableWithoutFeedback
                                     onPress={() => {
+                                        playPause();
                                         dispatch({
                                             type: "ONENERGY_ACHIEVEMENT_CLAIM_WEEKLY_MONTHLY",
                                             payload:{
@@ -110,6 +125,7 @@ const QuestsWeekly = (props) => {
                         ))
                     :null
                 }
+                </View>
             </ScrollView>
         </SafeAreaView>
     )
