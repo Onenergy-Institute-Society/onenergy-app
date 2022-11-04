@@ -10,7 +10,7 @@ const QiPointHeader = (props) => {
     return (
         <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center", marginRight:scale(15)}}>
             <FastImage source={require('../assets/images/icon-ray.png')} style={{width:16, height:16}} />
-            <AnimatedNumber style={{color:"black", marginLeft:scale(5)}} value={progressReducer} />
+            <AnimatedNumber style={{color:"black"}} value={progressReducer} />
         </View>
     );
 };
