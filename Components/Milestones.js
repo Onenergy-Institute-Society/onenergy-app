@@ -1,5 +1,4 @@
 import React from 'react';
-import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
     View,
@@ -33,15 +32,27 @@ const Milestones = (props) => {
     const dispatch = useDispatch();
 
     const playPause = () => {
-        let ding = new Sound('bonus_claim.mp3', Sound.MAIN_BUNDLE,error => {
-            if (error) {
-                console.log('failed to load the sound', error);
-                return;
-            }
-            ding.play(success => {
-                ding.release();
+        if(Platform.OS==="android") {
+            let ding = new Sound('bonus_bell.mp3', Sound.MAIN_BUNDLE, error => {
+                if (error) {
+                    console.log('failed to load the sound', error);
+                    return;
+                }
+                ding.play(success => {
+                    ding.release();
+                });
             });
-        });
+        }else if(Platform.OS === "ios"){
+            let ding = new Sound('https://media.onenergy.institute/audios/bonus_bell.mp3', null,error => {
+                if (error) {
+                    console.log('failed to load the sound', error);
+                    return;
+                }
+                ding.play(() => {
+                    ding.release();
+                });
+            });
+        }
     };
     const handleOnPress = (item, mode) => {
         if(item.complete_date&&!item.claim_date) {

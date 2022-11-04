@@ -5,7 +5,7 @@ import {
     Text,
     StyleSheet,
     SafeAreaView,
-    Image, ScrollView, TouchableWithoutFeedback
+    Image, ScrollView, TouchableWithoutFeedback, Platform
 } from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
@@ -19,15 +19,27 @@ const QuestsWeekly = (props) => {
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
     const playPause = () => {
-        let ding = new Sound('bonus_claim.mp3', Sound.MAIN_BUNDLE,error => {
-            if (error) {
-                console.log('failed to load the sound', error);
-                return;
-            }
-            ding.play(success => {
-                ding.release();
+        if(Platform.OS==="android") {
+            let ding = new Sound('bonus_bell.mp3', Sound.MAIN_BUNDLE, error => {
+                if (error) {
+                    console.log('failed to load the sound', error);
+                    return;
+                }
+                ding.play(success => {
+                    ding.release();
+                });
             });
-        });
+        }else if(Platform.OS === "ios"){
+            let ding = new Sound('https://media.onenergy.institute/audios/bonus_bell.mp3', null,error => {
+                if (error) {
+                    console.log('failed to load the sound', error);
+                    return;
+                }
+                ding.play(() => {
+                    ding.release();
+                });
+            });
+        }
     };
     return(
         <SafeAreaView style={styles.container}>

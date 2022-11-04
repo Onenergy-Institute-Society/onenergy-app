@@ -6,12 +6,11 @@ import AnimatedNumber from "./AnimatedNumber";
 import {scale} from '../Utils/scale';
 
 const QiPointHeader = (props) => {
-    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer.points.qi:0);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    const progressReducer = useSelector((state) => state.onenergyReducer&&state.onenergyReducer.progressReducer.points.qi?state.onenergyReducer.progressReducer.points.qi:0);
     return (
         <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center", marginRight:scale(15)}}>
-            <FastImage source={{uri:'https://assets.onenergy.institute/wp-content/uploads/2020/07/gamipress-icon-ray-material-54x54.png'}} style={{width:16, height:16}} />
-            <AnimatedNumber style={{color:"black"}} value={progressReducer} />
+            <FastImage source={require('../assets/images/icon-ray.png')} style={{width:16, height:16}} />
+            <AnimatedNumber style={{color:"black", marginLeft:scale(5)}} value={progressReducer} />
         </View>
     );
 };
