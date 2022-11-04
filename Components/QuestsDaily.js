@@ -31,15 +31,27 @@ const QuestsDaily = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === 'daily'):null);
     const dispatch = useDispatch();
     const playPause = () => {
-        let ding = new Sound('bonus_point.mp3', Sound.MAIN_BUNDLE,error => {
-            if (error) {
-                console.log('failed to load the sound', error);
-                return;
-            }
-            ding.play(success => {
-                ding.release();
+        if(Platform.OS==="android") {
+            let ding = new Sound('bonus_point.mp3', Sound.MAIN_BUNDLE, error => {
+                if (error) {
+                    console.log('failed to load the sound', error);
+                    return;
+                }
+                ding.play(success => {
+                    ding.release();
+                });
             });
-        });
+        }else if(Platform.OS === "ios"){
+            let ding = new Sound(require('../assets/sounds/bonus_point.mp3'), error => {
+                if (error) {
+                    console.log('failed to load the sound', error);
+                    return;
+                }
+                ding.play(() => {
+                    ding.release();
+                });
+            });
+        }
     };
     const handleOnPress = (item, date, mode) => {
         playPause();

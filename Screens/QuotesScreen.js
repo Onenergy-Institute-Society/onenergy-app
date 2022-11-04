@@ -210,6 +210,22 @@ const QuotesScreen = props => {
                     {loading?
                     <ActivityIndicator size={'large'} />
                         :null}
+                    <TouchableOpacity
+                        onPress={() => {
+
+                        }}
+                    >
+                        <View style={[styles.buttonShare, styles.boxShadow]}>
+                            <Text
+                                style={{ fontSize: scale(20), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                        width: -1,
+                                        height: 1
+                                    }}}
+                            >
+                                SHARE
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
                     <Text
                         style={styles.title}>
                         &#x2190; Swipe for more quotes &#x2192;
@@ -233,10 +249,20 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         backgroundColor: '#f6f6f8',
     },
+    buttonShare: {
+        marginVertical: 15,
+        borderRadius: 9,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: scale(200),
+        height: scale(50),
+        backgroundColor: '#7de7fa',
+    },
     view: {
         padding: 0,
         flex: 1,
         justifyContent:"flex-start",
+        alignItems: "center"
     },
     image: {
         width: windowWidth,
@@ -259,6 +285,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         fontSize:30,
 
+    },
+    boxShadow: {
+        shadowColor: "#000",
+        shadowOffset: {width: -2, height: 4},
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 4,
     },
     loading: {
         position: 'absolute',
