@@ -9,7 +9,8 @@ import {
     ActivityIndicator,
     PermissionsAndroid,
     SafeAreaView,
-    FlatList
+    FlatList,
+    Share
 } from "react-native";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {getApi} from "@src/services";
@@ -19,6 +20,7 @@ import {scale} from "../Utils/scale";
 import ScalableImage from "../Components/ScalableImage";
 import RNFetchBlob from 'rn-fetch-blob';
 import analytics from '@react-native-firebase/analytics';
+import TouchableScale from "../Components/TouchableScale";
 
 const QuotesScreen = props => {
     const [loading, setLoading] = useState(false);
@@ -52,6 +54,7 @@ const QuotesScreen = props => {
                         title: item.title,
                         format: item.format,
                         excerpt: item.excerpt,
+                        share_url: item.meta_box.share_url,
                         author: item._embedded['author'][0].name,
                         avatar: item._embedded['author'][0].avatar_urls['24'],
                         image: item._embedded['wp:featuredmedia'][0].source_url,
@@ -175,6 +178,26 @@ const QuotesScreen = props => {
     const renderItem = ({ item }) => (
         <View style={styles.container}>
             <ScalableImage width={windowWidth} source={{uri: item.image?item.image:''}} />
+            {item.share_url?
+            <TouchableScale
+                onPress={() => {
+                    Share.share({
+                        url: item.share_url
+                    }, {})
+                }}
+            >
+                <View style={[styles.buttonShare, styles.boxShadow]}>
+                    <Text
+                        style={{ fontSize: scale(20), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                width: -1,
+                                height: 1
+                            }}}
+                    >
+                        SHARE
+                    </Text>
+                </View>
+            </TouchableScale>
+                :null}
         </View>
     );
     return (
@@ -210,22 +233,6 @@ const QuotesScreen = props => {
                     {loading?
                     <ActivityIndicator size={'large'} />
                         :null}
-                    <TouchableOpacity
-                        onPress={() => {
-
-                        }}
-                    >
-                        <View style={[styles.buttonShare, styles.boxShadow]}>
-                            <Text
-                                style={{ fontSize: scale(20), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                        width: -1,
-                                        height: 1
-                                    }}}
-                            >
-                                SHARE
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
                     <Text
                         style={styles.title}>
                         &#x2190; Swipe for more quotes &#x2192;
@@ -256,7 +263,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: scale(200),
         height: scale(50),
-        backgroundColor: '#7de7fa',
+        backgroundColor: '#8c78ff',
     },
     view: {
         padding: 0,
@@ -326,16 +333,6 @@ QuotesScreen.navigationOptions = ({ navigation }) => {
                     }}
                 />
             </TouchableOpacity>,
-        headerRight:
-            <TouchableOpacity
-                onPress={() => {params.downloadCurrentQuote(params.inViewPort)}}
-            >
-                <IconButton
-                    icon={require("@src/assets/img/download-large.png")}
-                    tintColor={"#4942e1"}
-                    style={{height: 25, marginRight:0}}
-                />
-            </TouchableOpacity>
     })
 }
 export default connect(mapStateToProps)(QuotesScreen);

@@ -11,6 +11,7 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import moment from 'moment';
 import Sound from "react-native-sound";
+import TouchableScale from "./TouchableScale";
 Sound.setCategory('Playback');
 
 const QuestsMonthly = (props) => {
@@ -18,7 +19,7 @@ const QuestsMonthly = (props) => {
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
     const playPause = () => {
-        let ding = new Sound('bonus_point.mp3', Sound.MAIN_BUNDLE,error => {
+        let ding = new Sound('bonus_claim.mp3', Sound.MAIN_BUNDLE,error => {
             if (error) {
                 console.log('failed to load the sound', error);
                 return;
@@ -35,7 +36,7 @@ const QuestsMonthly = (props) => {
                 <View style={styles.daysContainer}>
                 {Array(30).fill().map((_, idx) => 1 + idx).map((day,index)=>{
                     return (
-                        <View style={[styles.row, styles.boxShadow, {backgroundColor: achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?'#7de7fa':'#e6e6e8':'#e6e6e8':'#e6e6e8'}]} >
+                        <View style={[styles.row, styles.boxShadow, {backgroundColor: achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?'#8c78ff':'#e6e6e8':'#e6e6e8':'#e6e6e8'}]} >
                             <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
                                 {
 
@@ -49,7 +50,7 @@ const QuestsMonthly = (props) => {
                                     <Image source={require("@src/assets/img/radio_unchecked_icon.png")}/>
                                 }
                             </View>
-                            <Text style={{textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===30?"gold":achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?'white':'black':'black':'black'}}>Day {day}</Text>
+                            <Text style={{textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===30?"gold":achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?'white':'white':'white':'white'}}>Day {day}</Text>
                         </View>
                     )
                 })}
@@ -97,7 +98,7 @@ const QuestsMonthly = (props) => {
                                             <Text style={{color: "#ED57E1"}}>Expire in {7 - moment(today).diff(moment(achievementReducer.complete_date), 'days')} days</Text></View>
                                     </View>
                                 </View>
-                                <TouchableWithoutFeedback
+                                <TouchableScale
                                     onPress={() => {
                                         playPause();
                                         dispatch({
@@ -136,7 +137,7 @@ const QuestsMonthly = (props) => {
                                             +100 Qi
                                         </Text>
                                     </View>
-                                </TouchableWithoutFeedback>
+                                </TouchableScale>
                             </View>
                         ))
                     :null

@@ -33,7 +33,7 @@ const Milestones = (props) => {
     const dispatch = useDispatch();
 
     const playPause = () => {
-        let ding = new Sound('bonus_point.mp3', Sound.MAIN_BUNDLE,error => {
+        let ding = new Sound('bonus_claim.mp3', Sound.MAIN_BUNDLE,error => {
             if (error) {
                 console.log('failed to load the sound', error);
                 return;
@@ -44,13 +44,13 @@ const Milestones = (props) => {
         });
     };
     const handleOnPress = (item, mode) => {
-        playPause();
-        if (Platform.OS !== "android") {
-            LayoutAnimation.configureNext(
-                LayoutAnimation.Presets.spring
-            );
-        }
         if(item.complete_date&&!item.claim_date) {
+            playPause();
+            if (Platform.OS !== "android") {
+                LayoutAnimation.configureNext(
+                    LayoutAnimation.Presets.spring
+                );
+            }
             dispatch({
                 type: "ONENERGY_ACHIEVEMENT_CLAIM",
                 payload: {

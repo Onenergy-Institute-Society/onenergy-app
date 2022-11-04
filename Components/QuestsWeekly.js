@@ -11,6 +11,7 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import moment from 'moment';
 import Sound from "react-native-sound";
+import TouchableScale from "./TouchableScale";
 Sound.setCategory('Playback');
 
 const QuestsWeekly = (props) => {
@@ -18,7 +19,7 @@ const QuestsWeekly = (props) => {
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
     const playPause = () => {
-        let ding = new Sound('bonus_point.mp3', Sound.MAIN_BUNDLE,error => {
+        let ding = new Sound('bonus_claim.mp3', Sound.MAIN_BUNDLE,error => {
             if (error) {
                 console.log('failed to load the sound', error);
                 return;
@@ -34,8 +35,8 @@ const QuestsWeekly = (props) => {
                 <Text style={styles.titleText}>Practice consecutively for 7 days to unlock this reward. Miss one day will reset the progress.</Text>
                 {Array(7).fill().map((_, idx) => 1 + idx).map((day,index)=>{
                     return (
-                        <View style={[styles.row, styles.boxShadow, {backgroundColor: achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?'#7de7fa':'#e6e6e8':'#e6e6e8':'#e6e6e8'}]} >
-                            <Text style={[styles.title,{textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===6?"gold":achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?'white':'black':'black':'black'}]}>Day {day} {index===6?'REWARD +20 Qi':''}</Text>
+                        <View style={[styles.row, styles.boxShadow, {backgroundColor: achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?'#8c78ff':'#e6e6e8':'#e6e6e8':'#e6e6e8'}]} >
+                            <Text style={[styles.title,{textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===6?"gold":achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?'white':'white':'white':'white'}]}>Day {day} {index===6?'REWARD +20 Qi':''}</Text>
                             <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
                                 <Text style={{marginRight:10, color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}}}>{achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?achievementReducer.days[index]:'':'':''}</Text>
                                 {
@@ -90,7 +91,7 @@ const QuestsWeekly = (props) => {
                                             <Text style={{color:"#ED57E1"}}>Expire in {7 - moment(today).diff(moment(achievementReducer.complete_date), 'days')} days</Text></View>
                                     </View>
                                 </View>
-                                <TouchableWithoutFeedback
+                                <TouchableScale
                                     onPress={() => {
                                         playPause();
                                         dispatch({
@@ -120,7 +121,7 @@ const QuestsWeekly = (props) => {
                                             +20 Qi
                                         </Text>
                                     </View>
-                                </TouchableWithoutFeedback>
+                                </TouchableScale>
                             </View>
                         ))
                     :null

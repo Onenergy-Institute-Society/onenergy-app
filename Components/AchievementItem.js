@@ -9,6 +9,7 @@ import {
 import {scale, windowWidth} from "../Utils/scale";
 import * as Progress from 'react-native-progress';
 import moment from 'moment';
+import TouchableScale from "./TouchableScale";
 
 const AchievementItem = props => {
     const { mode, item, date, handleOnPress } = props;
@@ -28,7 +29,7 @@ const AchievementItem = props => {
                     :null}
                 {mode!=='past'&&item.claim_date===''?
                     <View style={{marginTop: 10, opacity: item.claim_date!==''?0:100  }}>
-                        <Progress.Bar showsText={true} borderColor={"#4942e1"} color={item.complete_date===today?"lightgreen":"#7de7fa"} unfilledColor={"black"} borderRadius={9}
+                        <Progress.Bar showsText={true} borderColor={"#4942e1"} color={item.complete_date===today?"lightgreen":"#8c78ff"} unfilledColor={"black"} borderRadius={9}
                                       progress={item.complete_date===today?item.step:0 / item.total}
                                       width={windowWidth/2} height={scale(16)}/>
                         <View
@@ -39,12 +40,12 @@ const AchievementItem = props => {
                     </View>
                     :null}
             </View>
-            <TouchableOpacity
+            <TouchableScale
                 onPress={() => {
                     handleOnPress(item, date, mode);
                 }}
             >
-                <View style={[styles.rowRight, {backgroundColor:item.complete_date===''?'#7de7fa':mode==='past'||item.claim_date===''?'gold':'gray'}]}>
+                <View style={[styles.rowRight, {backgroundColor:item.complete_date===''?'#8c78ff':mode==='past'||item.claim_date===''?'gold':'gray'}]}>
                     {mode!=='past'&&item.claim_date!==''?
                         <>
                             <Text
@@ -111,7 +112,7 @@ const AchievementItem = props => {
                         </>
                         :null}
                 </View>
-            </TouchableOpacity>
+            </TouchableScale>
         </View>
     );
 };
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: (windowWidth - scale(30))/3,
         height: scale(70),
-        backgroundColor: '#7de7fa',
+        backgroundColor: '#8c78ff',
     },
     rowLeft: {
         marginVertical: 0,
