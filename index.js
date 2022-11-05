@@ -794,7 +794,8 @@ export const applyCustomCode = externalCodeSetup => {
                     let tmpAchievements;
                     let acpTempIndex;
 
-                    updateDaily = today !== new moment.unix(state.progressReducer.lastPractice).format('YYYY-MM-DD');
+                    console.log(today, state.progressReducer.lastPractice)
+                    updateDaily = today !== state.progressReducer.lastPractice;
                     if(updateDaily)
                     {
                         console.log('21')
@@ -1058,6 +1059,18 @@ export const applyCustomCode = externalCodeSetup => {
                                 }).sort((a, b) => {
                                     return a.claim_date > b.claim_date
                                 }),
+                            weekly: {
+                                days: acpTempAchievementState.weekly.days,
+                                list: acpTempAchievementState.weekly.list.sort((a, b) => {
+                                    return a.claim_date > b.claim_date
+                                }),
+                            },
+                            monthly: {
+                                days: acpTempAchievementState.monthly.days,
+                                list: acpTempAchievementState.monthly.list.sort((a, b) => {
+                                    return a.claim_date > b.claim_date
+                                }),
+                            }
                         },
                         progressReducer: acpTempProgressState,
                         practiceReducer: acpTempPracticeState

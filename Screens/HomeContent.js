@@ -36,7 +36,7 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
-    console.log(achievementReducer, progressReducer)
+
     const onFocusHandler=() =>
     {
         try
@@ -53,6 +53,8 @@ const HomeContent = (props) => {
     const _handleAppStateChange = async () => {
         if(user) {
             if((Platform.OS === "android" && AppState.currentState==='background') || (Platform.OS === "ios" && AppState.currentState==='inactive')) {
+
+                console.log('updateRemote')
                 if (progressReducer.latestUpdate && progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
                     let achievements = {
                         'achievements': [],
