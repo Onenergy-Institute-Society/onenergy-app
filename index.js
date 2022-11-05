@@ -97,7 +97,7 @@ export const applyCustomCode = externalCodeSetup => {
         PracticesScreen,
         "Main" // "Auth" | "noAuth" | "Main" | "All"
     );
-    externalCodeSetup.navigationApi.addNavigationRoute(
+/*    externalCodeSetup.navigationApi.addNavigationRoute(
         "ProgramsScreen",
         "ProgramsScreen",
         ProgramsContent,
@@ -240,7 +240,7 @@ export const applyCustomCode = externalCodeSetup => {
         "InitData",
         InitData,
         "All" // "Auth" | "noAuth" | "Main" | "All"
-    );
+    );*/
     externalCodeSetup.blocksApi.addCustomBlockRender(
         'bbapp/textblock',
         props => <TextBlock {...props} />
