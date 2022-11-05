@@ -97,7 +97,7 @@ export const applyCustomCode = externalCodeSetup => {
         PracticesScreen,
         "Main" // "Auth" | "noAuth" | "Main" | "All"
     );
-/*    externalCodeSetup.navigationApi.addNavigationRoute(
+    externalCodeSetup.navigationApi.addNavigationRoute(
         "ProgramsScreen",
         "ProgramsScreen",
         ProgramsContent,
@@ -240,8 +240,8 @@ export const applyCustomCode = externalCodeSetup => {
         "InitData",
         InitData,
         "All" // "Auth" | "noAuth" | "Main" | "All"
-    );*/
-/*    externalCodeSetup.blocksApi.addCustomBlockRender(
+    );
+    externalCodeSetup.blocksApi.addCustomBlockRender(
         'bbapp/textblock',
         props => <TextBlock {...props} />
     );
@@ -1931,9 +1931,9 @@ export const applyCustomCode = externalCodeSetup => {
 
         const newRoutes = {
             ...routes,
-            /!*  ChooseLanguage: {
+            /*  ChooseLanguage: {
                 screen: ChooseLanguage
-            },*!/
+            },*/
             OnBoarding: {
                 screen: OnBoarding
             }
@@ -1948,7 +1948,7 @@ export const applyCustomCode = externalCodeSetup => {
             routes: newRoutes,
             options: newOptions,
         }
-    })*/
+    })
 }
 
 
