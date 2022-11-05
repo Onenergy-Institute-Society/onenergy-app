@@ -241,7 +241,7 @@ export const applyCustomCode = externalCodeSetup => {
         InitData,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );*/
-    externalCodeSetup.blocksApi.addCustomBlockRender(
+/*    externalCodeSetup.blocksApi.addCustomBlockRender(
         'bbapp/textblock',
         props => <TextBlock {...props} />
     );
@@ -1931,9 +1931,9 @@ export const applyCustomCode = externalCodeSetup => {
 
         const newRoutes = {
             ...routes,
-            /*  ChooseLanguage: {
+            /!*  ChooseLanguage: {
                 screen: ChooseLanguage
-            },*/
+            },*!/
             OnBoarding: {
                 screen: OnBoarding
             }
@@ -1948,7 +1948,7 @@ export const applyCustomCode = externalCodeSetup => {
             routes: newRoutes,
             options: newOptions,
         }
-    })
+    })*/
 }
 
 
