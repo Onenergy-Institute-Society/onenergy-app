@@ -4,12 +4,11 @@ import {
     View,
     Text,
     StyleSheet,
-    TouchableOpacity,
+    TouchableWithoutFeedback,
 } from 'react-native';
 import {scale, windowWidth} from "../Utils/scale";
 import * as Progress from 'react-native-progress';
 import moment from 'moment';
-import TouchableScale from "./TouchableScale";
 
 const AchievementItem = props => {
     const { mode, item, date, handleOnPress } = props;
@@ -40,7 +39,7 @@ const AchievementItem = props => {
                     </View>
                     :null}
             </View>
-            <TouchableScale
+            <TouchableWithoutFeedback
                 onPress={() => {
                     handleOnPress(item, date, mode);
                 }}
@@ -112,7 +111,7 @@ const AchievementItem = props => {
                         </>
                         :null}
                 </View>
-            </TouchableScale>
+            </TouchableWithoutFeedback>
         </View>
     );
 };

@@ -5,13 +5,12 @@ import {
     Text,
     StyleSheet,
     SafeAreaView,
-    Image, ScrollView, TouchableWithoutFeedback, Platform
+    Image, ScrollView, Platform,TouchableWithoutFeedback
 } from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import moment from 'moment';
 import Sound from "react-native-sound";
-import TouchableScale from "./TouchableScale";
 Sound.setCategory('Playback');
 
 const QuestsMonthly = (props) => {
@@ -110,7 +109,7 @@ const QuestsMonthly = (props) => {
                                             <Text style={{color: "#ED57E1"}}>Expire in {7 - moment(today).diff(moment(achievementReducer.complete_date), 'days')} days</Text></View>
                                     </View>
                                 </View>
-                                <TouchableScale
+                                <TouchableWithoutFeedback
                                     onPress={() => {
                                         playPause();
                                         dispatch({
@@ -149,7 +148,7 @@ const QuestsMonthly = (props) => {
                                             +100 Qi
                                         </Text>
                                     </View>
-                                </TouchableScale>
+                                </TouchableWithoutFeedback>
                             </View>
                         ))
                     :null

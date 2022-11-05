@@ -794,7 +794,6 @@ export const applyCustomCode = externalCodeSetup => {
                     let tmpAchievements;
                     let acpTempIndex;
 
-                    console.log(today, state.progressReducer.lastPractice)
                     updateDaily = today !== state.progressReducer.lastPractice;
                     if(updateDaily)
                     {
@@ -1062,13 +1061,13 @@ export const applyCustomCode = externalCodeSetup => {
                             weekly: {
                                 days: acpTempAchievementState.weekly.days,
                                 list: acpTempAchievementState.weekly.list.sort((a, b) => {
-                                    return a.claim_date > b.claim_date
+                                    return a.complete_date > b.complete_date
                                 }),
                             },
                             monthly: {
                                 days: acpTempAchievementState.monthly.days,
                                 list: acpTempAchievementState.monthly.list.sort((a, b) => {
-                                    return a.claim_date > b.claim_date
+                                    return a.complete_date > b.complete_date
                                 }),
                             }
                         },
@@ -1176,7 +1175,11 @@ export const applyCustomCode = externalCodeSetup => {
                     acwTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     return {
                         ...state,
-                        achievementReducer: acwTempAchievementState,
+                        achievementReducer: {
+                            ...state.achievementReducer,
+                            weekly: acwTempAchievementState.weekly,
+                            monthly: acwTempAchievementState.monthly
+                        },
                         progressReducer: acwTempProgressState
                     };
                 case "ONENERGY_LESSON_COMPLETED":
