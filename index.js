@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import OnBoarding from './Screens/OnBoarding';
+/*import OnBoarding from './Screens/OnBoarding';
 import {
     Image,
     Platform,
@@ -64,10 +64,10 @@ import FastImage from 'react-native-fast-image';
 import PracticesContent from "./Screens/PracticesContent";
 import ProgramsContent from "./Screens/ProgramsContent";
 import HomeScreen from './Screens/HomeScreen';
-import ForumItem from "./Components/ForumItem";
+import ForumItem from "./Components/ForumItem";*/
 
 export const applyCustomCode = externalCodeSetup => {
-    externalCodeSetup.navigationApi.addNavigationRoute(
+/*    externalCodeSetup.navigationApi.addNavigationRoute(
         "homePage",
         "Home",
         HomeScreen,
@@ -1931,9 +1931,9 @@ export const applyCustomCode = externalCodeSetup => {
 
         const newRoutes = {
             ...routes,
-            /*  ChooseLanguage: {
+            /!*  ChooseLanguage: {
                 screen: ChooseLanguage
-            },*/
+            },*!/
             OnBoarding: {
                 screen: OnBoarding
             }
@@ -1948,7 +1948,7 @@ export const applyCustomCode = externalCodeSetup => {
             routes: newRoutes,
             options: newOptions,
         }
-    })
+    })*/
 }
 
 
