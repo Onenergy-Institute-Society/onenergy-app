@@ -146,6 +146,11 @@ const EventList = props => {
                                 show = false;
                             }
                             break;
+                        case 'user':
+                            if(user[item.attribute]){
+                                show = false;
+                            }
+                            break;
                         default:
                             show = true;
                             break;

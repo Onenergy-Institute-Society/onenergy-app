@@ -95,17 +95,17 @@ const NotificationTabBarIcon = props => {
                 break;
             case 'quest_weekly':
                 if (user&&achievementReducer)
-                    notificationCount = achievementReducer.weekly.list.filter(item => item.complete_date!==''&&item.claim_date==='').length;
+                    notificationCount = achievementReducer.weekly.complete_date!==''&&achievementReducer.weekly.claim_date==='';
                 break;
             case 'quest_monthly':
                 if (user&&achievementReducer)
-                    notificationCount = achievementReducer.monthly.list.filter(item => item.complete_date!==''&&item.claim_date==='').length;
+                    notificationCount = achievementReducer.monthly.complete_date!==''&&achievementReducer.monthly.claim_date==='';
                 break;
             case 'quest':
                 if (user&&achievementReducer){
                     let dailyCount = achievementReducer.achievements.filter(item => item.type==='daily' && item.complete_date!=='' && item.claim_date==='').length;
-                    let weeklyCount = achievementReducer.weekly.list.filter(item => item.complete_date!=='' && item.claim_date==='').length;
-                    let monthlyCount = achievementReducer.monthly.list.filter(item => item.complete_date!=='' && item.claim_date==='').length;
+                    let weeklyCount = achievementReducer.weekly.complete_date!=='' && achievementReducer.weekly.claim_date==='';
+                    let monthlyCount = achievementReducer.monthly.complete_date!=='' && achievementReducer.monthly.claim_date==='';
                     notificationCount = dailyCount+weeklyCount+monthlyCount;
                 }
                 break;
@@ -128,8 +128,8 @@ const NotificationTabBarIcon = props => {
             case 'left_menu':
                 if (user&&achievementReducer){
                     let dailyCount = achievementReducer.achievements.filter(item => item.type==='daily' && item.complete_date!=='' && item.claim_date==='').length;
-                    let weeklyCount = achievementReducer.weekly.list.filter(item => item.complete_date!=='' && item.claim_date==='').length;
-                    let monthlyCount = achievementReducer.monthly.list.filter(item => item.complete_date!=='' && item.claim_date==='').length;
+                    let weeklyCount = achievementReducer.weekly.complete_date!=='' && achievementReducer.weekly.claim_date==='';
+                    let monthlyCount = achievementReducer.monthly.complete_date!=='' && achievementReducer.monthly.claim_date==='';
                     let milestoneCount = achievementReducer.achievements.filter(item => item.type!=='daily'&&item.complete_date!==''&&item.claim_date==='').length;
                     notificationCount = dailyCount+weeklyCount+monthlyCount+milestoneCount;
                 }

@@ -18,27 +18,15 @@ const QuestsWeekly = (props) => {
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
     const playPause = () => {
-        if(Platform.OS==="android") {
-            let ding = new Sound('bonus_bell.mp3', Sound.MAIN_BUNDLE, error => {
-                if (error) {
-                    console.log('failed to load the sound', error);
-                    return;
-                }
-                ding.play(success => {
-                    ding.release();
-                });
+        let ding = new Sound('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
+            if (error) {
+                console.log('failed to load the sound', error);
+                return;
+            }
+            ding.play(() => {
+                ding.release();
             });
-        }else if(Platform.OS === "ios"){
-            let ding = new Sound('https://media.onenergy.institute/audios/bonus_bell.mp3', null,error => {
-                if (error) {
-                    console.log('failed to load the sound', error);
-                    return;
-                }
-                ding.play(() => {
-                    ding.release();
-                });
-            });
-        }
+        });
     };
     return(
         <SafeAreaView style={styles.container}>
@@ -66,77 +54,74 @@ const QuestsWeekly = (props) => {
                 })}
                 <View style={{paddingBottom: scale(20)}}>
                 {achievementReducer&&achievementReducer.list?
-                    achievementReducer.list.map(listItem => (
-                        listItem.claim_date?
-                            <View style={[styles.boxShadow, styles.rowReward]}>
-                                <View style={styles.rowLeft}>
-                                    <Text style={styles.title}>Practice for a week</Text>
+                    achievementReducer.list.claim_date?
+                        <View style={[styles.boxShadow, styles.rowReward]}>
+                            <View style={styles.rowLeft}>
+                                <Text style={styles.title}>Practice for a week</Text>
+                            </View>
+                            <View style={[styles.rowRight, {backgroundColor:'grey'}]}>
+                                <Text
+                                    style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                            width: -1,
+                                            height: 1
+                                        }}}
+                                >
+                                    CLEARED
+                                </Text>
+                                <Text
+                                    numberOfLines={1}
+                                    style={{fontSize:11, fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                            width: -1,
+                                            height: 1
+                                        }}}
+                                >
+                                    {listItem.complete_date}
+                                </Text>
+                            </View>
+                        </View>
+                    :
+                        <View style={[styles.boxShadow, styles.rowReward]}>
+                            <View style={styles.rowLeft}>
+                                <Text style={styles.title}>Practice for a week</Text>
+                                <View style={{marginVertical: 10}}>
+                                    <View
+                                        style={{justifyContent: 'center', alignItems: 'center'}}>
+                                        <Text style={{color:"#ED57E1"}}>Expire in {7 - moment(today).diff(moment(achievementReducer.complete_date), 'days')} days</Text></View>
                                 </View>
-                                <View style={[styles.rowRight, {backgroundColor:'grey'}]}>
+                            </View>
+                            <TouchableWithoutFeedback
+                                onPress={() => {
+                                    playPause();
+                                    dispatch({
+                                        type: "ONENERGY_ACHIEVEMENT_CLAIM_WEEKLY_MONTHLY",
+                                        payload:{
+                                            mode: "weekly",
+                                            date: listItem.complete_date,
+                                        },
+                                    });
+                                }}
+                            >
+                                <View style={[styles.rowRight, {backgroundColor:'gold'}]}>
                                     <Text
                                         style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                                 width: -1,
                                                 height: 1
                                             }}}
                                     >
-                                        CLEARED
+                                        CLAIM
                                     </Text>
                                     <Text
-                                        numberOfLines={1}
-                                        style={{fontSize:11, fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                        style={{fontSize:24, fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                                 width: -1,
                                                 height: 1
                                             }}}
                                     >
-                                        {listItem.complete_date}
+                                        +20 Qi
                                     </Text>
                                 </View>
-                            </View>
-                        :
-                            <View style={[styles.boxShadow, styles.rowReward]}>
-                                <View style={styles.rowLeft}>
-                                    <Text style={styles.title}>Practice for a week</Text>
-                                    <View style={{marginVertical: 10}}>
-                                        <View
-                                            style={{justifyContent: 'center', alignItems: 'center'}}>
-                                            <Text style={{color:"#ED57E1"}}>Expire in {7 - moment(today).diff(moment(achievementReducer.complete_date), 'days')} days</Text></View>
-                                    </View>
-                                </View>
-                                <TouchableWithoutFeedback
-                                    onPress={() => {
-                                        playPause();
-                                        dispatch({
-                                            type: "ONENERGY_ACHIEVEMENT_CLAIM_WEEKLY_MONTHLY",
-                                            payload:{
-                                                mode: "weekly",
-                                                date: listItem.complete_date,
-                                            },
-                                        });
-                                    }}
-                                >
-                                    <View style={[styles.rowRight, {backgroundColor:'gold'}]}>
-                                        <Text
-                                            style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                    width: -1,
-                                                    height: 1
-                                                }}}
-                                        >
-                                            CLAIM
-                                        </Text>
-                                        <Text
-                                            style={{fontSize:24, fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                    width: -1,
-                                                    height: 1
-                                                }}}
-                                        >
-                                            +20 Qi
-                                        </Text>
-                                    </View>
-                                </TouchableWithoutFeedback>
-                            </View>
-                        ))
-                    :null
-                }
+                            </TouchableWithoutFeedback>
+                        </View>
+                    :null}
                 </View>
             </ScrollView>
         </SafeAreaView>

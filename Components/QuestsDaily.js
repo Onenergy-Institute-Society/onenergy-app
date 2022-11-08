@@ -31,27 +31,15 @@ const QuestsDaily = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === 'daily'):null);
     const dispatch = useDispatch();
     const playPause = () => {
-        if(Platform.OS==="android") {
-            let ding = new Sound('bonus_bell.mp3', Sound.MAIN_BUNDLE, error => {
-                if (error) {
-                    console.log('failed to load the sound', error);
-                    return;
-                }
-                ding.play(success => {
-                    ding.release();
-                });
+        let ding = new Sound('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
+            if (error) {
+                console.log('failed to load the sound', error);
+                return;
+            }
+            ding.play(() => {
+                ding.release();
             });
-        }else if(Platform.OS === "ios"){
-            let ding = new Sound('https://media.onenergy.institute/audios/bonus_bell.mp3', null,error => {
-                if (error) {
-                    console.log('failed to load the sound', error);
-                    return;
-                }
-                ding.play(() => {
-                    ding.release();
-                });
-            });
-        }
+        });
     };
     const handleOnPress = (item, date, mode) => {
         switch (mode) {

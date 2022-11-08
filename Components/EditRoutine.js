@@ -152,12 +152,12 @@ const EditRoutine = props => {
     const createTracks = (routine) => {
         let tracks = [];
         let id = 1;
-        const min1 = "https://media.onenergy.institute/audios/preparatory_practices/members/1min.mp3";
+        const min1 = "https://cdn.onenergy.institute/audios/preparatory_practices/members/1min.mp3";
         if(routine.length > 0){
             tracks.push({
                 id: 1,
                 title: 'Opening',
-                url: 'https://media.onenergy.institute/audios/preparatory_practices/members/Opening_Member.mp3',
+                url: 'https://cdn.onenergy.institute/audios/preparatory_practices/members/Opening_Member.mp3',
                 artist: '',
                 artwork: '',
                 duration: 25,
@@ -236,7 +236,7 @@ const EditRoutine = props => {
             tracks.push({
                 id: id,
                 title: 'Closing',
-                url: 'https://media.onenergy.institute/audios/preparatory_practices/members/Closing_Member.mp3',
+                url: 'https://cdn.onenergy.institute/audios/preparatory_practices/members/Closing_Member.mp3',
                 artist: '',
                 artwork: '',
                 duration: 13,

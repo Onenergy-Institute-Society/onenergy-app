@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-/*import OnBoarding from './Screens/OnBoarding';
+import OnBoarding from './Screens/OnBoarding';
 import {
     Image,
     Platform,
@@ -64,10 +64,10 @@ import FastImage from 'react-native-fast-image';
 import PracticesContent from "./Screens/PracticesContent";
 import ProgramsContent from "./Screens/ProgramsContent";
 import HomeScreen from './Screens/HomeScreen';
-import ForumItem from "./Components/ForumItem";*/
+import ForumItem from "./Components/ForumItem";
 
 export const applyCustomCode = externalCodeSetup => {
-/*    externalCodeSetup.navigationApi.addNavigationRoute(
+    externalCodeSetup.navigationApi.addNavigationRoute(
         "homePage",
         "Home",
         HomeScreen,
@@ -646,8 +646,8 @@ export const applyCustomCode = externalCodeSetup => {
                 completedCourses:[]
             },
             achievementReducer: {
-                weekly: {days:[], list:[]},
-                monthly: {days:[], list:[]},
+                weekly: {days:[], complete_date:'', claim_date:''},
+                monthly: {days:[], complete_date:'', claim_date:''},
                 achievements:[],
                 achievementUpdate: ''
             }
@@ -682,9 +682,13 @@ export const applyCustomCode = externalCodeSetup => {
                     console.log('5')
                     if(loadAchievement) {
                         if (data.achievements) {
-                            idAchievementReducer.achievements = data.achievements.achievements;
-                            idAchievementReducer.weekly = data.achievements.weekly?data.achievements.weekly:{days:[], list:[]};
-                            idAchievementReducer.monthly = data.achievements.monthly?data.achievements.monthly:{days:[], list:[]};
+                            idAchievementReducer.achievements = data.achievements.achievements.sort((a, b) => {
+                                return a.complete_date > b.complete_date
+                            }).sort((a, b) => {
+                                return a.claim_date > b.claim_date
+                            });
+                            idAchievementReducer.weekly = data.achievements.weekly?data.achievements.weekly:{days:[], complete_date:'', claim_date:''};
+                            idAchievementReducer.monthly = data.achievements.monthly?data.achievements.monthly:{days:[], complete_date:'', claim_date:''};
                         }
                         idAchievementReducer.achievementUpdate = new Date().toISOString();
                     }
@@ -847,7 +851,8 @@ export const applyCustomCode = externalCodeSetup => {
                                 console.log('w4')
                                 acpTempAchievementState.weekly.days.push(today);
                                 if(acpTempAchievementState.weekly.days.length===7){
-                                    acpTempAchievementState.weekly.list.push({complete_date:today, claim_date:''})
+                                    acpTempAchievementState.weekly.complete_date = today;
+                                    acpTempAchievementState.weekly.claim_date  = '';
                                 }
                             }
                         }else{
@@ -869,7 +874,8 @@ export const applyCustomCode = externalCodeSetup => {
                             }else{
                                 acpTempAchievementState.monthly.days.push(today);
                                 if(acpTempAchievementState.monthly.days.length===30){
-                                    acpTempAchievementState.monthly.list.push({"complete_date":today, claim_date:''})
+                                    acpTempAchievementState.monthly.complete_date = today;
+                                    acpTempAchievementState.monthly.claim_date = '';
                                 }
                             }
                         }else{
@@ -1058,18 +1064,8 @@ export const applyCustomCode = externalCodeSetup => {
                                 }).sort((a, b) => {
                                     return a.claim_date > b.claim_date
                                 }),
-                            weekly: {
-                                days: acpTempAchievementState.weekly.days,
-                                list: acpTempAchievementState.weekly.list.sort((a, b) => {
-                                    return a.complete_date > b.complete_date
-                                }),
-                            },
-                            monthly: {
-                                days: acpTempAchievementState.monthly.days,
-                                list: acpTempAchievementState.monthly.list.sort((a, b) => {
-                                    return a.complete_date > b.complete_date
-                                }),
-                            }
+                            weekly: acpTempAchievementState.weekly,
+                            monthly: acpTempAchievementState.monthly
                         },
                         progressReducer: acpTempProgressState,
                         practiceReducer: acpTempPracticeState
@@ -1147,29 +1143,22 @@ export const applyCustomCode = externalCodeSetup => {
                     let acwTempProgressState = state.progressReducer;
                     switch(action.payload.mode) {
                         case 'weekly':
-                            let weeklyListItemIndex = acwTempAchievementState.weekly.list.findIndex(item => item.complete_date === action.payload.date)
-                            console.log(acwTempAchievementState.weekly, weeklyListItemIndex, action.payload.date)
-                            if (weeklyListItemIndex >= 0) {
-                                acwTempAchievementState.weekly.list[weeklyListItemIndex].claim_date = new moment().format('YYYY-MM-DD');
-                                acwTempProgressState.points.qi += 20;
-                                acwTempProgressState.actionList.push({
-                                    'mode': 'CM',
-                                    'data': {'id':action.payload.id, 'points':{'qi':20}},
-                                    'time': Math.floor(new Date().getTime() / 1000)
-                                });
-                            }
+                            acwTempAchievementState.weekly.claim_date = new moment().format('YYYY-MM-DD');
+                            acwTempProgressState.points.qi += 20;
+                            acwTempProgressState.actionList.push({
+                                'mode': 'CM',
+                                'data': {'id':action.payload.id, 'points':{'qi':20}},
+                                'time': Math.floor(new Date().getTime() / 1000)
+                            });
                             break;
                         case 'monthly':
-                            let monthlyListItemIndex = acwTempAchievementState.monthly.list.findIndex(item => item.complete_date === action.payload.date)
-                            if (monthlyListItemIndex >= 0) {
-                                acwTempAchievementState.monthly.list[monthlyListItemIndex].claim_date = new moment().format('YYYY-MM-DD');
-                                acwTempProgressState.points.qi += 100;
-                                acwTempProgressState.actionList.push({
-                                    'mode': 'CM',
-                                    'data': {'id':action.payload.id, 'points':{'qi':100}},
-                                    'time': Math.floor(new Date().getTime() / 1000)
-                                });
-                            }
+                            acwTempAchievementState.monthly.claim_date = new moment().format('YYYY-MM-DD');
+                            acwTempProgressState.points.qi += 100;
+                            acwTempProgressState.actionList.push({
+                                'mode': 'CM',
+                                'data': {'id':action.payload.id, 'points':{'qi':100}},
+                                'time': Math.floor(new Date().getTime() / 1000)
+                            });
                             break;
                     }
                     acwTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
@@ -1263,8 +1252,8 @@ export const applyCustomCode = externalCodeSetup => {
                         ...state,
                         achievementReducer: {
                             achievements: [],
-                            weekly: {days:[], list:[]},
-                            monthly: {days:[], list:[]},
+                            weekly: {days:[], complete_date:'', claim_date:''},
+                            monthly: {days:[], complete_date:'', claim_date:''},
                             achievementUpdate: ''
                         }
                     }
@@ -1931,9 +1920,9 @@ export const applyCustomCode = externalCodeSetup => {
 
         const newRoutes = {
             ...routes,
-            /!*  ChooseLanguage: {
+            /*  ChooseLanguage: {
                 screen: ChooseLanguage
-            },*!/
+            },*/
             OnBoarding: {
                 screen: OnBoarding
             }
@@ -1948,7 +1937,7 @@ export const applyCustomCode = externalCodeSetup => {
             routes: newRoutes,
             options: newOptions,
         }
-    })*/
+    })
 }
 
 
