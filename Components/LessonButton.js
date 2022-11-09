@@ -10,6 +10,7 @@ import {scale} from "../Utils/scale";
 
 const LessonButton = (props) => {
     const { global, colors, lesson } = props;
+    const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
@@ -164,7 +165,7 @@ const LessonButton = (props) => {
                     </View>
                 </View>
             :
-                videoComplete || lesson.settings.no_video || optionData.testing_mode?
+                videoComplete || lesson.settings.no_video || optionData.testing_mode || user.test_mode?
                     <TouchableOpacity
                         style={[
                             global.completeLessonButtonW,

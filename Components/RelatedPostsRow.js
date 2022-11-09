@@ -18,7 +18,7 @@ import {windowWidth} from "../Utils/Dimensions";
 const RelatedPostsRow = props => {
     const {posts, navigation} = props;
     const [ postsData, setPostsData ] = useState([]);
-    const postReducer = useSelector((state) => state.postReducer);
+    const postReducer = useSelector((state) => state.postReducer.posts.filter((post)=>posts.includes(post.id)));
     useEffect(() => {
         setPostsData(postReducer.posts.filter((post)=>posts.includes(post.id)));
     }, []);
@@ -68,14 +68,13 @@ const RelatedPostsRow = props => {
 
     return (
         <SafeAreaView style={styles.container}>
-            {postsData?
-                postsData.length?(
+            {postReducer.posts&&postReducer.posts.length?
                 <View style={styles.ScrollView}>
                     <View style={styles.view_blog_title}>
                         <Text style={styles.heading}>Related Posts</Text>
                     </View>
                     <FlatList
-                        data={postsData}
+                        data={postReducer.posts}
                         renderItem={renderItem}
                         extraData={this.props}
                         keyExtractor={item => item.id}
@@ -83,11 +82,7 @@ const RelatedPostsRow = props => {
                         horizontal
                     />
                 </View>
-                ):(
-                <View style={{height:150, justifyContent:"center", alignItems:"flex-start"}}>
-                    <ActivityIndicator size="large"/>
-                </View>
-            ):null
+            :null
             }
         </SafeAreaView>
     );

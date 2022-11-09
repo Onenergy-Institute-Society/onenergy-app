@@ -23,6 +23,7 @@ const VideoPlayer = (props) => {
     const seek = navigation.getParam('seek');
     const groupPractice = navigation.getParam('group');
     const gp_time = navigation.getParam('gp_time');
+    const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const dispatch = useDispatch();
     analytics().logScreenView({
@@ -70,11 +71,11 @@ const VideoPlayer = (props) => {
     const handleBackButtonClick = () => {
         Alert.alert(
             "Please Confirm",
-            optionData.testing_mode?"Testing mode: Update progress and exit?":"Stop before session ends will result not counting as one complete practice, are you sure you want to exit?",
+            optionData.testing_mode||user.test_mode?"Testing mode: Update progress and exit?":"Stop before session ends will result not counting as one complete practice, are you sure you want to exit?",
             [
                 {
                     text: "OK", onPress: () => {
-                        optionData.testing_mode?
+                        optionData.testing_mode||user.test_mode?
                             updateProgress().then():null;
                         navigation.goBack();
                     }

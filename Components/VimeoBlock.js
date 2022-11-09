@@ -44,7 +44,7 @@ const VimeoBlock = props => {
                     resizeMode={'cover'}
                 />
                 {duration?
-                    <Text style={styles.duration}>{new Date(duration * 1000).toISOString().substring(14, 19)}</Text>
+                    <Text style={styles.duration}>{duration}</Text>
                 :null}
                 {!videoComplete&&visualGuide?
                     <ImageCache style={[styles.tapFinger,{alignSelf:"center", marginTop:scale(60)}]} source={require('../assets/images/tapFinger.gif')} />

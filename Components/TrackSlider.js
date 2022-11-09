@@ -10,6 +10,7 @@ const TrackSlider = (props) => {
     const {type,totalDuration, pastPosition} = props;
     const {position, duration} = useProgress()
     const [pastDuration, setPastDuration] = useState(0);
+    const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const secondsToHHMMSS = (seconds: number | string) => {
         seconds = Number(seconds);
@@ -50,7 +51,7 @@ const TrackSlider = (props) => {
                         maximumValue={duration}
                         minimumTrackTintColor={'#4942E1'}
                         maximumTrackTintColor={'#7DE7FA'}
-                        disabled={!optionData.testing_mode}
+                        disabled={!optionData.testing_mode&&!user.test_mode}
                         onValueChange={ val => {
                              TrackPlayer.pause();
                         }}
