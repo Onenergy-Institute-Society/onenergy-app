@@ -18,12 +18,15 @@
     "react-native": "0.61.5"
   },
   "dependencies": {
-    "react-native-sound": "^0.11.2"
+    "react-native-sound": "^0.11.2",
+    "react-native-video": "^5.2.1"
   },
   "nativeDependencies": {
-    "react-native-sound": "^0.11.2"
+    "react-native-sound": "^0.11.2",
+    "react-native-video": "^5.2.1"
   },
   "podDependencies": {
-    "RNSound": "react-native-sound"
+    "RNSound": "react-native-sound",
+    "react-native-video": "react-native-video"
   }
 }
