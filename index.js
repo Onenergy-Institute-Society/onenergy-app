@@ -1703,7 +1703,7 @@ export const applyCustomCode = externalCodeSetup => {
            "friends",
            "groups"
        ])
-       externalCodeSetup.configApi.setTrackPlayerEnabled();
+
        externalCodeSetup.indexJsApi.addIndexJsFunction(() => {
            TrackPlayer.registerPlaybackService(() => require('./Components/TrackPlayerService'));
        })
