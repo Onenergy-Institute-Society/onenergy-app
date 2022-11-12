@@ -32,8 +32,8 @@ class MilestonesAccordian extends Component {
         let completed_steps = this.props.item.step.filter(lesson => lesson.completed === 1).length;
         let complete_date = '';
         let claim_date = '';
-        if(this.props.item.complete_date) complete_date = new moment.unix(this.props.item.complete_date).format('YYYY-MM-DD');
-        if(this.props.item.claim_date) claim_date = new moment.unix(this.props.item.claim_date).format('YYYY-MM-DD');
+        if(this.props.item.complete_date) complete_date = this.props.item.complete_date;
+        if(this.props.item.claim_date) claim_date = this.props.item.claim_date;
         return (
             <View style={[styles.boxShadow, styles.column]}>
                 <View style={[styles.row, {
@@ -43,16 +43,18 @@ class MilestonesAccordian extends Component {
                     <TouchableOpacity onPress={() => this.toggleExpand()}>
                         <View style={styles.rowLeft}>
                             <Text style={styles.title}>{this.props.item.title}</Text>
-                            {!this.props.item.claim_date?
+                            {!claim_date?
                             <View style={{marginTop:10}}>
-                                <Progress.Bar showsText={true} borderColor={"#4942e1"} color={complete_date?"lightgreen":"#7de7fa"} unfilledColor={"black"} borderRadius={9}
+                                <Progress.Bar showsText={true} borderColor={"#4942e1"} color={complete_date?"lightgreen":"#8c78ff"} unfilledColor={"black"} borderRadius={9}
                                               progress={completed_steps / this.props.item.step.length}
                                               width={windowWidth/2} height={scale(16)}/>
                                 <View
-                                    style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}><Text style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                                    style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', opacity: claim_date?0:100}}>
+                                    <Text style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
                                         width: -1,
                                         height: 1
-                                    }}}>{this.props.item.complete_date?"completed":completed_steps + ' / ' + this.props.item.step.length}</Text></View>
+                                    }}}>{complete_date?"completed":completed_steps + ' / ' + this.props.item.step.length}</Text>
+                                </View>
                             </View>
                             :null}
                         </View>
@@ -68,10 +70,10 @@ class MilestonesAccordian extends Component {
                             this.props.handleOnPress(this.props.item);
                         }}
                     >
-                        <View style={[styles.rowRight, {backgroundColor:this.props.item.claim_date?'gray':this.props.item.complete_date?'gold':'#7de7fa',
+                        <View style={[styles.rowRight, {backgroundColor:!complete_date?'#8c78ff':!claim_date?'gold':'gray',
                             borderBottomRightRadius: this.state.expanded ? 0 : 9,}]}>
                             {
-                                this.props.item.claim_date ?
+                                claim_date?
                                     <>
                                         <Text
                                             style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
@@ -232,8 +234,9 @@ const styles = StyleSheet.create({
         width: windowWidth - scale(30),
         height: scale(70),
         flexDirection: 'row',
-        backgroundColor: '#e6e6e8',
-        paddingVertical:0,
+        backgroundColor: '#f2f2f2',
+        marginTop: scale(10),
+        marginHorizontal: scale(15),
     },
     rowLeft: {
         marginHorizontal: 0,
@@ -244,7 +247,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: (windowWidth - scale(30))*2/3,
         height: scale(70),
-        backgroundColor: '#e6e6e8',
+        backgroundColor: '#8c78ff',
     },
     rowRight: {
         marginVertical: 0,

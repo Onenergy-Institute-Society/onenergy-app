@@ -87,19 +87,13 @@ const EventList = props => {
                     case 'lesson':
                         let showLesson = progressReducer.completedLessons&&progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.showLesson));
                         if (showLesson) {
-                            showDate = new moment.unix(showLesson['date']).add(item.delay, 'd');
-                            if (current_time > showDate) {
-                                show = true;
-                            }
+                            show = true;
                         }
                         break;
                     case 'achievement':
                         let showAchievement = user&&achievementReducer&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.showAchievement));
                         if (showAchievement) {
-                            showDate = new moment.unix(showAchievement['date']).add(item.delay, 'd');
-                            if (current_time > showDate) {
-                                show = true;
-                            }
+                            show = true;
                         }
                         break;
                     default:
@@ -107,7 +101,6 @@ const EventList = props => {
                         break;
                 }
                 if (show) {
-
                     switch (item.hide) {
                         case 'date':
                             switch (item.hideDateOption.hideDateType) {
@@ -168,6 +161,7 @@ const EventList = props => {
             }else{
                 show = false;
             }
+
             return (
                 show?
                     <View style={styles.container}>

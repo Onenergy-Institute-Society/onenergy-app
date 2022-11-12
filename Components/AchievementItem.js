@@ -26,16 +26,18 @@ const AchievementItem = props => {
                             <Text style={{color:"#ED57E1"}}>Expire in {7 - moment(today).diff(moment(item.complete_date), 'days')} days</Text></View>
                     </View>
                     :null}
-                {mode!=='past'&&item.claim_date===''?
-                    <View style={{marginTop: 10, opacity: item.claim_date!==''?0:100  }}>
-                        <Progress.Bar showsText={true} borderColor={"#4942e1"} color={item.complete_date===today?"lightgreen":"#8c78ff"} unfilledColor={"black"} borderRadius={9}
-                                      progress={item.complete_date===today?item.step:0 / item.total}
+                {mode!=='past'&&!item.claim_date?
+                    <View style={{marginTop: 10, opacity: item.claim_date?0:100  }}>
+                        <Progress.Bar showsText={true} borderColor={"#4942e1"} color={item.complete_date===today&&mode==='daily'||mode!=='daily'?"lightgreen":"#8c78ff"} unfilledColor={"black"} borderRadius={9}
+                                      progress={item.complete_date===today&&mode==='daily'||mode!=='daily'?item.step:0 / item.total}
                                       width={windowWidth/2} height={scale(16)}/>
                         <View
-                            style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', opacity: item.claim_date!==''?0:100}}><Text style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
+                            style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', opacity: item.claim_date?0:100}}>
+                            <Text style={{color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
                                 width: -1,
                                 height: 1
-                            }}}>{item.complete_date===today?"completed!":0 + ' / ' + item.total}</Text></View>
+                            }}}>{item.complete_date===today&&mode==='daily'||mode!=='daily'?"completed!":0 + ' / ' + item.total}</Text>
+                        </View>
                     </View>
                     :null}
             </View>
@@ -44,8 +46,8 @@ const AchievementItem = props => {
                     handleOnPress(item, date, mode);
                 }}
             >
-                <View style={[styles.rowRight, {backgroundColor:item.complete_date===''?'#8c78ff':mode==='past'||item.claim_date===''?'gold':'gray'}]}>
-                    {mode!=='past'&&item.claim_date!==''?
+                <View style={[styles.rowRight, {backgroundColor:!item.complete_date?'#8c78ff':mode==='past'||!item.claim_date?'gold':'gray'}]}>
+                    {mode!=='past'&&item.claim_date?
                         <>
                             <Text
                                 style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
@@ -66,7 +68,7 @@ const AchievementItem = props => {
                             </Text>
                         </>
                         :null}
-                    {mode==='past'||(item.claim_date===''&&item.complete_date!=='')?
+                    {mode==='past'||(!item.claim_date&&item.complete_date)?
                         <>
                             <Text
                                 style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
@@ -88,7 +90,7 @@ const AchievementItem = props => {
                             )}
                         </>
                         :null}
-                    {mode!=='past'&&item.complete_date===''?
+                    {mode!=='past'&&!item.complete_date?
                         <>
                             <Text
                                 style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {

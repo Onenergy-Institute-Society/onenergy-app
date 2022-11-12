@@ -131,7 +131,7 @@ const EditRoutine = props => {
                 );
                 return false;
             }
-            if(routineDetail.title.trim()===''){
+            if(!routineDetail.title.trim()){
                 alert('Please choose a routine name.');
                 return false;
             }

@@ -55,7 +55,7 @@ export const VideoModal = props => {
     const [controlHide, setControlHide] = useState(false);
     useEffect(() => {
         Orientation.unlockAllOrientations();
-        if(language.subtitle!==''){
+        if(language.subtitle){
             setSelectedCCUrl(textTracks.find(el => el.language === language.subtitle).uri);
         }
         return () => {
@@ -302,7 +302,7 @@ export const VideoModal = props => {
                     });
                 }}>
                 {modalScreenView()}
-                {selectedCCUrl!==''?(
+                {selectedCCUrl?(
                 <View style={[styles.subTitle,subTitle]}>
                     <InteractiveTranscripts
                         key = {selectedCCUrl}

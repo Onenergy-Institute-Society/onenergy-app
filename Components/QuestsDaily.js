@@ -44,7 +44,7 @@ const QuestsDaily = (props) => {
     const handleOnPress = (item, date, mode) => {
         switch (mode) {
             case 'past':
-                if(item.complete_date!=='') {
+                if(item.complete_date) {
                     if (Platform.OS !== "android") {
                         LayoutAnimation.configureNext(
                             LayoutAnimation.Presets.spring

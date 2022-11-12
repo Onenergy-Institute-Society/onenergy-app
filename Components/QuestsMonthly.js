@@ -35,7 +35,7 @@ const QuestsMonthly = (props) => {
                 <View style={styles.daysContainer}>
                 {Array(30).fill().map((_, idx) => 1 + idx).map((day,index)=>{
                     return (
-                        <View style={[styles.row, styles.boxShadow, {backgroundColor: achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?'#8c78ff':'#e6e6e8':'#e6e6e8':'#e6e6e8'}]} >
+                        <View style={[styles.row, styles.boxShadow, {backgroundColor: achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'#8c78ff':'#e6e6e8':'#e6e6e8':'#e6e6e8'}]} >
                             <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
                                 {
 
@@ -49,7 +49,7 @@ const QuestsMonthly = (props) => {
                                     <Image source={require("@src/assets/img/radio_unchecked_icon.png")}/>
                                 }
                             </View>
-                            <Text style={{textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===30?"gold":achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]!==''?'white':'white':'white':'white'}}>Day {day}</Text>
+                            <Text style={{textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===30?"gold":achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'white':'white':'white':'white'}}>Day {day}</Text>
                         </View>
                     )
                 })}
