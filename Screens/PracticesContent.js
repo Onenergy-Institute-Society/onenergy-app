@@ -116,7 +116,7 @@ const PracticesContent = props => {
                             imageStyle={{ borderRadius: 9}}
                             resizeMode={"cover"}
                             width={windowWidth - scale(30)}
-                            source={require('../assets/images/guided-practice-blank.jpg')}
+                            source={require('../assets/images/guided_practice_blank.png')}
                             background={true}
                         >
                             <Text style={styles.practiceType}>Guided{"\n"}Practice</Text>
@@ -134,7 +134,7 @@ const PracticesContent = props => {
                             imageStyle={{ borderRadius: 9}}
                             resizeMode={"cover"}
                             width={windowWidth - scale(30)}
-                            source={require('../assets/images/group-practice-blank.jpg')}
+                            source={require('../assets/images/group_practice_blank.png')}
                             background={true}
                         >
                             <Text style={styles.practiceType}>Group{"\n"}Practice</Text>
@@ -148,7 +148,7 @@ const PracticesContent = props => {
                             imageStyle={{ borderRadius: 9}}
                             resizeMode={"cover"}
                             width={windowWidth - scale(30)}
-                            source={require('../assets/images/customize-practice-blank.jpg')}
+                            source={require('../assets/images/customize_practice_blank.png')}
                             background={true}
                         >
                             <Text style={styles.practiceType}>Customize{"\n"}Practice</Text>
