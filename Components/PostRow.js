@@ -19,7 +19,8 @@ import { scale } from '../Utils/scale';
 const PostRow = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [ postsData, setPostsData ] = useState([]);
-    const { navigation, postType, postCategory, postPerPage, postOrder, postOrderBy, showAuthor } = props;
+    const { navigation, postType, postCategory, postPerPage, postOrder, postOrderBy, showAuthor, screenProps } = props;
+    const {colors} = screenProps;
     const postReducer = useSelector((state) => state.postReducer);
     const dispatch = useDispatch();
     const categoryIndex = postReducer.lastView&&postReducer.lastView.length?postReducer.lastView.findIndex(lv => lv.category === postCategory):null;
@@ -129,7 +130,7 @@ const PostRow = props => {
                         console.log(`${err}`);
                     }
                 }}>
-                <View style={[styles.containerStyle, styles.boxShadow]} key={'post-' + item.id}>
+                <View style={[styles.containerStyle, styles.boxShadow, {backgroundColor: colors.bodyBg}]} key={'post-' + item.id}>
                     <View style={styles.imageView}>
                         <ImageCache style={styles.image} source={{uri: item.image?item.image:''}} />
                         {renderOverlayImage(item.format)}
@@ -167,7 +168,7 @@ const PostRow = props => {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container]}>
             {postsData&&postsData.length?(
                 <FlatList
                     style={styles.scrollView}
@@ -189,7 +190,6 @@ const PostRow = props => {
 
 const styles = StyleSheet.create({
     containerStyle: {
-        backgroundColor:"white",
         marginTop: scale(15),
         marginBottom: scale(10),
         marginRight: 13,
@@ -236,16 +236,14 @@ const styles = StyleSheet.create({
         fontSize: scale(11),
         textAlign: 'left',
         color: 'black',
-        fontFamily: Platform.OS === 'android'
-            ? 'Roboto' : 'Avenir-Roman',
+        fontFamily: 'Montserrat Alternates',
     },
     author: {
         fontSize: scale(9),
         textAlign: 'left',
         fontStyle: 'italic',
         color: 'black',
-        fontFamily: Platform.OS === 'android'
-            ? 'Roboto' : 'Helvetica',
+        fontFamily: 'Montserrat Alternates',
     },
     overlay_button:{
         flex: 1,

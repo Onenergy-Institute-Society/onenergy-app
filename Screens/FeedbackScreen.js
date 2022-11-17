@@ -164,23 +164,24 @@ const FeedbackScreen = props => {
             </View>
             <Modalize
                 ref={(subjectDialog) => { this.subjectDialog = subjectDialog; }}
-                modalStyle={{backgroundColor:"#E6E6E8"}}
+                modalStyle={{backgroundColor:"#F8F0E2"}}
                 childrenStyle={{padding:25}}
                 adjustToContentHeight = "true"
                 withHandle = "false"
                 HeaderComponent={
-                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
-                        <Text style={{fontSize:24}}>Subject</Text>
+                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, backgroundColor: '#FFFFEF',
+                        borderBottomColor: '#4A4D34'}}>
+                        <Text style={{fontSize:24, color: '#4A4D34'}}>Subject</Text>
                         <IconButton
                             pressHandler={() => {this.subjectDialog.close();}}
                             icon={require("@src/assets/img/close.png")}
-                            tintColor={"#838384"}
+                            tintColor={"#FFFFFF"}
                             style={{ height: scale(16), width: scale(16) }}
                             touchableStyle={{
                                 position:"absolute", top:10, right: 10,
                                 height: scale(24),
                                 width: scale(24),
-                                backgroundColor: "#e6e6e8",
+                                backgroundColor: "#4A4D34",
                                 alignItems: "center",
                                 borderRadius: 100,
                                 padding: scale(5),
@@ -227,8 +228,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: 'left',
         color: 'black',
-        fontFamily: Platform.OS === 'android'
-            ? 'Roboto' : 'Avenir-Roman',
+        fontFamily: 'Montserrat Alternates',
     },
     inputContent:{
         width: windowWidth - scale(30),

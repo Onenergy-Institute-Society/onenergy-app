@@ -6,8 +6,8 @@ import { scale } from '../Utils/scale';
 import TouchableScale from './TouchableScale';
 
 const DailyQuotes = (props) => {
-    const { navigation } = props;
-    const {quote} = props;
+    const { navigation, screenProps, quote } = props;
+    const {colors} = screenProps;
     const regex_tag = /(<([^>]+)>)/ig;
     const regex_newline = /\r?\n|\r/g;
     const quote_rendered = quote.replace(regex_tag,'').replace(regex_newline,'');
@@ -24,10 +24,10 @@ const DailyQuotes = (props) => {
                     console.log(`${err}`);
                 }
             }}>
-            <ImageBackground source={require('../assets/images/design-6.png')} style={[styles.imageView, styles.boxShadow]}
+            <ImageBackground source={require('../assets/images/design-6.png')} style={[styles.imageView, styles.boxShadow, {backgroundColor: colors.bodyBg}]}
                              imageStyle={{
                                 resizeMode: "contain",
-                                alignSelf: "flex-start"
+                                alignSelf: "flex-start",
                             }}>
                 <Text style={styles.title}>{quote_rendered}</Text>
             </ImageBackground>
@@ -58,8 +58,7 @@ const styles = StyleSheet.create({
         paddingRight:40,
         textAlign: 'center',
         color: 'black',
-        fontFamily: Platform.OS === 'android'
-            ? 'Roboto' : 'Avenir-Roman',
+        fontFamily: 'Montserrat Alternates',
     },
     boxShadow: {
         shadowColor: "#000",

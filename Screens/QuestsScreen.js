@@ -7,13 +7,13 @@ import { withNavigation } from "react-navigation";
 import {useSelector} from "react-redux";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import {scale} from "../Utils/scale";
-import DailyQuests from "../Components/QuestsDaily";
+/*import DailyQuests from "../Components/QuestsDaily";*/
 import WeeklyQuests from "../Components/QuestsWeekly";
 import MonthlyQuests from "../Components/QuestsMonthly";
 import QiPointHeader from "../Components/QiPointHeader";
 import AuthWrapper from "@src/components/AuthWrapper";
 
-const QuestsDaily = () => {
+/*const QuestsDaily = () => {
     try {
         return (
             <DailyQuests />
@@ -21,7 +21,7 @@ const QuestsDaily = () => {
     } catch (err) {
         console.log(`${err}`);
     }
-}
+}*/
 const QuestsWeekly = () => {
     try {
         return (
@@ -48,7 +48,7 @@ const TabTitle = ({tintColor, name}) => {
 }
 const Tabs = createMaterialTopTabNavigator(
     {
-        Daily: {
+/*        Daily: {
             screen: QuestsDaily,
             navigationOptions: {
                 tabBarLabel: ({ tintColor }) => (
@@ -60,7 +60,7 @@ const Tabs = createMaterialTopTabNavigator(
                     </View>
                 ),
             }
-        },
+        },*/
         Weekly: {
             screen: QuestsWeekly,
             navigationOptions: {
@@ -89,7 +89,7 @@ const Tabs = createMaterialTopTabNavigator(
         }
     },
     {
-        initialRouteName: 'Daily',
+        initialRouteName: 'Weekly',
         swipeEnabled: true,
         lazy: true,
         optimizationsEnabled: true,

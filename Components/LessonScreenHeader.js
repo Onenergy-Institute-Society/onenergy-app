@@ -14,8 +14,9 @@ const LessonScreenHeader = (props) => {
         renderTimer,
         headerRightAuthWrapperProps,
         prevNext,
-        navigation
+        navigation,
     } = props;
+    console.log(style)
     return (
         <Animated.View
             style={[
@@ -49,7 +50,7 @@ const LessonScreenHeader = (props) => {
                     >
                         <IconButton
                             icon={require("@src/assets/img/arrow-back.png")}
-                            tintColor={"#4942e1"}
+                            tintColor={'#4a4d34'}
                             style={{
                                 height: scale(16),
                                 marginLeft: scale(16)

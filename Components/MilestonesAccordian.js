@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: (windowWidth - scale(30))*2/3,
         height: scale(70),
-        backgroundColor: '#8c78ff',
+        backgroundColor: '#f2f2f2',
     },
     rowRight: {
         marginVertical: 0,
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: (windowWidth - scale(30))/3,
         height: scale(70),
-        backgroundColor: '#7de7fa',
+        backgroundColor: '#8c78ff',
     },
     childRow: {
         flexDirection: 'row',

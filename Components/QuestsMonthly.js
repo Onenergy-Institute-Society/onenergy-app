@@ -64,7 +64,7 @@ const QuestsMonthly = (props) => {
                     achievementReducer.claim_date?
                         <View style={[styles.boxShadow, styles.rowReward]}>
                             <View style={styles.rowLeft}>
-                                <Text style={styles.title}>Practice for a month</Text>
+                                <Text style={styles.title}>30 Days Streak</Text>
                             </View>
                             <View style={[styles.rowRight, {backgroundColor:'grey'}]}>
                                 <Text

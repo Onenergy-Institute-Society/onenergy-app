@@ -31,7 +31,7 @@ const CategoryPageWatch = () => {
 const TabTitle = ({tintColor, name}) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     return (
-        <Text style={{ color: tintColor, fontSize: scale(20) }}>{optionData.titles.find(el => el.id === name).title}</Text>
+        <Text style={{ color: '#4A4D34', fontFamily:"Montserrat Alternates", fontSize: scale(16) }}>{optionData.titles.find(el => el.id === name).title}</Text>
     )
 }
 const Tabs = createMaterialTopTabNavigator(
@@ -47,7 +47,7 @@ const Tabs = createMaterialTopTabNavigator(
                         </AuthWrapper>
                     </View>
                 ),
-            }
+            },
         },
         Read: {
             screen: CategoryPageRead,
@@ -71,14 +71,14 @@ const Tabs = createMaterialTopTabNavigator(
         tabBarOptions: {
             style: {
                 height: 45,
-                backgroundColor: '#f9f9f9',
+                backgroundColor: '#FFFFEF',
                 marginTop: 0
             },
             indicatorStyle: {
-                backgroundColor: '#4942e1',
+                backgroundColor: '#4A4D34',
             },
-            activeTintColor: 'black',
-            inactiveTintColor: 'gray',
+            activeTintColor: '#4A4D34',
+            inactiveTintColor: '#7B8057',
         }
     },
 );
@@ -90,7 +90,8 @@ const BlogsScreen = createStackNavigator({
         }
     }
 });
-BlogsScreen.navigationOptions = ({ navigation }) => {
+BlogsScreen.navigationOptions = ({ navigation, screenProps }) => {
+    const {colors, global} = screenProps;
     let headerLeft = null;
     let navRoutes = navigation.dangerouslyGetParent().state.routes;
     if(navRoutes.length >= 2){
@@ -102,7 +103,7 @@ BlogsScreen.navigationOptions = ({ navigation }) => {
             >
                 <IconButton
                     icon={require("@src/assets/img/arrow-back.png")}
-                    tintColor={"#4942e1"}
+                    tintColor={colors.headerIconColor}
                     style={{
                         height: scale(16),
                         marginLeft: scale(16),
@@ -112,6 +113,11 @@ BlogsScreen.navigationOptions = ({ navigation }) => {
     }
     return {
         title: 'Wisdom of Life',
+        headerStyle: {
+            backgroundColor: colors.headerBg,
+        },
+        headerTintColor: colors.headerColor,
+        headerTitleStyle: global.appHeaderTitle,
         headerLeft: headerLeft,
     }
 }

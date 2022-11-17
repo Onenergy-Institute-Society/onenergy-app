@@ -18,7 +18,7 @@ const ForumItem = ({
     const avatarSource = getForumAvatarSource(forum);
     const verticalSpacing = 18;
     return (
-        <View style={[styles.boxShadow, styles.containerStyle]}>
+        <View style={[styles.boxShadow, styles.containerStyle, {backgroundColor: colors.bodyBg}]}>
             <AppTouchableOpacity
                 style={[global.forumListItem, { flexDirection: "row" }]}
                 onPress={forum.toSingle}
@@ -86,7 +86,6 @@ const ForumItem = ({
 
 const styles = StyleSheet.create({
     containerStyle: {
-        backgroundColor:"white",
         borderRadius: 9,
         marginTop: scale(15),
         marginHorizontal: scale(15),

@@ -198,20 +198,21 @@ const PracticeMember = props => {
             <Modalize
                 ref={(cpHelpModal) => { this.cpHelpModal = cpHelpModal; }}
                 modalHeight = {windowHeight*4/5}
-                childrenStyle = {{backgroundColor:"#f2f2f2"}}
+                childrenStyle = {{backgroundColor:"#F8F0E2"}}
                 handlePosition = "outside"
                 HeaderComponent={
-                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
-                        <Text style={{fontSize:24}}>{helpModal.title}</Text>
+                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, backgroundColor:'#FFFFEF', borderBottomColor:'#4A4D34'}}>
+                        <Text style={{fontSize:24, color: '#4A4D34'}}>{helpModal.title}</Text>
                         <IconButton
                         pressHandler={() => {this.cpHelpModal.close();}}
                         icon={require("@src/assets/img/close.png")}
+                        tintColor={'#FFFFFF'}
                         style={{ height: scale(16), width: scale(16) }}
                         touchableStyle={{
                             position:"absolute", top:10, right: 10,
                             height: scale(24),
                             width: scale(24),
-                            backgroundColor: "#e6e6e8",
+                            backgroundColor: "#4A4D34",
                             alignItems: "center",
                             borderRadius: 100,
                             padding: scale(5),

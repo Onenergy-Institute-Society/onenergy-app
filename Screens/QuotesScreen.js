@@ -23,6 +23,8 @@ import analytics from '@react-native-firebase/analytics';
 import TouchableScale from "../Components/TouchableScale";
 
 const QuotesScreen = props => {
+    const {screenProps} = props;
+    const {colors, global} = screenProps;
     const [loading, setLoading] = useState(false);
     const [ page, setPage] = useState(1);
     const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState(true);
@@ -201,7 +203,7 @@ const QuotesScreen = props => {
         </View>
     );
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={global.container}>
             {quoteReducer&&quoteReducer.length?(
                 <View style={styles.view}>
                     <FlatList
@@ -279,8 +281,7 @@ const styles = StyleSheet.create({
         fontSize: scale(14),
         textAlign: 'center',
         color: '#000',
-        fontFamily: Platform.OS === 'android'
-            ? 'Roboto' : 'Avenir-Roman',
+        fontFamily: 'Montserrat Alternates',
     },
     roundButton: {
         width: 24,
@@ -314,10 +315,16 @@ const mapStateToProps = (state) => ({
     config: state.config,  // not needed if axios or fetch is used
     accessToken: state.auth.token,
 });
-QuotesScreen.navigationOptions = ({ navigation }) => {
+QuotesScreen.navigationOptions = ({ navigation, screenProps }) => {
+    const {colors, global} = screenProps;
     const {params = {}} = navigation.state;
     return ({
         headerTitle: navigation.getParam('title'),
+        headerStyle: {
+            backgroundColor: colors.headerBg,
+        },
+        headerTintColor: colors.headerColor,
+        headerTitleStyle: global.appHeaderTitle,
         headerLeft:
             <TouchableOpacity
                 onPress={() => {

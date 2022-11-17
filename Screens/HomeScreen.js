@@ -21,13 +21,13 @@ import MySignupScreen from "../Components/MySignupScreen";
 
 const CustomDrawerContentComponent = (props) => {
     const {navigation, screenProps} = props;
-    const {colors} = screenProps;
+    const {colors, global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-
+console.log(global, colors)
     return (
-        <SafeAreaView style={{flex: 1, backgroundColor: colors.bodyBg}}>
+        <SafeAreaView style={{flex: 1, backgroundColor: colors.bodyFrontBg}}>
             <ImageBackground
                 source={require('../assets/images/1-1024x683.jpg')}
                 style={{height: scale(140), justifyContent: "center", alignItems: "center"}}>
@@ -126,7 +126,7 @@ const CustomDrawerContentComponent = (props) => {
             </ImageBackground>
             <View style={{flex: 1, justifyContent: "space-between"}}>
                 {(optionData && Object.keys(optionData).length > 0) ? (
-                    <View style={{backgroundColor: colors.bodyFrontBg, margin: 10, paddingLeft: 10, borderRadius: 9}}>
+                    <View style={{backgroundColor: colors.bodyBg, margin: 10, paddingLeft: 10, borderRadius: 9}}>
                         {!user ?
                             <>
                                 <TouchableWithoutFeedback onPress={() => {
@@ -136,7 +136,7 @@ const CustomDrawerContentComponent = (props) => {
                                         paddingHorizontal: 5,
                                         paddingVertical: 10,
                                         borderBottomWidth: 1,
-                                        borderBottomColor: '#ccc',
+                                        borderBottomColor: colors.borderColor,
                                         borderBottomRightRadius: 9,
                                         flexDirection: 'row',
                                         alignItems: 'center',
@@ -149,10 +149,10 @@ const CustomDrawerContentComponent = (props) => {
                                                     height: 32,
                                                     marginRight: 5,
                                                 }}
-                                                tintColor={"black"}
+                                                tintColor={colors.textColor}
                                             />
                                             <Text
-                                                style={{fontSize: scale(18)}}>
+                                                style={global.settingsItemTitle}>
                                                 {optionData.titles.findIndex(el => el.id === 'left_menu_signup') ? optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_signup')].title : 'Create an Account'}
                                             </Text>
                                         </View>
@@ -172,7 +172,7 @@ const CustomDrawerContentComponent = (props) => {
                                         paddingHorizontal: 5,
                                         paddingVertical: 10,
                                         borderBottomWidth: 1,
-                                        borderBottomColor: '#ccc',
+                                        borderBottomColor: colors.borderColor,
                                         borderBottomRightRadius: 9,
                                         flexDirection: 'row',
                                         alignItems: 'center',
@@ -185,10 +185,10 @@ const CustomDrawerContentComponent = (props) => {
                                                     height: 32,
                                                     marginRight: 5,
                                                 }}
-                                                tintColor={"black"}
+                                                tintColor={colors.textColor}
                                             />
                                             <Text
-                                                style={{fontSize: scale(18)}}>
+                                                style={global.settingsItemTitle}>
                                                 {optionData.titles.findIndex(el => el.id === 'left_menu_login') ? optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_login')].title : 'Login My Account'}
                                             </Text>
                                         </View>
@@ -211,7 +211,7 @@ const CustomDrawerContentComponent = (props) => {
                                         paddingHorizontal: 5,
                                         paddingVertical: 10,
                                         borderBottomWidth: 1,
-                                        borderBottomColor: '#ccc',
+                                        borderBottomColor: colors.borderColor,
                                         borderTopRightRadius: 9,
                                         flexDirection: 'row',
                                         alignItems: 'center',
@@ -224,10 +224,10 @@ const CustomDrawerContentComponent = (props) => {
                                                     height: 32,
                                                     marginRight: 5,
                                                 }}
-                                                tintColor={"black"}
+                                                tintColor={colors.textColor}
                                             />
                                             <Text
-                                                style={{fontSize: scale(18)}}>
+                                                style={global.settingsItemTitle}>
                                                 {optionData.titles.find(el => el.id === 'left_menu_progress').title}
                                             </Text>
                                         </View>
@@ -247,7 +247,7 @@ const CustomDrawerContentComponent = (props) => {
                                         paddingHorizontal: 5,
                                         paddingVertical: 10,
                                         borderBottomWidth: 1,
-                                        borderBottomColor: '#ccc',
+                                        borderBottomColor: colors.borderColor,
                                         flexDirection: 'row',
                                         alignItems: 'center',
                                         justifyContent: 'space-between'
@@ -259,10 +259,10 @@ const CustomDrawerContentComponent = (props) => {
                                                     height: 32,
                                                     marginRight: 5,
                                                 }}
-                                                tintColor={"black"}
+                                                tintColor={colors.textColor}
                                             />
                                             <Text
-                                                style={{fontSize: scale(18)}}>
+                                                style={global.settingsItemTitle}>
                                                 {optionData.titles.find(el => el.id === 'left_menu_quests').title}
                                             </Text>
                                         </View>
@@ -286,7 +286,7 @@ const CustomDrawerContentComponent = (props) => {
                                         paddingHorizontal: 5,
                                         paddingVertical: 10,
                                         borderBottomWidth: 1,
-                                        borderBottomColor: '#ccc',
+                                        borderBottomColor: colors.borderColor,
                                         flexDirection: 'row',
                                         alignItems: 'center',
                                         justifyContent: 'space-between'
@@ -298,10 +298,10 @@ const CustomDrawerContentComponent = (props) => {
                                                     height: 32,
                                                     marginRight: 5,
                                                 }}
-                                                tintColor={"black"}
+                                                tintColor={colors.textColor}
                                             />
                                             <Text
-                                                style={{fontSize: scale(18)}}>
+                                                style={global.settingsItemTitle}>
                                                 {optionData.titles.find(el => el.id === 'left_menu_achievements').title}
                                             </Text>
                                         </View>
@@ -325,7 +325,7 @@ const CustomDrawerContentComponent = (props) => {
                                         paddingHorizontal: 5,
                                         paddingVertical: 10,
                                         borderBottomWidth: 1,
-                                        borderBottomColor: '#ccc',
+                                        borderBottomColor: colors.borderColor,
                                         flexDirection: 'row',
                                         alignItems: 'center',
                                         justifyContent: 'space-between'
@@ -337,10 +337,10 @@ const CustomDrawerContentComponent = (props) => {
                                                     height: 32,
                                                     marginRight: 5,
                                                 }}
-                                                tintColor={"black"}
+                                                tintColor={colors.textColor}
                                             />
                                             <Text
-                                                style={{fontSize: scale(18)}}>
+                                                style={global.settingsItemTitle}>
                                                 {optionData.titles.find(el => el.id === 'left_menu_vouchers').title}
                                             </Text>
                                         </View>
@@ -366,7 +366,7 @@ const CustomDrawerContentComponent = (props) => {
                                 paddingHorizontal: 5,
                                 paddingVertical: 10,
                                 borderBottomWidth: 1,
-                                borderBottomColor: '#ccc',
+                                borderBottomColor: colors.borderColor,
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'space-between'
@@ -378,10 +378,10 @@ const CustomDrawerContentComponent = (props) => {
                                             height: 32,
                                             marginRight: 5,
                                         }}
-                                        tintColor={"black"}
+                                        tintColor={colors.textColor}
                                     />
                                     <Text
-                                        style={{fontSize: scale(18)}}>
+                                        style={global.settingsItemTitle}>
                                         {optionData.titles.find(el => el.id === 'left_menu_faq').title}
                                     </Text>
                                 </View>
@@ -401,7 +401,7 @@ const CustomDrawerContentComponent = (props) => {
                                 paddingHorizontal: 5,
                                 paddingVertical: 10,
                                 borderBottomWidth: 1,
-                                borderBottomColor: '#ccc',
+                                borderBottomColor: colors.borderColor,
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'space-between'
@@ -413,10 +413,10 @@ const CustomDrawerContentComponent = (props) => {
                                             height: 32,
                                             marginRight: 5,
                                         }}
-                                        tintColor={"black"}
+                                        tintColor={colors.textColor}
                                     />
                                     <Text
-                                        style={{fontSize: scale(18)}}>
+                                        style={global.settingsItemTitle}>
                                         {optionData.titles.find(el => el.id === 'left_menu_feedback').title}
                                     </Text>
                                 </View>
@@ -448,10 +448,10 @@ const CustomDrawerContentComponent = (props) => {
                                             width: 32,
                                             marginRight: 5,
                                         }}
-                                        tintColor={"black"}
+                                        tintColor={colors.textColor}
                                     />
                                     <Text
-                                        style={{fontSize: scale(18)}}>
+                                        style={global.settingsItemTitle}>
                                         {optionData.titles.find(el => el.id === 'left_menu_settings').title}
                                     </Text>
                                 </View>

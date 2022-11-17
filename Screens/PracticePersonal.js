@@ -24,13 +24,19 @@ import QiPointHeader from "../Components/QiPointHeader";
 import analytics from '@react-native-firebase/analytics';
 
 const PracticePersonal = props => {
+    const {screenProps} = props;
+    const {colors, global} = screenProps;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const helpData = optionData.helps.find(el => el.name === 'practice_guided_popup');
     const helpPageData = optionData.helps.find(el => el.name === 'practice_guided_empty');
     const guideReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer.guides:null);
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
+
+    analytics().logScreenView({
+        screen_class: 'MainActivity',
+        screen_name: 'Personal Practice Screen',
+    });
 
     React.useEffect(() => {
         Animated.timing(fadeAnim, {
@@ -39,13 +45,9 @@ const PracticePersonal = props => {
             easing: Easing.bounce
         }).start();
     }, []);
-    const toggleHelpModal = () => {
-        this.ppHelpModal.open();
-    };
     useEffect(() => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'practices_basic').title,
-            toggleHelpModal: toggleHelpModal,
         });
     }, []);
     useEffect(()=>{
@@ -57,7 +59,7 @@ const PracticePersonal = props => {
         }
     },[messageBarDisplay])
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={global.container}>
             {progressReducer.completedLessons.length?
                 <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length) ?
@@ -66,7 +68,7 @@ const PracticePersonal = props => {
                         </View>
                         : null
                     }
-                    <TracksList tracks={guideReducer} setMessageBarDisplay={setMessageBarDisplay} />
+                    <TracksList tracks={guideReducer} setMessageBarDisplay={setMessageBarDisplay} {...props} />
                 </ScrollView>
             :
                 <View style={{
@@ -81,40 +83,6 @@ const PracticePersonal = props => {
                                  {...props} />
                 </View>
             }
-            <Modalize
-                ref={(ppHelpModal) => { this.ppHelpModal = ppHelpModal; }}
-                modalHeight = {windowHeight*4/5}
-                childrenStyle = {{backgroundColor:"#f2f2f2"}}
-                handlePosition = "outside"
-                HeaderComponent={
-                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
-                        <Text style={{fontSize:24}}>{helpData.title}</Text>
-                        <IconButton
-                            pressHandler={() => {this.ppHelpModal.close();}}
-                            icon={require("@src/assets/img/close.png")}
-                            style={{ height: scale(16), width: scale(16) }}
-                            touchableStyle={{
-                                position:"absolute", top:10, right: 10,
-                                height: scale(24),
-                                width: scale(24),
-                                backgroundColor: "#e6e6e8",
-                                alignItems: "center",
-                                borderRadius: 100,
-                                padding: scale(5),
-                            }}
-                        />
-                    </View>
-                }
-            >
-                <View style={{flex: 1, width:windowWidth}} >
-                    <BlockScreen pageId={helpData.id}
-                         contentInsetTop={0}
-                         contentOffsetY={0}
-                         hideTitle={true}
-                         hideNavigationHeader={true}
-                         {...props} />
-                </View>
-            </Modalize>
             {messageBarDisplay?
             <Animated.View style={[styles.messageBar, styles.boxShadow, {opacity: fadeAnim,}]}><Text style={styles.messageText}>Great! You earn more qi. Keep it up!</Text></Animated.View>
                 :null}
@@ -153,9 +121,15 @@ const styles = StyleSheet.create({
         paddingHorizontal:scale(15),
     }
 });
-PracticePersonal.navigationOptions = ({ navigation }) => {
+PracticePersonal.navigationOptions = ({ navigation, screenProps }) => {
+    const {colors, global} = screenProps;
     return ({
         headerTitle: navigation.getParam('title'),
+        headerStyle: {
+            backgroundColor: colors.headerBg,
+        },
+        headerTintColor: colors.headerColor,
+        headerTitleStyle: global.appHeaderTitle,
         headerLeft:
             <View style={{flexDirection:"row"}}>
                 <TouchableOpacity

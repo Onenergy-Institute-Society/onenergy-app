@@ -33,7 +33,8 @@ const AppPageScreen = (props) => {
     )
 }
 
-AppPageScreen.navigationOptions = ({ navigation }) => {
+AppPageScreen.navigationOptions = ({ navigation, screenProps }) => {
+    const {colors} = screenProps;
     let headerLeft = null;
     let navRoutes = navigation.dangerouslyGetParent().state.routes;
     if(navRoutes.length >= 2){
@@ -45,7 +46,7 @@ AppPageScreen.navigationOptions = ({ navigation }) => {
         >
             <IconButton
                 icon={require("@src/assets/img/arrow-back.png")}
-                tintColor={"#4942e1"}
+                tintColor={colors.headerIconColor}
                 style={{
                     height: scale(16),
                     marginLeft: scale(16),

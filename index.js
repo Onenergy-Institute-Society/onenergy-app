@@ -354,6 +354,7 @@ export const applyCustomCode = externalCodeSetup => {
             color: 'white',
             fontSize: scale(13),
             backgroundColor: 'transparent',
+            fontFamily:"Montserrat Alternates"
         },
         lessonTime: {
             color: "white",
@@ -421,8 +422,7 @@ export const applyCustomCode = externalCodeSetup => {
             textShadowColor: 'grey',
             textShadowOffset: {width: -1, height: 1},
             textShadowRadius: 1,
-            fontFamily: Platform.OS === 'android'
-                ? 'Roboto' : 'Avenir-Roman',
+            fontFamily: 'Montserrat Alternates',
         },
         card: {
             backgroundColor: 'white',
@@ -1580,8 +1580,8 @@ export const applyCustomCode = externalCodeSetup => {
     })
     externalCodeSetup.blogSingleApi.setTransformBlogHeaderButtons((buttons, blog) => {
        const hasCover = !!blog.featuredImage;
-       const iconBackgroundColor = hasCover ? "#fff" : "#A6ADB5";
-       const iconTintColor = hasCover ? "#4942e1" : "#fff";
+       const iconBackgroundColor = hasCover ? "#FFFFEF" : "#4A4D34";
+       const iconTintColor = hasCover ? "#4A4D34" : "#FFFFEF";
        const regex = /(<([^>]+)>)/ig;
 
        if (blog.meta_box.share_url && blog.meta_box.share_url !== '') {

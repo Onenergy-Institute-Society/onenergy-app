@@ -18,7 +18,7 @@ import DailyQuotes from '../Components/DailyQuotes'
 import PostRow from '../Components/PostRow';
 import ImageCache from "../Components/ImageCache";
 import {NavigationActions} from "react-navigation";
-import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
+import AuthWrapper from "@src/components/AuthWrapper";
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import EventList from "../Components/EventList";
@@ -28,7 +28,7 @@ import ForumsScreen from "@src/containers/Custom/ForumsScreen";
 
 const HomeContent = (props) => {
     const {navigation, screenProps} = props;
-    const {global} = screenProps;
+    const {global, colors} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
@@ -221,7 +221,7 @@ console.log(user, achievementReducer.achievements)
                 }
                 {optionData.show.includes('quotes') && optionData.quote && (
                     <View style={[styles.quoteRow, styles.boxShadow]}>
-                        <DailyQuotes quote={optionData.quote}/>
+                        <DailyQuotes quote={optionData.quote} screenProps={screenProps} />
                     </View>
                 )}
                 {optionData.goals&&optionData.goals.length?
@@ -286,8 +286,8 @@ console.log(user, achievementReducer.achievements)
                         }
                     }>
                         <View style={styles.view_blog_title}>
-                            <Text style={styles.heading}>Q & A</Text>
-                            <Text style={styles.heading_more}>See All ></Text>
+                            <Text style={global.boxTitle}>Q & A</Text>
+                            <Text style={global.link}>See All ></Text>
                         </View>
                     </TouchableScale>
                 </View>
@@ -310,14 +310,14 @@ console.log(user, achievementReducer.achievements)
                                     }
                                 }>
                                     <View style={styles.view_blog_title}>
-                                        <Text style={styles.heading}>{blog.name}</Text>
-                                        <Text style={styles.heading_more}>See All ></Text>
+                                        <Text style={global.boxTitle}>{blog.name}</Text>
+                                        <Text style={styles.link}>See All ></Text>
                                     </View>
                                 </TouchableScale>
                                 <View style={styles.eventRow}>
                                     <PostRow postType={'categories'} postCategory={blog.category}
                                              postPerPage={blog.count} postOrder={blog.order} postOrderBy={blog.orderBy}
-                                             showAuthor={blog.showAuthor}/>
+                                             showAuthor={blog.showAuthor} screenProps={screenProps} />
                                 </View>
                             </>
                         ))}
@@ -501,9 +501,15 @@ const styles = StyleSheet.create({
     },
 });
 
-HomeContent.navigationOptions = ({navigation}) => {
+HomeContent.navigationOptions = ({navigation, screenProps}) => {
+    const {colors, global} = screenProps;
     return ({
         title: navigation.getParam('title'),
+        headerStyle: {
+            backgroundColor: colors.headerBg,
+        },
+        headerTintColor: colors.headerColor,
+        headerTitleStyle: global.appHeaderTitle,
         headerLeft:
             <TouchableScale
                 onPress={() => {navigation.openDrawer()
@@ -511,7 +517,7 @@ HomeContent.navigationOptions = ({navigation}) => {
             >
                 <IconButton
                     icon={require("@src/assets/img/menu.png")}
-                    tintColor={"#4942e1"}
+                    tintColor={colors.headerIconColor}
                     style={{
                         height: 20,
                         marginLeft: 20,
@@ -531,7 +537,7 @@ HomeContent.navigationOptions = ({navigation}) => {
                     >
                         <IconButton
                             icon={require("@src/assets/img/certificate.png")}
-                            tintColor={"#4942e1"}
+                            tintColor={colors.headerIconColor}
                             style={{
                                 height: 20,
                                 marginRight: 5,
@@ -546,7 +552,7 @@ HomeContent.navigationOptions = ({navigation}) => {
                     >
                         <IconButton
                             icon={require("@src/assets/img/achievement-action-icon.png")}
-                            tintColor={"#4942e1"}
+                            tintColor={colors.headerIconColor}
                             style={{
                                 height: 20,
                                 marginRight: 5,
@@ -561,7 +567,7 @@ HomeContent.navigationOptions = ({navigation}) => {
                     >
                         <IconButton
                             icon={require("@src/assets/img/notification-icon.png")}
-                            tintColor={"#4942e1"}
+                            tintColor={colors.headerIconColor}
                             style={{
                                 height: 20,
                                 marginRight: 0,

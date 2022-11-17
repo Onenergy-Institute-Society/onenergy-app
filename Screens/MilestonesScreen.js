@@ -5,35 +5,35 @@ import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
 import { withNavigation } from "react-navigation";
 import Milestones from "../Components/Milestones";
-import {useSelector} from "react-redux";
+import {connect, useSelector} from "react-redux";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import {scale} from "../Utils/scale";
 import QiPointHeader from "../Components/QiPointHeader";
 import AuthWrapper from "@src/components/AuthWrapper";
 
-const MilestonesLearn = () => {
+const MilestonesLearn = (props) => {
     try {
         return (
-            <Milestones type={'learn'} />
+            <Milestones type={'learn'} {...props} />
         )
     } catch (err) {
         console.log(`${err}`);
     }
 }
 
-const MilestonesStartup = () => {
+const MilestonesStartup = (props) => {
     try {
         return (
-            <Milestones type={'startup'} />
+            <Milestones type={'startup'} {...props} />
         )
     } catch (err) {
         console.log(`${err}`);
     }
 }
-const MilestonesStamina = () => {
+const MilestonesStamina = (props) => {
     try {
         return (
-            <Milestones type={'endurance'} />
+            <Milestones type={'endurance'} {...props} />
         )
     } catch (err) {
         console.log(`${err}`);
@@ -42,7 +42,7 @@ const MilestonesStamina = () => {
 const TabTitle = ({tintColor, name}) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     return (
-        <Text style={{ color: tintColor, fontSize: scale(20) }}>{optionData.titles.find(el => el.id === name).title}</Text>
+        <Text style={{ color: '#4A4D34', fontFamily:"Montserrat Alternates", fontSize: scale(16)  }}>{optionData.titles.find(el => el.id === name).title}</Text>
     )
 }
 const Tabs = createMaterialTopTabNavigator(
@@ -95,14 +95,14 @@ const Tabs = createMaterialTopTabNavigator(
         tabBarOptions: {
             style: {
                 height: 45,
-                backgroundColor: '#fff',
+                backgroundColor: '#FFFFEF',
                 marginTop: 0
             },
             indicatorStyle: {
-                backgroundColor: '#4942e1',
+                backgroundColor: '#4A4D34',
             },
-            activeTintColor: 'black',
-            inactiveTintColor: 'gray',
+            activeTintColor: '#4A4D34',
+            inactiveTintColor: '#7B8057',
         }
     },
 );
@@ -114,16 +114,20 @@ const MilestonesScreen = createStackNavigator({
         }
     }
 });
-MilestonesScreen.navigationOptions = ({navigation}) => ({
+MilestonesScreen.navigationOptions = ({navigation, screenProps}) => ({
     title: 'My Milestones',
-    headerTitleStyle: {textAlign:'left'},
+    headerStyle: {
+        backgroundColor: screenProps.colors.headerBg,
+    },
+    headerTintColor: screenProps.colors.headerColor,
+    headerTitleStyle: screenProps.global.appHeaderTitle,
     headerLeft:
         <TouchableOpacity
             onPress={() => {navigation.goBack()}}
         >
             <IconButton
                 icon={require("@src/assets/img/arrow-back.png")}
-                tintColor={"#4942e1"}
+                tintColor={screenProps.colors.headerIconColor}
                 style={{
                     height: scale(16),
                     marginLeft: scale(16)
@@ -134,4 +138,7 @@ MilestonesScreen.navigationOptions = ({navigation}) => ({
         <QiPointHeader />
         ,
 })
-export default withNavigation(MilestonesScreen);
+const mapStateToProps = (state) => ({
+    achievementReducer: state.onenergyReducer.achievementReducer.achievements
+});
+export default connect(mapStateToProps)(withNavigation(MilestonesScreen));

@@ -9,7 +9,8 @@ import {Modalize} from 'react-native-modalize';
 import {scale} from "../Utils/scale";
 
 const ChooseSubtitle =(props) => {
-    const {textTracks, setSelectedCCUrl} = props;
+    const {textTracks, setSelectedCCUrl, screenProps} = props;
+    const {colors} = screenProps;
     const language = useSelector((state) => state.languagesReducer.languages);
     const dispatch = useDispatch();
     const openCCDialog=()=>{
@@ -33,7 +34,7 @@ const ChooseSubtitle =(props) => {
                     {language.subtitle === item.item.language?(
                         <IconButton
                             icon={require("@src/assets/img/check-simple.png")}
-                            tintColor={"#4942e1"}
+                            tintColor={colors.headerIconColor}
                             style={{ height: 14, width: 14, opacity: 0.5 }}
                         />
                     ):null}
@@ -62,7 +63,7 @@ const ChooseSubtitle =(props) => {
             </TouchableWithoutFeedback>
             <Modalize
                 ref={(ccDialog) => { this.ccDialog = ccDialog; }}
-                modalStyle={{backgroundColor:"#E6E6E8", width:windowHeight/2, justifyContent:"center", alignSelf:"center", zIndex:9999}}
+                modalStyle={{backgroundColor:"#F8F0E2", width:windowHeight/2, justifyContent:"center", alignSelf:"center", zIndex:9999}}
                 childrenStyle={{paddingHorizontal:10, paddingTop:10}}
                 adjustToContentHeight={true}
                 disableScrollIfPossible={true}

@@ -24,7 +24,8 @@ Sound.setCategory('Playback');
 }*/
 
 const Milestones = (props) => {
-    const {type} = props;
+    const {type, screenProps} = props;
+    const {colors, global} = screenProps;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyText = optionData.titles.find(el => el.id === 'achievement_milestone_empty').title
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
@@ -89,12 +90,12 @@ const Milestones = (props) => {
                 Array.isArray(item.step)?
                     <MilestonesAccordian item={item} handleOnPress={handleOnPress} optionData={optionData} />
                     :
-                    <AchievementItem mode = {type} item = {item} handleOnPress = {handleOnPress} />
+                    <AchievementItem mode = {type} item = {item} handleOnPress = {handleOnPress} {...props} />
             :null
         );
     };
     return(
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={global.container}>
             {achievementReducer&&achievementReducer.length?
                 <FlatList
                     contentContainerStyle={{ paddingBottom: scale(20) }}

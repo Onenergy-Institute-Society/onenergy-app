@@ -223,9 +223,10 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: '#f8f0e2'
     },
     containerStyle: {
-        backgroundColor:"white",
+        backgroundColor:"#FFFFEF",
         borderRadius: 9,
         marginHorizontal: scale(15),
         marginTop: scale(15),
@@ -269,9 +270,8 @@ const styles = StyleSheet.create({
         fontSize: scale(16),
         fontWeight: '700',
         textAlign: 'left',
-        color: 'black',
-        fontFamily: Platform.OS === 'android'
-            ? 'Roboto' : 'Avenir-Roman',
+        color: '#4A4D34',
+        fontFamily: 'Montserrat Alternates',
     },
     metaRow: {
         marginLeft:scale(30),
@@ -293,8 +293,7 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center',
         fontStyle: 'italic',
         color: 'black',
-        fontFamily: Platform.OS === 'android'
-            ? 'Roboto' : 'Helvetica',
+        fontFamily: 'Montserrat Alternates',
     },
     description: {
         fontSize: scale(12),
@@ -302,8 +301,7 @@ const styles = StyleSheet.create({
         marginTop: scale(5),
         marginBottom: scale(15),
         backgroundColor: 'transparent',
-        fontFamily: Platform.OS === 'android'
-            ? 'Roboto' : 'Helvetica',
+        fontFamily: 'Montserrat Alternates',
     },
     loading:{
         textAlign: 'center',

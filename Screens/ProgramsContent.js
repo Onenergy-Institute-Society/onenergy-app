@@ -63,7 +63,7 @@ const ProgramsContent = props => {
                     <EventList location={'program'} />
                 </View>
                 <View style={styles.heading_title}>
-                    <Text style={styles.heading}>Preparatory Courses</Text>
+                    <Text style={global.boxTitle}>Preparatory Courses</Text>
                 </View>
                 <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
                                hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
@@ -71,20 +71,22 @@ const ProgramsContent = props => {
             <Modalize
                 ref={(popupProgramDialog) => { this.popupProgramDialog = popupProgramDialog; }}
                 modalHeight = {windowHeight*4/5}
-                childrenStyle = {{backgroundColor:"#f2f2f2"}}
+                childrenStyle = {{backgroundColor:"#F8F0E2"}}
                 handlePosition = "outside"
                 HeaderComponent={
-                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
-                        <Text style={{fontSize:24}}>{helpModal.title}</Text>
+                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, backgroundColor: '#FFFFEF',
+                        borderBottomColor: '#4A4D34'}}>
+                        <Text style={{fontSize:24, color: '#4A4D34'}}>{helpModal.title}</Text>
                         <IconButton
                             pressHandler={() => {this.popupProgramDialog.close();}}
                             icon={require("@src/assets/img/close.png")}
+                            tintColor={'#FFFFFF'}
                             style={{ height: scale(16), width: scale(16) }}
                             touchableStyle={{
                                 position:"absolute", top:10, right: 10,
                                 height: scale(24),
                                 width: scale(24),
-                                backgroundColor: "#e6e6e8",
+                                backgroundColor: "#4A4D34",
                                 alignItems: "center",
                                 borderRadius: 100,
                                 padding: scale(5),
@@ -182,7 +184,8 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
 });
-ProgramsContent.navigationOptions = ({ navigation }) => {
+ProgramsContent.navigationOptions = ({ navigation, screenProps }) => {
+    const {colors, global} = screenProps;
     const {params = {}} = navigation.state;
     let headerLeft;
     let navRoutes = navigation.dangerouslyGetParent().state.routes;
@@ -195,7 +198,7 @@ ProgramsContent.navigationOptions = ({ navigation }) => {
             >
                 <IconButton
                     icon={require("@src/assets/img/arrow-back.png")}
-                    tintColor={"#4942e1"}
+                    tintColor={colors.headerIconColor}
                     style={{
                         height: scale(16),
                         marginLeft: scale(16),
@@ -210,7 +213,7 @@ ProgramsContent.navigationOptions = ({ navigation }) => {
             >
                 <IconButton
                     icon={require("@src/assets/img/menu.png")}
-                    tintColor={"#4942e1"}
+                    tintColor={colors.headerIconColor}
                     style={{
                         height: 20,
                         marginLeft: 20,
@@ -223,6 +226,11 @@ ProgramsContent.navigationOptions = ({ navigation }) => {
     }
     return {
         title: navigation.getParam('title'),
+        headerStyle: {
+            backgroundColor: colors.headerBg,
+        },
+        headerTintColor: colors.headerColor,
+        headerTitleStyle: global.appHeaderTitle,
         headerLeft: headerLeft,
         headerRight:
             <AuthWrapper actionOnGuestLogin={'hide'}>
@@ -234,7 +242,7 @@ ProgramsContent.navigationOptions = ({ navigation }) => {
                     >
                         <IconButton
                             icon={require("@src/assets/img/certificate.png")}
-                            tintColor={"#4942e1"}
+                            tintColor={colors.headerIconColor}
                             style={{
                                 height: 20,
                                 marginRight: 5,
@@ -249,7 +257,7 @@ ProgramsContent.navigationOptions = ({ navigation }) => {
                     >
                         <IconButton
                             icon={require("@src/assets/img/achievement-action-icon.png")}
-                            tintColor={"#4942e1"}
+                            tintColor={colors.headerIconColor}
                             style={{
                                 height: 20,
                                 marginRight: 0,
@@ -262,7 +270,7 @@ ProgramsContent.navigationOptions = ({ navigation }) => {
                     >
                         <IconButton
                             icon={require("@src/assets/img/help.png")}
-                            tintColor={"#4942e1"}
+                            tintColor={colors.headerIconColor}
                             style={{
                                 height: 20,
                                 marginRight:0,

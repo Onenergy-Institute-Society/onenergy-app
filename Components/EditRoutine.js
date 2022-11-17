@@ -23,7 +23,8 @@ import { BlurView } from "@react-native-community/blur";
 import analytics from '@react-native-firebase/analytics';
 
 const EditRoutine = props => {
-    const {navigation} = props;
+    const {navigation, screenProps} = props;
+    const {colors} = screenProps;
     const dispatch = useDispatch();
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const backgroundImages = optionData.routine_image;
@@ -264,7 +265,7 @@ const EditRoutine = props => {
             <TouchableOpacity style={{justifyContent:"center", alignItems:"center"}} onPress={() => {removeItem(item.id)}}>
                 <IconButton
                     icon={require("@src/assets/img/delete.png")}
-                    tintColor={"#4942e1"}
+                    tintColor={colors.headerIconColor}
                     style={{
                         alignSelf: "center",
                         height: 24,
@@ -308,7 +309,7 @@ const EditRoutine = props => {
                             onPress={()=>{setCurrentTrack({index:id, item:itemData});this.countDialog.open();}}>
                             <View style={styles.trackCount}>
                                 <Text style={styles.trackCountText}>{itemData.parts>1?itemData.parts+'x':''}{itemData.count}{itemData.mode==="0"?"":"m"}</Text>
-                                <Image style={{marginLeft:5,tintColor:"#4942e1"}} source={require("@src/assets/img/arrow-down.png")} />
+                                <Image style={{marginLeft:5,tintColor:colors.headerIconColor}} source={require("@src/assets/img/arrow-down.png")} />
                             </View>
                         </TouchableWithoutFeedback>
                     </View>
@@ -351,7 +352,7 @@ const EditRoutine = props => {
                         {index >= 0 ? (
                             <IconButton
                                 icon={require("@src/assets/img/check-simple.png")}
-                                tintColor={"#4942e1"}
+                                tintColor={colors.headerIconColor}
                                 style={{height: 14, width: 14}}
                             />
                         ) : null}
@@ -547,16 +548,18 @@ const EditRoutine = props => {
                 childrenStyle = {{backgroundColor:"#f2f2f2"}}
                 handlePosition = "outside"
                 HeaderComponent={
-                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
-                        <Text style={{fontSize:scale(24)}}>{routineHelpModal.title}</Text><IconButton
+                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, backgroundColor: '#FFFFEF', borderBottomColor:'#4A4D34'}}>
+                        <Text style={{fontSize:scale(24), color: '#4A4D34'}}>{routineHelpModal.title}</Text>
+                        <IconButton
                         pressHandler={() => {this.routineHelpModal.close();}}
                         icon={require("@src/assets/img/close.png")}
+                        tintColor={'#FFFFFF'}
                         style={{ height: scale(16), width: scale(16) }}
                         touchableStyle={{
                             position:"absolute", top:10, right: 10,
                             height: scale(24),
                             width: scale(24),
-                            backgroundColor: "#e6e6e8",
+                            backgroundColor: "#4A4D34",
                             alignItems: "center",
                             borderRadius: 100,
                             padding: scale(5),
@@ -575,24 +578,24 @@ const EditRoutine = props => {
             </Modalize>
             <Modalize
                 ref={(countDialog) => { this.countDialog = countDialog; }}
-                modalStyle={{backgroundColor:"#E6E6E8"}}
+                modalStyle={{backgroundColor:"#F8F0E2"}}
                 modalHeight={windowHeight/2}
                 withHandle = "false"
                 HeaderComponent={
-                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
+                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, backgroundColor: '#FFFFEF', borderBottomColor:'#4A4D34'}}>
                         {currentTrack.index !== -1?(
-                            <Text style={{fontSize:24}}>{currentTrack.item.mode==="1"?"Choose duration":"Choose repeating times"}</Text>
+                            <Text style={{fontSize:24, color: '#4A4D34'}}>{currentTrack.item.mode==="1"?"Choose duration":"Choose repeating times"}</Text>
                         ):null}
                         <IconButton
                             pressHandler={() => {this.countDialog.close();}}
                             icon={require("@src/assets/img/close.png")}
-                            tintColor={"#838384"}
+                            tintColor={'#FFFFFF'}
                             style={{ height: scale(16), width: scale(16) }}
                             touchableStyle={{
                                 position:"absolute", top:10, right: 10,
                                 height: scale(24),
                                 width: scale(24),
-                                backgroundColor: "#e6e6e8",
+                                backgroundColor: "#4A4D34",
                                 alignItems: "center",
                                 borderRadius: 100,
                                 padding: scale(5),
@@ -609,23 +612,24 @@ const EditRoutine = props => {
             />
             <Modalize
                 ref={(bgmDialog) => { this.bgmDialog = bgmDialog; }}
-                modalStyle={{backgroundColor:"#E6E6E8"}}
+                modalStyle={{backgroundColor:"#F8F0E2"}}
                 childrenStyle={{padding:25}}
                 adjustToContentHeight = "true"
                 withHandle = "false"
                 HeaderComponent={
-                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
-                        <Text style={{fontSize:24}}>Background Music</Text>
+                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, backgroundColor: '#FFFFEF',
+                        borderBottomColor: '#4A4D34'}}>
+                        <Text style={{fontSize:24, color: '#4A4D34'}}>Background Music</Text>
                         <IconButton
                             pressHandler={() => {this.bgmDialog.close();}}
                             icon={require("@src/assets/img/close.png")}
-                            tintColor={"#838384"}
+                            tintColor={"#FFFFFF"}
                             style={{ height: scale(16), width: scale(16) }}
                             touchableStyle={{
                                 position:"absolute", top:10, right: 10,
                                 height: scale(24),
                                 width: scale(24),
-                                backgroundColor: "#e6e6e8",
+                                backgroundColor: "#4A4D34",
                                 alignItems: "center",
                                 borderRadius: 100,
                                 padding: scale(5),
@@ -647,17 +651,18 @@ const EditRoutine = props => {
                 modalHeight={windowHeight*2/3}
                 handlePosition = "outside"
                 HeaderComponent={
-                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:'#c2c2c2'}}>
-                        <Text style={{fontSize:24}}>Practices</Text><IconButton
+                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, backgroundColor: '#FFFFEF',
+                        borderBottomColor: '#4A4D34'}}>
+                        <Text style={{fontSize:24, color: '#4A4D34'}}>Practices</Text><IconButton
                         pressHandler={() => {this.addGuideModal.close();}}
                         icon={require("@src/assets/img/close.png")}
-                        tintColor={"#838384"}
+                        tintColor={'#FFFFFF'}
                         style={{ height: scale(16), width: scale(16) }}
                         touchableStyle={{
                             position:"absolute", top:10, right: 10,
                             height: scale(24),
                             width: scale(24),
-                            backgroundColor: "#e6e6e8",
+                            backgroundColor: "#4A4D34",
                             alignItems: "center",
                             borderRadius: 100,
                             padding: scale(5),

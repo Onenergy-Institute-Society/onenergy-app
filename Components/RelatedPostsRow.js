@@ -139,16 +139,14 @@ const styles = StyleSheet.create({
         fontSize: scale(11),
         textAlign: 'left',
         color: 'black',
-        fontFamily: Platform.OS === 'android'
-            ? 'Roboto' : 'Avenir-Roman',
+        fontFamily: 'Montserrat Alternates',
     },
     author: {
         fontSize: scale(9),
         textAlign: 'left',
         fontStyle: 'italic',
         color: 'black',
-        fontFamily: Platform.OS === 'android'
-            ? 'Roboto' : 'Helvetica',
+        fontFamily: 'Montserrat Alternates',
     },
     overlay_button:{
         flex: 1,

@@ -130,9 +130,11 @@ const EventList = props => {
                             }
                             break;
                         case 'lesson':
+                            console.log(item.image)
                             if (progressReducer.completedLessons&&progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
                                 show = false;
                             }
+                            console.log(show, item.hideLesson, progressReducer.completedLessons)
                             break;
                         case 'achievement':
                             if (achievementReducer&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.hideAchievement))) {
@@ -157,6 +159,7 @@ const EventList = props => {
                             displayGroup = [...displayGroup, item.group];
                         }
                     }
+                    console.log(show, item, item.image, displayGroup.includes(item.group), displayGroup, item.group)
                 }
             }else{
                 show = false;

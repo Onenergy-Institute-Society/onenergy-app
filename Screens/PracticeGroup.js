@@ -266,7 +266,7 @@ const PracticeGroup = props => {
                     this.DetailModal = DetailModal;
                 }}
                 modalHeight={windowHeight * 4 / 5}
-                childrenStyle={{backgroundColor: "#f2f2f2"}}
+                childrenStyle={{backgroundColor: "#F8F0E2"}}
                 handlePosition="outside"
                 HeaderComponent={
                     <View style={{
@@ -274,20 +274,22 @@ const PracticeGroup = props => {
                         flexDirection: "row",
                         justifyContent: "space-between",
                         borderBottomWidth: StyleSheet.hairlineWidth,
-                        borderBottomColor: '#c2c2c2'
+                        backgroundColor: '#FFFFEF',
+                        borderBottomColor: '#4A4D34'
                     }}>
-                        <Text style={{fontSize: 24}}>Group Practice Detail</Text>
+                        <Text style={{fontSize: 24, color: '#4A4D34'}}>Group Practice Detail</Text>
                         <IconButton
                             pressHandler={() => {
                                 this.DetailModal.close();
                             }}
                             icon={require("@src/assets/img/close.png")}
+                            tintColor={'#FFFFFF'}
                             style={{height: scale(16), width: scale(16)}}
                             touchableStyle={{
                                 position: "absolute", top: 10, right: 10,
                                 height: scale(24),
                                 width: scale(24),
-                                backgroundColor: "#e6e6e8",
+                                backgroundColor: "#4A4D34",
                                 alignItems: "center",
                                 borderRadius: 100,
                                 padding: scale(5),
@@ -317,7 +319,7 @@ const PracticeGroup = props => {
                     this.pgHelpModal = pgHelpModal;
                 }}
                 modalHeight={windowHeight * 4 / 5}
-                childrenStyle={{backgroundColor: "#f2f2f2"}}
+                childrenStyle={{backgroundColor: "#F8F0E2"}}
                 handlePosition="outside"
                 HeaderComponent={
                     <View style={{
@@ -325,9 +327,10 @@ const PracticeGroup = props => {
                         flexDirection: "row",
                         justifyContent: "space-between",
                         borderBottomWidth: StyleSheet.hairlineWidth,
-                        borderBottomColor: '#c2c2c2'
+                        backgroundColor: '#FFFFEF',
+                        borderBottomColor: '#4A4D34'
                     }}>
-                        <Text style={{fontSize: 24}}>{helpData.title}</Text>
+                        <Text style={{fontSize: 24, color: '#4A4D34'}}>{helpData.title}</Text>
                         <IconButton
                             pressHandler={() => {
                                 this.pgHelpModal.close();
@@ -338,7 +341,7 @@ const PracticeGroup = props => {
                                 position: "absolute", top: 10, right: 10,
                                 height: scale(24),
                                 width: scale(24),
-                                backgroundColor: "#e6e6e8",
+                                backgroundColor: "#4A4D34",
                                 alignItems: "center",
                                 borderRadius: 100,
                                 padding: scale(5),
@@ -415,8 +418,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         color: 'black',
-        fontFamily: Platform.OS === 'android'
-            ? 'Roboto' : 'Avenir-Roman',
+        fontFamily: 'Montserrat Alternates',
     },
     description: {
         alignSelf: "flex-start",
@@ -426,8 +428,7 @@ const styles = StyleSheet.create({
         fontStyle: "italic",
         color: '#000',
         backgroundColor: 'transparent',
-        fontFamily: Platform.OS === 'android'
-            ? 'Roboto' : 'Helvetica',
+        fontFamily: 'Montserrat Alternates',
     },
     loading: {
         position: 'absolute',

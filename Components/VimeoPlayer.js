@@ -237,6 +237,7 @@ class VimeoPlayer extends Component {
                                                 justifyContent:"center",
                                                 textAlignVertical:"center",
                                                 height:scale(40),
+                                                fontFamily: 'Montserrat Alternates'
                                             }
                                         }
                                         activeTranscriptColor={"white"}

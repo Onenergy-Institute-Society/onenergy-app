@@ -16,7 +16,8 @@ import NotificationTabBarIcon from "./NotificationTabBarIcon";
 import AuthWrapper from "@src/components/AuthWrapper";
 
 const TracksList = (props) => {
-    const {tracks, setMessageBarDisplay} = props;
+    const {tracks, setMessageBarDisplay, screenProps} = props;
+    const {colors, global} = screenProps;
     const [selectedTrack, setSelectedTrack] = useState(null);
 
     const onTrackItemPress = async (track) => {
@@ -32,12 +33,12 @@ const TracksList = (props) => {
             highlightColor = {color: "white"};
             showPlayer = true;
         } else {
-            highlightColor = {color: "black"};
+            highlightColor = {color: colors.textColor};
             showPlayer = false;
         }
         return (
             item.show?
-                <View style={[styles.trackItem, styles.boxShadow, {height: showPlayer ? scale(120) : scale(80)}]}
+                <View style={[styles.trackItem, styles.boxShadow, {backgroundColor:colors.bodyBg, height: showPlayer ? scale(120) : scale(80)}]}
                       key={'practice-' + item.id}>
                     <TouchableOpacity
                         onPress={() => {
@@ -55,7 +56,7 @@ const TracksList = (props) => {
                             </View>
                             <View style={styles.trackDescBox}>
                                 <View style={styles.titleBox}>
-                                    <Text style={[styles.title, highlightColor]}>{item.title}</Text>
+                                    <Text style={[global.itemTitle, highlightColor]}>{item.title}</Text>
                                     {item.new ? (
                                         <View style={{
                                             height: 12,
@@ -67,7 +68,7 @@ const TracksList = (props) => {
                                 </View>
                                 <View style={styles.subTitleBox}>
                                     <Text
-                                        style={[styles.subTitle, highlightColor]}>{item.album || 'Unknown'}</Text><Text
+                                        style={[global.itemText, highlightColor]}>{item.album || 'Unknown'}</Text><Text
                                     style={[styles.duration, highlightColor]}>{new Date(item.duration * 1000).toISOString().substring(14, 19)}</Text>
                                 </View>
                             </View>
@@ -87,7 +88,7 @@ const TracksList = (props) => {
     const renderSectionHeader = (section) => {
         return(
             section.section.data.find((item) => item.show)?
-                <Text style={{paddingVertical:10, fontSize: 24, marginTop:5, textAlign: "center" }}>{section.section.title.toUpperCase()}</Text>
+                <Text style={[global.screenTitle, {marginTop:scale(20), textAlign: "center" }]}>{section.section.title.toUpperCase()}</Text>
                 :null
         );
     }
@@ -116,7 +117,6 @@ const styles = StyleSheet.create({
       paddingTop:scale(5),
     },
     trackItem: {
-        backgroundColor: "white",
         borderRadius: 9,
         paddingVertical: 0,
         paddingHorizontal: 0,
@@ -127,7 +127,6 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
     },
     trackItemInner: {
-        backgroundColor: 'white',
         borderRadius: 9,
         paddingVertical: 0,
         paddingHorizontal: 0,
