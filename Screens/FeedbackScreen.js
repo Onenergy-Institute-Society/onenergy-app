@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: 'left',
         color: 'black',
-        fontFamily: 'Montserrat Alternates',
+        fontFamily: 'MontserratAlternates-SemiBold',
     },
     inputContent:{
         width: windowWidth - scale(30),

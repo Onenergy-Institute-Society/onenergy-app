@@ -418,7 +418,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         color: 'black',
-        fontFamily: 'Montserrat Alternates',
+        fontFamily: 'MontserratAlternates-SemiBold',
     },
     description: {
         alignSelf: "flex-start",
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
         fontStyle: "italic",
         color: '#000',
         backgroundColor: 'transparent',
-        fontFamily: 'Montserrat Alternates',
+        fontFamily: 'MontserratAlternates-Regular',
     },
     loading: {
         position: 'absolute',

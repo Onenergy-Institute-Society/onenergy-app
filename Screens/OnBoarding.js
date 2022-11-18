@@ -81,8 +81,8 @@ const OnBoarding = props => {
                 <TouchableOpacity
                     onPress={scrollTo}
                 >
-                    <View style={{width:windowWidth-30, backgroundColor: '#333436', justifyContent:"center", alignItems:"center", borderRadius:15, padding:20}}>
-                        <Text style={{color: '#ffffff', fontFamily: 'Montserrat Alternates', fontSize:scale(16), fontWeight:FontWeights.semiBold}}>{currentIndex===0?'Get Started':'Continue'}</Text>
+                    <View style={{width:windowWidth-30, backgroundColor: '#1634ea', justifyContent:"center", alignItems:"center", borderRadius:15, padding:20}}>
+                        <Text style={{color: '#ffffff', fontFamily: 'MontserratAlternates-SemiBold', fontSize:scale(16), fontWeight:'bold'}}>{currentIndex===0?'Get Started':'Continue'}</Text>
                     </View>
                 </TouchableOpacity>
                 {currentIndex === 0 ?
@@ -95,7 +95,7 @@ const OnBoarding = props => {
                             alignItems: "center",
                             padding: 20
                         }}>
-                            <Text style={{color: '#333436', fontFamily: 'Montserrat Alternates', fontSize: scale(16)}}>Create
+                            <Text style={{color: '#1634ea', fontFamily: 'MontserratAlternates-Regular', fontSize: scale(16)}}>Create
                                 an account</Text>
                         </View>
                     </TouchableOpacity>
@@ -109,7 +109,7 @@ const OnBoarding = props => {
                             alignItems: "center",
                             padding: 20
                         }}>
-                            <Text style={{color: '#333436', fontFamily: 'Montserrat Alternates', fontSize: scale(16)}}>Skip for now</Text>
+                            <Text style={{color: '#1634ea', fontFamily: 'MontserratAlternates-Regular', fontSize: scale(16)}}>Skip for now</Text>
                         </View>
                     </TouchableOpacity>
                 }
@@ -161,24 +161,24 @@ const styles = StyleSheet.create({
         paddingVertical: scale(10),
         height: scale(32),
         borderRadius: 18,
-        backgroundColor: '#333436',
+        backgroundColor: '#1634ea',
     },
     topPager:{
-        fontFamily: 'Montserrat Alternates',
+        fontFamily: 'MontserratAlternates-Regular',
         fontSize: 14,
-        color: '##fefcf9',
+        color: '#000000',
     },
     title:{
-        fontFamily: 'Montserrat Alternates',
+        fontFamily: 'MontserratAlternates-SemiBold',
         fontSize: scale(30),
-        color: "#333436",
-        fontWeight: FontWeights.semiBold,
+        color: "#000000",
+        fontWeight: 'bold',
     },
     subtitle:{
-        fontFamily: 'Montserrat Alternates',
+        fontFamily: 'MontserratAlternates-Regular',
         width: windowWidth-scale(60),
         fontSize: scale(14),
-        color: "#333436"
+        color: "#000000"
     }
 });
 const mapStateToProps = (state) => ({

@@ -36,7 +36,7 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
-
+console.log(global, colors)
     const onFocusHandler=() =>
     {
         try
@@ -317,7 +317,7 @@ const HomeContent = (props) => {
                                 <View style={styles.eventRow}>
                                     <PostRow postType={'categories'} postCategory={blog.category}
                                              postPerPage={blog.count} postOrder={blog.order} postOrderBy={blog.orderBy}
-                                             showAuthor={blog.showAuthor} screenProps={screenProps} />
+                                             showAuthor={blog.showAuthor} {...props} />
                                 </View>
                             </>
                         ))}

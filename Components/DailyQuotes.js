@@ -7,7 +7,7 @@ import TouchableScale from './TouchableScale';
 
 const DailyQuotes = (props) => {
     const { navigation, screenProps, quote } = props;
-    const {colors} = screenProps;
+    const {colors, global} = screenProps;
     const regex_tag = /(<([^>]+)>)/ig;
     const regex_newline = /\r?\n|\r/g;
     const quote_rendered = quote.replace(regex_tag,'').replace(regex_newline,'');
@@ -29,7 +29,7 @@ const DailyQuotes = (props) => {
                                 resizeMode: "contain",
                                 alignSelf: "flex-start",
                             }}>
-                <Text style={styles.title}>{quote_rendered}</Text>
+                <Text style={[styles.title, global.text]}>{quote_rendered}</Text>
             </ImageBackground>
         </TouchableScale>
     )
@@ -53,12 +53,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0,
     },
     title: {
-        fontSize: scale(14),
         paddingLeft:40,
         paddingRight:40,
         textAlign: 'center',
-        color: 'black',
-        fontFamily: 'Montserrat Alternates',
     },
     boxShadow: {
         shadowColor: "#000",

@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0,
         marginTop: scale(15),
         marginHorizontal: scale(15),
-        alignItems: 'flex-start',
+        alignItems: 'center',
         justifyContent: 'center',
     },
     boxShadow: {
@@ -277,9 +277,8 @@ const styles = StyleSheet.create({
     },
     practiceType: {
         color: '#4A4D34',
-        marginLeft:scale(110),
-        fontFamily:"Montserrat Alternates",
-        fontWeight:"600",
+        fontFamily:"MontserratAlternates-SemiBold",
+        fontWeight:"bold",
         fontSize: scale(28)
     }
 });

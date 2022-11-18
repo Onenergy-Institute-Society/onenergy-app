@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
         fontSize: scale(14),
         textAlign: 'center',
         color: '#000',
-        fontFamily: 'Montserrat Alternates',
+        fontFamily: 'MontserratAlternates-SemiBold',
     },
     roundButton: {
         width: 24,

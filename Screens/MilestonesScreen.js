@@ -42,7 +42,7 @@ const MilestonesStamina = (props) => {
 const TabTitle = ({tintColor, name}) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     return (
-        <Text style={{ color: '#4A4D34', fontFamily:"Montserrat Alternates", fontSize: scale(16)  }}>{optionData.titles.find(el => el.id === name).title}</Text>
+        <Text style={{ color: '#4A4D34', fontFamily:"MontserratAlternates-SemiBold", fontSize: scale(16)  }}>{optionData.titles.find(el => el.id === name).title}</Text>
     )
 }
 const Tabs = createMaterialTopTabNavigator(

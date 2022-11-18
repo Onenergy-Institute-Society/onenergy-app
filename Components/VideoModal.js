@@ -322,7 +322,7 @@ export const VideoModal = props => {
                                 alignItems:"center",
                                 textAlignVertical:"center",
                                 height:50,
-                                fontFamily: 'Montserrat Alternates'
+                                fontFamily: 'MontserratAlternates-Regular'
                             }
                         }
                         activeTranscriptColor={"white"}

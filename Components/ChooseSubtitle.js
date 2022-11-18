@@ -63,7 +63,7 @@ const ChooseSubtitle =(props) => {
             </TouchableWithoutFeedback>
             <Modalize
                 ref={(ccDialog) => { this.ccDialog = ccDialog; }}
-                modalStyle={{backgroundColor:"#F8F0E2", width:windowHeight/2, justifyContent:"center", alignSelf:"center", zIndex:9999}}
+                modalStyle={{backgroundColor:colors.bodyBg, width:windowHeight/2, justifyContent:"center", alignSelf:"center", zIndex:9999}}
                 childrenStyle={{paddingHorizontal:10, paddingTop:10}}
                 adjustToContentHeight={true}
                 disableScrollIfPossible={true}

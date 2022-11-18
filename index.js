@@ -272,201 +272,201 @@ export const applyCustomCode = externalCodeSetup => {
     });
     //Program screen course list
     const NewWidgetItemCourseComponent = (props) => {
-    const {viewModel, colors} = props;
+        const {viewModel, colors, global} = props;
 
-    let featuredUrl = viewModel.featuredUrl.replace('-300x200', '-1024x683');
-    let statusText;
-    let statusBarColor;
-    const lesson_time = new moment.utc(viewModel.date);
-    const current_time = new moment.utc();
-    const diffMinutes = lesson_time.diff(current_time, 'minutes');
-    const diffHours = lesson_time.diff(current_time, 'hours');
-    const diffDays = lesson_time.diff(current_time, 'days');
-    let diffTime;
-    if (diffMinutes < 60) {
-        diffTime = 'in ' + diffMinutes + ' Minutes';
-    } else {
-        if (diffHours < 24) {
-            diffTime = 'tomorrow';
+        let featuredUrl = viewModel.featuredUrl.replace('-300x200', '-1024x683');
+        let statusText;
+        let statusBarColor;
+        const lesson_time = new moment.utc(viewModel.date);
+        const current_time = new moment.utc();
+        const diffMinutes = lesson_time.diff(current_time, 'minutes');
+        const diffHours = lesson_time.diff(current_time, 'hours');
+        const diffDays = lesson_time.diff(current_time, 'days');
+        let diffTime;
+        if (diffMinutes < 60) {
+            diffTime = 'in ' + diffMinutes + ' Minutes';
         } else {
-            diffTime = 'in ' + diffDays + ' Days';
-        }
-    }
-    let lessonNote = '';
-    if (viewModel.progression === 100) {
-        statusBarColor = colors.coursesLabelCompleted;
-        statusText = "Completed";
-        lessonNote = 'Congratulations on completion';
-    } else if (viewModel.price && viewModel.price.expired) {
-        statusBarColor = "black";
-        statusText = "Expired";
-        lessonNote = 'Course is expired, no more access';
-    } else if (viewModel.hasAccess) {
-        if (lesson_time > current_time) {
-            lessonNote = 'Next lesson will be available ' + diffTime;
-        } else {
-            lessonNote = 'Next lesson is available now';
-        }
-        const expiringTime = new moment.utc(viewModel.price.expires_on);
-        const diffExpiringDays = expiringTime.diff(current_time, 'days');
-        let diffExpiringTime;
-        diffExpiringTime = 'Expire in ' + diffExpiringDays + ' Days';
-        if (diffExpiringDays <= 7 && diffExpiringDays > 0) {
-            statusBarColor = "grey";
-            statusText = diffExpiringTime;
-            lessonNote = 'Course is expiring soon';
-        } else {
-            if (viewModel.progression > 0) {
-                statusBarColor = colors.coursesLabelProgress;
-                statusText = "In Progress";
+            if (diffHours < 24) {
+                diffTime = 'tomorrow';
             } else {
-                statusBarColor = colors.coursesLabelFree;
-                statusText = "Enrolled";
-                lessonNote = 'Please start your first lesson';
+                diffTime = 'in ' + diffDays + ' Days';
             }
         }
-    } else {
-        statusBarColor = colors.coursesLabelStart;
-        statusText = "Start Course";
-    }
-    const styles = StyleSheet.create({
-        containerStyle: {
-            marginHorizontal: scale(15),
-            backgroundColor: 'transparent',
-        },
-        statusBar: {
-            height: scale(25),
-            position: 'absolute',
-            top: 10,
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            width: scale(105),
-            marginLeft: 0,
-            borderColor: '#000',
-            borderWidth: 0,
-            borderTopRightRadius: 15,
-            borderBottomRightRadius: 15,
-            zIndex: 3, // works on ios
-            elevation: 3,
-        },
-        statusText: {
-            color: 'white',
-            fontSize: scale(13),
-            backgroundColor: 'transparent',
-            fontFamily:"Montserrat Alternates"
-        },
-        lessonTime: {
-            color: "white",
-            fontWeight: "700",
-            fontSize: scale(14),
-            position: 'absolute',
-            bottom: 25,
-            alignSelf: "center",
-            textShadowColor: 'grey',
-            textShadowOffset: {width: -1, height: 1},
-            textShadowRadius: 1
-        },
-        progressBar: {
-            height: 3,
-            position: 'absolute',
-            bottom: 15,
-            flexDirection: "row",
-            width: windowWidth - 90,
-            marginLeft: 30,
-            marginRight: 30,
-            backgroundColor: 'white',
-            borderColor: '#000',
-            borderWidth: 0,
-            borderRadius: 5,
-        },
-        image: {
-            width: windowWidth - scale(30),
-            height: (windowWidth - scale(30)) / 9 * 4,
-            borderRadius: 9,
-            marginLeft: 0,
-            marginTop: 0,
-            overflow: 'hidden',
-            resizeMode: "cover",
-        },
-        imageView: {
-            backgroundColor: 'rgba(255,255,255,0.5)',
-            width: windowWidth - scale(30),
-            height: (windowWidth - scale(30)) / 9 * 4,
-            borderRadius: 9,
-            overflow: 'hidden',
-        },
-        metaOverlay: {
-            position: "absolute",
-            left: 0,
-            right: 0,
-            top: 0,
-            bottom: 0,
-            justifyContent: "flex-start",
-            alignItems: "flex-end",
-        },
-        meta: {
-            width: windowWidth - scale(30),
-            height: (windowWidth - scale(30)) / 9 * 4,
-            borderRadius: 9,
-            justifyContent: "flex-start",
-            alignItems: "flex-end",
-            paddingRight: 10,
-            paddingTop: 10,
-        },
-        title: {
-            fontSize: scale(18),
-            textAlign: 'center',
-            justifyContent: "center",
-            color: 'white',
-            textShadowColor: 'grey',
-            textShadowOffset: {width: -1, height: 1},
-            textShadowRadius: 1,
-            fontFamily: 'Montserrat Alternates',
-        },
-        card: {
-            backgroundColor: 'white',
-            borderRadius: 9,
-            paddingVertical: 0,
-            paddingHorizontal: 0,
-            width: '100%',
-            marginTop: scale(15),
-        },
-        boxShadow: {
-            shadowColor: "#000",
-            shadowOffset: {width: -2, height: 4},
-            shadowOpacity: 0.2,
-            shadowRadius: 3,
-            elevation: 4,
-        },
-    });
-    return (
-        <View style={styles.containerStyle} key={'course-' + viewModel.id}>
-            <TouchableWithoutFeedback
-                key={viewModel.id + 'img'}
-                onPress={viewModel.price.expired && viewModel.hasAccess ? () => alert('Course is expired') : viewModel.onClick}>
-                <View style={[styles.card, styles.boxShadow]}>
-                    <View style={[styles.statusBar, {backgroundColor: statusBarColor}]}><Text
-                        style={styles.statusText}>{statusText}</Text></View>
-                    <ImageCache style={styles.image} source={{uri: featuredUrl ? featuredUrl : ''}}/>
-                    {lessonNote ?
-                        <Text style={styles.lessonTime}>{lessonNote}</Text>
-                        : null}
-                    {viewModel.progression > 0 && viewModel.progression < 100 && !viewModel.price.expired ?
-                        <View style={styles.progressBar}><View style={{
-                            backgroundColor: colors.primaryColor,
-                            width: viewModel.progression + '%'
-                        }}/></View>
-                        : null}
-                    <View style={styles.metaOverlay}>
-                        <View style={styles.meta}>
-                            <Text style={styles.title}>{viewModel.title}</Text>
+        let lessonNote = '';
+        if (viewModel.progression === 100) {
+            statusBarColor = colors.coursesLabelCompleted;
+            statusText = "Completed";
+            lessonNote = 'Congratulations on completion';
+        } else if (viewModel.price && viewModel.price.expired) {
+            statusBarColor = "black";
+            statusText = "Expired";
+            lessonNote = 'Course is expired, no more access';
+        } else if (viewModel.hasAccess) {
+            if (lesson_time > current_time) {
+                lessonNote = 'Next lesson will be available ' + diffTime;
+            } else {
+                lessonNote = 'Next lesson is available now';
+            }
+            const expiringTime = new moment.utc(viewModel.price.expires_on);
+            const diffExpiringDays = expiringTime.diff(current_time, 'days');
+            let diffExpiringTime;
+            diffExpiringTime = 'Expire in ' + diffExpiringDays + ' Days';
+            if (diffExpiringDays <= 7 && diffExpiringDays > 0) {
+                statusBarColor = "grey";
+                statusText = diffExpiringTime;
+                lessonNote = 'Course is expiring soon';
+            } else {
+                if (viewModel.progression > 0) {
+                    statusBarColor = colors.coursesLabelProgress;
+                    statusText = "In Progress";
+                } else {
+                    statusBarColor = colors.coursesLabelFree;
+                    statusText = "Enrolled";
+                    lessonNote = 'Please start your first lesson';
+                }
+            }
+        } else {
+            statusBarColor = colors.coursesLabelStart;
+            statusText = "Start Course";
+        }
+        const styles = StyleSheet.create({
+            containerStyle: {
+                marginHorizontal: scale(15),
+                backgroundColor: 'transparent',
+            },
+            statusBar: {
+                height: scale(25),
+                position: 'absolute',
+                top: 10,
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                width: scale(105),
+                marginLeft: 0,
+                borderColor: '#000',
+                borderWidth: 0,
+                borderTopRightRadius: 15,
+                borderBottomRightRadius: 15,
+                zIndex: 3, // works on ios
+                elevation: 3,
+            },
+            statusText: {
+                color: 'white',
+                fontSize: scale(13),
+                backgroundColor: 'transparent',
+                fontFamily:"MontserratAlternates-Regular"
+            },
+            lessonTime: {
+                color: "white",
+                fontWeight: "700",
+                fontSize: scale(14),
+                position: 'absolute',
+                bottom: 25,
+                alignSelf: "center",
+                textShadowColor: 'grey',
+                textShadowOffset: {width: -1, height: 1},
+                textShadowRadius: 1
+            },
+            progressBar: {
+                height: 3,
+                position: 'absolute',
+                bottom: 15,
+                flexDirection: "row",
+                width: windowWidth - 90,
+                marginLeft: 30,
+                marginRight: 30,
+                backgroundColor: 'white',
+                borderColor: '#000',
+                borderWidth: 0,
+                borderRadius: 5,
+            },
+            image: {
+                width: windowWidth - scale(30),
+                height: (windowWidth - scale(30)) / 9 * 4,
+                borderRadius: 9,
+                marginLeft: 0,
+                marginTop: 0,
+                overflow: 'hidden',
+                resizeMode: "cover",
+            },
+            imageView: {
+                backgroundColor: 'rgba(255,255,255,0.5)',
+                width: windowWidth - scale(30),
+                height: (windowWidth - scale(30)) / 9 * 4,
+                borderRadius: 9,
+                overflow: 'hidden',
+            },
+            metaOverlay: {
+                position: "absolute",
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+                justifyContent: "flex-start",
+                alignItems: "flex-end",
+            },
+            meta: {
+                width: windowWidth - scale(30),
+                height: (windowWidth - scale(30)) / 9 * 4,
+                borderRadius: 9,
+                justifyContent: "flex-start",
+                alignItems: "flex-end",
+                paddingRight: 10,
+                paddingTop: 10,
+            },
+            title: {
+                fontSize: scale(18),
+                textAlign: 'center',
+                justifyContent: "center",
+                color: 'white',
+                textShadowColor: 'grey',
+                textShadowOffset: {width: -1, height: 1},
+                textShadowRadius: 1,
+                fontFamily: 'MontserratAlternates-SemiBold',
+            },
+            card: {
+                backgroundColor: 'white',
+                borderRadius: 9,
+                paddingVertical: 0,
+                paddingHorizontal: 0,
+                width: '100%',
+                marginTop: scale(15),
+            },
+            boxShadow: {
+                shadowColor: "#000",
+                shadowOffset: {width: -2, height: 4},
+                shadowOpacity: 0.2,
+                shadowRadius: 3,
+                elevation: 4,
+            },
+        });
+        return (
+            <View style={styles.containerStyle} key={'course-' + viewModel.id}>
+                <TouchableWithoutFeedback
+                    key={viewModel.id + 'img'}
+                    onPress={viewModel.price.expired && viewModel.hasAccess ? () => alert('Course is expired') : viewModel.onClick}>
+                    <View style={[styles.card, styles.boxShadow]}>
+                        <View style={[styles.statusBar, {backgroundColor: statusBarColor}]}><Text
+                            style={styles.statusText}>{statusText}</Text></View>
+                        <ImageCache style={styles.image} source={{uri: featuredUrl ? featuredUrl : ''}}/>
+                        {lessonNote ?
+                            <Text style={styles.lessonTime}>{lessonNote}</Text>
+                            : null}
+                        {viewModel.progression > 0 && viewModel.progression < 100 && !viewModel.price.expired ?
+                            <View style={styles.progressBar}><View style={{
+                                backgroundColor: colors.primaryColor,
+                                width: viewModel.progression + '%'
+                            }}/></View>
+                            : null}
+                        <View style={styles.metaOverlay}>
+                            <View style={styles.meta}>
+                                <Text style={global.widgetTitle}>{viewModel.title}</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
-            </TouchableWithoutFeedback>
-        </View>
-    )
+                </TouchableWithoutFeedback>
+            </View>
+        )
     }
     externalCodeSetup.coursesHooksApi.setWidgetItemCourseComponent(NewWidgetItemCourseComponent)
 
@@ -1940,14 +1940,14 @@ export const applyCustomCode = externalCodeSetup => {
            options: newOptions,
        }
     })
-    externalCodeSetup.forumSingleHooksApi.setForumHeaderRenderer((props) => {
-        const { forum, formatDateFunc } = props
-        return null;
-    })
     externalCodeSetup.forumSingleHooksApi.setHeaderRightComponent(({ t, forum, colors, global, headerColor, actionButtons, ...rest }) => {
         //Pass the necessary props to the custom component
         return null;
     })
+    externalCodeSetup.cssApi.addGlobalStyle("boxTitle", {"fontWeight": "bold"}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("appHeaderTitle", {"fontWeight": "bold"}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("forumListTitle", {"fontWeight": "bold"}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("subForumTitle", {"fontWeight": "bold"}, false);
 }
 
 

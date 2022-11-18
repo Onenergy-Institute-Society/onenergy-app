@@ -10,19 +10,19 @@ import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import {scale} from "../Utils/scale";
 import AuthWrapper from "@src/components/AuthWrapper";
 
-const CategoryPageRead = () => {
+const CategoryPageRead = (props) => {
     try {
         return (
-            <PostList postCategory={'105'} postPerPage={'10'} postOrder={'desc'} postOrderBy={'date'} useLoadMore={true} />
+            <PostList postCategory={'105'} postPerPage={'10'} postOrder={'desc'} postOrderBy={'date'} useLoadMore={true} {...props} />
         )
     } catch (err) {
         console.log(`${err}`);
     }
 }
-const CategoryPageWatch = () => {
+const CategoryPageWatch = (props) => {
     try {
         return (
-            <PostList postCategory={'103'} postPerPage={'10'} postOrder={'desc'} postOrderBy={'date'} useLoadMore={true} />
+            <PostList postCategory={'103'} postPerPage={'10'} postOrder={'desc'} postOrderBy={'date'} useLoadMore={true} {...props} />
         )
     } catch (err) {
         console.log(`${err}`);
@@ -31,7 +31,7 @@ const CategoryPageWatch = () => {
 const TabTitle = ({tintColor, name}) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     return (
-        <Text style={{ color: '#4A4D34', fontFamily:"Montserrat Alternates", fontSize: scale(16) }}>{optionData.titles.find(el => el.id === name).title}</Text>
+        <Text style={{ color: '#4A4D34', fontFamily:"MontserratAlternates-SemiBold", fontSize: scale(16) }}>{optionData.titles.find(el => el.id === name).title}</Text>
     )
 }
 const Tabs = createMaterialTopTabNavigator(

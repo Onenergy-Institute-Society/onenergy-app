@@ -25,7 +25,8 @@ const PostList = props => {
     const {postReducer} = useSelector(postSelector);
     const [ loadMore, setLoadMore] = useState(false);
     const [ page, setPage] = useState(1);
-    const { navigation, postCategory, postPerPage, postOrder, postOrderBy, useLoadMore } = props;
+    const { navigation, postCategory, postPerPage, postOrder, postOrderBy, useLoadMore, screenProps } = props;
+    const {colors, global} = screenProps;
     const dispatch = useDispatch();
     const categoryIndex = postReducer.lastView&&postReducer.lastView.length?postReducer.lastView.findIndex(lv => lv.category === parseInt(postCategory)):null;
     const fetchPostsData = async () => {
@@ -191,7 +192,7 @@ const PostList = props => {
         );
     }
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={global.container}>
             {postsData&&postsData.length?(
                 <FlatList
                     contentContainerStyle={{ paddingBottom: scale(20) }}
@@ -268,10 +269,10 @@ const styles = StyleSheet.create({
     title: {
         top:0,
         fontSize: scale(16),
-        fontWeight: '700',
+        fontWeight: 'bold',
         textAlign: 'left',
         color: '#4A4D34',
-        fontFamily: 'Montserrat Alternates',
+        fontFamily: 'MontserratAlternates-SemiBold',
     },
     metaRow: {
         marginLeft:scale(30),
@@ -293,7 +294,7 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center',
         fontStyle: 'italic',
         color: 'black',
-        fontFamily: 'Montserrat Alternates',
+        fontFamily: 'MontserratAlternates-Regular',
     },
     description: {
         fontSize: scale(12),
@@ -301,7 +302,7 @@ const styles = StyleSheet.create({
         marginTop: scale(5),
         marginBottom: scale(15),
         backgroundColor: 'transparent',
-        fontFamily: 'Montserrat Alternates',
+        fontFamily: 'MontserratAlternates-Regular',
     },
     loading:{
         textAlign: 'center',

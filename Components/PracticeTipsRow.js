@@ -203,14 +203,14 @@ const styles = StyleSheet.create({
         fontSize: scale(11),
         textAlign: 'left',
         color: 'black',
-        fontFamily: 'Montserrat Alternates',
+        fontFamily: 'MontserratAlternates-SemiBold',
     },
     author: {
         fontSize: scale(9),
         textAlign: 'left',
         fontStyle: 'italic',
         color: 'black',
-        fontFamily: 'Montserrat Alternates',
+        fontFamily: 'MontserratAlternates-Regular',
     },
     overlay_button:{
         flex: 1,
