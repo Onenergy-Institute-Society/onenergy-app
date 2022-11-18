@@ -13,7 +13,7 @@ const OnBoarding = props => {
     const scrollX = useRef(new Animated.Value(0)).current;
     const slidesRef = useRef(null);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-
+console.log(colors)
     const viewableItemsChanged = useRef(({viewableItems}) => {
         try {
             setCurrentIndex(viewableItems[0].index);
@@ -47,7 +47,7 @@ const OnBoarding = props => {
             <FastImage style={styles.topImage} resizeMode="cover" source={images[currentIndex]} />
             <View style={styles.bottomSlides}>
                 <FastImage style={styles.imageLeaves} source={require('../assets/images/leaves.png')} resizeMode="contain" />
-                <View style={styles.topPagerView}>
+                <View style={[styles.topPagerView, {backgroundColor: colors.primaryButtonBg}]}>
                     <Text style={[global.textItemSubtitle, {color: colors.bodyFrontBg}]}>{currentIndex + 1} of {optionData.feature_slider.length}</Text>
                 </View>
                 <FlatList
@@ -81,7 +81,7 @@ const OnBoarding = props => {
                 <TouchableOpacity
                     onPress={scrollTo}
                 >
-                    <View style={{width:windowWidth-30, backgroundColor: '#1634ea', justifyContent:"center", alignItems:"center", borderRadius:15, padding:20}}>
+                    <View style={{width:windowWidth-30, backgroundColor: colors.primaryButtonBg, justifyContent:"center", alignItems:"center", borderRadius:15, padding:20}}>
                         <Text style={{color: '#ffffff', fontFamily: 'MontserratAlternates-SemiBold', fontSize:scale(16), fontWeight:'bold'}}>{currentIndex===0?'Get Started':'Continue'}</Text>
                     </View>
                 </TouchableOpacity>
@@ -95,7 +95,7 @@ const OnBoarding = props => {
                             alignItems: "center",
                             padding: 20
                         }}>
-                            <Text style={{color: '#1634ea', fontFamily: 'MontserratAlternates-Regular', fontSize: scale(16)}}>Create
+                            <Text style={{color: colors.secondaryButtonColor, fontFamily: 'MontserratAlternates-Regular', fontSize: scale(16)}}>Create
                                 an account</Text>
                         </View>
                     </TouchableOpacity>
@@ -109,7 +109,7 @@ const OnBoarding = props => {
                             alignItems: "center",
                             padding: 20
                         }}>
-                            <Text style={{color: '#1634ea', fontFamily: 'MontserratAlternates-Regular', fontSize: scale(16)}}>Skip for now</Text>
+                            <Text style={{color: colors.secondaryButtonColor, fontFamily: 'MontserratAlternates-Regular', fontSize: scale(16)}}>Skip for now</Text>
                         </View>
                     </TouchableOpacity>
                 }
