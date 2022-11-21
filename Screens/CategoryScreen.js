@@ -2,12 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {getApi} from "@src/services";
 import {SafeAreaView, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import {connect, } from "react-redux";
-import IconButton from "@src/components/IconButton";
 import ImageCache from '../Components/ImageCache';
 import PostList from "../Components/PostList";
 import {windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
 import analytics from '@react-native-firebase/analytics';
+import Svg, {Path} from "react-native-svg";
 
 const CategoryScreen = props => {
     const { navigation, screenProps } = props;
@@ -41,17 +41,20 @@ const CategoryScreen = props => {
     }, []);
     useEffect(()=>{
         try {
-            setCategoryBanner(categoryData["meta_box"]["image_advanced"][0]["full_url"]);
+            console.log(categoryData)
+            if(categoryData["meta_box"]["image_advanced"]&&categoryData["meta_box"]["image_advanced"].length) {
+                setCategoryBanner(categoryData["meta_box"]["image_advanced"][0]["full_url"]);
+            }
         } catch (e) {
             console.error(e);
         }
     }, [categoryData]);
     return (
         <SafeAreaView style={global.container}>
-            {categoryBanner.length > 0 && (
-            <ImageCache style={styles.image} source={{uri: categoryBanner?categoryBanner:''}} />
-            )}
-            <PostList postCategory={category} postPerPage={'10'} postOrder={'desc'} postOrderBy={'id'} useLoadMore={true} />
+            {categoryBanner?
+            <ImageCache style={styles.image} source={{uri: categoryBanner}} />
+            :null}
+            <PostList postCategory={category} postPerPage={'10'} postOrder={'desc'} postOrderBy={'id'} useLoadMore={true} {...props} />
         </SafeAreaView>
     )
 };
@@ -69,20 +72,24 @@ const mapStateToProps = (state) => ({
     config: state.config,  // not needed if axios or fetch is used
     accessToken: state.auth.token,
 });
-CategoryScreen.navigationOptions = ({ navigation }) => ({
+CategoryScreen.navigationOptions = ({ navigation, screenProps }) => ({
     headerTitle: navigation.getParam("name") ? navigation.getParam("name"):"Onenergy Institute",
     headerLeft:
         <TouchableOpacity
             onPress={() => {navigation.goBack()}}
         >
-            <IconButton
-                icon={require("@src/assets/img/arrow-back.png")}
-                tintColor={"#4942e1"}
-                style={{
-                    height: scale(16),
-                    marginLeft: scale(16)
-                }}
-            />
+            <Svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                style={{marginLeft:scale(10)}}
+            >
+                <Path d="m15 18-6-6 6-6"
+                      fill="none"
+                      stroke={screenProps.colors.headerIconColor}
+                      strokeWidth="2"
+                />
+            </Svg>
         </TouchableOpacity>
 })
 export default connect(mapStateToProps)(CategoryScreen);

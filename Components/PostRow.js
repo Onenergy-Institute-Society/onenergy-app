@@ -20,7 +20,7 @@ const PostRow = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [ postsData, setPostsData ] = useState([]);
     const { navigation, postType, postCategory, postPerPage, postOrder, postOrderBy, showAuthor, screenProps } = props;
-    const {colors} = screenProps;
+    const {colors, global} = screenProps;
     const postReducer = useSelector((state) => state.postReducer);
     const dispatch = useDispatch();
     const categoryIndex = postReducer.lastView&&postReducer.lastView.length?postReducer.lastView.findIndex(lv => lv.category === postCategory):null;
@@ -168,7 +168,7 @@ const PostRow = props => {
     }
 
     return (
-        <SafeAreaView style={[styles.container]}>
+        <SafeAreaView style={global.container}>
             {postsData&&postsData.length?(
                 <FlatList
                     style={styles.scrollView}
@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     scrollView: {
+        paddingLeft: scale(15),
         justifyContent: 'flex-start',
         flexWrap: 'wrap',
     },
@@ -236,6 +237,7 @@ const styles = StyleSheet.create({
         fontSize: scale(11),
         textAlign: 'left',
         color: 'black',
+        fontWeight: "bold",
         fontFamily: 'MontserratAlternates-SemiBold',
     },
     author: {
@@ -243,6 +245,7 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         fontStyle: 'italic',
         color: 'black',
+        fontWeight: "normal",
         fontFamily: 'MontserratAlternates-Regular',
     },
     overlay_button:{

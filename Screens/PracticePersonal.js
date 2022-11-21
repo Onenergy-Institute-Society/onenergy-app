@@ -11,21 +11,20 @@ import {
 } from "react-native";
 import {connect, useSelector} from "react-redux";
 import TracksList from '../Components/TracksList';
-import IconButton from "@src/components/IconButton";
 import {withNavigation} from "react-navigation";
 import TrackPlayer from 'react-native-track-player';
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
-import { Modalize } from 'react-native-modalize';
-import {windowHeight, windowWidth} from "../Utils/Dimensions";
+import {windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
 import EventList from "../Components/EventList";
 import QiPointHeader from "../Components/QiPointHeader";
 import analytics from '@react-native-firebase/analytics';
+import Svg, {Path} from "react-native-svg";
 
 const PracticePersonal = props => {
     const {screenProps} = props;
-    const {colors, global} = screenProps;
+    const {global} = screenProps;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const helpPageData = optionData.helps.find(el => el.name === 'practice_guided_empty');
     const guideReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer.guides:null);
@@ -138,18 +137,22 @@ PracticePersonal.navigationOptions = ({ navigation, screenProps }) => {
                         navigation.goBack();
                     }}
                 >
-                    <IconButton
-                        icon={require("@src/assets/img/arrow-back.png")}
-                        tintColor={"#4942e1"}
-                        style={{
-                            height: scale(16),
-                            marginLeft: scale(16)
-                        }}
-                    />
+                    <Svg
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        style={{marginLeft:scale(10)}}
+                    >
+                        <Path d="m15 18-6-6 6-6"
+                              fill="none"
+                              stroke={screenProps.colors.headerIconColor}
+                              strokeWidth="2"
+                        />
+                    </Svg>
                 </TouchableOpacity>
             </View>,
         headerRight:
-            <QiPointHeader />
+            <QiPointHeader {...screenProps} />
     });
 }
 const mapStateToProps = (state) => ({

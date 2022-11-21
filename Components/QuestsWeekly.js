@@ -14,6 +14,8 @@ import Sound from "react-native-sound";
 Sound.setCategory('Playback');
 
 const QuestsWeekly = (props) => {
+    const {screenProps} = props;
+    const {colors, global} = screenProps;
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.weekly:null);
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
@@ -29,22 +31,17 @@ const QuestsWeekly = (props) => {
         });
     };
     return(
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={global.container}>
             <ScrollView style={styles.containerStyle}>
-                <Text style={styles.titleText}>Practice consecutively for 7 days to unlock this reward. Miss one day will reset the progress.</Text>
                 {Array(7).fill().map((_, idx) => 1 + idx).map((day,index)=>{
                     return (
-                        <View style={[styles.row, styles.boxShadow, {backgroundColor: achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'#8c78ff':'#e6e6e8':'#e6e6e8':'#e6e6e8'}]} >
-                            <Text style={[styles.title,{textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===6?"gold":achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'white':'white':'white':'white'}]}>Day {day} {index===6?'REWARD +20 Qi':''}</Text>
+                        <View style={[styles.row, styles.boxShadow, {backgroundColor: achievementReducer&&achievementReducer.days&&achievementReducer.days.length&&achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?colors.primaryButtonBg:colors.bodyBg}]} >
+                            <Text style={[global.title,{textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===6?"#ef713c":achievementReducer&&achievementReducer.days&&achievementReducer.days.length&&achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'white':colors.primaryButtonBg}]}>Day {day} {index===6?'REWARD +20 Qi':''}</Text>
                             <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
                                 <Text style={{marginRight:10, color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}}}>{achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?achievementReducer.days[index]:'':'':''}</Text>
                                 {
-                                    achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?
+                                    achievementReducer&&achievementReducer.days&&achievementReducer.days.length&&achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?
                                         <Image source={require("@src/assets/img/check2.png")} />
-                                        :
-                                        <Image source={require("@src/assets/img/radio_unchecked_icon.png")} />
-                                        :
-                                        <Image source={require("@src/assets/img/radio_unchecked_icon.png")} />
                                         :
                                         <Image source={require("@src/assets/img/radio_unchecked_icon.png")} />
                                 }
@@ -53,40 +50,40 @@ const QuestsWeekly = (props) => {
                     )
                 })}
                 <View style={{paddingBottom: scale(20)}}>
-                {achievementReducer&&achievementReducer.list?
-                    achievementReducer.list.claim_date?
-                        <View style={[styles.boxShadow, styles.rowReward]}>
-                            <View style={styles.rowLeft}>
-                                <Text style={styles.title}>7 Days Streak</Text>
+                {achievementReducer?
+                    achievementReducer.claim_date?
+                        <View style={[styles.boxShadow, styles.rowReward, {backgroundColor: colors.bodyBg}]}>
+                            <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
+                                <Text style={global.itemTitle}>7 Days Streak</Text>
                             </View>
-                            <View style={[styles.rowRight, {backgroundColor:'grey'}]}>
+                            <View style={[styles.rowRight, {backgroundColor:!achievementReducer.complete_date?colors.primaryButtonBg:!achievementReducer.claim_date?colors.secondaryButtonColor:'gray'}]}>
                                 <Text
-                                    style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                    style={[global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                             width: -1,
                                             height: 1
-                                        }}}
+                                        }}]}
                                 >
                                     CLEARED
                                 </Text>
                                 <Text
                                     numberOfLines={1}
-                                    style={{fontSize:11, fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                    style={[global.itemMeta, {flexWrap: "nowrap", fontSize:scale(11), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                             width: -1,
                                             height: 1
-                                        }}}
+                                        }}]}
                                 >
-                                    {listItem.complete_date}
+                                    {achievementReducer.complete_date}
                                 </Text>
                             </View>
                         </View>
                     :
-                        <View style={[styles.boxShadow, styles.rowReward]}>
+                        <View style={[styles.boxShadow, styles.rowReward, {backgroundColor: colors.secondaryButtonColor}]}>
                             <View style={styles.rowLeft}>
-                                <Text style={styles.title}>Practice for a week</Text>
+                                <Text style={global.itemTitle}>7 Days Streak</Text>
                                 <View style={{marginVertical: 10}}>
                                     <View
                                         style={{justifyContent: 'center', alignItems: 'center'}}>
-                                        <Text style={{color:"#ED57E1"}}>Expire in {7 - moment(today).diff(moment(achievementReducer.complete_date), 'days')} days</Text></View>
+                                        <Text style={[global.text, {color:"#ED57E1"}]}>Expire in {7 - moment(today).diff(moment(achievementReducer.complete_date), 'days')} days</Text></View>
                                 </View>
                             </View>
                             <TouchableWithoutFeedback
@@ -96,25 +93,25 @@ const QuestsWeekly = (props) => {
                                         type: "ONENERGY_ACHIEVEMENT_CLAIM_WEEKLY_MONTHLY",
                                         payload:{
                                             mode: "weekly",
-                                            date: listItem.complete_date,
+                                            date: achievementReducer.complete_date,
                                         },
                                     });
                                 }}
                             >
-                                <View style={[styles.rowRight, {backgroundColor:'gold'}]}>
+                                <View style={[styles.rowRight, {backgroundColor:colors.secondaryButtonColor}]}>
                                     <Text
-                                        style={{color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                        style={[global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                                 width: -1,
                                                 height: 1
-                                            }}}
+                                            }}]}
                                     >
                                         CLAIM
                                     </Text>
                                     <Text
-                                        style={{fontSize:24, fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                        style={[global.pointTitle, {fontSize:24, fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                                 width: -1,
                                                 height: 1
-                                            }}}
+                                            }}]}
                                     >
                                         +20 Qi
                                     </Text>
@@ -128,11 +125,6 @@ const QuestsWeekly = (props) => {
     )
 }
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     containerStyle: {
         flex: 1,
         justifyContent: 'flex-start',
@@ -162,37 +154,27 @@ const styles = StyleSheet.create({
         marginHorizontal: scale(15),
     },
     rowLeft: {
+        marginVertical: 0,
         paddingHorizontal: scale(10),
-        paddingVertical: scale(10),
         borderTopLeftRadius: 9,
         borderBottomLeftRadius: 9,
         alignItems: 'center',
-        justifyContent: 'space-between',
-        width: (windowWidth - scale(30))*3/4,
-        height: scale(60),
-        backgroundColor: '#e6e6e8',
+        justifyContent: 'center',
+        width: (windowWidth - scale(30))*2/3,
+        height: scale(70),
     },
     rowRight: {
-        paddingHorizontal: scale(10),
-        paddingVertical: scale(10),
+        marginVertical: 0,
         borderTopRightRadius: 9,
         borderBottomRightRadius: 9,
         alignItems: 'center',
-        justifyContent: 'space-between',
-        width: (windowWidth - scale(30))/4,
-        height: scale(60),
-        backgroundColor: '#7de7fa',
+        justifyContent: 'center',
+        width: (windowWidth - scale(30))/3,
+        height: scale(70),
+        backgroundColor: '#8c79ea',
     },
     title: {
       fontSize:scale(14)
-    },
-    achievementItemBox: {
-        marginTop:scale(50),
-        marginBottom:scale(20),
-        width:windowWidth-scale(30),
-        borderRadius: 12,
-        backgroundColor: "#fff",
-        marginHorizontal: 15,
     },
     textSticker: {
         width:"100%",
@@ -202,66 +184,6 @@ const styles = StyleSheet.create({
     },
     pointText: {
         fontSize:scale(14),
-    },
-    achievementItemBoxInfo: {
-        paddingTop:scale(32),
-        display: "flex",
-        flexDirection:"column",
-        alignItems:"center",
-        justifyContent:"space-between",
-    } ,
-    achievementItemBoxInfoTop: {
-        paddingHorizontal:scale(40),
-        paddingBottom:scale(40),
-    },
-    achievementItemBoxInfoBottom: {
-
-    },
-    achievementItemBoxImageWrap: {
-        position:"absolute",
-        left: 10,
-        top:scale(-30),
-        justifyContent:"center",
-        paddingLeft:scale(16),
-        paddingBottom:scale(17),
-        alignItems:"flex-start",
-        width: scale(150),
-        height: scale(150),
-        borderRadius:scale(43),
-    },
-    achievementItemBoxTitle: {
-        marginTop:scale(20),
-        fontSize:scale(18),
-        fontWeight:'700',
-        textAlign:"center"
-    },
-    achievementItemBoxText: {
-        marginVertical:scale(10),
-        fontSize:scale(14),
-        fontWeight:'500',
-        lineHeight:scale(24),
-        textAlign:"center"
-    },
-    achievementItemBoxDescription: {
-        flexDirection: "row",
-        justifyContent:"flex-start",
-    },
-    achievementItemBoxDescriptionText: {
-        textTransform: "uppercase",
-        fontWeight: "700",
-        fontSize: scale(12),
-    },
-    achievementItemBoxRequirements: {
-        marginTop:scale(10),
-    },
-    achievementItemBoxSubtitle: {
-        flexDirection: "row",
-        justifyContent:"flex-start",
-    },
-    achievementItemBoxSubtitleText: {
-        textTransform: "uppercase",
-        fontWeight: "700",
-        fontSize: scale(12),
     },
     checklistItems: {
         marginTop:scale(12),

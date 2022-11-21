@@ -7,7 +7,7 @@ import {
     SafeAreaView,
     FlatList,
     LayoutAnimation,
-    Platform, UIManager
+    Platform
 } from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
@@ -25,7 +25,7 @@ Sound.setCategory('Playback');
 
 const Milestones = (props) => {
     const {type, screenProps} = props;
-    const {colors, global} = screenProps;
+    const {global} = screenProps;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyText = optionData.titles.find(el => el.id === 'achievement_milestone_empty').title
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
@@ -84,13 +84,12 @@ const Milestones = (props) => {
                 show = 1;
                 break;
         }
-        if(show) console.log(item, item.title)
         return (
             show >= 0?
                 Array.isArray(item.step)?
-                    <MilestonesAccordian item={item} handleOnPress={handleOnPress} optionData={optionData} />
+                    <MilestonesAccordian item={item} handleOnPress={handleOnPress} optionData={optionData} {...props} />
                     :
-                    <AchievementItem mode = {type} item = {item} handleOnPress = {handleOnPress} {...props} />
+                    <AchievementItem mode={type} item={item} handleOnPress={handleOnPress} {...props} />
             :null
         );
     };
@@ -99,10 +98,10 @@ const Milestones = (props) => {
             {achievementReducer&&achievementReducer.length?
                 <FlatList
                     contentContainerStyle={{ paddingBottom: scale(20) }}
-                    showsVerticalScrollIndicator={false}
                     data={achievementReducer}
                     renderItem={renderItem}
                     keyExtractor={item => item.id}
+                    showsVerticalScrollIndicator={false}
                 />
                 :
                 <View style={{
@@ -144,7 +143,7 @@ const styles = StyleSheet.create({
     },
     rowLeft: {
         marginVertical: 0,
-        paddingHorizontal:5,
+        paddingHorizontal: scale(10),
         borderTopLeftRadius: 9,
         borderBottomLeftRadius: 9,
         alignItems: 'center',
@@ -163,85 +162,8 @@ const styles = StyleSheet.create({
         height: scale(70),
         backgroundColor: '#7de7fa',
     },
-    achievementItemBox: {
-        marginTop:scale(50),
-        marginBottom:scale(20),
-        width:windowWidth-scale(30),
-        borderRadius: 12,
-        backgroundColor: "#fff",
-        marginHorizontal: 15,
-    },
-    textSticker: {
-        flexDirection: "row",
-    },
     pointText: {
         fontSize:scale(14),
-    },
-    achievementItemBoxInfo: {
-        paddingTop:scale(32),
-        display: "flex",
-        flexDirection:"column",
-        alignItems:"center",
-        justifyContent:"space-between",
-    } ,
-    achievementItemBoxInfoTop: {
-        paddingHorizontal:scale(20),
-        paddingBottom:scale(20),
-    },
-    achievementItemBoxInfoBottom: {
-        justifyContent:"center",
-        alignItems:"center",
-        paddingBottom:scale(20),
-    },
-    achievementItemBoxImageWrap: {
-        position:"absolute",
-        top:scale(-40),
-        justifyContent:"center",
-        alignItems:"center",
-        width: scale(86),
-        height: scale(86),
-        borderRadius:scale(43),
-        backgroundColor: "#fff",
-        shadowColor: "#5e5c9a",
-        shadowOffset: {width: 3, height: 5},
-        shadowOpacity: 0.12,
-        shadowRadius: 3,
-        elevation: 3,
-    },
-    achievementItemBoxImage: {
-        width:scale(46),
-        flex: 1,
-    },
-    achievementItemBoxTitle: {
-        marginTop:scale(20),
-        fontSize:scale(18),
-        fontWeight:'700',
-        textAlign:"center"
-    },
-    achievementItemBoxText: {
-        marginVertical:scale(10),
-        fontSize:scale(14),
-        fontWeight:'500',
-        lineHeight:scale(24),
-        textAlign:"center"
-    },
-    achievementItemBoxRequirements: {
-        marginTop:scale(10),
-    },
-    achievementItemBoxSubtitle: {
-        flexDirection: "row",
-        justifyContent:"flex-start",
-    },
-    achievementItemBoxSubtitleText: {
-        textTransform: "uppercase",
-        fontWeight: "700",
-        fontSize: scale(12),
-    },
-    checklistItems: {
-        marginTop:scale(12),
-        paddingRight:scale(12),
-        maxHeight:scale(80),
-        flexDirection:"row",
     },
     boxShadow: {
         shadowColor: "#000",

@@ -8,28 +8,21 @@ import {
     ScrollView
 } from "react-native";
 import {useSelector} from "react-redux";
-import {windowHeight, windowWidth} from "../Utils/Dimensions";
+import {windowWidth} from "../Utils/Dimensions";
 import {withNavigation} from "react-navigation";
-import IconButton from "@src/components/IconButton";
 import CoursesScreen from "@src/containers/Custom/CoursesScreen";
 import TouchableScale from "../Components/TouchableScale";
 import { scale } from '../Utils/scale';
-import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
-import BlockScreen from "@src/containers/Custom/BlockScreen";
-import { Modalize } from 'react-native-modalize';
 import EventList from "../Components/EventList";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import analytics from '@react-native-firebase/analytics';
 import AuthWrapper from "@src/components/AuthWrapper";
+import Svg, {Path} from "react-native-svg";
 const ProgramsContent = props => {
     const { navigation, screenProps } = props;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const [helpModal, setHelpModal] = useState({title:'',id:0});
     const { global } = screenProps;
-    const toggleHelpModal = () => {
-        this.popupProgramDialog.open();
-    }
     const onFocusHandler=() =>{
         try
         {
@@ -44,10 +37,8 @@ const ProgramsContent = props => {
         screen_name: 'Program Screen',
     });
     useEffect(() => {
-        setHelpModal(optionData.helps.find(el => el.name === 'program_popup'));
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'programs_title').title,
-            toggleHelpModal: toggleHelpModal,
         });
         if(user) {
             navigation.addListener('willFocus', onFocusHandler)
@@ -63,46 +54,11 @@ const ProgramsContent = props => {
                     <EventList location={'program'} />
                 </View>
                 <View style={styles.heading_title}>
-                    <Text style={global.boxTitle}>Preparatory Courses</Text>
+                    <Text style={global.widgetTitle}>Preparatory Courses</Text>
                 </View>
                 <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
                                hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
             </ScrollView>
-            <Modalize
-                ref={(popupProgramDialog) => { this.popupProgramDialog = popupProgramDialog; }}
-                modalHeight = {windowHeight*4/5}
-                childrenStyle = {{backgroundColor:"#F8F0E2"}}
-                handlePosition = "outside"
-                HeaderComponent={
-                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, backgroundColor: '#FFFFEF',
-                        borderBottomColor: '#4A4D34'}}>
-                        <Text style={{fontSize:24, color: '#4A4D34'}}>{helpModal.title}</Text>
-                        <IconButton
-                            pressHandler={() => {this.popupProgramDialog.close();}}
-                            icon={require("@src/assets/img/close.png")}
-                            tintColor={'#FFFFFF'}
-                            style={{ height: scale(16), width: scale(16) }}
-                            touchableStyle={{
-                                position:"absolute", top:10, right: 10,
-                                height: scale(24),
-                                width: scale(24),
-                                backgroundColor: "#4A4D34",
-                                alignItems: "center",
-                                borderRadius: 100,
-                                padding: scale(5),
-                            }}
-                        /></View>
-                }
-            >
-                <View style={{flex: 1, width:windowWidth}} >
-                    <BlockScreen pageId={helpModal.id}
-                                 contentInsetTop={0}
-                                 contentOffsetY={0}
-                                 hideTitle={true}
-                                 hideNavigationHeader={true}
-                                 {...props} />
-                </View>
-            </Modalize>
         </SafeAreaView>
     );
 };
@@ -196,14 +152,18 @@ ProgramsContent.navigationOptions = ({ navigation, screenProps }) => {
                 navigation.goBack()
             }}
             >
-                <IconButton
-                    icon={require("@src/assets/img/arrow-back.png")}
-                    tintColor={colors.headerIconColor}
-                    style={{
-                        height: scale(16),
-                        marginLeft: scale(16),
-                    }}
-                />
+                <Svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    style={{marginLeft:scale(10)}}
+                >
+                    <Path d="m15 18-6-6 6-6"
+                          fill="none"
+                          stroke={screenProps.colors.headerIconColor}
+                          strokeWidth="2"
+                    />
+                </Svg>
             </TouchableOpacity>
     }else{
         headerLeft=
@@ -211,14 +171,18 @@ ProgramsContent.navigationOptions = ({ navigation, screenProps }) => {
                 onPress={() => {navigation.openDrawer()
                 }}
             >
-                <IconButton
-                    icon={require("@src/assets/img/menu.png")}
-                    tintColor={colors.headerIconColor}
-                    style={{
-                        height: 20,
-                        marginLeft: 20,
-                    }}
-                />
+                <Svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    style={{marginLeft:scale(20)}}
+                >
+                    <Path d="M3 12h18M3 6h13M3 18h09"
+                          fill="none"
+                          stroke={colors.headerIconColor}
+                          strokeWidth="2"
+                    />
+                </Svg>
                 <AuthWrapper actionOnGuestLogin={'hide'}>
                     <NotificationTabBarIcon notificationID={'left_menu'}  top={0} right={0} size={scale(10)} showNumber={false} />
                 </AuthWrapper>
@@ -237,46 +201,37 @@ ProgramsContent.navigationOptions = ({ navigation, screenProps }) => {
                 <View style={{flexDirection: "row", justifyContent:"flex-end", marginRight:15}}>
                     <TouchableScale
                         onPress={() => {
-                            navigation.navigate("MilestonesScreen")
-                        }}
-                    >
-                        <IconButton
-                            icon={require("@src/assets/img/certificate.png")}
-                            tintColor={colors.headerIconColor}
-                            style={{
-                                height: 20,
-                                marginRight: 5,
-                            }}
-                        />
-                        <NotificationTabBarIcon notificationID={'milestone'}  top={0} right={0} size={scale(10)} showNumber={false} />
-                    </TouchableScale>
-                    <TouchableScale
-                        onPress={() => {
                             navigation.navigate("QuestsScreen")
                         }}
                     >
-                        <IconButton
-                            icon={require("@src/assets/img/achievement-action-icon.png")}
-                            tintColor={colors.headerIconColor}
-                            style={{
-                                height: 20,
-                                marginRight: 0,
-                            }}
-                        />
-                        <NotificationTabBarIcon notificationID={'quest'}  top={0} right={0} size={scale(10)} showNumber={false} />
+                        <Svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 32 32"
+                            style={{marginRight:scale(10)}}
+                        >
+                            <Path d="M16 1a15 15 0 1 0 15 15A15 15 0 0 0 16 1Zm0 28a13 13 0 1 1 13-13 13 13 0 0 1-13 13Z" fill={colors.headerIconColor} />
+                            <Path d="M16 5a11 11 0 1 0 11 11A11 11 0 0 0 16 5Zm0 20a9 9 0 1 1 9-9 9 9 0 0 1-9 9Z" fill={colors.headerIconColor} />
+                            <Path d="M22.9 14.26a2 2 0 0 0-1.9-1.39h-2.36l-.72-2.22a2 2 0 0 0-3.84 0l-.73 2.23H11a2 2 0 0 0-1.19 3.64l1.89 1.38-.7 2.21a2 2 0 0 0 .73 2.25 2 2 0 0 0 1.19.39 2 2 0 0 0 1.18-.39L16 21l1.89 1.37A2 2 0 0 0 21 20.11l-.72-2.23 1.89-1.37a2 2 0 0 0 .73-2.25Zm-3.79 2a2 2 0 0 0-.74 2.25l.7 2.23-1.89-1.37a2 2 0 0 0-2.36 0l-1.91 1.36.72-2.22a2 2 0 0 0-.74-2.25L11 14.87h2.33a2 2 0 0 0 1.92-1.39l.75-2.24.72 2.22a2 2 0 0 0 1.92 1.39h2.34Z" fill={colors.headerIconColor} />
+                        </Svg>
+                        <NotificationTabBarIcon notificationID={'quest'} top={-5} right={5} size={scale(10)} showNumber={false} />
                     </TouchableScale>
-                    <TouchableOpacity
-                        onPress={() =>  params.toggleHelpModal()}
+                    <TouchableScale
+                        onPress={() => {
+                            navigation.navigate("MilestonesScreen")
+                        }}
                     >
-                        <IconButton
-                            icon={require("@src/assets/img/help.png")}
-                            tintColor={colors.headerIconColor}
-                            style={{
-                                height: 20,
-                                marginRight:0,
-                            }}
-                        />
-                    </TouchableOpacity>
+                        <Svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 32 32"
+                            style={{marginRight:scale(5)}}
+                        >
+                            <Path d="m30.77 24.21-3.36-4a13 13 0 1 0-22.82 0l-3.36 4a1 1 0 0 0-.18 1 1 1 0 0 0 .72.66l3.86.92 1.58 3.61A1 1 0 0 0 8 31h.15a1 1 0 0 0 .76-.36l3.5-4.16a12.79 12.79 0 0 0 7.22 0l3.5 4.16a1 1 0 0 0 .76.36H24a1 1 0 0 0 .77-.59l1.58-3.65 3.86-.92a1 1 0 0 0 .72-.66 1 1 0 0 0-.16-.97ZM8.4 28.12 7.27 25.5a1 1 0 0 0-.69-.58l-2.77-.66L5.74 22a13.07 13.07 0 0 0 4.67 3.77ZM5 14a11 11 0 1 1 11 11A11 11 0 0 1 5 14Zm20.42 10.92a1 1 0 0 0-.69.58l-1.13 2.62-2-2.4A13.07 13.07 0 0 0 26.26 22l1.93 2.31Z" fill={colors.headerIconColor} />
+                            <Path d="M23.89 12a2.15 2.15 0 0 0-2.07-1.51h-2.73a.17.17 0 0 1-.17-.12l-.84-2.57a2.19 2.19 0 0 0-4.16 0l-.84 2.59a.17.17 0 0 1-.17.12h-2.73a2.19 2.19 0 0 0-1.28 4l2.2 1.6a.16.16 0 0 1 .07.2l-.84 2.59a2.15 2.15 0 0 0 .79 2.44 2.18 2.18 0 0 0 2.57 0l2.2-1.6a.18.18 0 0 1 .22 0l2.2 1.6a2.18 2.18 0 0 0 2.57 0 2.15 2.15 0 0 0 .79-2.44l-.84-2.59a.17.17 0 0 1 .06-.2l2.21-1.6a2.14 2.14 0 0 0 .79-2.51Zm-2 .82-2.2 1.6a2.16 2.16 0 0 0-.79 2.44l.84 2.59a.16.16 0 0 1-.07.2.16.16 0 0 1-.21 0l-2.21-1.6a2.16 2.16 0 0 0-2.56 0l-2.21 1.6a.16.16 0 0 1-.21 0 .16.16 0 0 1-.07-.2l.84-2.59a2.16 2.16 0 0 0-.79-2.44l-2.2-1.6a.16.16 0 0 1-.07-.2.16.16 0 0 1 .17-.13h2.73A2.16 2.16 0 0 0 15 11l.85-2.59a.18.18 0 0 1 .34 0L17 11a2.16 2.16 0 0 0 2.07 1.5h2.73a.16.16 0 0 1 .17.13.16.16 0 0 1-.05.21Z" fill={colors.headerIconColor} />
+                        </Svg>
+                        <NotificationTabBarIcon notificationID={'milestone'} top={-5} right={5} size={scale(10)} showNumber={false} />
+                    </TouchableScale>
                 </View>
             </AuthWrapper>
     }

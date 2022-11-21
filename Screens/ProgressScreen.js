@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {getApi} from "@src/services";
 import {connect, useSelector} from "react-redux";
-import IconButton from "@src/components/IconButton";
 import {
     StyleSheet,
     SafeAreaView,
@@ -14,6 +13,7 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import Timeline from "../Components/Timeline";
 import analytics from '@react-native-firebase/analytics';
+import Svg, {Path} from "react-native-svg";
 
 const ProgressScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
@@ -115,21 +115,25 @@ const mapStateToProps = (state) => ({
     config: state.config,  // not needed if axios or fetch is used
     accessToken: state.auth.token,
 });
-ProgressScreen.navigationOptions = ({navigation}) => ({
+ProgressScreen.navigationOptions = ({navigation, screenProps}) => ({
     title: navigation.getParam('title'),
     headerTitleStyle: {textAlign:'left'},
     headerLeft:
         <TouchableOpacity
             onPress={() => {navigation.goBack()}}
         >
-            <IconButton
-                icon={require("@src/assets/img/arrow-back.png")}
-                tintColor={"#4942e1"}
-                style={{
-                    height: scale(16),
-                    marginLeft: scale(16)
-                }}
-            />
+            <Svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                style={{marginLeft:scale(10)}}
+            >
+                <Path d="m15 18-6-6 6-6"
+                      fill="none"
+                      stroke={screenProps.colors.headerIconColor}
+                      strokeWidth="2"
+                />
+            </Svg>
         </TouchableOpacity>,
 })
 export default connect(mapStateToProps)(ProgressScreen);

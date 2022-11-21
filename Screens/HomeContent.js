@@ -9,7 +9,6 @@ import {
     AppState, Platform
 } from "react-native";
 import {getApi} from "@src/services";
-import IconButton from "@src/components/IconButton";
 import {windowWidth} from "../Utils/Dimensions";
 import {scale} from '../Utils/scale';
 import TouchableScale from "../Components/TouchableScale";
@@ -25,6 +24,7 @@ import EventList from "../Components/EventList";
 import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 import analytics from '@react-native-firebase/analytics';
 import ForumsScreen from "@src/containers/Custom/ForumsScreen";
+import Svg, {Path} from "react-native-svg";
 
 const HomeContent = (props) => {
     const {navigation, screenProps} = props;
@@ -36,7 +36,7 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
-console.log(global, colors)
+
     const onFocusHandler=() =>
     {
         try
@@ -54,7 +54,6 @@ console.log(global, colors)
         if(user) {
             if((Platform.OS === "android" && AppState.currentState==='background') || (Platform.OS === "ios" && AppState.currentState==='inactive')) {
 
-                console.log('updateRemote')
                 if (progressReducer.latestUpdate && progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
                     let achievements = {
                         'achievements': [],
@@ -286,7 +285,7 @@ console.log(global, colors)
                         }
                     }>
                         <View style={styles.view_blog_title}>
-                            <Text style={global.boxTitle}>Q & A</Text>
+                            <Text style={global.widgetTitle}>Q & A</Text>
                             <Text style={global.link}>See All ></Text>
                         </View>
                     </TouchableScale>
@@ -310,8 +309,8 @@ console.log(global, colors)
                                     }
                                 }>
                                     <View style={styles.view_blog_title}>
-                                        <Text style={global.boxTitle}>{blog.name}</Text>
-                                        <Text style={styles.link}>See All ></Text>
+                                        <Text style={global.widgetTitle}>{blog.name}</Text>
+                                        <Text style={global.link}>See All ></Text>
                                     </View>
                                 </TouchableScale>
                                 <View style={styles.eventRow}>
@@ -376,8 +375,7 @@ const styles = StyleSheet.create({
     },
     blogRow: {
         alignItems: 'center',
-        justifyContent: 'flex-start',
-        paddingLeft: 15,
+        justifyContent: 'center',
         marginTop: scale(10),
         flex: 1,
     },
@@ -515,14 +513,18 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
                 onPress={() => {navigation.openDrawer()
                 }}
             >
-                <IconButton
-                    icon={require("@src/assets/img/menu.png")}
-                    tintColor={colors.headerIconColor}
-                    style={{
-                        height: 20,
-                        marginLeft: 20,
-                    }}
-                />
+                <Svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    style={{marginLeft:scale(20)}}
+                >
+                    <Path d="M3 12h18M3 6h13M3 18h09"
+                          fill="none"
+                          stroke={colors.headerIconColor}
+                          strokeWidth="2"
+                    />
+                </Svg>
                 <AuthWrapper actionOnGuestLogin={'hide'}>
                     <NotificationTabBarIcon notificationID={'left_menu'} top={0} right={0} size={scale(10)} showNumber={false} />
                 </AuthWrapper>
@@ -532,47 +534,54 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
                 <View style={{justifyContent:"flex-end", flexDirection:"row", marginRight:15}}>
                     <TouchableScale
                         onPress={() => {
-                            navigation.navigate("MilestonesScreen")
-                        }}
-                    >
-                        <IconButton
-                            icon={require("@src/assets/img/certificate.png")}
-                            tintColor={colors.headerIconColor}
-                            style={{
-                                height: 20,
-                                marginRight: 5,
-                            }}
-                        />
-                        <NotificationTabBarIcon notificationID={'milestone'} top={0} right={0} size={scale(10)} showNumber={false} />
-                    </TouchableScale>
-                    <TouchableScale
-                        onPress={() => {
                             navigation.navigate("QuestsScreen")
                         }}
                     >
-                        <IconButton
-                            icon={require("@src/assets/img/achievement-action-icon.png")}
-                            tintColor={colors.headerIconColor}
-                            style={{
-                                height: 20,
-                                marginRight: 5,
-                            }}
-                        />
-                        <NotificationTabBarIcon notificationID={'quest'} top={0} right={0} size={scale(10)} showNumber={false} />
+                        <Svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 32 32"
+                            style={{marginRight:scale(10)}}
+                        >
+                            <Path d="M16 1a15 15 0 1 0 15 15A15 15 0 0 0 16 1Zm0 28a13 13 0 1 1 13-13 13 13 0 0 1-13 13Z" fill={colors.headerIconColor} />
+                            <Path d="M16 5a11 11 0 1 0 11 11A11 11 0 0 0 16 5Zm0 20a9 9 0 1 1 9-9 9 9 0 0 1-9 9Z" fill={colors.headerIconColor} />
+                            <Path d="M22.9 14.26a2 2 0 0 0-1.9-1.39h-2.36l-.72-2.22a2 2 0 0 0-3.84 0l-.73 2.23H11a2 2 0 0 0-1.19 3.64l1.89 1.38-.7 2.21a2 2 0 0 0 .73 2.25 2 2 0 0 0 1.19.39 2 2 0 0 0 1.18-.39L16 21l1.89 1.37A2 2 0 0 0 21 20.11l-.72-2.23 1.89-1.37a2 2 0 0 0 .73-2.25Zm-3.79 2a2 2 0 0 0-.74 2.25l.7 2.23-1.89-1.37a2 2 0 0 0-2.36 0l-1.91 1.36.72-2.22a2 2 0 0 0-.74-2.25L11 14.87h2.33a2 2 0 0 0 1.92-1.39l.75-2.24.72 2.22a2 2 0 0 0 1.92 1.39h2.34Z" fill={colors.headerIconColor} />
+                        </Svg>
+                        <NotificationTabBarIcon notificationID={'quest'} top={-5} right={5} size={scale(10)} showNumber={false} />
+                    </TouchableScale>
+                    <TouchableScale
+                        onPress={() => {
+                            navigation.navigate("MilestonesScreen")
+                        }}
+                    >
+                        <Svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 32 32"
+                            style={{marginRight:scale(10)}}
+                        >
+                            <Path d="m30.77 24.21-3.36-4a13 13 0 1 0-22.82 0l-3.36 4a1 1 0 0 0-.18 1 1 1 0 0 0 .72.66l3.86.92 1.58 3.61A1 1 0 0 0 8 31h.15a1 1 0 0 0 .76-.36l3.5-4.16a12.79 12.79 0 0 0 7.22 0l3.5 4.16a1 1 0 0 0 .76.36H24a1 1 0 0 0 .77-.59l1.58-3.65 3.86-.92a1 1 0 0 0 .72-.66 1 1 0 0 0-.16-.97ZM8.4 28.12 7.27 25.5a1 1 0 0 0-.69-.58l-2.77-.66L5.74 22a13.07 13.07 0 0 0 4.67 3.77ZM5 14a11 11 0 1 1 11 11A11 11 0 0 1 5 14Zm20.42 10.92a1 1 0 0 0-.69.58l-1.13 2.62-2-2.4A13.07 13.07 0 0 0 26.26 22l1.93 2.31Z" fill={colors.headerIconColor} />
+                            <Path d="M23.89 12a2.15 2.15 0 0 0-2.07-1.51h-2.73a.17.17 0 0 1-.17-.12l-.84-2.57a2.19 2.19 0 0 0-4.16 0l-.84 2.59a.17.17 0 0 1-.17.12h-2.73a2.19 2.19 0 0 0-1.28 4l2.2 1.6a.16.16 0 0 1 .07.2l-.84 2.59a2.15 2.15 0 0 0 .79 2.44 2.18 2.18 0 0 0 2.57 0l2.2-1.6a.18.18 0 0 1 .22 0l2.2 1.6a2.18 2.18 0 0 0 2.57 0 2.15 2.15 0 0 0 .79-2.44l-.84-2.59a.17.17 0 0 1 .06-.2l2.21-1.6a2.14 2.14 0 0 0 .79-2.51Zm-2 .82-2.2 1.6a2.16 2.16 0 0 0-.79 2.44l.84 2.59a.16.16 0 0 1-.07.2.16.16 0 0 1-.21 0l-2.21-1.6a2.16 2.16 0 0 0-2.56 0l-2.21 1.6a.16.16 0 0 1-.21 0 .16.16 0 0 1-.07-.2l.84-2.59a2.16 2.16 0 0 0-.79-2.44l-2.2-1.6a.16.16 0 0 1-.07-.2.16.16 0 0 1 .17-.13h2.73A2.16 2.16 0 0 0 15 11l.85-2.59a.18.18 0 0 1 .34 0L17 11a2.16 2.16 0 0 0 2.07 1.5h2.73a.16.16 0 0 1 .17.13.16.16 0 0 1-.05.21Z" fill={colors.headerIconColor} />
+                        </Svg>
+                        <NotificationTabBarIcon notificationID={'milestone'} top={-5} right={5} size={scale(10)} showNumber={false} />
                     </TouchableScale>
                     <TouchableScale
                         onPress={() => {
                             navigation.navigate("NotificationsScreen")
                         }}
                     >
-                        <IconButton
-                            icon={require("@src/assets/img/notification-icon.png")}
-                            tintColor={colors.headerIconColor}
-                            style={{
-                                height: 20,
-                                marginRight: 0,
-                            }}
-                        />
+                        <Svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            style={{marginRight:scale(5)}}
+                        >
+                            <Path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"
+                                  fill="none"
+                                  stroke={colors.headerIconColor}
+                                  strokeWidth="2"
+                            />
+                        </Svg>
                     </TouchableScale>
                 </View>
             </AuthWrapper>

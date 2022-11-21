@@ -22,6 +22,7 @@ import {scale} from "../Utils/scale";
 import TrackPlayer from 'react-native-track-player';
 import EventList from "../Components/EventList";
 import analytics from '@react-native-firebase/analytics';
+import Svg, {Path} from "react-native-svg";
 
 const PracticeMember = props => {
     const { navigation } = props;
@@ -154,7 +155,7 @@ const PracticeMember = props => {
                             </View>
                             : null
                         }
-                        <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine} setMessageBarDisplay={setMessageBarDisplay} />
+                        <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine} setMessageBarDisplay={setMessageBarDisplay} {...props} />
                     </ScrollView>
                     :
                     <ActivityIndicator size="large"/>
@@ -198,10 +199,19 @@ const PracticeMember = props => {
             <Modalize
                 ref={(cpHelpModal) => { this.cpHelpModal = cpHelpModal; }}
                 modalHeight = {windowHeight*4/5}
-                childrenStyle = {{backgroundColor:"#F8F0E2"}}
+                childrenStyle = {{backgroundColor:colors.bodyBg}}
                 handlePosition = "outside"
                 HeaderComponent={
-                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, backgroundColor:'#FFFFEF', borderBottomColor:'#4A4D34'}}>
+                    <View style={{
+                        padding: scale(25),
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        borderTopLeftRadius: 9,
+                        borderTopRightRadius: 9,
+                        borderBottomWidth: StyleSheet.hairlineWidth,
+                        backgroundColor: colors.bodyBg,
+                        borderBottomColor: colors.borderColor
+                    }}>
                         <Text style={{fontSize:24, color: '#4A4D34'}}>{helpModal.title}</Text>
                         <IconButton
                         pressHandler={() => {this.cpHelpModal.close();}}
@@ -266,7 +276,7 @@ const styles = StyleSheet.create({
         paddingHorizontal:scale(15),
     }
 });
-PracticeMember.navigationOptions = ({ navigation }) => {
+PracticeMember.navigationOptions = ({ navigation, screenProps }) => {
     const {params = {}} = navigation.state;
     return({
         headerTitle: navigation.getParam('title'),
@@ -278,25 +288,19 @@ PracticeMember.navigationOptions = ({ navigation }) => {
                     navigation.goBack();
                 }}
             >
-                <IconButton
-                    icon={require("@src/assets/img/arrow-back.png")}
-                    tintColor={"#4942e1"}
-                    style={{
-                        height: scale(16),
-                        marginLeft: scale(16)
-                    }}
-                />
+                <Svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    style={{marginLeft:scale(10)}}
+                >
+                    <Path d="m15 18-6-6 6-6"
+                          fill="none"
+                          stroke={screenProps.colors.headerIconColor}
+                          strokeWidth="2"
+                    />
+                </Svg>
             </TouchableOpacity>,
-        headerRight:
-            <TouchableOpacity
-                onPress={() =>  params.toggleHelpModal()}
-            >
-                <IconButton
-                    icon={require("@src/assets/img/help.png")}
-                    tintColor={"#4942e1"}
-                    style={{marginRight:25,height: 20}}
-                />
-            </TouchableOpacity>
     })
 }
 const mapStateToProps = (state) => ({

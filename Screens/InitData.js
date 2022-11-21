@@ -99,7 +99,7 @@ const InitData = (props) => {
     return (
         <SafeAreaView style={global.container}>
             <ImageBackground resizeMode="cover" style={{flex:1, justifyContent:"center", alignItems:"center"}} source={require('../assets/images/5-1024x683.jpg')}>
-                <Text style={{fontWeight: "700", fontSize: scale(18), textAlign: 'center', margin:10, color:"white"}}>Loading data...</Text><ActivityIndicator size="large"/>
+                <Text style={[global.appHeaderTitle, {color:"white"}]}>Loading data...</Text><ActivityIndicator size="large"/>
             </ImageBackground>
         </SafeAreaView>
     );

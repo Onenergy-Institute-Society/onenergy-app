@@ -46,14 +46,13 @@ console.log(colors)
         <SafeAreaView style={global.container}>
             <FastImage style={styles.topImage} resizeMode="cover" source={images[currentIndex]} />
             <View style={styles.bottomSlides}>
-                <FastImage style={styles.imageLeaves} source={require('../assets/images/leaves.png')} resizeMode="contain" />
+                <FastImage style={styles.imageLeaves} source={require('../assets/images/leaves_yellow.png')} resizeMode="contain" />
                 <View style={[styles.topPagerView, {backgroundColor: colors.primaryButtonBg}]}>
                     <Text style={[global.textItemSubtitle, {color: colors.bodyFrontBg}]}>{currentIndex + 1} of {optionData.feature_slider.length}</Text>
                 </View>
                 <FlatList
                     data = {optionData.feature_slider}
                     renderItem={({item}) => {
-                        console.log(item)
                         return (
                             <View style={{width:windowWidth-30, justifyContent:"space-evenly", alignItems:"flex-start"}}>
                                 <Text multiline={true}
@@ -131,6 +130,7 @@ const styles = StyleSheet.create({
         borderStyle: "solid",
     },
     imageLeaves: {
+        opacity: 0.3,
         position: "absolute",
         top: 0,
         right:0,
@@ -161,24 +161,19 @@ const styles = StyleSheet.create({
         paddingVertical: scale(10),
         height: scale(32),
         borderRadius: 18,
-        backgroundColor: '#1634ea',
-    },
-    topPager:{
-        fontFamily: 'MontserratAlternates-Regular',
-        fontSize: 14,
-        color: '#000000',
     },
     title:{
         fontFamily: 'MontserratAlternates-SemiBold',
-        fontSize: scale(30),
-        color: "#000000",
+        fontSize: scale(45),
+        color: "#262626",
         fontWeight: 'bold',
     },
     subtitle:{
         fontFamily: 'MontserratAlternates-Regular',
         width: windowWidth-scale(60),
-        fontSize: scale(14),
-        color: "#000000"
+        lineHeight: scale(20),
+        fontSize: scale(20),
+        color: "#262626"
     }
 });
 const mapStateToProps = (state) => ({

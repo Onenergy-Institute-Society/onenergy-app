@@ -35,6 +35,7 @@ const EventList = props => {
         return optionData.goals.map((item) => {
             let showDate = null;
             let show = false;
+            let shadow = item.link;
             switch(item.permission.toString())
             {
                 case 'all':
@@ -130,11 +131,9 @@ const EventList = props => {
                             }
                             break;
                         case 'lesson':
-                            console.log(item.image)
                             if (progressReducer.completedLessons&&progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
                                 show = false;
                             }
-                            console.log(show, item.hideLesson, progressReducer.completedLessons)
                             break;
                         case 'achievement':
                             if (achievementReducer&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.hideAchievement))) {
@@ -159,12 +158,10 @@ const EventList = props => {
                             displayGroup = [...displayGroup, item.group];
                         }
                     }
-                    console.log(show, item, item.image, displayGroup.includes(item.group), displayGroup, item.group)
                 }
             }else{
                 show = false;
             }
-
             return (
                 show?
                     <View style={styles.container}>
@@ -226,12 +223,13 @@ const EventList = props => {
                                             break;
                                     }
                                 }
+                                console.log('shadow', shadow)
                             } catch (err) {
                                 console.log(`${err}`);
                             }
                         }
                         }>
-                        <View style={[styles.containerStyle, styles.boxShadow]}>
+                        <View style={[styles.containerStyle, shadow?styles.boxShadow:null]}>
                             <ScalableImage
                                 width={windowWidth - scale(30)}
                                 source={{uri: item.image ? item.image : null}}

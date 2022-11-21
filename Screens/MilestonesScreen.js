@@ -1,15 +1,15 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import IconButton from "@src/components/IconButton";
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
 import { withNavigation } from "react-navigation";
 import Milestones from "../Components/Milestones";
-import {connect, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import {scale} from "../Utils/scale";
 import QiPointHeader from "../Components/QiPointHeader";
 import AuthWrapper from "@src/components/AuthWrapper";
+import Svg, {Path} from "react-native-svg";
 
 const MilestonesLearn = (props) => {
     try {
@@ -42,7 +42,7 @@ const MilestonesStamina = (props) => {
 const TabTitle = ({tintColor, name}) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     return (
-        <Text style={{ color: '#4A4D34', fontFamily:"MontserratAlternates-SemiBold", fontSize: scale(16)  }}>{optionData.titles.find(el => el.id === name).title}</Text>
+        <Text style={{ color: tintColor, fontFamily:"MontserratAlternates-SemiBold", fontWeight:"bold", fontSize: scale(14)  }}>{optionData.titles.find(el => el.id === name).title}</Text>
     )
 }
 const Tabs = createMaterialTopTabNavigator(
@@ -95,14 +95,14 @@ const Tabs = createMaterialTopTabNavigator(
         tabBarOptions: {
             style: {
                 height: 45,
-                backgroundColor: '#FFFFEF',
+                backgroundColor: '#f2f0fd',
                 marginTop: 0
             },
             indicatorStyle: {
-                backgroundColor: '#4A4D34',
+                backgroundColor: '#EF713C',
             },
-            activeTintColor: '#4A4D34',
-            inactiveTintColor: '#7B8057',
+            activeTintColor: '#EF713C',
+            inactiveTintColor: '#8c79ea',
         }
     },
 );
@@ -125,20 +125,21 @@ MilestonesScreen.navigationOptions = ({navigation, screenProps}) => ({
         <TouchableOpacity
             onPress={() => {navigation.goBack()}}
         >
-            <IconButton
-                icon={require("@src/assets/img/arrow-back.png")}
-                tintColor={screenProps.colors.headerIconColor}
-                style={{
-                    height: scale(16),
-                    marginLeft: scale(16)
-                }}
-            />
+            <Svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                style={{marginLeft:scale(10)}}
+            >
+                <Path d="m15 18-6-6 6-6"
+                      fill="none"
+                      stroke={screenProps.colors.headerIconColor}
+                      strokeWidth="2"
+                />
+            </Svg>
         </TouchableOpacity>,
     headerRight:
-        <QiPointHeader />
+        <QiPointHeader {...screenProps} />
         ,
 })
-const mapStateToProps = (state) => ({
-    achievementReducer: state.onenergyReducer.achievementReducer.achievements
-});
-export default connect(mapStateToProps)(withNavigation(MilestonesScreen));
+export default withNavigation(MilestonesScreen);

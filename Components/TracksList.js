@@ -79,7 +79,7 @@ const TracksList = (props) => {
                         </AuthWrapper>
                     </TouchableOpacity>
                     {showPlayer ? (
-                        <AudioPlayer track={selectedTrack} setMessageBarDisplay={setMessageBarDisplay}/>
+                        <AudioPlayer track={selectedTrack} setMessageBarDisplay={setMessageBarDisplay} {...props} />
                     ) : null}
                 </View>
             :null

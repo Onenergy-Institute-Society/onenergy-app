@@ -16,14 +16,17 @@ import {
     ActivityIndicator
 } from 'react-native';
 import { Modalize } from 'react-native-modalize';
-import {windowWidth, windowHeight} from "../Utils/Dimensions";
+import {windowWidth} from "../Utils/Dimensions";
 import IconButton from "@src/components/IconButton";
 import { scale } from '../Utils/scale';
 import Recaptcha from "../Components/Recaptcha";
 import { BlurView } from "@react-native-community/blur";
 import analytics from '@react-native-firebase/analytics';
+import Svg, {Circle, Path} from "react-native-svg";
 
 const FeedbackScreen = props => {
+    const {navigate, screenProps} = props;
+    const {colors, global} = screenProps
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [ loading, setLoading ] = useState(false);
     const [content, setContent] = useState('');
@@ -169,24 +172,37 @@ const FeedbackScreen = props => {
                 adjustToContentHeight = "true"
                 withHandle = "false"
                 HeaderComponent={
-                    <View style={{padding:25,  flexDirection: "row", justifyContent: "space-between", borderBottomWidth:StyleSheet.hairlineWidth, backgroundColor: '#FFFFEF',
-                        borderBottomColor: '#4A4D34'}}>
-                        <Text style={{fontSize:24, color: '#4A4D34'}}>Subject</Text>
-                        <IconButton
-                            pressHandler={() => {this.subjectDialog.close();}}
-                            icon={require("@src/assets/img/close.png")}
-                            tintColor={"#FFFFFF"}
-                            style={{ height: scale(16), width: scale(16) }}
-                            touchableStyle={{
-                                position:"absolute", top:10, right: 10,
-                                height: scale(24),
-                                width: scale(24),
-                                backgroundColor: "#4A4D34",
-                                alignItems: "center",
-                                borderRadius: 100,
-                                padding: scale(5),
+                    <View style={{
+                        padding: scale(25),
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        borderTopLeftRadius: 9,
+                        borderTopRightRadius: 9,
+                        borderBottomWidth: StyleSheet.hairlineWidth,
+                        backgroundColor: colors.bodyBg,
+                        borderBottomColor: colors.borderColor
+                    }}>
+                        <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Subject</Text>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.popupPracticeDialog.close();
                             }}
-                        /></View>
+                        >
+                            <Svg
+                                width="32"
+                                height="32"
+                                viewBox="0 0 24 24"
+                                style={{marginLeft:scale(10)}}
+                            >
+                                <Circle cx="12" cy="12" r="10" fill="#d3d3d3"
+                                        stroke="#d3d3d3"
+                                        strokeWidth="1"/>
+                                <Path d="m15 9-6 6M9 9l6 6" fill="#262626"
+                                      stroke="#262626"
+                                      strokeWidth="1"/>
+                            </Svg>
+                        </TouchableOpacity>
+                    </View>
                 }
                 FooterComponent={
                     <View style={{height: 25}}/>
@@ -266,7 +282,7 @@ const styles = StyleSheet.create({
         flex:4,
     },
 });
-FeedbackScreen.navigationOptions = ({ navigation }) => {
+FeedbackScreen.navigationOptions = ({ navigation, screenProps }) => {
     const {params = {}} = navigation.state;
     return({
         headerTitle: params.title?params.title:navigation.getParam('title'),
@@ -275,15 +291,18 @@ FeedbackScreen.navigationOptions = ({ navigation }) => {
                 onPress={() => navigation.goBack()}
             >
                 <View style={{flexDirection: "row", justifyContent:"flex-start", alignItems: "center"}}>
-                    <IconButton
-                        icon={require("@src/assets/img/arrow-back.png")}
-                        tintColor={"#4942e1"}
-                        style={{
-                            tintColor: "#4942e1",
-                            height: scale(16),
-                            marginLeft: scale(16)
-                        }}
-                    />
+                    <Svg
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        style={{marginLeft:scale(10)}}
+                    >
+                        <Path d="m15 18-6-6 6-6"
+                              fill="none"
+                              stroke={screenProps.colors.headerIconColor}
+                              strokeWidth="2"
+                        />
+                    </Svg>
                     <Text style={{
                         fontSize: 16,
                         color: "#4942e1"

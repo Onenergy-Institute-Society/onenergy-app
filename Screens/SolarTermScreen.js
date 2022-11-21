@@ -2,12 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {getApi} from "@src/services";
 import {SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {connect } from "react-redux";
-import IconButton from "@src/components/IconButton";
 import ImageCache from '../Components/ImageCache';
 import {windowWidth} from "../Utils/Dimensions";
 import PostRow from "../Components/PostRow";
 import {scale} from "../Utils/scale";
 import analytics from '@react-native-firebase/analytics';
+import Svg, {Path} from "react-native-svg";
 
 const SolarTermScreen = props => {
     const { navigation, screenProps } = props;
@@ -55,13 +55,13 @@ const SolarTermScreen = props => {
                     <Text style={styles.heading}>{postData.metadata.tagHealthName[0]}</Text>
                 </View>
                 <View style={styles.view}>
-                    <PostRow termType={'tag'} postTerm={postData.metadata.tagHealthId[0]} postPerPage={'4'} postOrder={'desc'} postOrderBy={'date'} showAuthor={true}/>
+                    <PostRow termType={'tag'} postTerm={postData.metadata.tagHealthId[0]} postPerPage={'4'} postOrder={'desc'} postOrderBy={'date'} showAuthor={true} {...props} />
                 </View>
                 <View style={styles.view_title}>
                     <Text style={styles.heading}>{postData.metadata.tagFoodName[0]}</Text>
                 </View>
                 <View style={styles.view}>
-                    <PostRow termType={'tag'} postTerm={postData.metadata.tagFoodId[0]} postPerPage={'4'} postOrder={'desc'} postOrderBy={'date'} showAuthor={true}/>
+                    <PostRow termType={'tag'} postTerm={postData.metadata.tagFoodId[0]} postPerPage={'4'} postOrder={'desc'} postOrderBy={'date'} showAuthor={true} {...props} />
                 </View>
             </ScrollView>
             )}
@@ -87,14 +87,18 @@ SolarTermScreen.navigationOptions = ({ navigation }) => ({
         <TouchableOpacity
             onPress={() => {navigation.goBack()}}
         >
-            <IconButton
-                icon={require("@src/assets/img/arrow-back.png")}
-                tintColor={"#4942e1"}
-                style={{
-                    height: scale(16),
-                    marginLeft: scale(16)
-                }}
-            />
+            <Svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                style={{marginLeft:scale(10)}}
+            >
+                <Path d="m15 18-6-6 6-6"
+                      fill="none"
+                      stroke={screenProps.colors.headerIconColor}
+                      strokeWidth="2"
+                />
+            </Svg>
         </TouchableOpacity>
 })
 export default connect(mapStateToProps)(SolarTermScreen);

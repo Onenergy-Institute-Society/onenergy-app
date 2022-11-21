@@ -1,6 +1,5 @@
 import React from 'react';
-import {connect, useSelector} from "react-redux";
-import IconButton from "@src/components/IconButton";
+import {useSelector} from "react-redux";
 import {
     StyleSheet,
     SafeAreaView,
@@ -14,6 +13,7 @@ import moment from 'moment';
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import analytics from '@react-native-firebase/analytics';
+import Svg, {Path} from "react-native-svg";
 
 const Membership = (props) => {
     const {navigation} = props;
@@ -148,21 +148,25 @@ const styles = StyleSheet.create({
         marginBottom:scale(10),
     }
 });
-Membership.navigationOptions = ({navigation}) => ({
+Membership.navigationOptions = ({navigation, screenProps}) => ({
     title: "My Membership",
     headerTitleStyle: {textAlign:'left'},
     headerLeft:
         <TouchableOpacity
             onPress={() => {navigation.goBack()}}
         >
-            <IconButton
-                icon={require("@src/assets/img/arrow-back.png")}
-                tintColor={"#4942e1"}
-                style={{
-                    height: scale(16),
-                    marginLeft: scale(16)
-                }}
-            />
+            <Svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                style={{marginLeft:scale(10)}}
+            >
+                <Path d="m15 18-6-6 6-6"
+                      fill="none"
+                      stroke={screenProps.colors.headerIconColor}
+                      strokeWidth="2"
+                />
+            </Svg>
         </TouchableOpacity>,
 })
 export default withDeeplinkClickHandler(Membership);

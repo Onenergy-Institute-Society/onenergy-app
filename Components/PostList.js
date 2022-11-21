@@ -29,6 +29,7 @@ const PostList = props => {
     const {colors, global} = screenProps;
     const dispatch = useDispatch();
     const categoryIndex = postReducer.lastView&&postReducer.lastView.length?postReducer.lastView.findIndex(lv => lv.category === parseInt(postCategory)):null;
+
     const fetchPostsData = async () => {
         try {
             let notify = false;
@@ -224,10 +225,9 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#f8f0e2'
     },
     containerStyle: {
-        backgroundColor:"#FFFFEF",
+        backgroundColor:"#FFFFFF",
         borderRadius: 9,
         marginHorizontal: scale(15),
         marginTop: scale(15),

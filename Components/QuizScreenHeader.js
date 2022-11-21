@@ -2,9 +2,9 @@ import React from "react";
 import {View, TouchableOpacity} from "react-native";
 import Animated from "react-native-reanimated";
 import {DEVICE_WIDTH} from "@src/styles/global";
-import IconButton from "@src/components/IconButton";
 import {scale} from "../Utils/scale";
 import AuthWrapper from "@src/components/AuthWrapper";
+import Svg, {Path} from "react-native-svg";
 
 const QuizScreenHeader = (props) => {
     const {
@@ -47,18 +47,18 @@ const QuizScreenHeader = (props) => {
                 ]}
             >
                 <View style={[global.headerButtonLeft, headerLeftStyle]}>
-                    <TouchableOpacity
-                        onPress={() => {navigation.goBack()}}
+                    <Svg
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        style={{marginLeft:scale(10)}}
                     >
-                        <IconButton
-                            icon={require("@src/assets/img/arrow-back.png")}
-                            tintColor={"#4942e1"}
-                            style={{
-                                height: scale(16),
-                                marginLeft: scale(16)
-                            }}
+                        <Path d="m15 18-6-6 6-6"
+                              fill="none"
+                              stroke={colors.headerIconColor}
+                              strokeWidth="2"
                         />
-                    </TouchableOpacity>
+                    </Svg>
                 </View>
             </View>
         </Animated.View>

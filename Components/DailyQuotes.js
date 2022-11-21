@@ -25,10 +25,11 @@ const DailyQuotes = (props) => {
                 }
             }}>
             <ImageBackground source={require('../assets/images/design-6.png')} style={[styles.imageView, styles.boxShadow, {backgroundColor: colors.bodyBg}]}
-                             imageStyle={{
-                                resizeMode: "contain",
-                                alignSelf: "flex-start",
-                            }}>
+                 imageStyle={{
+                    resizeMode: "contain",
+                    alignSelf: "flex-start",
+                    tintColor: colors.primaryButtonBg
+                }}>
                 <Text style={[styles.title, global.text]}>{quote_rendered}</Text>
             </ImageBackground>
         </TouchableScale>

@@ -28,6 +28,7 @@ import EventList from "../Components/EventList";
 import {BlurView} from "@react-native-community/blur";
 import FastImage from "react-native-fast-image";
 import analytics from '@react-native-firebase/analytics';
+import Svg, {Path} from "react-native-svg";
 
 const PracticeGroup = props => {
     const {navigation, screenProps} = props;
@@ -270,14 +271,16 @@ const PracticeGroup = props => {
                 handlePosition="outside"
                 HeaderComponent={
                     <View style={{
-                        padding: 25,
+                        padding: scale(25),
                         flexDirection: "row",
                         justifyContent: "space-between",
+                        borderTopLeftRadius: 9,
+                        borderTopRightRadius: 9,
                         borderBottomWidth: StyleSheet.hairlineWidth,
-                        backgroundColor: '#FFFFEF',
-                        borderBottomColor: '#4A4D34'
+                        backgroundColor: colors.bodyBg,
+                        borderBottomColor: colors.borderColor
                     }}>
-                        <Text style={{fontSize: 24, color: '#4A4D34'}}>Group Practice Detail</Text>
+                        <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Group Practice Detail</Text>
                         <IconButton
                             pressHandler={() => {
                                 this.DetailModal.close();
@@ -323,14 +326,16 @@ const PracticeGroup = props => {
                 handlePosition="outside"
                 HeaderComponent={
                     <View style={{
-                        padding: 25,
+                        padding: scale(25),
                         flexDirection: "row",
                         justifyContent: "space-between",
+                        borderTopLeftRadius: 9,
+                        borderTopRightRadius: 9,
                         borderBottomWidth: StyleSheet.hairlineWidth,
-                        backgroundColor: '#FFFFEF',
-                        borderBottomColor: '#4A4D34'
+                        backgroundColor: colors.bodyBg,
+                        borderBottomColor: colors.borderColor
                     }}>
-                        <Text style={{fontSize: 24, color: '#4A4D34'}}>{helpData.title}</Text>
+                        <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>{helpData.title}</Text>
                         <IconButton
                             pressHandler={() => {
                                 this.pgHelpModal.close();
@@ -518,7 +523,7 @@ const mapStateToProps = (state) => ({
     config: state.config,
     accessToken: state.auth.token,
 });
-PracticeGroup.navigationOptions = ({navigation}) => {
+PracticeGroup.navigationOptions = ({navigation, screenProps}) => {
     const {params = {}} = navigation.state;
     return ({
         headerTitle: navigation.getParam('title'),
@@ -529,14 +534,18 @@ PracticeGroup.navigationOptions = ({navigation}) => {
                     navigation.goBack()
                 }}
             >
-                <IconButton
-                    icon={require("@src/assets/img/arrow-back.png")}
-                    tintColor={"#4942e1"}
-                    style={{
-                        height: scale(16),
-                        marginLeft: scale(16)
-                    }}
-                />
+                <Svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    style={{marginLeft:scale(10)}}
+                >
+                    <Path d="m15 18-6-6 6-6"
+                          fill="none"
+                          stroke={screenProps.colors.headerIconColor}
+                          strokeWidth="2"
+                    />
+                </Svg>
             </TouchableOpacity>,
         headerRight:
             <View style={{flexDirection: "row", justifyContent: "flex-end"}}>

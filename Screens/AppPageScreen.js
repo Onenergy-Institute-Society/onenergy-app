@@ -6,9 +6,9 @@ import {
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {windowWidth} from "../Utils/Dimensions";
-import IconButton from "@src/components/IconButton";
 import {scale} from "../Utils/scale";
 import analytics from '@react-native-firebase/analytics';
+import Svg, {Path} from "react-native-svg";
 
 const AppPageScreen = (props) => {
     if (!props.isFocused)
@@ -44,14 +44,18 @@ AppPageScreen.navigationOptions = ({ navigation, screenProps }) => {
                 navigation.goBack()
             }}
         >
-            <IconButton
-                icon={require("@src/assets/img/arrow-back.png")}
-                tintColor={colors.headerIconColor}
-                style={{
-                    height: scale(16),
-                    marginLeft: scale(16),
-                }}
-            />
+            <Svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                style={{marginLeft:scale(10)}}
+            >
+                <Path d="m15 18-6-6 6-6"
+                      fill="none"
+                      stroke={colors.headerIconColor}
+                      strokeWidth="2"
+                />
+            </Svg>
         </TouchableOpacity>
     }
     return {

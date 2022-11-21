@@ -15,12 +15,12 @@ import {
 import {connect, useSelector, useDispatch} from "react-redux";
 import {getApi} from "@src/services";
 import {windowWidth, windowHeight} from "../Utils/Dimensions";
-import IconButton from "@src/components/IconButton";
 import {scale} from "../Utils/scale";
 import ScalableImage from "../Components/ScalableImage";
 import RNFetchBlob from 'rn-fetch-blob';
 import analytics from '@react-native-firebase/analytics';
 import TouchableScale from "../Components/TouchableScale";
+import Svg, {Path} from "react-native-svg";
 
 const QuotesScreen = props => {
     const {screenProps} = props;
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: scale(200),
         height: scale(50),
-        backgroundColor: '#8c78ff',
+        backgroundColor: '#8c79ea',
     },
     view: {
         padding: 0,
@@ -331,14 +331,18 @@ QuotesScreen.navigationOptions = ({ navigation, screenProps }) => {
                     navigation.goBack()
                 }}
             >
-                <IconButton
-                    icon={require("@src/assets/img/arrow-back.png")}
-                    tintColor={"#4942e1"}
-                    style={{
-                        height: scale(16),
-                        marginLeft: scale(16),
-                    }}
-                />
+                <Svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    style={{marginLeft:scale(10)}}
+                >
+                    <Path d="m15 18-6-6 6-6"
+                          fill="none"
+                          stroke={screenProps.colors.headerIconColor}
+                          strokeWidth="2"
+                    />
+                </Svg>
             </TouchableOpacity>,
     })
 }

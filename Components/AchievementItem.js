@@ -10,7 +10,7 @@ import {scale, windowWidth} from "../Utils/scale";
 import * as Progress from 'react-native-progress';
 import moment from 'moment';
 
-const AchievementItem = props => {
+const AchievementItem = (props) => {
     const { mode, item, date, handleOnPress, screenProps } = props;
     const { colors, global } = screenProps;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
@@ -24,12 +24,12 @@ const AchievementItem = props => {
                     <View style={{marginVertical: 10}}>
                         <View
                             style={{justifyContent: 'center', alignItems: 'center'}}>
-                            <Text style={{color:"#ED57E1"}}>Expire in {7 - moment(today).diff(moment(item.complete_date), 'days')} days</Text></View>
+                            <Text style={{color:"#8c79ea"}}>Expire in {7 - moment(today).diff(moment(item.complete_date), 'days')} days</Text></View>
                     </View>
                     :null}
                 {mode!=='past'&&!item.claim_date?
                     <View style={{marginTop: 10, opacity: item.claim_date?0:100  }}>
-                        <Progress.Bar showsText={true} borderColor={colors.borderColor} color={item.complete_date===today&&mode==='daily'||mode!=='daily'?"lightgreen":"#8c78ff"} unfilledColor={"black"} borderRadius={9}
+                        <Progress.Bar showsText={true} borderColor={item.complete_date===today&&mode==='daily'||mode!=='daily'?"lightgreen":"#8c79ea"} color={item.complete_date===today&&mode==='daily'||mode!=='daily'?"lightgreen":"#8c79ea"} unfilledColor={"black"} borderRadius={9}
                                       progress={item.complete_date===today&&mode==='daily'||mode!=='daily'?item.step:0 / item.total}
                                       width={windowWidth/2} height={scale(16)}/>
                         <View
@@ -47,7 +47,7 @@ const AchievementItem = props => {
                     handleOnPress(item, date, mode);
                 }}
             >
-                <View style={[styles.rowRight, {backgroundColor:!item.complete_date?'#8c78ff':mode==='past'||!item.claim_date?'gold':'gray'}]}>
+                <View style={[styles.rowRight, {backgroundColor:!item.complete_date?colors.primaryButtonBg:mode==='past'||!item.claim_date?colors.secondaryButtonColor:'gray'}]}>
                     {mode!=='past'&&item.claim_date?
                         <>
                             <Text
@@ -60,7 +60,7 @@ const AchievementItem = props => {
                             </Text>
                             <Text
                                 numberOfLines={1}
-                                style={[global.itemMeta, {flexWrap: "nowrap", fontSize:scale(11), fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                style={[global.itemMeta, {flexWrap: "nowrap", fontSize:scale(11), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                         width: -1,
                                         height: 1
                                     }}]}
@@ -81,7 +81,7 @@ const AchievementItem = props => {
                             </Text>
                             {item.awards.map(point =>
                                 <Text
-                                    style={[global.pointTitle, {flexWrap: "nowrap", fontSize:scale(24), fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                    style={[global.pointTitle, {flexWrap: "nowrap", fontSize:scale(24), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                             width: -1,
                                             height: 1
                                         }}]}
@@ -103,7 +103,7 @@ const AchievementItem = props => {
                             </Text>
                             {item.awards.map(point =>
                                 <Text
-                                    style={[global.pointTitle, {flexWrap: "nowrap", fontSize:scale(24), fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                    style={[global.pointTitle, {flexWrap: "nowrap", fontSize:scale(24), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                             width: -1,
                                             height: 1
                                         }}]}
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
         width: windowWidth - scale(30),
         height: scale(70),
         flexDirection: 'row',
-        marginTop: scale(10),
+        marginTop: scale(15),
         marginHorizontal: scale(15),
     },
     rowRight: {
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: (windowWidth - scale(30))/3,
         height: scale(70),
-        backgroundColor: '#8c78ff',
+        backgroundColor: '#8c79ea',
     },
     rowLeft: {
         marginVertical: 0,

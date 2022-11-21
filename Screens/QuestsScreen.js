@@ -1,40 +1,40 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import IconButton from "@src/components/IconButton";
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
 import { withNavigation } from "react-navigation";
 import {useSelector} from "react-redux";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import {scale} from "../Utils/scale";
-/*import DailyQuests from "../Components/QuestsDaily";*/
+import DailyQuests from "../Components/QuestsDaily";
 import WeeklyQuests from "../Components/QuestsWeekly";
 import MonthlyQuests from "../Components/QuestsMonthly";
 import QiPointHeader from "../Components/QiPointHeader";
 import AuthWrapper from "@src/components/AuthWrapper";
+import Svg, {Path} from "react-native-svg";
 
-/*const QuestsDaily = () => {
+const QuestsDaily = (props) => {
     try {
         return (
-            <DailyQuests />
-        )
-    } catch (err) {
-        console.log(`${err}`);
-    }
-}*/
-const QuestsWeekly = () => {
-    try {
-        return (
-            <WeeklyQuests />
+            <DailyQuests {...props} />
         )
     } catch (err) {
         console.log(`${err}`);
     }
 }
-const QuestsMonthly = () => {
+const QuestsWeekly = (props) => {
     try {
         return (
-            <MonthlyQuests />
+            <WeeklyQuests {...props} />
+        )
+    } catch (err) {
+        console.log(`${err}`);
+    }
+}
+const QuestsMonthly = (props) => {
+    try {
+        return (
+            <MonthlyQuests {...props} />
         )
     } catch (err) {
         console.log(`${err}`);
@@ -43,12 +43,12 @@ const QuestsMonthly = () => {
 const TabTitle = ({tintColor, name}) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     return (
-        <Text style={{ color: tintColor, fontSize: scale(20) }}>{optionData.titles.find(el => el.id === name).title}</Text>
+        <Text style={{ color: tintColor, fontFamily:"MontserratAlternates-SemiBold", fontWeight:"bold", fontSize: scale(14)  }}>{optionData.titles.find(el => el.id === name).title}</Text>
     )
 }
 const Tabs = createMaterialTopTabNavigator(
     {
-/*        Daily: {
+        Daily: {
             screen: QuestsDaily,
             navigationOptions: {
                 tabBarLabel: ({ tintColor }) => (
@@ -60,7 +60,7 @@ const Tabs = createMaterialTopTabNavigator(
                     </View>
                 ),
             }
-        },*/
+        },
         Weekly: {
             screen: QuestsWeekly,
             navigationOptions: {
@@ -89,21 +89,22 @@ const Tabs = createMaterialTopTabNavigator(
         }
     },
     {
-        initialRouteName: 'Weekly',
+        initialRouteName: 'Daily',
         swipeEnabled: true,
         lazy: true,
         optimizationsEnabled: true,
         tabBarOptions: {
             style: {
-                height: 45,
-                backgroundColor: '#f9f9f9',
+                height: scale(45),
+                backgroundColor: '#f2f0fd',
                 marginTop: 0
             },
             indicatorStyle: {
-                backgroundColor: '#4942e1',
+                backgroundColor: '#8c79ea',
             },
-            activeTintColor: 'black',
-            inactiveTintColor: 'gray',
+            activeTintColor: '#8c79ea',
+            inactiveTintColor: '#d0c9f6',
+            shifting: true
         }
     },
 );
@@ -115,24 +116,32 @@ const QuestsScreen = createStackNavigator({
         }
     }
 });
-QuestsScreen.navigationOptions = ({navigation}) => ({
+QuestsScreen.navigationOptions = ({navigation, screenProps}) => ({
     title: 'My Quests',
-    headerTitleStyle: {textAlign:'left'},
+    headerStyle: {
+        backgroundColor: screenProps.colors.headerBg,
+    },
+    headerTintColor: screenProps.colors.headerColor,
+    headerTitleStyle: screenProps.global.appHeaderTitle,
     headerLeft:
         <TouchableOpacity
             onPress={() => {navigation.goBack()}}
         >
-            <IconButton
-                icon={require("@src/assets/img/arrow-back.png")}
-                tintColor={"#4942e1"}
-                style={{
-                    height: scale(16),
-                    marginLeft: scale(16)
-                }}
-            />
+            <Svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                style={{marginLeft:scale(10)}}
+            >
+                <Path d="m15 18-6-6 6-6"
+                      fill="none"
+                      stroke={screenProps.colors.headerIconColor}
+                      strokeWidth="2"
+                />
+            </Svg>
         </TouchableOpacity>,
     headerRight:
-        <QiPointHeader />
+        <QiPointHeader {...screenProps} />
     ,
 })
 export default withNavigation(QuestsScreen);

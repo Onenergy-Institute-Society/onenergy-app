@@ -14,6 +14,8 @@ import Sound from "react-native-sound";
 Sound.setCategory('Playback');
 
 const QuestsMonthly = (props) => {
+    const {screenProps} = props;
+    const {colors, global} = screenProps;
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.monthly:null);
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
@@ -29,27 +31,23 @@ const QuestsMonthly = (props) => {
         });
     };
     return(
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={global.container}>
             <ScrollView style={styles.containerStyle}>
-                <Text style={styles.titleText}>Practice consecutively for 30 days to unlock this reward. Miss one day will reset the progress. Completion reward: +100 Qi</Text>
+                <Text style={global.Text}>Practice consecutively for 30 days to unlock this reward. Miss one day will reset the progress. Completion reward: +100 Qi</Text>
                 <View style={styles.daysContainer}>
                 {Array(30).fill().map((_, idx) => 1 + idx).map((day,index)=>{
                     return (
-                        <View style={[styles.row, styles.boxShadow, {backgroundColor: achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'#8c78ff':'#e6e6e8':'#e6e6e8':'#e6e6e8'}]} >
+                        <View style={[styles.row, styles.boxShadow, {backgroundColor: achievementReducer&&achievementReducer.days&&achievementReducer.days.length&&achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'#8c79ea':'#e6e6e8'}]} >
                             <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
                                 {
 
-                                    achievementReducer? achievementReducer.days && achievementReducer.days.length ? achievementReducer.days[index] !== undefined && achievementReducer.days[index] !== null && achievementReducer.days[index] !== '' ?
+                                    achievementReducer && achievementReducer.days && achievementReducer.days.length && achievementReducer.days[index] !== undefined && achievementReducer.days[index] !== null && achievementReducer.days[index] !== '' ?
                                     <Image source={require("@src/assets/img/check2.png")}/>
-                                    :
-                                    <Image source={require("@src/assets/img/radio_unchecked_icon.png")}/>
-                                    :
-                                    <Image source={require("@src/assets/img/radio_unchecked_icon.png")}/>
                                     :
                                     <Image source={require("@src/assets/img/radio_unchecked_icon.png")}/>
                                 }
                             </View>
-                            <Text style={{textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===30?"gold":achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'white':'white':'white':'white'}}>Day {day}</Text>
+                            <Text style={[global.title, {textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===30?"#ef713c":achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'white':'white':'white':'white'}]}>Day {day}</Text>
                         </View>
                     )
                 })}
@@ -58,7 +56,7 @@ const QuestsMonthly = (props) => {
                     paddingVertical:scale(10),
                     borderRadius: 9, alignItems: 'center',
                     justifyContent: 'center',backgroundColor: '#e6e6e8',
-                    marginTop: scale(5),}]}><Text style={{color:"green"}}>Practice consecutively 30 days REWARD +100 Qi</Text></View>
+                    marginTop: scale(5),}]}><Text style={[global.text, {color:"green"}]}>Practice consecutively 30 days REWARD +100 Qi</Text></View>
                 <View style={{paddingBottom: scale(20)}}>
                 {achievementReducer?
                     achievementReducer.claim_date?
@@ -108,7 +106,7 @@ const QuestsMonthly = (props) => {
                                     });
                                 }}
                             >
-                                <View style={[styles.rowRight, {backgroundColor: 'gold'}]}>
+                                <View style={[styles.rowRight, {backgroundColor: '#ef713c'}]}>
                                     <Text
                                         style={{
                                             color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
@@ -171,14 +169,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#e6e6e8',
         marginTop: scale(5),
     },
-    achievementItemBox: {
-        marginTop:scale(50),
-        marginBottom:scale(20),
-        width:windowWidth-scale(30),
-        borderRadius: 12,
-        backgroundColor: "#fff",
-        marginHorizontal: 15,
-    },
     textSticker: {
         width:"100%",
         flexDirection: "row",
@@ -187,66 +177,6 @@ const styles = StyleSheet.create({
     },
     pointText: {
         fontSize:scale(14),
-    },
-    achievementItemBoxInfo: {
-        paddingTop:scale(32),
-        display: "flex",
-        flexDirection:"column",
-        alignItems:"center",
-        justifyContent:"space-between",
-    } ,
-    achievementItemBoxInfoTop: {
-        paddingHorizontal:scale(40),
-        paddingBottom:scale(40),
-    },
-    achievementItemBoxInfoBottom: {
-
-    },
-    achievementItemBoxImageWrap: {
-        position:"absolute",
-        left: 10,
-        top:scale(-30),
-        justifyContent:"center",
-        paddingLeft:scale(16),
-        paddingBottom:scale(17),
-        alignItems:"flex-start",
-        width: scale(150),
-        height: scale(150),
-        borderRadius:scale(43),
-    },
-    achievementItemBoxTitle: {
-        marginTop:scale(20),
-        fontSize:scale(18),
-        fontWeight:'700',
-        textAlign:"center"
-    },
-    achievementItemBoxText: {
-        marginVertical:scale(10),
-        fontSize:scale(14),
-        fontWeight:'500',
-        lineHeight:scale(24),
-        textAlign:"center"
-    },
-    achievementItemBoxDescription: {
-        flexDirection: "row",
-        justifyContent:"flex-start",
-    },
-    achievementItemBoxDescriptionText: {
-        textTransform: "uppercase",
-        fontWeight: "700",
-        fontSize: scale(12),
-    },
-    achievementItemBoxRequirements: {
-        marginTop:scale(10),
-    },
-    achievementItemBoxSubtitle: {
-        flexDirection: "row",
-        justifyContent:"flex-start",
-    },
-    achievementItemBoxSubtitleText: {
-        textTransform: "uppercase",
-        fontWeight: "700",
-        fontSize: scale(12),
     },
     checklistItems: {
         marginTop:scale(12),

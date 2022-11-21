@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import {useSelector} from "react-redux";
-import IconButton from "@src/components/IconButton";
 import {
     View,
     Text,
@@ -12,6 +11,7 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import LinearGradient from 'react-native-linear-gradient';
 import analytics from '@react-native-firebase/analytics';
+import Svg, {Path} from "react-native-svg";
 
 const StatsScreen = (props) => {
     const user = useSelector((state) => state.user.userObject);
@@ -342,21 +342,25 @@ const styles = StyleSheet.create({
         marginVertical: 2,
     }
 });
-StatsScreen.navigationOptions = ({navigation}) => ({
+StatsScreen.navigationOptions = ({navigation, screenProps}) => ({
     title: navigation.getParam('title'),
     headerTitleStyle: {textAlign:'left'},
     headerLeft:
         <TouchableOpacity
             onPress={() => {navigation.goBack()}}
         >
-            <IconButton
-                icon={require("@src/assets/img/arrow-back.png")}
-                tintColor={"#4942e1"}
-                style={{
-                    height: scale(16),
-                    marginLeft: scale(16)
-                }}
-            />
+            <Svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                style={{marginLeft:scale(10)}}
+            >
+                <Path d="m15 18-6-6 6-6"
+                      fill="none"
+                      stroke={screenProps.colors.headerIconColor}
+                      strokeWidth="2"
+                />
+            </Svg>
         </TouchableOpacity>,
 })
 export default StatsScreen;

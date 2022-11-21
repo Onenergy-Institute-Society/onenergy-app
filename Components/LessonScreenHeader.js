@@ -2,8 +2,8 @@ import React from "react";
 import {View, TouchableOpacity} from "react-native";
 import Animated from "react-native-reanimated";
 import {DEVICE_WIDTH} from "@src/styles/global";
-import IconButton from "@src/components/IconButton";
 import {scale} from "../Utils/scale";
+import Svg, {Path} from "react-native-svg";
 
 const LessonScreenHeader = (props) => {
     const {
@@ -16,7 +16,7 @@ const LessonScreenHeader = (props) => {
         prevNext,
         navigation,
     } = props;
-    console.log(style)
+    console.log(props)
     return (
         <Animated.View
             style={[
@@ -48,14 +48,18 @@ const LessonScreenHeader = (props) => {
                     <TouchableOpacity
                         onPress={() => {navigation.goBack()}}
                     >
-                        <IconButton
-                            icon={require("@src/assets/img/arrow-back.png")}
-                            tintColor={'#4a4d34'}
-                            style={{
-                                height: scale(16),
-                                marginLeft: scale(16)
-                            }}
-                        />
+                        <Svg
+                            width="32"
+                            height="32"
+                            viewBox="0 0 24 24"
+                            style={{marginLeft:scale(10)}}
+                        >
+                            <Path d="m15 18-6-6 6-6"
+                                  fill="none"
+                                  stroke="#8c79ea"
+                                  strokeWidth="2"
+                            />
+                        </Svg>
                     </TouchableOpacity>
                 </View>
             </View>
