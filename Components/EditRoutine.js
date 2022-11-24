@@ -75,9 +75,6 @@ const EditRoutine = props => {
             console.error(e);
         }
     }
-    const toggleHelpModal = () => {
-        this.routineHelpModal.open();
-    }
     useEffect(() => {
         setHelpModal(optionData.helps.find(el => el.name === 'practice_customize_editor_popup_member'));
         props.navigation.setParams({
@@ -88,7 +85,6 @@ const EditRoutine = props => {
         if(routineDetail) {
             props.navigation.setParams({
                 title: routineDetail.title,
-                toggleHelpModal: toggleHelpModal,
                 onBackPressed: onBackPressed,
                 changeStatus: changedStatus,
                 backButtonTitle: changedStatus?'Save':'',
@@ -544,49 +540,6 @@ const EditRoutine = props => {
                 </BlurView>
             }
             <Modalize
-                ref={(routineHelpModal) => { this.routineHelpModal = routineHelpModal; }}
-                modalHeight = {windowHeight*4/5}
-                childrenStyle = {{backgroundColor:"#f2f2f2"}}
-                handlePosition = "outside"
-                HeaderComponent={
-                    <View style={{
-                        padding: scale(25),
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        borderTopLeftRadius: 9,
-                        borderTopRightRadius: 9,
-                        borderBottomWidth: StyleSheet.hairlineWidth,
-                        backgroundColor: colors.bodyBg,
-                        borderBottomColor: colors.borderColor
-                    }}>
-                        <Text style={{fontSize:scale(24), color: '#4A4D34'}}>{routineHelpModal.title}</Text>
-                        <IconButton
-                        pressHandler={() => {this.routineHelpModal.close();}}
-                        icon={require("@src/assets/img/close.png")}
-                        tintColor={'#FFFFFF'}
-                        style={{ height: scale(16), width: scale(16) }}
-                        touchableStyle={{
-                            position:"absolute", top:10, right: 10,
-                            height: scale(24),
-                            width: scale(24),
-                            backgroundColor: "#4A4D34",
-                            alignItems: "center",
-                            borderRadius: 100,
-                            padding: scale(5),
-                        }}
-                    /></View>
-                }
-            >
-                <View style={{flex: 1, width:windowWidth}} >
-                    <BlockScreen pageId={routineHelpModal.id}
-                                 contentInsetTop={0}
-                                 contentOffsetY={0}
-                                 hideTitle={true}
-                                 hideNavigationHeader={true}
-                                 {...props} />
-                </View>
-            </Modalize>
-            <Modalize
                 ref={(countDialog) => { this.countDialog = countDialog; }}
                 modalStyle={{backgroundColor:"#F8F0E2"}}
                 modalHeight={windowHeight/2}
@@ -603,23 +556,27 @@ const EditRoutine = props => {
                         borderBottomColor: colors.borderColor
                     }}>
                         {currentTrack.index !== -1?(
-                            <Text style={{fontSize:24, color: '#4A4D34'}}>{currentTrack.item.mode==="1"?"Choose duration":"Choose repeating times"}</Text>
+                            <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>{currentTrack.item.mode==="1"?"Choose duration":"Choose repeating times"}</Text>
                         ):null}
-                        <IconButton
-                            pressHandler={() => {this.countDialog.close();}}
-                            icon={require("@src/assets/img/close.png")}
-                            tintColor={'#FFFFFF'}
-                            style={{ height: scale(16), width: scale(16) }}
-                            touchableStyle={{
-                                position:"absolute", top:10, right: 10,
-                                height: scale(24),
-                                width: scale(24),
-                                backgroundColor: "#4A4D34",
-                                alignItems: "center",
-                                borderRadius: 100,
-                                padding: scale(5),
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.countDialog.close();
                             }}
-                        />
+                        >
+                            <Svg
+                                width="32"
+                                height="32"
+                                viewBox="0 0 24 24"
+                                style={{marginLeft:scale(10)}}
+                            >
+                                <Circle cx="12" cy="12" r="10" fill="#d3d3d3"
+                                        stroke="#d3d3d3"
+                                        strokeWidth="1"/>
+                                <Path d="m15 9-6 6M9 9l6 6" fill="#262626"
+                                      stroke="#262626"
+                                      strokeWidth="1"/>
+                            </Svg>
+                        </TouchableOpacity>
                     </View>
                 }
                 flatListProps = {{
@@ -631,7 +588,7 @@ const EditRoutine = props => {
             />
             <Modalize
                 ref={(bgmDialog) => { this.bgmDialog = bgmDialog; }}
-                modalStyle={{backgroundColor:"#F8F0E2"}}
+                modalStyle={{backgroundColor:colors.bodyBg}}
                 childrenStyle={{padding:25}}
                 adjustToContentHeight = "true"
                 withHandle = "false"
@@ -646,22 +603,27 @@ const EditRoutine = props => {
                         backgroundColor: colors.bodyBg,
                         borderBottomColor: colors.borderColor
                     }}>
-                        <Text style={{fontSize:24, color: '#4A4D34'}}>Background Music</Text>
-                        <IconButton
-                            pressHandler={() => {this.bgmDialog.close();}}
-                            icon={require("@src/assets/img/close.png")}
-                            tintColor={"#FFFFFF"}
-                            style={{ height: scale(16), width: scale(16) }}
-                            touchableStyle={{
-                                position:"absolute", top:10, right: 10,
-                                height: scale(24),
-                                width: scale(24),
-                                backgroundColor: "#4A4D34",
-                                alignItems: "center",
-                                borderRadius: 100,
-                                padding: scale(5),
+                        <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Background Music</Text>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.bgmDialog.close();
                             }}
-                        /></View>
+                        >
+                            <Svg
+                                width="32"
+                                height="32"
+                                viewBox="0 0 24 24"
+                                style={{marginLeft:scale(10)}}
+                            >
+                                <Circle cx="12" cy="12" r="10" fill="#d3d3d3"
+                                        stroke="#d3d3d3"
+                                        strokeWidth="1"/>
+                                <Path d="m15 9-6 6M9 9l6 6" fill="#262626"
+                                      stroke="#262626"
+                                      strokeWidth="1"/>
+                            </Svg>
+                        </TouchableOpacity>
+                    </View>
                 }
                 FooterComponent={
                     <View style={{height: 25}}/>
@@ -707,7 +669,8 @@ const EditRoutine = props => {
                                       stroke="#262626"
                                       strokeWidth="1"/>
                             </Svg>
-                        </TouchableOpacity></View>
+                        </TouchableOpacity>
+                    </View>
                 }
                 sectionListProps = {{
                     stickySectionHeadersEnabled:false,
@@ -829,7 +792,7 @@ const styles = StyleSheet.create({
         marginHorizontal:5
     },
 })
-EditRoutine.navigationOptions = ({ navigation,  }) => {
+EditRoutine.navigationOptions = ({ navigation, screenProps}) => {
     const {params = {}} = navigation.state;
     return({
         headerTitle: params.title?params.title:navigation.getParam('title'),
@@ -846,25 +809,13 @@ EditRoutine.navigationOptions = ({ navigation,  }) => {
                     >
                         <Path d="m15 18-6-6 6-6"
                               fill="none"
-                              stroke={colors.headerIconColor}
+                              stroke={screenProps.colors.headerIconColor}
                               strokeWidth="2"
                         />
                     </Svg>
                     <Text style={{fontSize:scale(16), color:"#4942e1"}}>{params.backButtonTitle}</Text>
                 </View>
             </TouchableOpacity>,
-        headerRight:
-            <View style={{flexDirection:"row", justifyContent:"flex-end"}}>
-                <TouchableOpacity
-                    onPress={() => {params.toggleHelpModal();}}
-                >
-                    <IconButton
-                        icon={require("@src/assets/img/help.png")}
-                        tintColor={"#4942e1"}
-                        style={{height: 20, marginRight:25}}
-                    />
-                </TouchableOpacity>
-            </View>
     })
 }
 const mapStateToProps = (state) => ({

@@ -12,7 +12,6 @@ import {
 import {getApi} from "@src/services";
 import {connect, useSelector, useDispatch} from "react-redux";
 import MemberTracksList from "../Components/MemberTracksList";
-import { Modalize } from 'react-native-modalize';
 import IconButton from "@src/components/IconButton";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
@@ -27,11 +26,9 @@ import Svg, {Path} from "react-native-svg";
 const PracticeMember = props => {
     const { navigation } = props;
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyData = optionData.helps.find(el => el.name === 'practice_customize_empty_member');
     const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
-    const [helpModal, setHelpModal] = useState({title:'',id:0});
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
 
@@ -80,9 +77,6 @@ const PracticeMember = props => {
             console.error(e);
         }
     }
-    const toggleHelpModal = () => {
-        this.cpHelpModal.open();
-    }
     const onAddPressed = async () => {
         await TrackPlayer.reset();
 
@@ -125,14 +119,8 @@ const PracticeMember = props => {
     useEffect(() => {
         if(!practiceReducer||!practiceReducer.routines||!practiceReducer.routines.length)
             fetchTracks().then();
-        if(user&&user.membership.length > 0) {
-            setHelpModal(optionData.helps.find(el => el.name === 'practice_customize_popup_member'));
-        }else{
-            setHelpModal(optionData.helps.find(el => el.name === 'practice_customize_popup_nonmember'));
-        }
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'practices_member').title,
-            toggleHelpModal: toggleHelpModal,
             onAddPressed: onAddPressed,
         });
     },[]);
@@ -195,50 +183,6 @@ const PracticeMember = props => {
                     }}
                 />
                 :null}
-
-            <Modalize
-                ref={(cpHelpModal) => { this.cpHelpModal = cpHelpModal; }}
-                modalHeight = {windowHeight*4/5}
-                childrenStyle = {{backgroundColor:colors.bodyBg}}
-                handlePosition = "outside"
-                HeaderComponent={
-                    <View style={{
-                        padding: scale(25),
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        borderTopLeftRadius: 9,
-                        borderTopRightRadius: 9,
-                        borderBottomWidth: StyleSheet.hairlineWidth,
-                        backgroundColor: colors.bodyBg,
-                        borderBottomColor: colors.borderColor
-                    }}>
-                        <Text style={{fontSize:24, color: '#4A4D34'}}>{helpModal.title}</Text>
-                        <IconButton
-                        pressHandler={() => {this.cpHelpModal.close();}}
-                        icon={require("@src/assets/img/close.png")}
-                        tintColor={'#FFFFFF'}
-                        style={{ height: scale(16), width: scale(16) }}
-                        touchableStyle={{
-                            position:"absolute", top:10, right: 10,
-                            height: scale(24),
-                            width: scale(24),
-                            backgroundColor: "#4A4D34",
-                            alignItems: "center",
-                            borderRadius: 100,
-                            padding: scale(5),
-                        }}
-                    /></View>
-                }
-            >
-                <View style={{flex: 1, width:windowWidth}} >
-                    <BlockScreen pageId={helpModal.id}
-                                 contentInsetTop={0}
-                                 contentOffsetY={0}
-                                 hideTitle={true}
-                                 hideNavigationHeader={true}
-                                 {...props} />
-                </View>
-            </Modalize>
             {messageBarDisplay?
                 <Animated.View style={[styles.messageBar, {opacity: fadeAnim}]}><Text style={styles.messageText}>Great! You earn more qi. Keep it up!</Text></Animated.View>
                 :null}

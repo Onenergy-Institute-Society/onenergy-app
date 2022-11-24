@@ -6,10 +6,10 @@ import {
     View,
     SafeAreaView,
     Text,
-    AppState, Platform
+    AppState, Platform, Picker, TouchableOpacity
 } from "react-native";
 import {getApi} from "@src/services";
-import {windowWidth} from "../Utils/Dimensions";
+import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale} from '../Utils/scale';
 import TouchableScale from "../Components/TouchableScale";
 import TopSlider from '../Components/TopSlider';
@@ -24,8 +24,19 @@ import EventList from "../Components/EventList";
 import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 import analytics from '@react-native-firebase/analytics';
 import ForumsScreen from "@src/containers/Custom/ForumsScreen";
-import Svg, {Path} from "react-native-svg";
+import Svg, {Circle, Path} from "react-native-svg";
+import {
+    LineChart,
+    BarChart,
+    PieChart,
+    ProgressChart,
+    ContributionGraph,
+    StackedBarChart
+} from "react-native-chart-kit";
+import { Modalize } from 'react-native-modalize';
+import moment from 'moment';
 
+this.todayGoalDialog = undefined;
 const HomeContent = (props) => {
     const {navigation, screenProps} = props;
     const {global, colors} = screenProps;
@@ -36,6 +47,17 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
+
+    const chartConfig = {
+        backgroundGradientFrom: "#FFEEE7",
+        backgroundGradientFromOpacity: 1,
+        backgroundGradientTo: "#FFEEE7",
+        backgroundGradientToOpacity: 1,
+        color: (opacity = 1) => `rgba(236, 87, 24, ${opacity})`,
+        strokeWidth: 3, // optional, default 3
+        barPercentage: 1,
+        useShadowColorFromDataset: false, // optional
+    };
 
     const onFocusHandler=() =>
     {
@@ -97,6 +119,14 @@ const HomeContent = (props) => {
             title: optionData.titles.find(el => el.id === 'home_title').title,
         });
         if(user) {
+            const today = new moment().format('YYYY-MM-DD');
+            if(today !== progressReducer.lastPractice)
+            {
+                dispatch({
+                    type: 'ONENERGY_PROGRESS_TODAY_RESET',
+                });
+            }
+
             navigation.addListener('willFocus', onFocusHandler)
             const subscription = AppState.addEventListener("change", _handleAppStateChange);
             TrackPlayer.setupPlayer();
@@ -200,7 +230,24 @@ const HomeContent = (props) => {
         }
     }
 
-
+    const renderGoalSelector = () => {
+        const minutes = Array.from({length: 30}, (_, i) => i + 1);
+        return minutes.map((item, index)=>{
+            return (
+                <Picker.Item label={item+' minutes'} value={item} key={index} />
+            )
+        })
+    }
+    const chooseGoal = (itemValue, itemIndex) => {
+        dispatch({
+            type: "ONENERGY_PROGRESS_GOAL",
+            payload: {
+                'mode': 'todayGoal',
+                'data': itemValue
+            }
+        });
+        this.todayGoalDialog.close();
+    }
     return (
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
@@ -223,6 +270,66 @@ const HomeContent = (props) => {
                         <DailyQuotes quote={optionData.quote} screenProps={screenProps} />
                     </View>
                 )}
+                {user?
+                <View style={[styles.progressRow, styles.boxShadow]}>
+                    <TouchableScale
+                        onPress={
+                            () => {
+                                navigation.dispatch(
+                                    NavigationActions.navigate({
+                                        routeName: "StatsScreen"
+                                    })
+                                )}}>
+                        <View style={{flexDirection:'row', justifyContent:"space-between"}}>
+                            <View style={{width:(windowWidth-30)/3, justifyContent:"flex-start", alignItems:"flex-start", paddingLeft:scale(15), paddingTop:scale(15)}}>
+                                <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom:scale(10)}}>
+                                    <Text style={[global.itemTitle,{color:colors.primaryButtonBg}]}>Today: </Text><Text style={[global.text,{color:"#4B34BD"}]}>{progressReducer.todayDuration?Math.round(progressReducer.todayDuration / 60 )>60?Math.round(progressReducer.todayDuration /3600)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.todayDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                </View>
+                                <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                                    <Text style={[global.itemTitle,{color:colors.primaryButtonBg}]}>Goal: </Text><Text style={[global.text,{color:"#4B34BD"}]}>{progressReducer.todayGoal?Math.round(progressReducer.todayGoal)>60?Math.round(progressReducer.todayGoal /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:progressReducer.todayGoal + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                </View>
+                            </View>
+                            <ProgressChart
+                                data={{data:[progressReducer.todayDuration/(progressReducer.todayGoal*60)<=1?progressReducer.todayDuration/(progressReducer.todayGoal*60):1]}}
+                                width={(windowWidth-scale(30))*2/3}
+                                height={scale(150)}
+                                strokeWidth={24}
+                                radius={64}
+                                chartConfig={chartConfig}
+                                hideLegend={true}
+                                style={{
+                                    borderRadius: 9
+                                }}
+                            />
+                        </View>
+                    </TouchableScale>
+                    <View style={{position: "absolute", bottom:scale(10),left:scale(10)}}>
+                        <TouchableScale
+                            onPress={
+                                () => {this.todayGoalDialog.open();}}>
+                            <Svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                            >
+                                <Circle cx="12"
+                                        cy="12"
+                                        r="3"
+                                        fill="none"
+                                        stroke={colors.primaryButtonBg}
+                                        strokeWidth="2"
+                                />
+                                <Path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+                                    fill="none"
+                                    stroke={colors.primaryButtonBg}
+                                    strokeWidth="2"
+                                />
+                            </Svg>
+                        </TouchableScale>
+                    </View>
+                </View>
+                    :null}
                 {optionData.goals&&optionData.goals.length?
                 <View style={styles.programRow}>
                     <EventList location={'home'} />
@@ -325,7 +432,50 @@ const HomeContent = (props) => {
                 <View style={styles.bottomRow}>
                 </View>
             </ScrollView>
-        </SafeAreaView>
+            <Modalize
+                ref={(todayGoalDialog) => { this.todayGoalDialog = todayGoalDialog; }}
+                modalStyle={{backgroundColor:colors.bodyFrontBg}}
+                modalHeight={windowHeight/2}
+                withHandle = "false"
+                HeaderComponent={
+                    <View style={{
+                        padding: scale(25),
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        borderTopLeftRadius: 9,
+                        borderTopRightRadius: 9,
+                        borderBottomWidth: StyleSheet.hairlineWidth,
+                        backgroundColor: colors.bodyBg,
+                        borderBottomColor: colors.borderColor
+                    }}>
+                        <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Choose Goal</Text>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.todayGoalDialog.close();
+                            }}
+                        >
+                            <Svg
+                                width="32"
+                                height="32"
+                                viewBox="0 0 24 24"
+                                style={{marginLeft:scale(10)}}
+                            >
+                                <Circle cx="12" cy="12" r="10" fill="#d3d3d3"
+                                        stroke="#d3d3d3"
+                                        strokeWidth="1"/>
+                                <Path d="m15 9-6 6M9 9l6 6" fill="#262626"
+                                      stroke="#262626"
+                                      strokeWidth="1"/>
+                            </Svg>
+                        </TouchableOpacity>
+                    </View>
+                }
+            >
+                <Picker selectedValue={progressReducer.todayGoal} onValueChange={(itemValue, itemIndex) => {chooseGoal(itemValue, itemIndex)}}>
+                    {renderGoalSelector()}
+                </Picker>
+        </Modalize>
+    </SafeAreaView>
     );
 };
 
@@ -348,13 +498,13 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 4,
     },
-    slideRow: {
+    progressRow: {
         marginHorizontal: scale(15),
         marginTop: scale(15),
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 9,
-        backgroundColor: "white",
+        backgroundColor: "#FFEEE7",
     },
     quoteRow: {
         marginHorizontal: scale(15),

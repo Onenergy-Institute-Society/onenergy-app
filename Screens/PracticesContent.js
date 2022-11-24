@@ -115,7 +115,7 @@ const PracticesContent = props => {
                             imageStyle={{ borderRadius: 9}}
                             resizeMode={"cover"}
                             width={windowWidth - scale(30)}
-                            source={require('../assets/images/guided_practice_blank.png')}
+                            source={require('../assets/images/guided_practice_purple_blank.png')}
                             background={true}
                         >
                             <Text style={styles.practiceType}>Guided{"\n"}Practice</Text>
@@ -133,7 +133,7 @@ const PracticesContent = props => {
                             imageStyle={{ borderRadius: 9}}
                             resizeMode={"cover"}
                             width={windowWidth - scale(30)}
-                            source={require('../assets/images/group_practice_blank.png')}
+                            source={require('../assets/images/group_practice_purple_blank.png')}
                             background={true}
                         >
                             <Text style={styles.practiceType}>Group{"\n"}Practice</Text>
@@ -147,7 +147,7 @@ const PracticesContent = props => {
                             imageStyle={{ borderRadius: 9}}
                             resizeMode={"cover"}
                             width={windowWidth - scale(30)}
-                            source={require('../assets/images/customize_practice_blank.png')}
+                            source={require('../assets/images/customize_practice_purple_blank.png')}
                             background={true}
                         >
                             <Text style={styles.practiceType}>Customize{"\n"}Practice</Text>
@@ -160,7 +160,7 @@ const PracticesContent = props => {
                     }}
                     modalHeight={windowHeight * 4 / 5}
                     handlePosition="outside"
-                    childrenStyle={{backgroundColor: "#F8F0E2"}}
+                    childrenStyle={{backgroundColor: colors.bodyBg}}
                     HeaderComponent={
                         <View style={{
                             padding: scale(25),

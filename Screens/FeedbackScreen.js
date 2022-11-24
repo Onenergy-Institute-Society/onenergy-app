@@ -167,7 +167,7 @@ const FeedbackScreen = props => {
             </View>
             <Modalize
                 ref={(subjectDialog) => { this.subjectDialog = subjectDialog; }}
-                modalStyle={{backgroundColor:"#F8F0E2"}}
+                modalStyle={{backgroundColor:colors.bodyBg}}
                 childrenStyle={{padding:25}}
                 adjustToContentHeight = "true"
                 withHandle = "false"
@@ -185,7 +185,7 @@ const FeedbackScreen = props => {
                         <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Subject</Text>
                         <TouchableOpacity
                             onPress={() => {
-                                this.popupPracticeDialog.close();
+                                this.subjectDialog.close();
                             }}
                         >
                             <Svg

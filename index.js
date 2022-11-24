@@ -666,6 +666,7 @@ export const applyCustomCode = externalCodeSetup => {
                 points: {},
                 totalDuration: 0,
                 todayDuration: 0,
+                todayGoal:1200,
                 weekDuration: 0,
                 totalDays: 0,
                 lastPractice: '',
@@ -743,6 +744,7 @@ export const applyCustomCode = externalCodeSetup => {
                             idProgressReducer.points = {'qi': 0};
                             idProgressReducer.totalDuration = 0;
                             idProgressReducer.todayDuration = 0;
+                            idProgressReducer.todayGoal = 1200;
                             idProgressReducer.weekDuration = 0;
                             idProgressReducer.totalDays = 0;
                             idProgressReducer.lastPractice = '';
@@ -817,6 +819,26 @@ export const applyCustomCode = externalCodeSetup => {
                         practiceReducer: {
                             ...state.practiceReducer,
                             guides: tempGuides
+                        }
+                    };
+                case "ONENERGY_PROGRESS_GOAL":
+                    switch(action.payload.mode){
+                        case 'todayGoal':
+                            let goal = action.payload.data;
+                            return {
+                                ...state,
+                                progressReducer: {
+                                    ...state.progressReducer,
+                                    todayGoal: goal,
+                                }
+                            };
+                    }
+                case "ONENERGY_PROGRESS_TODAY_RESET":
+                    return {
+                        ...state,
+                        progressReducer: {
+                            ...state.progressReducer,
+                            todayDuration: 0,
                         }
                     };
                 case "ONENERGY_PROGRESS_UPLOADED":

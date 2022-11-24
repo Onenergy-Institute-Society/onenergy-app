@@ -52,7 +52,6 @@ export const VideoModal = props => {
     const [selectedCCUrl, setSelectedCCUrl] = useState('');
     const [bottom, setBottom] = useState(0);
     const [fullScreenButtonClicked, setFullScreenButtonClicked] = useState(false);
-    const [controlHide, setControlHide] = useState(false);
     useEffect(() => {
         Orientation.unlockAllOrientations();
         if(language.subtitle){
@@ -106,81 +105,65 @@ export const VideoModal = props => {
             setSubTitle({...subTitle, bottom: 50})
         }
     }
-    const switchFullScreen = () => {
-
-    }
     const modalScreenView = () => {
         return (
-/*            <TouchableOpacity
-                style={styles.ModalOutsideContainer}
-                onPress={() =>
-                    props.toggleModal({
-                        isVisible: false,
-                        video: '',
-                        thumbnail: '',
-                        textTracks: null
-                    })
-                }>*/
-                <View style={[styles.ModalContainer, modalContainerStyle]}>
-                    <View style={[styles.ModalBox, modalStyle]}>
-                        <View style={[styles.VideoPlayerContainer]}>
-                            {videoPlayerView()}
-                            {((screenState.fullScreen&&fullScreenButtonClicked)||!screenState.fullScreen)?
-                            <TouchableWithoutFeedback
-                                hitSlop={{top: 20, bottom: 20, left: 50, right: 50}}
-                                onPress={()=>{
-                                    if(screenState.fullScreen) {
-                                        Orientation.lockToPortrait();
-                                        Orientation.unlockAllOrientations();
-                                        setFullScreenButtonClicked(false)
-                                    }else{
-                                        Orientation.lockToLandscape();
-                                        setFullScreenButtonClicked(true)
-                                    }
-                                }}
-                            >
-                                <View style={[styles.buttonView,{left:scale(10)}]}>
-                                    <Image
-                                        tintColor={"#FFFFFF"}
-                                        style={{
-                                            width:24,
-                                            height:24,
-                                            tintColor:"#FFFFFF",
-                                        }}
-                                        source={require(screenState.fullScreen?'../assets/images/normal-screen_hires.png':'../assets/images/full-screen_hires.png')}
-                                    />
-                                </View>
-                            </TouchableWithoutFeedback>
+            <View style={[styles.ModalContainer, modalContainerStyle]}>
+                <View style={[styles.ModalBox, modalStyle]}>
+                    <View style={[styles.VideoPlayerContainer]}>
+                        {videoPlayerView()}
+                        {((screenState.fullScreen&&fullScreenButtonClicked)||!screenState.fullScreen)?
+                        <TouchableWithoutFeedback
+                            hitSlop={{top: 20, bottom: 20, left: 50, right: 50}}
+                            onPress={()=>{
+                                if(screenState.fullScreen) {
+                                    Orientation.lockToPortrait();
+                                    Orientation.unlockAllOrientations();
+                                    setFullScreenButtonClicked(false)
+                                }else{
+                                    Orientation.lockToLandscape();
+                                    setFullScreenButtonClicked(true)
+                                }
+                            }}
+                        >
+                            <View style={[styles.buttonView,{left:scale(10)}]}>
+                                <Image
+                                    tintColor={"#FFFFFF"}
+                                    style={{
+                                        width:24,
+                                        height:24,
+                                        tintColor:"#FFFFFF",
+                                    }}
+                                    source={require(screenState.fullScreen?'../assets/images/normal-screen_hires.png':'../assets/images/full-screen_hires.png')}
+                                />
+                            </View>
+                        </TouchableWithoutFeedback>
+                        :null}
+                        {(textTracks.length>0)?
+                            <ChooseSubtitle textTracks={textTracks} setSelectedTextTrack={setSelectedTextTrack} setSelectedCCUrl={setSelectedCCUrl} />
                             :null}
-                            {(textTracks.length>0)?
-                                <ChooseSubtitle textTracks={textTracks} setSelectedTextTrack={setSelectedTextTrack} setSelectedCCUrl={setSelectedCCUrl} />
-                                :null}
-                            <TouchableWithoutFeedback
-                                onPress={()=>{props.toggleModal({
-                                    isVisible: false,
-                                    video: '',
-                                    thumbnail: '',
-                                    textTracks: null
-                                })}}
-                            >
-                                <View style={[styles.buttonView,{right:scale(10)}]}>
-                                    <Image
-                                        tintColor={"#FFFFFF"}
-                                        style={{
-                                            width:24,
-                                            height:24,
-                                            tintColor:"#FFFFFF",
-                                        }}
-                                        source={require("@src/assets/img/close.png")}
-                                    />
-                                </View>
-                            </TouchableWithoutFeedback>
-                        </View>
+                        <TouchableWithoutFeedback
+                            onPress={()=>{props.toggleModal({
+                                isVisible: false,
+                                video: '',
+                                thumbnail: '',
+                                textTracks: null
+                            })}}
+                        >
+                            <View style={[styles.buttonView,{right:scale(10)}]}>
+                                <Image
+                                    tintColor={"#FFFFFF"}
+                                    style={{
+                                        width:24,
+                                        height:24,
+                                        tintColor:"#FFFFFF",
+                                    }}
+                                    source={require("@src/assets/img/close.png")}
+                                />
+                            </View>
+                        </TouchableWithoutFeedback>
                     </View>
                 </View>
-/*
-            </TouchableOpacity>
-*/
+            </View>
         );
     };
     const videoPlayerView = () => {

@@ -18,8 +18,6 @@ import {NavigationActions, withNavigation} from "react-navigation";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
 import HTML from "react-native-render-html";
-import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
-import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {Modalize} from 'react-native-modalize';
 import WaitingGroupPractice from "../Components/WaitingGroupPractice";
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
@@ -28,14 +26,13 @@ import EventList from "../Components/EventList";
 import {BlurView} from "@react-native-community/blur";
 import FastImage from "react-native-fast-image";
 import analytics from '@react-native-firebase/analytics';
-import Svg, {Path} from "react-native-svg";
+import Svg, {Circle, Path} from "react-native-svg";
 
 const PracticeGroup = props => {
     const {navigation, screenProps} = props;
     const {colors} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const helpData = optionData.helps.find(el => el.name === 'practice_group_popup');
     const [loading, setLoading] = useState(false);
     const groupReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer.groups:null);
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
@@ -60,13 +57,10 @@ const PracticeGroup = props => {
             console.error(e);
         }
     }
-    const toggleHelpModal = () => {
-        this.pgHelpModal.open();
-    };
+
     useEffect(() => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'practices_group').title,
-            toggleHelpModal: toggleHelpModal,
         });
         setCurrentMinutes(new Date().getMinutes());
         let secTimer = setInterval(() => {
@@ -267,7 +261,7 @@ const PracticeGroup = props => {
                     this.DetailModal = DetailModal;
                 }}
                 modalHeight={windowHeight * 4 / 5}
-                childrenStyle={{backgroundColor: "#F8F0E2"}}
+                childrenStyle={{backgroundColor: colors.bodyBg}}
                 handlePosition="outside"
                 HeaderComponent={
                     <View style={{
@@ -281,23 +275,25 @@ const PracticeGroup = props => {
                         borderBottomColor: colors.borderColor
                     }}>
                         <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Group Practice Detail</Text>
-                        <IconButton
-                            pressHandler={() => {
+                        <TouchableOpacity
+                            onPress={() => {
                                 this.DetailModal.close();
                             }}
-                            icon={require("@src/assets/img/close.png")}
-                            tintColor={'#FFFFFF'}
-                            style={{height: scale(16), width: scale(16)}}
-                            touchableStyle={{
-                                position: "absolute", top: 10, right: 10,
-                                height: scale(24),
-                                width: scale(24),
-                                backgroundColor: "#4A4D34",
-                                alignItems: "center",
-                                borderRadius: 100,
-                                padding: scale(5),
-                            }}
-                        />
+                        >
+                            <Svg
+                                width="32"
+                                height="32"
+                                viewBox="0 0 24 24"
+                                style={{marginLeft:scale(10)}}
+                            >
+                                <Circle cx="12" cy="12" r="10" fill="#d3d3d3"
+                                        stroke="#d3d3d3"
+                                        strokeWidth="1"/>
+                                <Path d="m15 9-6 6M9 9l6 6" fill="#262626"
+                                      stroke="#262626"
+                                      strokeWidth="1"/>
+                            </Svg>
+                        </TouchableOpacity>
                     </View>
                 }
             >
@@ -315,53 +311,6 @@ const PracticeGroup = props => {
                               setLoading(false);
                           }}
                     />
-                </View>
-            </Modalize>
-            <Modalize
-                ref={(pgHelpModal) => {
-                    this.pgHelpModal = pgHelpModal;
-                }}
-                modalHeight={windowHeight * 4 / 5}
-                childrenStyle={{backgroundColor: "#F8F0E2"}}
-                handlePosition="outside"
-                HeaderComponent={
-                    <View style={{
-                        padding: scale(25),
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        borderTopLeftRadius: 9,
-                        borderTopRightRadius: 9,
-                        borderBottomWidth: StyleSheet.hairlineWidth,
-                        backgroundColor: colors.bodyBg,
-                        borderBottomColor: colors.borderColor
-                    }}>
-                        <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>{helpData.title}</Text>
-                        <IconButton
-                            pressHandler={() => {
-                                this.pgHelpModal.close();
-                            }}
-                            icon={require("@src/assets/img/close.png")}
-                            style={{height: scale(16), width: scale(16)}}
-                            touchableStyle={{
-                                position: "absolute", top: 10, right: 10,
-                                height: scale(24),
-                                width: scale(24),
-                                backgroundColor: "#4A4D34",
-                                alignItems: "center",
-                                borderRadius: 100,
-                                padding: scale(5),
-                            }}
-                        />
-                    </View>
-                }
-            >
-                <View style={{flex: 1, width: windowWidth}}>
-                    <BlockScreen pageId={helpData.id}
-                                 contentInsetTop={0}
-                                 contentOffsetY={0}
-                                 hideTitle={true}
-                                 hideNavigationHeader={true}
-                                 {...props} />
                 </View>
             </Modalize>
             {loading &&
@@ -547,18 +496,6 @@ PracticeGroup.navigationOptions = ({navigation, screenProps}) => {
                     />
                 </Svg>
             </TouchableOpacity>,
-        headerRight:
-            <View style={{flexDirection: "row", justifyContent: "flex-end"}}>
-                <TouchableOpacity
-                    onPress={() => params.toggleHelpModal()}
-                >
-                    <IconButton
-                        icon={require("@src/assets/img/help.png")}
-                        tintColor={"#4942e1"}
-                        style={{marginRight: 25, height: 20}}
-                    />
-                </TouchableOpacity>
-            </View>
     })
 }
 export default connect(mapStateToProps)(withNavigation(withDeeplinkClickHandler(PracticeGroup)));

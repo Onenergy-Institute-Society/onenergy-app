@@ -36,7 +36,7 @@ const QuestsWeekly = (props) => {
                 {Array(7).fill().map((_, idx) => 1 + idx).map((day,index)=>{
                     return (
                         <View style={[styles.row, styles.boxShadow, {backgroundColor: achievementReducer&&achievementReducer.days&&achievementReducer.days.length&&achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?colors.primaryButtonBg:colors.bodyBg}]} >
-                            <Text style={[global.title,{textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===6?"#ef713c":achievementReducer&&achievementReducer.days&&achievementReducer.days.length&&achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'white':colors.primaryButtonBg}]}>Day {day} {index===6?'REWARD +20 Qi':''}</Text>
+                            <Text style={[global.title,{textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===6?colors.secondaryButtonColor:achievementReducer&&achievementReducer.days&&achievementReducer.days.length&&achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'white':colors.primaryButtonBg}]}>Day {day} {index===6?'REWARD +20 Qi':''}</Text>
                             <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
                                 <Text style={{marginRight:10, color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}}}>{achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?achievementReducer.days[index]:'':'':''}</Text>
                                 {
@@ -49,10 +49,10 @@ const QuestsWeekly = (props) => {
                         </View>
                     )
                 })}
-                <View style={{paddingBottom: scale(20)}}>
+                <View style={{marginBottom: scale(20)}}>
                 {achievementReducer?
                     achievementReducer.claim_date?
-                        <View style={[styles.boxShadow, styles.rowReward, {backgroundColor: colors.bodyBg}]}>
+                        <View style={[styles.boxShadow, styles.rowReward]}>
                             <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
                                 <Text style={global.itemTitle}>7 Days Streak</Text>
                             </View>
@@ -77,8 +77,8 @@ const QuestsWeekly = (props) => {
                             </View>
                         </View>
                     :
-                        <View style={[styles.boxShadow, styles.rowReward, {backgroundColor: colors.secondaryButtonColor}]}>
-                            <View style={styles.rowLeft}>
+                        <View style={[styles.boxShadow, styles.rowReward]}>
+                            <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
                                 <Text style={global.itemTitle}>7 Days Streak</Text>
                                 <View style={{marginVertical: 10}}>
                                     <View
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
         height: scale(60),
         flexDirection: 'row',
         backgroundColor: '#f2f2f2',
-        marginTop: scale(10),
+        marginVertical: scale(15),
         marginHorizontal: scale(15),
     },
     rowLeft: {
