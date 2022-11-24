@@ -70,7 +70,7 @@ const Tabs = createMaterialTopTabNavigator(
         optimizationsEnabled: true,
         tabBarOptions: {
             style: {
-                height: 45,
+                height: scale(40),
                 backgroundColor: '#f2f0fd',
                 marginTop: 0
             },

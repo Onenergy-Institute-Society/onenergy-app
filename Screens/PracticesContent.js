@@ -305,7 +305,7 @@ PracticesContent.navigationOptions = ({navigation, screenProps}) => {
                     width="24"
                     height="24"
                     viewBox="0 0 24 24"
-                    style={{marginLeft:scale(20)}}
+                    style={{marginLeft:scale(10)}}
                 >
                     <Path d="m9 18 6-6-6-6"
                           fill="none"
@@ -322,10 +322,10 @@ PracticesContent.navigationOptions = ({navigation, screenProps}) => {
                 }}
             >
                 <Svg
-                    width="20"
-                    height="20"
+                    width="24"
+                    height="24"
                     viewBox="0 0 24 24"
-                    style={{marginLeft:scale(20)}}
+                    style={{marginLeft:scale(10)}}
                 >
                     <Path d="M3 12h18M3 6h13M3 18h09"
                           fill="none"
@@ -334,7 +334,7 @@ PracticesContent.navigationOptions = ({navigation, screenProps}) => {
                     />
                 </Svg>
                 <AuthWrapper actionOnGuestLogin={'hide'}>
-                    <NotificationTabBarIcon notificationID={'left_menu'} top={0} right={0} size={scale(10)}
+                    <NotificationTabBarIcon notificationID={'left_menu'} top={-5} right={-5} size={scale(10)}
                                             showNumber={false}/>
                 </AuthWrapper>
             </TouchableScale>
@@ -356,8 +356,8 @@ PracticesContent.navigationOptions = ({navigation, screenProps}) => {
                         }}
                     >
                         <Svg
-                            width="20"
-                            height="20"
+                            width="24"
+                            height="24"
                             viewBox="0 0 32 32"
                             style={{marginRight:scale(10)}}
                         >
@@ -373,8 +373,8 @@ PracticesContent.navigationOptions = ({navigation, screenProps}) => {
                         }}
                     >
                         <Svg
-                            width="20"
-                            height="20"
+                            width="24"
+                            height="24"
                             viewBox="0 0 32 32"
                             style={{marginRight:scale(5)}}
                         >

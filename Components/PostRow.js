@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
         fontSize: scale(11),
         textAlign: 'left',
         color: 'black',
-        fontWeight: "bold",
+        fontWeight: "normal",
         fontFamily: 'MontserratAlternates-SemiBold',
     },
     author: {

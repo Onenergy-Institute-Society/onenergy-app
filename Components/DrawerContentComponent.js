@@ -287,7 +287,7 @@ const CustomDrawerContentComponent = (props) => {
                                             </Text>
                                         </View>
                                         <AuthWrapper actionOnGuestLogin={'hide'}>
-                                            <NotificationTabBarIcon notificationID={'quest'} top={0} right={0}
+                                            <NotificationTabBarIcon notificationID={'quest'} top={5} right={5}
                                                                     size={scale(10)} showNumber={false}/>
                                         </AuthWrapper>
                                         <IconButton
@@ -326,7 +326,7 @@ const CustomDrawerContentComponent = (props) => {
                                             </Text>
                                         </View>
                                         <AuthWrapper actionOnGuestLogin={'hide'}>
-                                            <NotificationTabBarIcon notificationID={'milestone'} top={0} right={0}
+                                            <NotificationTabBarIcon notificationID={'milestone'} top={5} right={5}
                                                                     size={scale(10)} showNumber={false}/>
                                         </AuthWrapper>
                                         <IconButton
@@ -375,7 +375,7 @@ const CustomDrawerContentComponent = (props) => {
                                             </Text>
                                         </View>
                                         <AuthWrapper actionOnGuestLogin={'hide'}>
-                                            <NotificationTabBarIcon notificationID={'voucher'} top={0} right={0}
+                                            <NotificationTabBarIcon notificationID={'voucher'} top={5} right={5}
                                                                     size={scale(10)} showNumber={false}/>
                                         </AuthWrapper>
                                         <IconButton

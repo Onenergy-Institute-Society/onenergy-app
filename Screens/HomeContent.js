@@ -231,7 +231,7 @@ const HomeContent = (props) => {
     }
 
     const renderGoalSelector = () => {
-        const minutes = Array.from({length: 30}, (_, i) => i + 1);
+        const minutes = [5,10,15,20,25,30,35,40,45,50,55,60];
         return minutes.map((item, index)=>{
             return (
                 <Picker.Item label={item+' minutes'} value={item} key={index} />
@@ -308,8 +308,8 @@ const HomeContent = (props) => {
                             onPress={
                                 () => {this.todayGoalDialog.open();}}>
                             <Svg
-                                width="24"
-                                height="24"
+                                width="32"
+                                height="32"
                                 viewBox="0 0 24 24"
                             >
                                 <Circle cx="12"
@@ -667,7 +667,7 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
                     width="24"
                     height="24"
                     viewBox="0 0 24 24"
-                    style={{marginLeft:scale(20)}}
+                    style={{marginLeft:scale(10)}}
                 >
                     <Path d="M3 12h18M3 6h13M3 18h09"
                           fill="none"
@@ -676,7 +676,7 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
                     />
                 </Svg>
                 <AuthWrapper actionOnGuestLogin={'hide'}>
-                    <NotificationTabBarIcon notificationID={'left_menu'} top={0} right={0} size={scale(10)} showNumber={false} />
+                    <NotificationTabBarIcon notificationID={'left_menu'} top={-5} right={-5} size={scale(10)} showNumber={false} />
                 </AuthWrapper>
             </TouchableScale>,
         headerRight:
@@ -688,8 +688,8 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
                         }}
                     >
                         <Svg
-                            width="20"
-                            height="20"
+                            width="24"
+                            height="24"
                             viewBox="0 0 32 32"
                             style={{marginRight:scale(10)}}
                         >
@@ -705,8 +705,8 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
                         }}
                     >
                         <Svg
-                            width="20"
-                            height="20"
+                            width="24"
+                            height="24"
                             viewBox="0 0 32 32"
                             style={{marginRight:scale(10)}}
                         >
@@ -721,8 +721,8 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
                         }}
                     >
                         <Svg
-                            width="20"
-                            height="20"
+                            width="24"
+                            height="24"
                             viewBox="0 0 24 24"
                             style={{marginRight:scale(5)}}
                         >

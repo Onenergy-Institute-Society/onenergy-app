@@ -100,10 +100,10 @@ const Tabs = createMaterialTopTabNavigator(
                 marginTop: 0
             },
             indicatorStyle: {
-                backgroundColor: '#8c79ea',
+                backgroundColor: '#EF713C',
             },
-            activeTintColor: '#8c79ea',
-            inactiveTintColor: '#d0c9f6',
+            activeTintColor: '#EF713C',
+            inactiveTintColor: '#8c79ea',
             shifting: true
         }
     },

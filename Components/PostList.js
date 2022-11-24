@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     title: {
         top:0,
         fontSize: scale(16),
-        fontWeight: 'bold',
+        fontWeight: 'normal',
         textAlign: 'left',
         color: '#4A4D34',
         fontFamily: 'MontserratAlternates-SemiBold',

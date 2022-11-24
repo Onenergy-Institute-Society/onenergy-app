@@ -41,7 +41,7 @@ class MilestonesAccordian extends Component {
                 }]}>
                     <TouchableOpacity onPress={() => this.toggleExpand()}>
                         <View style={[styles.rowLeft,{backgroundColor:this.props.screenProps.colors.bodyBg}]}>
-                            <Text style={this.props.screenProps.global.itemTitle}>{this.props.item.title}</Text>
+                            <Text style={[this.props.screenProps.global.itemTitle,{fontWeight:"normal"}]}>{this.props.item.title}</Text>
                             {!claim_date?
                             <View style={{marginTop:10}}>
                                 <Progress.Bar showsText={true} borderColor={complete_date?"lightgreen":"#8c79ea"} color={complete_date?"lightgreen":"#8c79ea"} unfilledColor={"black"} borderRadius={9}
@@ -75,7 +75,7 @@ class MilestonesAccordian extends Component {
                                 claim_date?
                                     <>
                                         <Text
-                                            style={[global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                            style={[this.props.screenProps.global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                                     width: -1,
                                                     height: 1
                                                 }}]}
@@ -83,7 +83,7 @@ class MilestonesAccordian extends Component {
                                             CLEARED
                                         </Text>
                                         <Text
-                                            style={[global.itemMeta, {flexWrap: "nowrap", fontSize:11, color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                            style={[this.props.screenProps.global.itemMeta, {flexWrap: "nowrap", fontSize:11, color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                                     width: -1,
                                                     height: 1
                                                 }}]}
@@ -95,7 +95,7 @@ class MilestonesAccordian extends Component {
                                     this.props.item.complete_date ?
                                         <>
                                             <Text
-                                                style={[global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                style={[this.props.screenProps.global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                                         width: -1,
                                                         height: 1
                                                     }}]}
@@ -104,7 +104,7 @@ class MilestonesAccordian extends Component {
                                             </Text>
                                             {this.props.item.awards.map(point =>
                                                 <Text
-                                                    style={[global.pointTitle, {flexWrap: "nowrap", fontSize:scale(24), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                    style={[this.props.screenProps.global.pointTitle, {flexWrap: "nowrap", fontSize:scale(24), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                                             width: -1,
                                                             height: 1
                                                         }}]}
@@ -116,7 +116,7 @@ class MilestonesAccordian extends Component {
                                         :
                                         <>
                                             <Text
-                                                style={[global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                style={[this.props.screenProps.global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                                         width: -1,
                                                         height: 1
                                                     }}]}
@@ -125,7 +125,7 @@ class MilestonesAccordian extends Component {
                                             </Text>
                                             {this.props.item.awards.map(point =>
                                                 <Text
-                                                    style={[global.pointTitle, {flexWrap: "nowrap", fontSize:scale(24), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                    style={[this.props.screenProps.global.pointTitle, {flexWrap: "nowrap", fontSize:scale(24), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                                             width: -1,
                                                             height: 1
                                                         }}]}

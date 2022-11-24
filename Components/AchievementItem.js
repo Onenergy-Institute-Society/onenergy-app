@@ -19,7 +19,7 @@ const AchievementItem = (props) => {
     return (
         <View style={[styles.boxShadow, styles.row]}>
             <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
-                <Text style={global.itemTitle}>{item.title}</Text>
+                <Text style={[global.itemTitle, {fontWeight: "normal"}]}>{item.title}</Text>
                 {mode==='past'?
                     <View style={{marginVertical: 10}}>
                         <View

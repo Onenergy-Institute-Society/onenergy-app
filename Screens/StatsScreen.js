@@ -12,6 +12,7 @@ import {windowWidth} from "../Utils/Dimensions";
 import LinearGradient from 'react-native-linear-gradient';
 import analytics from '@react-native-firebase/analytics';
 import Svg, {Path} from "react-native-svg";
+import {LineChart} from "react-native-chart-kit";
 
 const StatsScreen = (props) => {
     const user = useSelector((state) => state.user.userObject);
@@ -23,6 +24,39 @@ const StatsScreen = (props) => {
         screen_class: 'MainActivity',
         screen_name: 'Progress Screen',
     });
+
+    let tmpWeek=[];
+    let today = new Date();
+    tmpWeek=[today.getDay()];
+    console.log(today.getDay())
+    Array.from({length: 6}, (_, i) => {
+        today.setDate(today.getDate() - 1);
+        tmpWeek.push(today.getDay());
+    });
+let weekProgress = [0,0,0,0,0,23,43];
+    const weekDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const data = {
+        labels: [weekDay[tmpWeek[6]], weekDay[tmpWeek[5]], weekDay[tmpWeek[4]], weekDay[tmpWeek[3]], weekDay[tmpWeek[2]], weekDay[tmpWeek[1]], weekDay[tmpWeek[0]]],
+        datasets: [
+            {
+                data: weekProgress,
+                color: (opacity = 1) => `rgba(236, 87, 24, ${opacity})`,
+                strokeWidth: 2
+            }
+        ],
+    };
+
+    const chartConfig = {
+        backgroundGradientFrom: "#FFEEE7",
+        backgroundGradientFromOpacity: 1,
+        backgroundGradientTo: "#FFEEE7",
+        backgroundGradientToOpacity: 1,
+        color: (opacity = 1) => `rgba(236, 87, 24, ${opacity})`,
+        strokeWidth: 3, // optional, default 3
+        barPercentage: 1,
+        useShadowColorFromDataset: false, // optional
+    };
+
     useEffect(() => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'progress_title').title,
@@ -48,22 +82,46 @@ const StatsScreen = (props) => {
                             }]}
                             colors={['#e7e5e4', '#f5f5f4']}>
                             <View style={styles.row}>
-                                <Text style={styles.title}>Registered:</Text>
-                                <Text style={styles.text}> {new Date(user.registered_date).toLocaleDateString()}</Text>
+                                <Text style={[styles.title, {color:"#262626"}]}>Registered:</Text>
+                                <Text style={[styles.text, {color:"#262626"}]}> {new Date(user.registered_date).toLocaleDateString()}</Text>
                             </View>
                             {user.rank?<>
-                            <View style={[styles.rowHr, {backgroundColor: "#fafaf9"}]}/>
+                            <View style={[styles.rowHr, {backgroundColor: "#d6d3d1"}]}/>
                             <View style={styles.row}>
-                                <Text style={styles.title}>Rank:</Text>
-                                <Text style={styles.text}> {optionData.ranks[user.rank].rankName}</Text>
+                                <Text style={[styles.title, {color:"#262626"}]}>Rank:</Text>
+                                <Text style={[styles.text, {color:"#262626"}]}> {optionData.ranks[user.rank].rankName}</Text>
                             </View>
                             </>:null}
-                            <View style={[styles.rowHr, {backgroundColor: "#fafaf9"}]}/>
+                            <View style={[styles.rowHr, {backgroundColor: "#d6d3d1"}]}/>
                             <View style={[styles.row, styles.lastRow]}>
-                                <Text style={styles.title}>Qi Points:</Text>
-                                <Text style={styles.text}> {progressReducer&&progressReducer.points&&progressReducer.points.length?progressReducer.points.qi:0}</Text>
+                                <Text style={[styles.title, {color:"#262626"}]}>Qi Points:</Text>
+                                <Text style={[styles.text, {color:"#262626"}]}> {progressReducer&&progressReducer.points&&progressReducer.points.length?progressReducer.points.qi:0}</Text>
                             </View>
                         </LinearGradient>
+                    </View>
+                </View>
+                <View style={[styles.card, styles.boxShadow]}>
+                    <View style={[styles.header, {backgroundColor: "#f29066"}]}>
+                        <Text style={styles.headerText}>
+                            Weekly Progress
+                        </Text>
+                    </View>
+                    <View style={[styles.container,{
+                        flexDirection:"column",
+                        borderBottomRightRadius: 9,
+                        borderBottomLeftRadius:9,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "#fceee8",
+                        paddingVertical: scale(15)
+                    }]}>
+                        <LineChart
+                            data={data}
+                            width={windowWidth-scale(40)}
+                            height={scale(150)}
+                            verticalLabelRotation={0}
+                            chartConfig={chartConfig}
+                        />
                     </View>
                 </View>
                 <View style={[styles.boxShadow, styles.card]}>
@@ -81,38 +139,38 @@ const StatsScreen = (props) => {
                             }]}
                             colors={['#a5f3fc', '#cffafe']}>
                             <View style={styles.row}>
-                                <Text style={styles.title}>Course Enrolled:</Text>
-                                <Text style={styles.text}> {progressReducer.enrolledCourses?progressReducer.enrolledCourses.length:0}</Text>
+                                <Text style={[styles.title,{color:"#262626"}]}>Course Enrolled:</Text>
+                                <Text style={[styles.text,{color:"#262626"}]}> {progressReducer.enrolledCourses?progressReducer.enrolledCourses.length:0}</Text>
                             </View>
-                            <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
+                            <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                             <View style={styles.row}>
-                                <Text style={styles.title}>Course Completed:</Text>
-                                <Text style={styles.text}> {progressReducer.completedCourses?progressReducer.completedCourses.length:0}</Text>
+                                <Text style={[styles.title,{color:"#262626"}]}>Course Completed:</Text>
+                                <Text style={[styles.text,{color:"#262626"}]}> {progressReducer.completedCourses?progressReducer.completedCourses.length:0}</Text>
                             </View>
-                            <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
+                            <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                             <View style={styles.row}>
-                                <Text style={styles.title}>Lesson Completed:</Text>
-                                <Text style={styles.text}> {progressReducer.completedLessons?progressReducer.completedLessons.length:0}</Text>
+                                <Text style={[styles.title,{color:"#262626"}]}>Lesson Completed:</Text>
+                                <Text style={[styles.text,{color:"#262626"}]}> {progressReducer.completedLessons?progressReducer.completedLessons.length:0}</Text>
                             </View>
-                            <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
+                            <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                            <View style={styles.row}>
-                                <Text style={styles.title}>Today Practice Time:</Text>
-                                <Text style={styles.text}> {progressReducer.todayDuration?Math.round(progressReducer.todayDuration / 60 )>60?Math.round(progressReducer.todayDuration /3600)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.todayDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
+                                <Text style={[styles.title,{color:"#262626"}]}>Today Practice Time:</Text>
+                                <Text style={[styles.text,{color:"#262626"}]}> {progressReducer.todayDuration?Math.round(progressReducer.todayDuration / 60 )>60?Math.round(progressReducer.todayDuration /3600)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.todayDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
                             </View>
-                            <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
+                            <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                             <View style={styles.row}>
-                                <Text style={styles.title}>Weekly Practice Time:</Text>
-                                <Text style={styles.text}> {progressReducer.weekDuration?Math.round(progressReducer.weekDuration / 60 )>60?Math.round(progressReducer.weekDuration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.weekDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
+                                <Text style={[styles.title,{color:"#262626"}]}>Weekly Practice Time:</Text>
+                                <Text style={[styles.text,{color:"#262626"}]}> {progressReducer.weekDuration?Math.round(progressReducer.weekDuration / 60 )>60?Math.round(progressReducer.weekDuration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.weekDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
                             </View>
-                            <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
+                            <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                             <View style={styles.row}>
-                                <Text style={styles.title}>Total Practice Time:</Text>
-                                <Text style={styles.text}> {progressReducer.totalDuration?Math.round(progressReducer.totalDuration / 60 )>60?Math.round(progressReducer.totalDuration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.totalDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
+                                <Text style={[styles.title,{color:"#262626"}]}>Total Practice Time:</Text>
+                                <Text style={[styles.text,{color:"#262626"}]}> {progressReducer.totalDuration?Math.round(progressReducer.totalDuration / 60 )>60?Math.round(progressReducer.totalDuration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.totalDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
                             </View>
-                            <View style={[styles.rowHr, {backgroundColor: "#ecfeff"}]}/>
+                            <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                             <View style={[styles.row, styles.lastRow]}>
-                                <Text style={styles.title}>Total Practice Days:</Text>
-                                <Text style={styles.text}> {progressReducer.totalDays?progressReducer.totalDays+' '+optionData.titles.find(el => el.id === 'stats_detail_days').title:0}</Text>
+                                <Text style={[styles.title,{color:"#262626"}]}>Total Practice Days:</Text>
+                                <Text style={[styles.text,{color:"#262626"}]}> {progressReducer.totalDays?progressReducer.totalDays+' '+optionData.titles.find(el => el.id === 'stats_detail_days').title:0}</Text>
                             </View>
                         </LinearGradient>
                     </View>
@@ -134,18 +192,18 @@ const StatsScreen = (props) => {
                                 }]}
                                 colors={['#fed7aa', '#ffedd5']}>
                                 <View style={styles.row}>
-                                    <Text style={styles.title}>Membership:</Text>
-                                    <Text style={styles.text}> {user.membership[0].plan.name}</Text>
+                                    <Text style={[styles.title,{color:"#262626"}]}>Membership:</Text>
+                                    <Text style={[styles.text,{color:"#262626"}]}> {user.membership[0].plan.name}</Text>
                                 </View>
-                                <View style={[styles.rowHr, {backgroundColor: "#fff7ed"}]}/>
+                                <View style={[styles.rowHr, {backgroundColor: "#fdba74"}]}/>
                                 <View style={styles.row}>
-                                    <Text style={styles.title}>Since:</Text>
-                                    <Text style={styles.text}> {user.membership[0].post.post_date}</Text>
+                                    <Text style={[styles.title,{color:"#262626"}]}>Since:</Text>
+                                    <Text style={[styles.text,{color:"#262626"}]}> {user.membership[0].post.post_date}</Text>
                                 </View>
-                                <View style={[styles.rowHr, {backgroundColor: "#fff7ed"}]}/>
+                                <View style={[styles.rowHr, {backgroundColor: "#fdba74"}]}/>
                                 <View style={[styles.row, styles.lastRow]}>
-                                    <Text style={styles.title}>Customized Routine:</Text>
-                                    <Text style={styles.text}> {practiceReducer.routines?practiceReducer.routines.length:''}</Text>
+                                    <Text style={[styles.title,{color:"#262626"}]}>Customized Routine:</Text>
+                                    <Text style={[styles.text,{color:"#262626"}]}> {practiceReducer.routines?practiceReducer.routines.length:''}</Text>
                                 </View>
                             </LinearGradient>
                         </View>
@@ -169,29 +227,31 @@ const StatsScreen = (props) => {
                                         return (
                                             <>
                                                 <View style={styles.row}>
-                                                    <Text style={[styles.title, {flex: 0.6}]}>{item.title}</Text>
+                                                    <Text style={[styles.title, {flex: 0.6, color:"#262626"}]}>{item.title}</Text>
                                                     <Text style={[styles.text, {
                                                         flex: 0.2,
                                                         alignSelf: "flex-end",
                                                         textAlign: "right",
-                                                        alignItems: "flex-end"
+                                                        alignItems: "flex-end",
+                                                        color:"#262626"
                                                     }]}>{item.count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
                                                     <Text style={[styles.text, {
                                                         flex: 0.2,
                                                         alignSelf: "flex-end",
                                                         textAlign: "right",
-                                                        alignItems: "flex-end"
+                                                        alignItems: "flex-end",
+                                                        color:"#262626"
                                                     }]}>{Math.round(item.duration / 60) > 60 ? Math.round(item.duration / 60 / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : Math.round(item.duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                                 </View>
                                                 {index < progressReducer.routinesStats.length - 1 ?
-                                                    <View style={[styles.rowHr, {backgroundColor: "#fdf2f8"}]}/>
+                                                    <View style={[styles.rowHr, {backgroundColor: "#f9a8d4"}]}/>
                                                     :
                                                     <View style={{marginBottom: scale(10)}}/>}
                                             </>
                                         )
                                     }) :
                                     <View style={[styles.row, styles.lastRow]}>
-                                        <Text style={styles.title}>No routine found, create one first.</Text>
+                                        <Text style={[styles.title,{color:"#262626"}]}>No routine found, create one first.</Text>
                                     </View>
                                 }
                             </LinearGradient>
@@ -218,12 +278,12 @@ const StatsScreen = (props) => {
                                 return (
                                     <>
                                         <View style={styles.row}>
-                                            <Text style={[styles.title,{flex:0.6}]}>{item.title}</Text>
-                                            <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
-                                            <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                            <Text style={[styles.title,{flex:0.6, color:"#262626"}]}>{item.title}</Text>
+                                            <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end", color:"#262626"}]}>{item.count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
+                                            <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end", color:"#262626"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                         </View>
                                         {index<progressReducer.groupStats.length-1?
-                                            <View style={[styles.rowHr, {backgroundColor: "#f5f3ff"}]}/>
+                                            <View style={[styles.rowHr, {backgroundColor: "#c4b5fd"}]}/>
                                             :
                                             <View style={{marginBottom:scale(10)}} />}
                                     </>
@@ -252,19 +312,19 @@ const StatsScreen = (props) => {
                                     return (
                                         <>
                                             <View style={styles.row}>
-                                                <Text style={[styles.title,{flex:0.6}]}>{item.title}</Text>
-                                                <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
-                                                <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                                <Text style={[styles.title,{flex:0.6, color:"#262626"}]}>{item.title}</Text>
+                                                <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end", color:"#262626"}]}>{item.count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
+                                                <Text style={[styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end", color:"#262626"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                             </View>
                                             {index<progressReducer.practicesStats.filter(item=> item.type==='PP_SECTION').length-1?
-                                            <View style={[styles.rowHr, {backgroundColor: "#ecfdf5"}]}/>
+                                            <View style={[styles.rowHr, {backgroundColor: "#6ee7b7"}]}/>
                                                 :
                                             <View style={{marginBottom:scale(10)}} />}
                                         </>
                                     )
                                 }):
                                 <View style={[styles.row, styles.lastRow]}>
-                                    <Text style={styles.title}>No guided practice found, complete one lesson to start.</Text>
+                                    <Text style={[styles.title,{color:"#262626"}]}>No guided practice found, complete one lesson to start.</Text>
                                 </View>
                             }
                         </LinearGradient>
@@ -299,17 +359,21 @@ const styles = StyleSheet.create({
         borderTopLeftRadius:9,
     },
     headerText:{
-        color: "#27272a",
+        fontFamily: "MontserratAlternates-SemiBold",
+        color: "#ffffff",
         fontSize: 18,
-        fontWeight: "500",
+        fontWeight: "bold",
     },
     title:{
-        fontSize: 16,
-        fontWeight: "400",
+        fontFamily: "MontserratAlternates-Regular",
+        fontWeight: "normal",
+        fontSize: scale(14),
         color: "#27272a",
     },
     text:{
-        fontSize: 14,
+        fontFamily: "MontserratAlternates-Regular",
+        fontWeight: "normal",
+        fontSize: scale(14),
         color: "#27272a",
     },
     boxShadow: {
@@ -322,7 +386,8 @@ const styles = StyleSheet.create({
     row: {
         flex:1, 
         width: "100%", 
-        paddingHorizontal: scale(15), 
+        paddingHorizontal: scale(15),
+        paddingVertical: scale(5),
         flexDirection:"row", 
         justifyContent: "space-between",
         alignItems: "center", 
@@ -338,13 +403,13 @@ const styles = StyleSheet.create({
     },
     rowHr:{
         height:1,
-        width:windowWidth-35,
+        width:windowWidth-60,
         marginVertical: 2,
     }
 });
 StatsScreen.navigationOptions = ({navigation, screenProps}) => ({
     title: navigation.getParam('title'),
-    headerTitleStyle: {textAlign:'left'},
+    headerTitleStyle: screenProps.global.appHeaderTitle,
     headerLeft:
         <TouchableOpacity
             onPress={() => {navigation.goBack()}}

@@ -30,6 +30,7 @@ const QuestsWeekly = (props) => {
             });
         });
     };
+    console.log(achievementReducer)
     return(
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.containerStyle}>
@@ -50,7 +51,7 @@ const QuestsWeekly = (props) => {
                     )
                 })}
                 <View style={{marginBottom: scale(20)}}>
-                {achievementReducer?
+                {achievementReducer.complete_date?
                     achievementReducer.claim_date?
                         <View style={[styles.boxShadow, styles.rowReward]}>
                             <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
@@ -79,7 +80,7 @@ const QuestsWeekly = (props) => {
                     :
                         <View style={[styles.boxShadow, styles.rowReward]}>
                             <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
-                                <Text style={global.itemTitle}>7 Days Streak</Text>
+                                <Text style={[global.itemTitle,{fontWeight:"normal"}]}>7 Days Streak</Text>
                                 <View style={{marginVertical: 10}}>
                                     <View
                                         style={{justifyContent: 'center', alignItems: 'center'}}>

@@ -40,7 +40,6 @@ import CourseScreen from './Screens/CourseScreen';
 import ChooseLanguage from './Screens/ChooseLanguage';
 import QuestsScreen from './Screens/QuestsScreen';
 import MilestonesScreen from './Screens/MilestonesScreen';
-import ProgressScreen from './Screens/ProgressScreen';
 import VouchersScreen from './Screens/VouchersScreen';
 import StatsScreen from './Screens/StatsScreen';
 import Membership from './Screens/Membership';
@@ -207,12 +206,6 @@ export const applyCustomCode = externalCodeSetup => {
         "MilestonesScreen",
         "MilestonesScreen",
         MilestonesScreen,
-        "All" // "Auth" | "noAuth" | "Main" | "All"
-    );
-    externalCodeSetup.navigationApi.addNavigationRoute(
-        "ProgressScreen",
-        "ProgressScreen",
-        ProgressScreen,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
@@ -666,7 +659,7 @@ export const applyCustomCode = externalCodeSetup => {
                 points: {},
                 totalDuration: 0,
                 todayDuration: 0,
-                todayGoal:1200,
+                todayGoal:10,
                 weekDuration: 0,
                 totalDays: 0,
                 lastPractice: '',
@@ -679,7 +672,8 @@ export const applyCustomCode = externalCodeSetup => {
                 progressUpdate: '',
                 completedLessons: [],
                 enrolledCourses: [],
-                completedCourses: []
+                completedCourses: [],
+                weekProgress:[0,0,0,0,0,0,0]
             },
             achievementReducer: {
                 weekly: {days: [], complete_date: '', claim_date: ''},
@@ -744,8 +738,9 @@ export const applyCustomCode = externalCodeSetup => {
                             idProgressReducer.points = {'qi': 0};
                             idProgressReducer.totalDuration = 0;
                             idProgressReducer.todayDuration = 0;
-                            idProgressReducer.todayGoal = 1200;
+                            idProgressReducer.todayGoal = 10;
                             idProgressReducer.weekDuration = 0;
+                            idProgressReducer.weekProgress = [0,0,0,0,0,0,0];
                             idProgressReducer.totalDays = 0;
                             idProgressReducer.lastPractice = '';
                             idProgressReducer.latestUpdate = '';
@@ -833,12 +828,22 @@ export const applyCustomCode = externalCodeSetup => {
                                 }
                             };
                     }
+                    break;
                 case "ONENERGY_PROGRESS_TODAY_RESET":
+                    let weekProgress = state.progressReducer.weekProgress;
+                    if(weekProgress) {
+                        weekProgress.push(state.progressReducer.todayDuration);
+                    }else{
+                        weekProgress = [state.progressReducer.todayDuration]
+                    }
+                    if(weekProgress.length>=7) {
+                        weekProgress.pop();
+                    }
                     return {
                         ...state,
                         progressReducer: {
                             ...state.progressReducer,
-                            todayDuration: 0,
+                            weekProgress: weekProgress,
                         }
                     };
                 case "ONENERGY_PROGRESS_UPLOADED":

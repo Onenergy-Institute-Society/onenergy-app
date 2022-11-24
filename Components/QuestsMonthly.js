@@ -30,6 +30,7 @@ const QuestsMonthly = (props) => {
             });
         });
     };
+    console.log('achievementReducer',achievementReducer)
     return(
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.containerStyle}>
@@ -54,10 +55,10 @@ const QuestsMonthly = (props) => {
                 <View style={{marginHorizontal: scale(15), paddingHorizontal:scale(10),
                     paddingVertical:scale(10),
                     borderRadius: 9, alignItems: 'center',
-                    justifyContent: 'center',backgroundColor: colors.bodyFrontBg,
+                    justifyContent: 'center',color: colors.primaryButtonBg,
                     marginTop: scale(5),}}><Text style={global.text}>Practice 30 days streak REWARD +100 Qi</Text></View>
                 <View style={{marginBottom: scale(20)}}>
-                {achievementReducer?
+                {achievementReducer.complete_date?
                     achievementReducer.claim_date?
                         <View style={[styles.boxShadow, styles.rowReward]}>
                             <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
@@ -86,7 +87,7 @@ const QuestsMonthly = (props) => {
                     :
                         <View style={[styles.boxShadow, styles.rowReward]}>
                             <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
-                                <Text style={global.itemTitle}>30 Days Streak</Text>
+                                <Text style={[global.itemTitle,{fontWeight:"normal"}]}>30 Days Streak</Text>
                                 <View style={{marginVertical: 10}}>
                                     <View
                                         style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -107,12 +108,12 @@ const QuestsMonthly = (props) => {
                             >
                                 <View style={[styles.rowRight, {backgroundColor:colors.secondaryButtonColor}]}>
                                     <Text
-                                        style={{
+                                        style={[global.boxTitle, {
                                             color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                                 width: -1,
                                                 height: 1
                                             }
-                                        }}
+                                        }]}
                                     >
                                         CLAIM
                                     </Text>
@@ -142,11 +143,6 @@ const QuestsMonthly = (props) => {
     )
 }
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     containerStyle: {
         flex: 1,
         justifyContent: 'flex-start',

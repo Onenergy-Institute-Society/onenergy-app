@@ -156,8 +156,9 @@ const FeedbackScreen = props => {
                 <TouchableOpacity
                     onPress={() => {Keyboard.dismiss();onSendPress();}}
                 >
-                    <View style={{borderRadius:9, width:windowWidth-scale(30), marginTop:15, justifyContent:"center", alignItems:"center", backgroundColor:"#4942e1",paddingVertical:10}}>
+                    <View style={{borderRadius:9, width:windowWidth-scale(30), marginTop:15, justifyContent:"center", alignItems:"center", backgroundColor:colors.primaryButtonBG,paddingVertical:10}}>
                             <Text style={{
+
                                 fontWeight: "bold",
                                 fontSize: 16,
                                 color: "white"
