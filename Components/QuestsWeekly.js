@@ -57,7 +57,7 @@ const QuestsWeekly = (props) => {
                             <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
                                 <Text style={global.itemTitle}>7 Days Streak</Text>
                             </View>
-                            <View style={[styles.rowRight, {backgroundColor:!achievementReducer.complete_date?colors.primaryButtonBg:!achievementReducer.claim_date?colors.secondaryButtonColor:'gray'}]}>
+                            <View style={[styles.rowRight, {backgroundColor:!achievementReducer.complete_date?'gold':!achievementReducer.claim_date?colors.secondaryButtonColor:'gray'}]}>
                                 <Text
                                     style={[global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                             width: -1,
