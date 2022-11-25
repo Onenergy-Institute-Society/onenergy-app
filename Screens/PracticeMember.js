@@ -182,10 +182,10 @@ const PracticeMember = props => {
                         elevation: 4,
                     }}
                 />
-                :null}
+            :null}
             {messageBarDisplay?
                 <Animated.View style={[styles.messageBar, {opacity: fadeAnim}]}><Text style={styles.messageText}>Great! You earn more qi. Keep it up!</Text></Animated.View>
-                :null}
+            :null}
         </SafeAreaView>
     );
 };
@@ -212,7 +212,9 @@ const styles = StyleSheet.create({
     },
     messageBar:{
         position: "absolute",
-        top:15,
+        top:scale(15),
+        left:0,
+        right:0,
         backgroundColor:"#737373",
         borderColor:"#404040",
         borderRadius:9,

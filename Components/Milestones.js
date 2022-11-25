@@ -7,6 +7,7 @@ import {
     SafeAreaView,
     FlatList,
     LayoutAnimation,
+    UIManager,
     Platform
 } from 'react-native';
 import {scale} from "../Utils/scale";
@@ -15,14 +16,14 @@ import MilestonesAccordian from "./MilestonesAccordian";
 import AchievementItem from "./AchievementItem";
 import Sound from 'react-native-sound';
 Sound.setCategory('Playback');
-
-/*if (
-    Platform.OS === "android" &&
-    UIManager.setLayoutAnimationEnabledExperimental
-) {
-    UIManager.setLayoutAnimationEnabledExperimental(true);
-}*/
-
+const ding = new Sound('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
+    if (error) {
+        console.log('failed to load the sound', error);
+    }
+});
+if (Platform.OS === "android"){
+    UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 const Milestones = (props) => {
     const {type, screenProps} = props;
     const {global} = screenProps;
@@ -33,15 +34,7 @@ const Milestones = (props) => {
     const dispatch = useDispatch();
 
     const playPause = () => {
-        let ding = new Sound('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
-            if (error) {
-                console.log('failed to load the sound', error);
-                return;
-            }
-            ding.play(() => {
-                ding.release();
-            });
-        });
+        ding.play();
     };
     const handleOnPress = (item, mode) => {
         if(item.complete_date&&!item.claim_date) {

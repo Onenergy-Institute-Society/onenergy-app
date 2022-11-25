@@ -13,7 +13,6 @@ import {
 import Svg, {Circle, Path, Rect} from 'react-native-svg';
 import {getApi} from "@src/services";
 import Icon from "@src/components/Icon";
-import AppImageBackground from "@src/components/AppImageBackground";
 import { CourseVideo } from "@src/components/Course/CourseStatus";
 import InitData from "./Screens/InitData";
 import AppTouchableOpacity from "@src/components/AppTouchableOpacity";

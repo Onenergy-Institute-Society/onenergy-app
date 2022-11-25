@@ -26,12 +26,7 @@ import analytics from '@react-native-firebase/analytics';
 import ForumsScreen from "@src/containers/Custom/ForumsScreen";
 import Svg, {Circle, Path} from "react-native-svg";
 import {
-    LineChart,
-    BarChart,
-    PieChart,
     ProgressChart,
-    ContributionGraph,
-    StackedBarChart
 } from "react-native-chart-kit";
 import { Modalize } from 'react-native-modalize';
 import moment from 'moment';
@@ -47,7 +42,7 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
-
+console.log(global)
     const chartConfig = {
         backgroundGradientFrom: "#FFEEE7",
         backgroundGradientFromOpacity: 1,
