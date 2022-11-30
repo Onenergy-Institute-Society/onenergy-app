@@ -87,24 +87,24 @@ export const applyCustomCode = externalCodeSetup => {
         BlogsScreen,
         "Main" // "Auth" | "noAuth" | "Main" | "All"
     );
-    externalCodeSetup.navigationApi.addNavigationRoute(
+/*    externalCodeSetup.navigationApi.addNavigationRoute(
         "programs",
         "Programs",
         ProgramsScreen,
         "Main" // "Auth" | "noAuth" | "Main" | "All"
-    );
+    );*/
     externalCodeSetup.navigationApi.addNavigationRoute(
         "practices",
         "QiGong",
         PracticesScreen,
         "Main" // "Auth" | "noAuth" | "Main" | "All"
     );
-    externalCodeSetup.navigationApi.addNavigationRoute(
+/*    externalCodeSetup.navigationApi.addNavigationRoute(
         "ProgramsScreen",
         "ProgramsScreen",
         ProgramsContent,
         "All" // "Auth" | "noAuth" | "Main" | "All"
-    );
+    );*/
     externalCodeSetup.navigationApi.addNavigationRoute(
         "PracticesScreen",
         "PracticesScreen",
@@ -266,7 +266,7 @@ export const applyCustomCode = externalCodeSetup => {
     externalCodeSetup.coursesHooksApi.setFetchParamsFilter(props => {
         return {...props, order: "desc", categories: [93]}
     });
-    //Program screen course list
+/*    //Program screen course list
     const NewWidgetItemCourseComponent = (props) => {
         const {viewModel, colors, global} = props;
 
@@ -495,7 +495,7 @@ export const applyCustomCode = externalCodeSetup => {
             </View>
         )
     }
-    externalCodeSetup.coursesHooksApi.setWidgetItemCourseComponent(NewWidgetItemCourseComponent)
+    externalCodeSetup.coursesHooksApi.setWidgetItemCourseComponent(NewWidgetItemCourseComponent)*/
 
     //Change author name to nickname in single blog screen
     const BlogHeaderAvatar = ({blog, global, textStyle}) => {
