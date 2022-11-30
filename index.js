@@ -87,24 +87,24 @@ export const applyCustomCode = externalCodeSetup => {
         BlogsScreen,
         "Main" // "Auth" | "noAuth" | "Main" | "All"
     );
-/*    externalCodeSetup.navigationApi.addNavigationRoute(
+    externalCodeSetup.navigationApi.addNavigationRoute(
         "programs",
         "Programs",
         ProgramsScreen,
         "Main" // "Auth" | "noAuth" | "Main" | "All"
-    );*/
+    );
     externalCodeSetup.navigationApi.addNavigationRoute(
         "practices",
         "QiGong",
         PracticesScreen,
         "Main" // "Auth" | "noAuth" | "Main" | "All"
     );
-/*    externalCodeSetup.navigationApi.addNavigationRoute(
+    externalCodeSetup.navigationApi.addNavigationRoute(
         "ProgramsScreen",
         "ProgramsScreen",
         ProgramsContent,
         "All" // "Auth" | "noAuth" | "Main" | "All"
-    );*/
+    );
     externalCodeSetup.navigationApi.addNavigationRoute(
         "PracticesScreen",
         "PracticesScreen",

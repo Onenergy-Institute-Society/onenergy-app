@@ -25,9 +25,9 @@ import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 import analytics from '@react-native-firebase/analytics';
 import ForumsScreen from "@src/containers/Custom/ForumsScreen";
 import Svg, {Circle, Path} from "react-native-svg";
-/*import {
+import {
     ProgressChart,
-} from "react-native-chart-kit";*/
+} from "react-native-chart-kit";
 import { Modalize } from 'react-native-modalize';
 import moment from 'moment';
 
@@ -284,7 +284,7 @@ const HomeContent = (props) => {
                                     <Text style={[global.itemTitle,{color:colors.primaryButtonBg}]}>Goal: </Text><Text style={[global.text,{color:"#4B34BD"}]}>{progressReducer.todayGoal?Math.round(progressReducer.todayGoal)>60?Math.round(progressReducer.todayGoal /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:progressReducer.todayGoal + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                 </View>
                             </View>
-{/*                            <ProgressChart
+                            <ProgressChart
                                 data={{data:[progressReducer.todayDuration/(progressReducer.todayGoal*60)<=1?progressReducer.todayDuration/(progressReducer.todayGoal*60):1]}}
                                 width={(windowWidth-scale(30))*2/3}
                                 height={scale(150)}
@@ -295,7 +295,7 @@ const HomeContent = (props) => {
                                 style={{
                                     borderRadius: 9
                                 }}
-                            />*/}
+                            />
                         </View>
                     </TouchableScale>
                     <View style={{position: "absolute", bottom:scale(10),left:scale(10)}}>

@@ -12,7 +12,7 @@ import {windowWidth} from "../Utils/Dimensions";
 import LinearGradient from 'react-native-linear-gradient';
 import analytics from '@react-native-firebase/analytics';
 import Svg, {Path} from "react-native-svg";
-/*import {LineChart} from "react-native-chart-kit";*/
+import {LineChart} from "react-native-chart-kit";
 
 const StatsScreen = (props) => {
     const user = useSelector((state) => state.user.userObject);
@@ -100,7 +100,7 @@ let weekProgress = [0,0,0,0,0,23,43];
                         </LinearGradient>
                     </View>
                 </View>
-{/*                <View style={[styles.card, styles.boxShadow]}>
+                <View style={[styles.card, styles.boxShadow]}>
                     <View style={[styles.header, {backgroundColor: "#f29066"}]}>
                         <Text style={styles.headerText}>
                             Weekly Progress
@@ -123,7 +123,7 @@ let weekProgress = [0,0,0,0,0,23,43];
                             chartConfig={chartConfig}
                         />
                     </View>
-                </View>*/}
+                </View>
                 <View style={[styles.boxShadow, styles.card]}>
                     <View style={[styles.header, {backgroundColor: "#67e8f9"}]}>
                         <Text style={styles.headerText}>
