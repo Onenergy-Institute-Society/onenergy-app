@@ -10,8 +10,8 @@ import {
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import moment from 'moment';
-/*import Sound from "react-native-sound";
-Sound.setCategory('Playback');*/
+import Sound from "react-native-sound";
+Sound.setCategory('Playback');
 
 const QuestsWeekly = (props) => {
     const {screenProps} = props;
@@ -19,7 +19,7 @@ const QuestsWeekly = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.weekly:null);
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
-/*    const playPause = () => {
+    const playPause = () => {
         let ding = new Sound('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
             if (error) {
                 console.log('failed to load the sound', error);
@@ -29,7 +29,7 @@ const QuestsWeekly = (props) => {
                 ding.release();
             });
         });
-    };*/
+    };
     console.log(achievementReducer)
     return(
         <SafeAreaView style={global.container}>
@@ -89,7 +89,7 @@ const QuestsWeekly = (props) => {
                             </View>
                             <TouchableWithoutFeedback
                                 onPress={() => {
-/*                                    playPause();*/
+                                    playPause();
                                     dispatch({
                                         type: "ONENERGY_ACHIEVEMENT_CLAIM_WEEKLY_MONTHLY",
                                         payload:{

@@ -13,10 +13,8 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import AchievementItem from "./AchievementItem";
 import moment from 'moment';
-/*
 import Sound from 'react-native-sound';
 Sound.setCategory('Playback');
-*/
 
 /*if (
     Platform.OS === "android" &&
@@ -33,7 +31,7 @@ const QuestsDaily = (props) => {
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === 'daily'):null);
     const dispatch = useDispatch();
-/*    const playPause = () => {
+    const playPause = () => {
         let ding = new Sound('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
             if (error) {
                 console.log('failed to load the sound', error);
@@ -43,12 +41,12 @@ const QuestsDaily = (props) => {
                 ding.release();
             });
         });
-    };*/
+    };
     const handleOnPress = (item, date, mode) => {
         switch (mode) {
             case 'past':
                 if(item.complete_date) {
-/*                    playPause();*/
+                    playPause();
                     if (Platform.OS !== "android") {
                         LayoutAnimation.configureNext(
                             LayoutAnimation.Presets.spring
