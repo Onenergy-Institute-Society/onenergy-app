@@ -96,7 +96,6 @@ export const applyCustomCode = externalCodeSetup => {
         PracticesScreen,
         "Main" // "Auth" | "noAuth" | "Main" | "All"
     );
-/*
     externalCodeSetup.navigationApi.addNavigationRoute(
         "ProgramsScreen",
         "ProgramsScreen",
@@ -264,7 +263,6 @@ export const applyCustomCode = externalCodeSetup => {
     externalCodeSetup.coursesHooksApi.setFetchParamsFilter(props => {
         return {...props, order: "desc", categories: [93]}
     });
-*/
 
     //Change author name to nickname in single blog screen
     const BlogHeaderAvatar = ({blog, global, textStyle}) => {
