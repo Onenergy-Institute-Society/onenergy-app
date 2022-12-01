@@ -65,7 +65,7 @@ import ProgramsContent from "./Screens/ProgramsContent";
 import HomeScreen from './Screens/HomeScreen';
 import ForumItem from "./Components/ForumItem";
 
-export const applyCustomCode = externalCodeSetup => {
+export const applyCustomCode = (externalCodeSetup: any) => {
     externalCodeSetup.navigationApi.addNavigationRoute(
         "homePage",
         "Home",
