@@ -25,9 +25,9 @@ import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 import analytics from '@react-native-firebase/analytics';
 import ForumsScreen from "@src/containers/Custom/ForumsScreen";
 import Svg, {Circle, Path} from "react-native-svg";
-import {
+/*import {
     ProgressChart,
-} from "react-native-chart-kit";
+} from "react-native-chart-kit";*/
 import { Modalize } from 'react-native-modalize';
 import moment from 'moment';
 
@@ -43,7 +43,7 @@ const HomeContent = (props) => {
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
 
-    const chartConfig = {
+/*    const chartConfig = {
         backgroundGradientFrom: "#FFEEE7",
         backgroundGradientFromOpacity: 1,
         backgroundGradientTo: "#FFEEE7",
@@ -52,7 +52,7 @@ const HomeContent = (props) => {
         strokeWidth: 3, // optional, default 3
         barPercentage: 1,
         useShadowColorFromDataset: false, // optional
-    };
+    };*/
 
     const onFocusHandler=() =>
     {
@@ -323,7 +323,7 @@ const HomeContent = (props) => {
                                     <Text style={[global.itemTitle,{color:colors.primaryColor}]}>Today: </Text><Text style={[global.textAlt,{color:colors.primaryColor}]}>{progressReducer.todayDuration?Math.round(progressReducer.todayDuration / 60 )>60?Math.round(progressReducer.todayDuration /3600)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.todayDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                 </View>
                             </View>
-                            <ProgressChart
+{/*                            <ProgressChart
                                 data={{data:[progressReducer.todayDuration/(progressReducer.todayGoal*60)<=1?progressReducer.todayDuration/(progressReducer.todayGoal*60):1]}}
                                 width={(windowWidth-scale(30))*2/3}
                                 height={scale(150)}
@@ -334,7 +334,7 @@ const HomeContent = (props) => {
                                 style={{
                                     borderRadius: 9
                                 }}
-                            />
+                            />*/}
                         </View>
                     </TouchableScale>
                     <View style={{position: "absolute", bottom:0,left:0}}>

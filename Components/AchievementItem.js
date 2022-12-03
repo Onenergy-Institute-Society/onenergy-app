@@ -45,7 +45,7 @@ const AchievementItem = (props) => {
                     handleOnPress(item, date, mode);
                 }}
             >
-                <View style={[styles.rowRight, {backgroundColor:!item.complete_date?colors.primaryButtonBg:mode==='past'||!item.claim_date?colors.primaryColor:'gray'}]}>
+                <View style={[styles.rowRight, {backgroundColor:!item.complete_date?colors.primaryButtonBg:mode==='past'||!item.claim_date?colors.primaryColor:'grey'}]}>
                     {
                         mode !== 'past' && !item.complete_date ?
                         <>

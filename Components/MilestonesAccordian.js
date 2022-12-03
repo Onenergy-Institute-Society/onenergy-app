@@ -67,7 +67,7 @@ class MilestonesAccordian extends Component {
                             this.props.handleOnPress(this.props.item);
                         }}
                     >
-                        <View style={[styles.rowRight, {backgroundColor:!complete_date?this.props.screenProps.colors.primaryButtonBg:!claim_date?this.props.screenProps.colors.primaryColor:'gray',
+                        <View style={[styles.rowRight, {backgroundColor:!complete_date?this.props.screenProps.colors.primaryButtonBg:!claim_date?this.props.screenProps.colors.primaryColor:'grey',
                             borderBottomRightRadius: this.state.expanded ? 0 : 9,}]}>
                             {
                                 complete_date?
