@@ -3,10 +3,10 @@ import {useSelector, useDispatch} from "react-redux";
 import {
     Image, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View
 } from "react-native";
-import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import IconButton from "@src/components/IconButton";
+import {windowHeight} from "../Utils/Dimensions";
 import {Modalize} from 'react-native-modalize';
 import {scale} from "../Utils/scale";
+import Svg, {Path} from "react-native-svg";
 
 const ChooseSubtitle =(props) => {
     const {textTracks, setSelectedCCUrl, screenProps} = props;
@@ -32,11 +32,23 @@ const ChooseSubtitle =(props) => {
                         {item.item.title}
                     </Text>
                     {language.subtitle === item.item.language?(
-                        <IconButton
-                            icon={require("@src/assets/img/check-simple.png")}
-                            tintColor={colors.headerIconColor}
-                            style={{ height: 14, width: 14, opacity: 0.5 }}
-                        />
+                        <Svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            style={{marginLeft:scale(10)}}
+                        >
+                            <Path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+                                  fill=""
+                                  stroke={colors.primaryColor}
+                                  strokeWidth="2"
+                            />
+                            <Path d="M22 4 12 14.01l-3-3"
+                                  fill=""
+                                  stroke={colors.primaryColor}
+                                  strokeWidth="2"
+                            />
+                        </Svg>
                     ):null}
                 </View>
             </TouchableOpacity>
@@ -63,7 +75,7 @@ const ChooseSubtitle =(props) => {
             </TouchableWithoutFeedback>
             <Modalize
                 ref={(ccDialog) => { this.ccDialog = ccDialog; }}
-                modalStyle={{backgroundColor:colors.bodyBg, width:windowHeight/2, justifyContent:"center", alignSelf:"center", zIndex:9999}}
+                modalStyle={{backgroundColor:colors.bodyFrontBg, width:windowHeight/2, justifyContent:"center", alignSelf:"center", zIndex:9999}}
                 childrenStyle={{paddingHorizontal:10, paddingTop:10}}
                 adjustToContentHeight={true}
                 disableScrollIfPossible={true}

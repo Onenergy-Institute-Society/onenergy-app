@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {
     SafeAreaView,
     StyleSheet,
-    Platform,
     View,
     Text,
     TouchableOpacity,
@@ -13,7 +12,6 @@ import {
 } from "react-native";
 import {connect, useSelector} from "react-redux";
 import {getApi} from "@src/services";
-import IconButton from "@src/components/IconButton";
 import {NavigationActions, withNavigation} from "react-navigation";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
@@ -238,7 +236,7 @@ const PracticeGroup = props => {
                 <ScrollView nestedScrollEnabled={true} styles={styles.scrollView} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length)?
                         <View>
-                            <EventList location={'practice_group'} />
+                            <EventList location={'practice_group'} {...props} />
                         </View>
                         : null
                     }
@@ -260,6 +258,7 @@ const PracticeGroup = props => {
                 ref={(DetailModal) => {
                     this.DetailModal = DetailModal;
                 }}
+                modalStyle={{backgroundColor:colors.bodyFrontBg}}
                 modalHeight={windowHeight * 4 / 5}
                 childrenStyle={{backgroundColor: colors.bodyBg}}
                 handlePosition="outside"

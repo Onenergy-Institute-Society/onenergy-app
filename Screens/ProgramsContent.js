@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {
     StyleSheet,
     View,
@@ -192,7 +192,7 @@ const ProgramsContent = props => {
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                 <View style={{marginVertical: scale(5)}}>
-                    <EventList location={'program'} />
+                    <EventList location={'program'} {...props} />
                 </View>
                 <View style={styles.heading_title}>
                     <Text style={global.widgetTitle}>Preparatory Courses</Text>
@@ -398,7 +398,6 @@ const styles = StyleSheet.create({
 });
 ProgramsContent.navigationOptions = ({ navigation, screenProps }) => {
     const {colors, global} = screenProps;
-    const {params = {}} = navigation.state;
     let headerLeft;
     let navRoutes = navigation.dangerouslyGetParent().state.routes;
     if(navRoutes.length >= 2){

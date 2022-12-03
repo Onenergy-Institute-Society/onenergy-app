@@ -63,7 +63,7 @@ const PracticePersonal = props => {
                 <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length) ?
                         <View>
-                            <EventList location={'practice_guided'} />
+                            <EventList location={'practice_guided'} {...props} />
                         </View>
                         : null
                     }
@@ -113,8 +113,8 @@ const styles = StyleSheet.create({
     messageBar:{
         position: "absolute",
         top:scale(15),
-        left:0,
-        right:0,
+        left:scale(15),
+        right:scale(15),
         backgroundColor:"#737373",
         borderColor:"#404040",
         borderRadius:9,

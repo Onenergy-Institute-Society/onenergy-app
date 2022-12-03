@@ -16,7 +16,7 @@ import IconButton from "@src/components/IconButton";
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {NavigationActions, withNavigation} from "react-navigation";
-import {windowHeight, windowWidth} from "../Utils/Dimensions";
+import {windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
 import TrackPlayer from 'react-native-track-player';
 import EventList from "../Components/EventList";
@@ -24,7 +24,8 @@ import analytics from '@react-native-firebase/analytics';
 import Svg, {Path} from "react-native-svg";
 
 const PracticeMember = props => {
-    const { navigation } = props;
+    const { navigation, screenProps } = props;
+    const {global} = screenProps;
     const dispatch = useDispatch();
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyData = optionData.helps.find(el => el.name === 'practice_customize_empty_member');
@@ -133,13 +134,13 @@ const PracticeMember = props => {
         }
     },[messageBarDisplay])
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[global.container, {justifyContent: "center", alignItems: "center"}]}>
             {practiceReducer&&practiceReducer.guides&&practiceReducer.guides.length?
                 practiceReducer&&practiceReducer.routines&&practiceReducer.routines.length?
                     <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                         {optionData.goals && optionData.goals.length?
                             <View>
-                                <EventList location={'practice_member'} />
+                                <EventList location={'practice_member'} {...props} />
                             </View>
                             : null
                         }
@@ -213,8 +214,8 @@ const styles = StyleSheet.create({
     messageBar:{
         position: "absolute",
         top:scale(15),
-        left:0,
-        right:0,
+        left:scale(15),
+        right:scale(15),
         backgroundColor:"#737373",
         borderColor:"#404040",
         borderRadius:9,
@@ -223,10 +224,14 @@ const styles = StyleSheet.create({
     }
 });
 PracticeMember.navigationOptions = ({ navigation, screenProps }) => {
-    const {params = {}} = navigation.state;
+    const {colors, global} = screenProps;
     return({
         headerTitle: navigation.getParam('title'),
-        headerTitleStyle: {textAlign:'left'},
+        headerStyle: {
+            backgroundColor: colors.headerBg,
+        },
+        headerTintColor: colors.headerColor,
+        headerTitleStyle: global.appHeaderTitle,
         headerLeft:
             <TouchableOpacity
                 onPress={async () => {

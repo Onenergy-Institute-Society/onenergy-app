@@ -7,7 +7,7 @@ import {
     SafeAreaView,
     FlatList,
     LayoutAnimation,
-    Platform
+    Platform, UIManager
 } from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
@@ -15,14 +15,14 @@ import AchievementItem from "./AchievementItem";
 import moment from 'moment';
 import Sound from 'react-native-sound';
 Sound.setCategory('Playback');
-
-/*if (
-    Platform.OS === "android" &&
-    UIManager.setLayoutAnimationEnabledExperimental
-) {
-    UIManager.setLayoutAnimationEnabledExperimental(true);
-}*/
-
+const ding = new Sound('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
+    if (error) {
+        console.log('failed to load the sound', error);
+    }
+});
+if (Platform.OS === "android"){
+    UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 const QuestsDaily = (props) => {
     const {screenProps} = props;
     const {global} = screenProps;
@@ -31,27 +31,18 @@ const QuestsDaily = (props) => {
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === 'daily'):null);
     const dispatch = useDispatch();
+
     const playPause = () => {
-        let ding = new Sound('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
-            if (error) {
-                console.log('failed to load the sound', error);
-                return;
-            }
-            ding.play(() => {
-                ding.release();
-            });
-        });
+        ding.play();
     };
     const handleOnPress = (item, date, mode) => {
         switch (mode) {
             case 'past':
                 if(item.complete_date) {
                     playPause();
-                    if (Platform.OS !== "android") {
-                        LayoutAnimation.configureNext(
-                            LayoutAnimation.Presets.spring
-                        );
-                    }
+                    LayoutAnimation.configureNext(
+                        LayoutAnimation.Presets.spring
+                    );
                     dispatch({
                         type: "ONENERGY_ACHIEVEMENT_CLAIM_DAILY",
                         payload: {
@@ -64,11 +55,9 @@ const QuestsDaily = (props) => {
                 break;
             default:
                 if (item.complete_date !== '' && item.claim_date === '') {
-                    if (Platform.OS !== "android") {
-                        LayoutAnimation.configureNext(
-                            LayoutAnimation.Presets.spring
-                        );
-                    }
+                    LayoutAnimation.configureNext(
+                        LayoutAnimation.Presets.spring
+                    );
                     playPause();
                     dispatch({
                         type: "ONENERGY_ACHIEVEMENT_CLAIM",

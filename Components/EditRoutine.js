@@ -15,11 +15,9 @@ import IconButton from "@src/components/IconButton";
 import {Swipeable, GestureHandlerRootView} from "react-native-gesture-handler";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import SortList from "./SortList";
-import { Modalize } from 'react-native-modalize';
+import {Modalize} from 'react-native-modalize';
 import {scale} from "../Utils/scale";
-import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
-import BlockScreen from "@src/containers/Custom/BlockScreen";
-import { BlurView } from "@react-native-community/blur";
+import {BlurView} from "@react-native-community/blur";
 import analytics from '@react-native-firebase/analytics';
 import Svg, {Circle, Path} from "react-native-svg";
 
@@ -30,15 +28,21 @@ const EditRoutine = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const backgroundImages = optionData.routine_image;
     const backgroundMusics = optionData.routine_bgm;
-    const [ loading, setLoading ] = useState(false);
-    const [routineDetail, setRoutineDetail] = useState(navigation.getParam('routine')?navigation.getParam('routine'):{id:0,title:'',image:optionData.routine_image[0],bgm:optionData.routine_bgm[0].name,tracks:[],routine:[]});
+    const [loading, setLoading] = useState(false);
+    const [routineDetail, setRoutineDetail] = useState(navigation.getParam('routine') ? navigation.getParam('routine') : {
+        id: 0,
+        title: '',
+        image: optionData.routine_image[0],
+        bgm: optionData.routine_bgm[0].name,
+        tracks: [],
+        routine: []
+    });
     const [selectBgm, setSelectBgm] = useState('');
-    const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
+    const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
     const [routineSettings, setRoutineSettings] = useState(routineDetail.routine);
-    const [currentTrack, setCurrentTrack] = useState({index:-1, detail:{}});
+    const [currentTrack, setCurrentTrack] = useState({index: -1, detail: {}});
     const [changedStatus, setChangedStatus] = useState(false);
-    const [routineHelpModal, setHelpModal] = useState({title:'',id:0});
-    const [cancelContentTouches, setCancelContentTouches ] = useState(true);
+    const [cancelContentTouches, setCancelContentTouches] = useState(true);
 
     analytics().logScreenView({
         screen_class: 'MainActivity',
@@ -51,7 +55,7 @@ const EditRoutine = props => {
             await apiRoutine.customRequest(
                 "wp-json/onenergy/v1/editRoutine/",
                 "post",
-                {"routine":routineDetail},
+                {"routine": routineDetail},
                 null,
                 {},
                 false
@@ -66,7 +70,7 @@ const EditRoutine = props => {
             await apiRoutine.customRequest(
                 "wp-json/onenergy/v1/addRoutine",
                 "post",
-                {"routine":routineDetail},
+                {"routine": routineDetail},
                 null,
                 {},
                 false
@@ -76,48 +80,51 @@ const EditRoutine = props => {
         }
     }
     useEffect(() => {
-        setHelpModal(optionData.helps.find(el => el.name === 'practice_customize_editor_popup_member'));
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
         });
-    },[])
-    useEffect(()=>{
-        if(routineDetail) {
+    }, [])
+    useEffect(() => {
+        if (routineDetail) {
             props.navigation.setParams({
                 title: routineDetail.title,
                 onBackPressed: onBackPressed,
                 changeStatus: changedStatus,
-                backButtonTitle: changedStatus?'Save':'',
+                backButtonTitle: changedStatus ? 'Save' : '',
             });
             backgroundMusics.map(bgm => {
-                if(bgm.name === routineDetail.bgm){
+                if (bgm.name === routineDetail.bgm) {
                     setSelectBgm(bgm.name);
                 }
             });
-        }else{
+        } else {
             setSelectBgm(backgroundMusics[0].name);
         }
-    },[routineDetail])
+    }, [routineDetail])
     const removeItem = (id) => {
         let array = routineSettings; // make a separate copy of the array
         if (id !== -1) {
             let index = array.findIndex(el => el.id === id);
             array.splice(index, 1);
             setRoutineSettings(array);
-            setRoutineDetail(prevState => {return {...prevState, routine:array}});
+            setRoutineDetail(prevState => {
+                return {...prevState, routine: array}
+            });
             setChangedStatus(true);
         }
     }
 
     const updateItem = (items) => {
         setRoutineSettings(items);
-        setRoutineDetail(prevState => {return {...prevState, routine:items}});
+        setRoutineDetail(prevState => {
+            return {...prevState, routine: items}
+        });
         setChangedStatus(true);
     }
 
     const onBackPressed = () => {
-        if(changedStatus){
-            if(!routineSettings.length){
+        if (changedStatus) {
+            if (!routineSettings.length) {
                 Alert.alert(
                     "Notice",
                     "Please add at least one practice to this routine.",
@@ -129,7 +136,7 @@ const EditRoutine = props => {
                 );
                 return false;
             }
-            if(!routineDetail.title.trim()){
+            if (!routineDetail.title.trim()) {
                 alert('Please choose a routine name.');
                 return false;
             }
@@ -139,9 +146,9 @@ const EditRoutine = props => {
                 payload: routineDetail
             })
             setChangedStatus(false);
-            if(navigation.getParam('routine')) {
+            if (navigation.getParam('routine')) {
                 updateTracks().then();
-            }else{
+            } else {
                 addTracks().then();
             }
         }
@@ -151,7 +158,7 @@ const EditRoutine = props => {
         let tracks = [];
         let id = 1;
         const min1 = "https://cdn.onenergy.institute/audios/preparatory_practices/members/1min.mp3";
-        if(routine.length > 0){
+        if (routine.length > 0) {
             tracks.push({
                 id: 1,
                 title: 'Opening',
@@ -164,14 +171,14 @@ const EditRoutine = props => {
                 let tmpGuide;
                 practiceReducer.guides.map(section => {
                     section.data.map(guide => {
-                        if(guide.id === item.id){
+                        if (guide.id === item.id) {
                             tmpGuide = guide;
                         }
                     })
                 })
-                if(tmpGuide){
+                if (tmpGuide) {
                     tmpGuide.parts.map(part => {
-                        if(part.start){
+                        if (part.start) {
                             id++;
                             tracks.push({
                                 id: id,
@@ -181,12 +188,10 @@ const EditRoutine = props => {
                                 artwork: '',
                                 duration: parseInt(tmpGuide.start_duration),
                             });
-                            switch(tmpGuide.mode){
+                            switch (tmpGuide.mode) {
                                 case '0':
-                                    if(part.repeat)
-                                    {
-                                        for(let i = 1; i< parseInt(routine.count); i++)
-                                        {
+                                    if (part.repeat) {
+                                        for (let i = 1; i < parseInt(routine.count); i++) {
                                             id++;
                                             tracks.push({
                                                 id: id,
@@ -200,8 +205,7 @@ const EditRoutine = props => {
                                     }
                                     break;
                                 case '1':
-                                    for(let i = 0; i< parseInt(routine.count); i++)
-                                    {
+                                    for (let i = 0; i < parseInt(routine.count); i++) {
                                         id++;
                                         tracks.push({
                                             id: id,
@@ -216,8 +220,7 @@ const EditRoutine = props => {
                             }
                         }
                     })
-                    if(tmpGuide.end)
-                    {
+                    if (tmpGuide.end) {
                         id++;
                         tracks.push({
                             id: id,
@@ -259,7 +262,9 @@ const EditRoutine = props => {
 
     const rightActions = (dragX, item) => {
         return (
-            <TouchableOpacity style={{justifyContent:"center", alignItems:"center"}} onPress={() => {removeItem(item.id)}}>
+            <TouchableOpacity style={{justifyContent: "center", alignItems: "center"}} onPress={() => {
+                removeItem(item.id)
+            }}>
                 <IconButton
                     icon={require("@src/assets/img/delete.png")}
                     tintColor={colors.headerIconColor}
@@ -273,19 +278,17 @@ const EditRoutine = props => {
     }
     const row = [];
     const [key, setKey] = useState('');
-    const handleWillOpen = (index : any) => () => {
-        if((key !== '') && (key !== index))
-        {
-            if(row[key]){
+    const handleWillOpen = (index: any) => () => {
+        if ((key !== '') && (key !== index)) {
+            if (row[key]) {
                 row[key].close();
             }
         }
     }
-    const handleOpen = (index : any) => () => {
+    const handleOpen = (index: any) => () => {
         setKey(index);
     }
-    const renderTracks = (handler, id, itemData) =>
-    {
+    const renderTracks = (handler, id, itemData) => {
         return (
             <Swipeable
                 ref={ref => row[id] = ref}
@@ -299,14 +302,19 @@ const EditRoutine = props => {
             >
                 <View key={itemData.id} style={styles.listContainer}>
                     <View style={styles.content}>
-                        <Text style={styles.trackTitle}>
+                        <Text style={[global.text, styles.trackTitle]}>
                             {itemData.title}
                         </Text>
                         <TouchableWithoutFeedback
-                            onPress={()=>{setCurrentTrack({index:id, item:itemData});this.countDialog.open();}}>
+                            onPress={() => {
+                                setCurrentTrack({index: id, item: itemData});
+                                this.countDialog.open();
+                            }}>
                             <View style={styles.trackCount}>
-                                <Text style={styles.trackCountText}>{itemData.parts>1?itemData.parts+'x':''}{itemData.count}{itemData.mode==="0"?"":"m"}</Text>
-                                <Image style={{marginLeft:5,tintColor:colors.headerIconColor}} source={require("@src/assets/img/arrow-down.png")} />
+                                <Text
+                                    style={[global.textAlt, styles.trackCountText]}>{itemData.parts > 1 ? itemData.parts + 'x' : ''}{itemData.count}{itemData.mode === "0" ? "" : "m"}</Text>
+                                <Image style={{marginLeft: 5, tintColor: colors.headerIconColor}}
+                                       source={require("@src/assets/img/arrow-down.png")}/>
                             </View>
                         </TouchableWithoutFeedback>
                     </View>
@@ -315,7 +323,7 @@ const EditRoutine = props => {
                             icon={require("@src/assets/img/handle.png")}
                             style={{
                                 height: 32,
-                                marginRight:10,
+                                marginRight: 10,
                             }}
                         />
                     </View>
@@ -327,14 +335,14 @@ const EditRoutine = props => {
     const renderGuides = (item) => {
         let index = routineDetail.routine.findIndex(el => el.id === item.item.id);
         return (
-            item.item.show?
+            item.item.show ?
                 <TouchableWithoutFeedback onPress={() => {
                     addGuideToRoutine(item.item);
                     setChangedStatus(true)
                 }}>
                     <View style={{
-                        paddingHorizontal: 25,
-                        paddingVertical: 10,
+                        paddingHorizontal: scale(25),
+                        paddingVertical: scale(10),
                         borderBottomWidth: 1,
                         borderBottomColor: '#ccc',
                         borderTopRightRadius: 9,
@@ -343,35 +351,46 @@ const EditRoutine = props => {
                         justifyContent: 'space-between'
                     }}>
                         <Text
-                            style={{fontSize: 18}}>
+                            style={global.text}>
                             {item.item.title}
                         </Text>
                         {index >= 0 ? (
-                            <IconButton
-                                icon={require("@src/assets/img/check-simple.png")}
-                                tintColor={colors.headerIconColor}
-                                style={{height: 14, width: 14}}
-                            />
+                            <Svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                style={{marginLeft: scale(10)}}
+                            >
+                                <Path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+                                      fill=""
+                                      stroke={colors.primaryColor}
+                                      strokeWidth="2"
+                                />
+                                <Path d="M22 4 12 14.01l-3-3"
+                                      fill=""
+                                      stroke={colors.primaryColor}
+                                      strokeWidth="2"
+                                />
+                            </Svg>
                         ) : null}
                     </View>
                 </TouchableWithoutFeedback>
-            :null
+                : null
         )
     }
     const renderCount = (item) => {
         let cornerStyle = {};
         let bottomStyle = {};
-        switch(item.index)
-        {
+        switch (item.index) {
             case 0:
-                cornerStyle = {borderTopLeftRadius:9, borderTopRightRadius:9, marginTop:25};
-                bottomStyle = {borderBottomWidth:1, borderBottomColor:'#E6E6E8'};
+                cornerStyle = {borderTopLeftRadius: 9, borderTopRightRadius: 9, marginTop: 25};
+                bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
                 break;
             case 29:
-                cornerStyle = {borderBottomLeftRadius:9, borderBottomRightRadius:9, marginBottom:25};
+                cornerStyle = {borderBottomLeftRadius: 9, borderBottomRightRadius: 9, marginBottom: 25};
                 break;
             default:
-                bottomStyle = {borderBottomWidth:1, borderBottomColor:'#E6E6E8'};
+                bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
                 break;
         }
         return (
@@ -384,18 +403,39 @@ const EditRoutine = props => {
                 this.countDialog.close();
             }
             }>
-                <View style={[cornerStyle,bottomStyle, {width: windowWidth-50, marginHorizontal:25, paddingHorizontal:25, backgroundColor:colors.bodyBg, paddingVertical:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
+                <View style={[cornerStyle, bottomStyle, {
+                    width: windowWidth - 50,
+                    marginHorizontal: 25,
+                    paddingHorizontal: 25,
+                    backgroundColor: colors.bodyBg,
+                    paddingVertical: 15,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                }]}>
                     <Text
-                        style={{fontSize:18}}>
-                        {item.item} {currentTrack.item.mode === "1"?item.index>0?" minutes":" minute":item.index>0?" times":" time"}
+                        style={{fontSize: 18}}>
+                        {item.item} {currentTrack.item.mode === "1" ? item.index > 0 ? " minutes" : " minute" : item.index > 0 ? " times" : " time"}
                     </Text>
-                    {currentTrack.index!==-1&&parseInt(currentTrack.item.count,10) === parseInt(item.item,10)?(
-                        <IconButton
-                            icon={require("@src/assets/img/check-simple.png")}
-                            tintColor={"#4942e1"}
-                            style={{ position:"absolute", right:10, height: 20, width: 20 }}
-                        />
-                    ):null}
+                    {currentTrack.index !== -1 && parseInt(currentTrack.item.count, 10) === parseInt(item.item, 10) ? (
+                        <Svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            style={{marginLeft: scale(10)}}
+                        >
+                            <Path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+                                  fill=""
+                                  stroke={colors.primaryColor}
+                                  strokeWidth="2"
+                            />
+                            <Path d="M22 4 12 14.01l-3-3"
+                                  fill=""
+                                  stroke={colors.primaryColor}
+                                  strokeWidth="2"
+                            />
+                        </Svg>
+                    ) : null}
                 </View>
             </TouchableWithoutFeedback>
         )
@@ -403,42 +443,71 @@ const EditRoutine = props => {
     const renderBGM = (item) => {
         let cornerStyle = {};
         let bottomStyle = {};
-        switch(item.index)
-        {
+        switch (item.index) {
             case 0:
-                cornerStyle = {borderTopLeftRadius:9, borderTopRightRadius:9};
-                bottomStyle = {borderBottomWidth:1, borderBottomColor:'#E6E6E8'};
+                cornerStyle = {borderTopLeftRadius: 9, borderTopRightRadius: 9};
+                bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
                 break;
-            case backgroundMusics.length-1:
-                cornerStyle = {borderBottomLeftRadius:9, borderBottomRightRadius:9};
+            case backgroundMusics.length - 1:
+                cornerStyle = {borderBottomLeftRadius: 9, borderBottomRightRadius: 9};
                 break;
             default:
-                bottomStyle = {borderBottomWidth:1, borderBottomColor:'#E6E6E8'};
+                bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
                 break;
         }
         return (
-            <TouchableWithoutFeedback onPress={() => {setRoutineDetail(prevState => ({...prevState, bgm:item.item.name}));setSelectBgm(item.item.name);setChangedStatus(true);this.bgmDialog.close();}}>
-                <View style={[cornerStyle,bottomStyle, {paddingHorizontal:25, backgroundColor:colors.bodyBg, paddingVertical:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
+            <TouchableWithoutFeedback onPress={() => {
+                setRoutineDetail(prevState => ({...prevState, bgm: item.item.name}));
+                setSelectBgm(item.item.name);
+                setChangedStatus(true);
+                this.bgmDialog.close();
+            }}>
+                <View style={[cornerStyle, bottomStyle, {
+                    paddingHorizontal: 25,
+                    backgroundColor: colors.bodyBg,
+                    paddingVertical: 15,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                }]}>
                     <Text
-                        style={{fontSize:18}}>
+                        style={global.text}>
                         {item.item.name}
                     </Text>
-                    {routineDetail.bgm === item.item.name?(
-                        <IconButton
-                            icon={require("@src/assets/img/check-simple.png")}
-                            tintColor={"#4942e1"}
-                            style={{ position:"absolute", right:10, height: 20, width: 20 }}
-                        />
-                    ):null}
+                    {routineDetail.bgm === item.item.name ? (
+                        <Svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            style={{marginLeft: scale(10)}}
+                        >
+                            <Path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+                                  fill=""
+                                  stroke={colors.primaryColor}
+                                  strokeWidth="2"
+                            />
+                            <Path d="M22 4 12 14.01l-3-3"
+                                  fill=""
+                                  stroke={colors.primaryColor}
+                                  strokeWidth="2"
+                            />
+                        </Svg>
+                    ) : null}
                 </View>
             </TouchableWithoutFeedback>
         )
     }
     const renderSectionHeader = (section) => {
-        return(
-            section.section.data.find((item) => item.show)?
-            <Text style={{backgroundColor: '#e6e6e8', paddingVertical:10, fontSize: 24, marginTop:15, textAlign: "center" }}>{section.section.title.toUpperCase()}</Text>
-                :null
+        return (
+            section.section.data.find((item) => item.show) ?
+                <Text style={[global.settingsItemTitle, {
+                    backgroundColor: '#e6e6e8',
+                    paddingVertical: 10,
+                    fontSize: 24,
+                    marginTop: 15,
+                    textAlign: "center"
+                }]}>{section.section.title.toUpperCase()}</Text>
+                : null
         );
     }
     const renderColor = () => {
@@ -452,98 +521,135 @@ const EditRoutine = props => {
             return (
                 <TouchableOpacity
                     key={image}
-                    onPress={() => {setRoutineDetail(prevState => ({...prevState, image:image})); setChangedStatus(true)}}
+                    onPress={() => {
+                        setRoutineDetail(prevState => ({...prevState, image: image}));
+                        setChangedStatus(true)
+                    }}
                 >
-                    <Image source={{uri:image}} style={[styles.colorSelect,imageSelected]} resizeMode={"cover"} />
+                    <Image source={{uri: image}} style={[styles.colorSelect, imageSelected]} resizeMode={"cover"}/>
                 </TouchableOpacity>
             )
         })
     }
     return (
-        <SafeAreaView style={global.container}>
-           <ScrollView nestedScrollEnabled={true} style={styles.ScrollContainer} canCancelContentTouches={cancelContentTouches}
+        <SafeAreaView style={[global.settingsFormContainer]}>
+            <ScrollView nestedScrollEnabled={true} style={styles.ScrollContainer}
+                        canCancelContentTouches={cancelContentTouches}
             >
-            <View>
-            <Text style={styles.title}>Routine Name</Text>
-            <TextInput
-                style={styles.inputName}
-                placeholder={"Routine Name?"}
-                onChangeText={text => {setChangedStatus(true);setRoutineDetail(prevState => ({...prevState, title:text}));}}
-                value={routineDetail?routineDetail.title:''}
-            />
-            </View>
-            <View style={{width: windowWidth-scale(30), flexDirection:"row", justifyContent: "flex-start", alignItems:"center"}}>
-                <Text style={styles.title}>Background Image</Text>
-            </View>
-            <View>
-                <View style={{flexDirection: "row", justifyContent: "space-between", marginTop: 5}}>
-                    {renderColor()}
-                </View>
-            </View>
-            <View style={{width: windowWidth-scale(30), flexDirection:"row", justifyContent: "flex-start", alignItems:"center"}}>
-                <Text style={styles.title}>Background Music</Text>
-            </View>
-            <View>
-                <View style={styles.listContainer}>
-                    <TouchableWithoutFeedback
-                    onPress={() => {this.bgmDialog.open();}}>
-                        <View style={styles.content}>
-                            {selectBgm?(
-                            <Text style={styles.trackTitle}>
-                                {selectBgm}
-                            </Text>
-                            ):null}
-                            <View>
-                                <Image style={{marginRight:25,tintColor:"#4942e1"}} source={require("@src/assets/img/arrow-down.png")} />
-                            </View>
-                        </View>
-                    </TouchableWithoutFeedback>
-                </View>
-            </View>
-            <View style={{width: windowWidth-scale(30), flexDirection:"row", justifyContent: "space-between", alignItems:"center"}}>
-                <Text style={styles.title}>Practices</Text>
-                <IconButton
-                    pressHandler={() => {this.addGuideModal.open();}}
-                    icon={require("@src/assets/img/add.png")}
-                    tintColor={"#4942e1"}
-                    style={{ height: 20, width: 20 }}
-                />
-            </View>
-            <GestureHandlerRootView style={{height:"100%"}}>
-                {routineSettings.length===0?(
-                    <View><Text>No practice selected, please tap "Plus Sign" to add.</Text></View>
-                    ):(
-                    <SortList
-                        horizontal={false}                          // The orientation of the list
-                        data={routineSettings}                                // The list of items to render
-                        renderItem={renderTracks}                     // The function to render each item
-                        save={(items)=>{updateItem(items)}}                             // The function called when an event happens in the list
-                        edgingDelay={350}                           // Delay to wait before scrolling the list when an item is on an edge
-                        edgeZonePercent={10}                        // The size of the edge zone (to scroll the list up or down)
-                        edgeColor={"rgba(0,140,230,0.3)"}           // The color of the edge zone (can be transparent if needed)
-                        style={styles.list}
-                        contentContainerStyle={styles.contentContainer}
-                        setCancelContentTouches={setCancelContentTouches}
+                <View style={global.roundBox}>
+                    <Text style={global.settingsItemTitle}>Routine Name</Text>
+                    <TextInput
+                        style={[global.text, styles.inputName]}
+                        placeholder={"Routine Name?"}
+                        onChangeText={text => {
+                            setChangedStatus(true);
+                            setRoutineDetail(prevState => ({...prevState, title: text}));
+                        }}
+                        value={routineDetail ? routineDetail.title : ''}
                     />
-                )}
-            </GestureHandlerRootView>
+                </View>
+                <View style={global.roundBox}>
+                    <View style={{
+                        width: windowWidth - scale(35),
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                        alignItems: "center"
+                    }}>
+                        <Text style={global.settingsItemTitle}>Background Image</Text>
+                    </View>
+                    <View>
+                        <View style={{flexDirection: "row", justifyContent: "space-between", marginTop: 5}}>
+                            {renderColor()}
+                        </View>
+                    </View>
+                </View>
+                <View style={global.roundBox}>
+                    <View style={{
+                        width: windowWidth - scale(35),
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                        alignItems: "center"
+                    }}>
+                        <Text style={global.settingsItemTitle}>Background Music</Text>
+                    </View>
+                    <View>
+                        <View style={styles.listContainer}>
+                            <TouchableWithoutFeedback
+                                onPress={() => {
+                                    this.bgmDialog.open();
+                                }}>
+                                <View style={styles.content}>
+                                    {selectBgm ? (
+                                        <Text style={[global.text, styles.trackTitle]}>
+                                            {selectBgm}
+                                        </Text>
+                                    ) : null}
+                                    <View>
+                                        <Image style={{marginRight: 25, tintColor: colors.primaryColor}}
+                                               source={require("@src/assets/img/arrow-down.png")}/>
+                                    </View>
+                                </View>
+                            </TouchableWithoutFeedback>
+                        </View>
+                    </View>
+                </View>
+                <View style={global.roundBox}>
+                    <View style={{
+                        width: "100%",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                    }}>
+                        <Text style={global.settingsItemTitle}>Practices</Text>
+                        <IconButton
+                            pressHandler={() => {
+                                this.addGuideModal.open();
+                            }}
+                            icon={require("@src/assets/img/add.png")}
+                            tintColor={colors.primaryColor}
+                            style={{height: 20, width: 20}}
+                        />
+                    </View>
+                    <GestureHandlerRootView style={{height: "100%"}}>
+                        {routineSettings.length === 0 ? (
+                            <View><Text style={global.text}>No practice selected, please tap "Plus Sign" to add.</Text></View>
+                        ) : (
+                            <SortList
+                                horizontal={false}                          // The orientation of the list
+                                data={routineSettings}                                // The list of items to render
+                                renderItem={renderTracks}                     // The function to render each item
+                                save={(items) => {
+                                    updateItem(items)
+                                }}                             // The function called when an event happens in the list
+                                edgingDelay={350}                           // Delay to wait before scrolling the list when an item is on an edge
+                                edgeZonePercent={10}                        // The size of the edge zone (to scroll the list up or down)
+                                edgeColor={"rgba(0,140,230,0.3)"}           // The color of the edge zone (can be transparent if needed)
+                                style={styles.list}
+                                contentContainerStyle={styles.contentContainer}
+                                setCancelContentTouches={setCancelContentTouches}
+                            />
+                        )}
+                    </GestureHandlerRootView>
+                </View>
             </ScrollView>
             {loading &&
                 <BlurView style={styles.loading}
                           blurType="light"
                           blurAmount={5}
                           reducedTransparencyFallbackColor="white"
-                          >
+                >
                     <View>
-                        <ActivityIndicator size='large' />
+                        <ActivityIndicator size='large'/>
                     </View>
                 </BlurView>
             }
             <Modalize
-                ref={(countDialog) => { this.countDialog = countDialog; }}
-                modalStyle={{backgroundColor:colors.bodyFrontBg}}
-                modalHeight={windowHeight/2}
-                withHandle = "false"
+                ref={(countDialog) => {
+                    this.countDialog = countDialog;
+                }}
+                modalStyle={{backgroundColor: colors.bodyFrontBg}}
+                modalHeight={windowHeight / 2}
+                withHandle="false"
                 HeaderComponent={
                     <View style={{
                         padding: scale(25),
@@ -555,9 +661,14 @@ const EditRoutine = props => {
                         backgroundColor: colors.bodyBg,
                         borderBottomColor: colors.borderColor
                     }}>
-                        {currentTrack.index !== -1?(
-                            <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>{currentTrack.item.mode==="1"?"Choose duration":"Choose repeating times"}</Text>
-                        ):null}
+                        {currentTrack.index !== -1 ? (
+                            <Text style={{
+                                fontSize: scale(24),
+                                color: colors.headerColor,
+                                fontFamily: "MontserratAlternates-SemiBold",
+                                fontWeight: "bold"
+                            }}>{currentTrack.item.mode === "1" ? "Choose duration" : "Choose repeating times"}</Text>
+                        ) : null}
                         <TouchableOpacity
                             onPress={() => {
                                 this.countDialog.close();
@@ -567,7 +678,7 @@ const EditRoutine = props => {
                                 width="32"
                                 height="32"
                                 viewBox="0 0 24 24"
-                                style={{marginLeft:scale(10)}}
+                                style={{marginLeft: scale(10)}}
                             >
                                 <Circle cx="12" cy="12" r="10" fill="#d3d3d3"
                                         stroke="#d3d3d3"
@@ -579,19 +690,21 @@ const EditRoutine = props => {
                         </TouchableOpacity>
                     </View>
                 }
-                flatListProps = {{
+                flatListProps={{
                     data: Array.from({length: 30}, (_, i) => i + 1),
-                    renderItem:renderCount,
-                    keyExtractor:(item, index) => `${item.title}-${index}`,
+                    renderItem: renderCount,
+                    keyExtractor: (item, index) => `${item.title}-${index}`,
                     showsVerticalScrollIndicator: false,
                 }}
             />
             <Modalize
-                ref={(bgmDialog) => { this.bgmDialog = bgmDialog; }}
-                modalStyle={{backgroundColor:colors.bodyBg}}
-                childrenStyle={{padding:25}}
-                adjustToContentHeight = "true"
-                withHandle = "false"
+                ref={(bgmDialog) => {
+                    this.bgmDialog = bgmDialog;
+                }}
+                modalStyle={{backgroundColor: colors.bodyFrontBg}}
+                childrenStyle={{padding: 25}}
+                adjustToContentHeight="true"
+                withHandle="false"
                 HeaderComponent={
                     <View style={{
                         padding: scale(25),
@@ -603,7 +716,12 @@ const EditRoutine = props => {
                         backgroundColor: colors.bodyBg,
                         borderBottomColor: colors.borderColor
                     }}>
-                        <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Background Music</Text>
+                        <Text style={{
+                            fontSize: scale(24),
+                            color: colors.headerColor,
+                            fontFamily: "MontserratAlternates-SemiBold",
+                            fontWeight: "bold"
+                        }}>Background Music</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 this.bgmDialog.close();
@@ -613,7 +731,7 @@ const EditRoutine = props => {
                                 width="32"
                                 height="32"
                                 viewBox="0 0 24 24"
-                                style={{marginLeft:scale(10)}}
+                                style={{marginLeft: scale(10)}}
                             >
                                 <Circle cx="12" cy="12" r="10" fill="#d3d3d3"
                                         stroke="#d3d3d3"
@@ -628,17 +746,20 @@ const EditRoutine = props => {
                 FooterComponent={
                     <View style={{height: 25}}/>
                 }
-                flatListProps = {{
-                    data:backgroundMusics,
-                    renderItem:renderBGM,
-                    keyExtractor:(item, index) => `${item.title}-${index}`,
+                flatListProps={{
+                    data: backgroundMusics,
+                    renderItem: renderBGM,
+                    keyExtractor: (item, index) => `${item.title}-${index}`,
                     showsVerticalScrollIndicator: false,
                 }}
             />
             <Modalize
-                ref={(addGuideModal) => { this.addGuideModal = addGuideModal; }}
-                modalHeight={windowHeight*2/3}
-                handlePosition = "outside"
+                ref={(addGuideModal) => {
+                    this.addGuideModal = addGuideModal;
+                }}
+                modalStyle={{backgroundColor:colors.bodyFrontBg}}
+                modalHeight={windowHeight * 2 / 3}
+                handlePosition="outside"
                 HeaderComponent={
                     <View style={{
                         padding: scale(25),
@@ -650,7 +771,12 @@ const EditRoutine = props => {
                         backgroundColor: colors.bodyBg,
                         borderBottomColor: colors.borderColor
                     }}>
-                        <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Practices</Text>
+                        <Text style={{
+                            fontSize: scale(24),
+                            color: colors.headerColor,
+                            fontFamily: "MontserratAlternates-SemiBold",
+                            fontWeight: "bold"
+                        }}>Practices</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 this.addGuideModal.close();
@@ -660,7 +786,7 @@ const EditRoutine = props => {
                                 width="32"
                                 height="32"
                                 viewBox="0 0 24 24"
-                                style={{marginLeft:scale(10)}}
+                                style={{marginLeft: scale(10)}}
                             >
                                 <Circle cx="12" cy="12" r="10" fill="#d3d3d3"
                                         stroke="#d3d3d3"
@@ -672,12 +798,12 @@ const EditRoutine = props => {
                         </TouchableOpacity>
                     </View>
                 }
-                sectionListProps = {{
-                    stickySectionHeadersEnabled:false,
-                    sections:practiceReducer.guides,
-                    renderItem:renderGuides,
-                    renderSectionHeader:renderSectionHeader,
-                    keyExtractor:(item, index) => `${item.title}-${index}`,
+                sectionListProps={{
+                    stickySectionHeadersEnabled: false,
+                    sections: practiceReducer.guides,
+                    renderItem: renderGuides,
+                    renderSectionHeader: renderSectionHeader,
+                    keyExtractor: (item, index) => `${item.title}-${index}`,
                     showsVerticalScrollIndicator: false,
                 }}
             />
@@ -687,23 +813,23 @@ const EditRoutine = props => {
 const styles = StyleSheet.create({
     Container: {
         flex: 1,
-        justifyContent:"center",
+        justifyContent: "center",
         alignItems: "center",
     },
-    ScrollContainer:{
-        height:"100%",
+    ScrollContainer: {
+        height: "100%",
         flexGrow: 1,
-        paddingHorizontal:15,
+        paddingHorizontal: 15,
     },
-    list:{
-        width: windowWidth-scale(30),
-        flex:1,
-        justifyContent:'center',
-        alignItems:'flex-start',
-        overflow:'scroll',
+    list: {
+        width: windowWidth - scale(60),
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        overflow: 'scroll',
     },
-    contentContainer:{
-        width: windowWidth-scale(30),
+    contentContainer: {
+        width: windowWidth - scale(35),
     },
     loading: {
         position: 'absolute',
@@ -714,40 +840,39 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    index:{
+    index: {},
+    listContainer: {
+        width: windowWidth - scale(60),
+        aspectRatio: 8,
+        flexDirection: 'row',
+        marginBottom: 5,
+        borderRadius: 9,
+        borderWidth: 1,
+        borderColor: "#8c79ea",
+        backgroundColor: "#fffdff",
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        overflow: 'hidden',
     },
-    listContainer:{
-        width:windowWidth-scale(30),
-        aspectRatio:8,
-        flexDirection:'row',
-        marginBottom:5,
-        borderRadius:9,
-        borderWidth:1,
-        borderColor: "#c6c6c8",
-        backgroundColor: "rgba(250,250,250,1)",
-        justifyContent:'space-between',
-        alignItems:'center',
-        overflow:'hidden',
-    },
-    content:{
-        flex:5,
+    content: {
+        flex: 1,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
     },
-    orderButton:{
-        flex:1,
-        height:"100%",
-        aspectRatio:0.5,
-        marginHorizontal:10,
-        justifyContent:'center',
-        alignItems:'flex-end',
-        overflow:'hidden',
+    orderButton: {
+        flex: 0.2,
+        height: "100%",
+        aspectRatio: 0.5,
+        marginHorizontal: 10,
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        overflow: 'hidden',
     },
     header: {
         justifyContent: "flex-end",
-        marginLeft:64,
-        borderBottomWidth:3
+        marginLeft: 64,
+        borderBottomWidth: 3
     },
     title: {
         fontSize: 24,
@@ -757,55 +882,59 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     footer: {
-        paddingVertical:32,
+        paddingVertical: 32,
         flexDirection: "row",
         alignItems: "center",
     },
-    inputName:{
-        width: windowWidth - scale(30),
+    inputName: {
         height: 50,
-        fontSize: 18,
         borderRadius: 9,
-        backgroundColor: "#e6e6e8",
-        paddingLeft:15
+        backgroundColor: "#fffdff",
+        paddingLeft: 15
     },
-    trackTitle:{
-        fontSize: 18,
+    trackTitle: {
         paddingLeft: 10,
-        flex:4,
+        flex: 0.8,
     },
-    trackCount:{
-        flex:1,
-        width: 50,
+    trackCount: {
+        flex: 0.2,
+        width: scale(50),
         flexDirection: "row",
-        justifyContent:"flex-end",
-        alignItems:"center",
+        justifyContent: "flex-end",
+        alignItems: "center",
     },
-    trackCountText:{
-        fontSize: 18,
+    trackCountText: {
         alignContent: "flex-end",
     },
     colorSelect: {
-        width:36,
-        height:36,
+        width: 36,
+        height: 36,
         borderRadius: 4,
-        marginHorizontal:5
+        marginHorizontal: 5
     },
 })
-EditRoutine.navigationOptions = ({ navigation, screenProps}) => {
+EditRoutine.navigationOptions = ({navigation, screenProps}) => {
     const {params = {}} = navigation.state;
-    return({
-        headerTitle: params.title?params.title:navigation.getParam('title'),
+    const {colors, global} = screenProps;
+    return ({
+        headerTitle: params.title ? params.title : navigation.getParam('title'),
+        headerStyle: {
+            backgroundColor: colors.headerBg,
+        },
+        headerTintColor: colors.headerColor,
+        headerTitleStyle: global.appHeaderTitle,
         headerLeft:
             <TouchableOpacity
-                onPress={() => {params.onBackPressed();}}
+                onPress={() => {
+                    params.onBackPressed();
+                }}
             >
-                <View style={{flexDirection: "row", justifyContent:"flex-start", alignItems: "center"}}>
+                <View style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
                     <Svg
                         width="32"
                         height="32"
                         viewBox="0 0 24 24"
-                        style={{marginLeft:scale(10)}}
+                        style={{marginLeft: scale(10)}}
                     >
                         <Path d="m15 18-6-6 6-6"
                               fill="none"
@@ -813,7 +942,10 @@ EditRoutine.navigationOptions = ({ navigation, screenProps}) => {
                               strokeWidth="2"
                         />
                     </Svg>
-                    <Text style={{fontSize:scale(16), color:"#4942e1"}}>{params.backButtonTitle}</Text>
+                    <Text style={{
+                        fontSize: scale(16),
+                        color: screenProps.colors.headerIconColor
+                    }}>{params.backButtonTitle}</Text>
                 </View>
             </TouchableOpacity>,
     })

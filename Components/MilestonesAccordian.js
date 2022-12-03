@@ -9,10 +9,10 @@ import {
     LayoutAnimation,
     Image,
 } from "react-native";
-import IconButton from "@src/components/IconButton";
 import {windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
 import * as Progress from 'react-native-progress';
+import Svg, {Path} from "react-native-svg";
 
 class MilestonesAccordian extends Component {
     constructor(props) {
@@ -41,25 +41,23 @@ class MilestonesAccordian extends Component {
                 }]}>
                     <TouchableOpacity onPress={() => this.toggleExpand()}>
                         <View style={[styles.rowLeft,{backgroundColor:this.props.screenProps.colors.bodyBg}]}>
-                            <Text style={[this.props.screenProps.global.itemTitle,{fontWeight:"normal"}]}>{this.props.item.title}</Text>
-                            {!claim_date?
-                            <View style={{marginTop:10}}>
-                                <Progress.Bar showsText={true} borderColor={complete_date?"lightgreen":"#8c79ea"} color={complete_date?"lightgreen":"#8c79ea"} unfilledColor={"black"} borderRadius={9}
+                            <Text style={[this.props.screenProps.global.title,{fontSize:scale(12)}]}>{this.props.item.title}</Text>
+                            <View style={{marginTop:10, justifyContent:"center", alignItems:"center", width:!claim_date?'100%':0, height:!claim_date?'auto':0}}>
+                                <Progress.Bar showsText={true} borderWidth={0} color={complete_date?"lightgreen":this.props.screenProps.colors.primaryButtonBg} unfilledColor={"black"} borderRadius={9}
                                               progress={completed_steps / this.props.item.step.length}
                                               width={windowWidth/2} height={scale(16)}/>
                                 <View
-                                    style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', opacity: claim_date?0:100}}>
+                                    style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
                                     <Text style={[this.props.screenProps.global.textItemSubtitle, {color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
                                         width: -1,
                                         height: 1
                                     }}]}>{complete_date?"completed":completed_steps + ' / ' + this.props.item.step.length}</Text>
                                 </View>
                             </View>
-                            :null}
                         </View>
                         <View style={{position:"absolute", top: scale(15), left: scale(10)}}>
                             <Image source={require("@src/assets/img/arrow-down.png")} style={{
-                                tintColor: "#4942e1",
+                                tintColor: this.props.screenProps.colors.primaryButtonBg,
                                 transform: [{rotate: this.state.expanded ? '180deg' : '0deg'}],
                             }}/>
                         </View>
@@ -69,71 +67,53 @@ class MilestonesAccordian extends Component {
                             this.props.handleOnPress(this.props.item);
                         }}
                     >
-                        <View style={[styles.rowRight, {backgroundColor:!complete_date?'gold':!claim_date?'#ef713c':'#e6e6e8',
+                        <View style={[styles.rowRight, {backgroundColor:!complete_date?this.props.screenProps.colors.primaryButtonBg:!claim_date?this.props.screenProps.colors.primaryColor:'gray',
                             borderBottomRightRadius: this.state.expanded ? 0 : 9,}]}>
                             {
-                                claim_date?
-                                    <>
+                                complete_date?
+                                <>
+                                    <Text
+                                        style={[this.props.screenProps.global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                width: -1,
+                                                height: 1
+                                            }}]}
+                                    >
+                                        REWARD
+                                    </Text>
+                                    {this.props.item.awards.map(point =>
                                         <Text
-                                            style={[this.props.screenProps.global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                            style={[this.props.screenProps.global.pointTitle, {flexWrap: "nowrap", fontSize:scale(24), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
                                                     width: -1,
                                                     height: 1
                                                 }}]}
                                         >
-                                            CLEARED
+                                            +{point.point} {this.props.optionData.points.find(pt => pt.pointName === point.name).pointTitle}
                                         </Text>
-                                        <Text
-                                            style={[this.props.screenProps.global.itemMeta, {flexWrap: "nowrap", fontSize:11, color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                    width: -1,
-                                                    height: 1
-                                                }}]}
-                                        >
-                                            {this.props.item.claim_date}
-                                        </Text>
-                                    </>
-                                    :
-                                    this.props.item.complete_date ?
-                                        <>
-                                            <Text
-                                                style={[this.props.screenProps.global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                        width: -1,
-                                                        height: 1
-                                                    }}]}
-                                            >
-                                                CLAIM
-                                            </Text>
-                                            {this.props.item.awards.map(point =>
-                                                <Text
-                                                    style={[this.props.screenProps.global.pointTitle, {flexWrap: "nowrap", fontSize:scale(24), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                            width: -1,
-                                                            height: 1
-                                                        }}]}
-                                                >
-                                                    +{point.point} {this.props.optionData.points.find(pt => pt.pointName === point.name).pointTitle}
-                                                </Text>
-                                            )}
-                                        </>
-                                        :
-                                        <>
-                                            <Text
-                                                style={[this.props.screenProps.global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                        width: -1,
-                                                        height: 1
-                                                    }}]}
-                                            >
-                                                REWARD
-                                            </Text>
-                                            {this.props.item.awards.map(point =>
-                                                <Text
-                                                    style={[this.props.screenProps.global.pointTitle, {flexWrap: "nowrap", fontSize:scale(24), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                            width: -1,
-                                                            height: 1
-                                                        }}]}
-                                                >
-                                                    +{point.point} {this.props.optionData.points.find(pt => pt.pointName === point.name).pointTitle}
-                                                </Text>
-                                            )}
-                                        </>
+                                    )}
+                                </>
+                                :
+                                <>
+                                    <Text
+                                        style={[this.props.screenProps.global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                width: -1,
+                                                height: 1
+                                            }}]}
+                                    >
+                                        {claim_date?'CLEARED':'CLAIM'}
+                                    </Text>
+                                    <Text
+                                        style={[this.props.screenProps.global.itemMeta, {flexWrap: "nowrap", fontSize:scale(claim_date?11:24), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
+                                                width: -1,
+                                                height: 1
+                                            }}]}
+                                    >
+                                        {claim_date?claim_date :
+                                            this.props.item.awards.map(point => {return (
+                                                '+'+point.point+' '+this.props.optionData.points.find(pt => pt.pointName === point.name).pointTitle
+                                            )})
+                                        }
+                                    </Text>
+                                </>
                             }
                         </View>
                     </TouchableWithoutFeedback>
@@ -158,14 +138,23 @@ class MilestonesAccordian extends Component {
                                     <View style={[styles.childRow, {backgroundColor:this.props.screenProps.colors.bodyBg}]}>
                                         <Text style={styles.itemActive}>{item.title}</Text>
                                         {item.completed ?
-                                            <IconButton
-                                                icon={require("@src/assets/img/check-simple.png")}
-                                                tintColor={"green"}
-                                                style={{
-                                                    height: 18,
-                                                    width: 18,
-                                                }}
-                                            />
+                                            <Svg
+                                                width="18"
+                                                height="18"
+                                                viewBox="0 0 24 24"
+                                                style={{marginLeft:scale(10)}}
+                                            >
+                                                <Path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+                                                      fill=""
+                                                      stroke={this.props.screenProps.colors.primaryColor}
+                                                      strokeWidth="2"
+                                                />
+                                                <Path d="M22 4 12 14.01l-3-3"
+                                                      fill=""
+                                                      stroke={this.props.screenProps.colors.primaryColor}
+                                                      strokeWidth="2"
+                                                />
+                                            </Svg>
                                             : null}
                                     </View>
                                     {index < this.state.data.length - 1 ?

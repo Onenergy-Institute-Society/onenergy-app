@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect} from "react";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
     StyleSheet,
@@ -24,7 +24,6 @@ import EventList from "../Components/EventList";
 import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 import analytics from '@react-native-firebase/analytics';
 import ForumsScreen from "@src/containers/Custom/ForumsScreen";
-import IconButton from "@src/components/IconButton";
 import Svg, {Circle, Path} from "react-native-svg";
 import {
     ProgressChart,
@@ -71,7 +70,7 @@ const HomeContent = (props) => {
     const _handleAppStateChange = async () => {
         if(user) {
             if((Platform.OS === "android" && AppState.currentState==='background') || (Platform.OS === "ios" && AppState.currentState==='inactive')) {
-
+                console.log(AppState.currentState)
                 if (progressReducer.latestUpdate && progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
                     let achievements = {
                         'achievements': [],
@@ -255,7 +254,7 @@ const HomeContent = (props) => {
             }}>
                 <View style={[cornerStyle, bottomStyle, {width: windowWidth-50, marginHorizontal:25, paddingHorizontal:25, backgroundColor:colors.bodyBg, paddingVertical:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
                     <Text
-                        style={{fontSize:18}}>
+                        style={global.text}>
                         {item.item} minutes
                     </Text>
                     {progressReducer.todayGoal&&
@@ -317,11 +316,11 @@ const HomeContent = (props) => {
                                 )}}>
                         <View style={{flexDirection:'row', justifyContent:"space-between"}}>
                             <View style={{width:(windowWidth-30)/3, justifyContent:"flex-start", alignItems:"flex-start", paddingLeft:scale(15), paddingTop:scale(15)}}>
-                                <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom:scale(10)}}>
-                                    <Text style={[global.itemTitle,{color:colors.primaryColor}]}>Today: </Text><Text style={[global.text,{color:colors.primaryColor}]}>{progressReducer.todayDuration?Math.round(progressReducer.todayDuration / 60 )>60?Math.round(progressReducer.todayDuration /3600)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.todayDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
-                                </View>
                                 <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
-                                    <Text style={[global.itemTitle,{color:colors.primaryColor}]}>Goal: </Text><Text style={[global.text,{color:colors.primaryColor}]}>{progressReducer.todayGoal?Math.round(progressReducer.todayGoal)>60?Math.round(progressReducer.todayGoal /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:progressReducer.todayGoal + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                    <Text style={[global.itemTitle,{color:colors.primaryColor}]}>Goal: </Text><Text style={[global.textAlt,{color:colors.primaryColor}]}>{progressReducer.todayGoal?Math.round(progressReducer.todayGoal)>60?Math.round(progressReducer.todayGoal /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:progressReducer.todayGoal + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                </View>
+                                <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom:scale(10)}}>
+                                    <Text style={[global.itemTitle,{color:colors.primaryColor}]}>Today: </Text><Text style={[global.textAlt,{color:colors.primaryColor}]}>{progressReducer.todayDuration?Math.round(progressReducer.todayDuration / 60 )>60?Math.round(progressReducer.todayDuration /3600)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.todayDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                 </View>
                             </View>
                             <ProgressChart
@@ -368,7 +367,7 @@ const HomeContent = (props) => {
                     :null}
                 {optionData.goals&&optionData.goals.length?
                 <View style={styles.programRow}>
-                    <EventList location={'home'} />
+                    <EventList location={'home'} {...props} />
                 </View>:null}
                 {optionData.show.includes('events') && (
                     <View style={styles.eventRow}>
@@ -689,7 +688,7 @@ const styles = StyleSheet.create({
 
 HomeContent.navigationOptions = ({navigation, screenProps}) => {
     const {colors, global} = screenProps;
-    console.log(global);
+    console.log(global)
     return ({
         title: navigation.getParam('title'),
         headerStyle: {

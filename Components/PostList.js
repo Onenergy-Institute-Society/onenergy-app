@@ -1,7 +1,6 @@
 import React, {useEffect, useState } from "react";
 import {
     StyleSheet,
-    Platform,
     View,
     Text,
     Dimensions,
@@ -26,7 +25,7 @@ const PostList = props => {
     const [ loadMore, setLoadMore] = useState(false);
     const [ page, setPage] = useState(1);
     const { navigation, postCategory, postPerPage, postOrder, postOrderBy, useLoadMore, screenProps } = props;
-    const {colors, global} = screenProps;
+    const {global} = screenProps;
     const dispatch = useDispatch();
     const categoryIndex = postReducer.lastView&&postReducer.lastView.length?postReducer.lastView.findIndex(lv => lv.category === parseInt(postCategory)):null;
 
@@ -268,11 +267,11 @@ const styles = StyleSheet.create({
     },
     title: {
         top:0,
-        fontSize: scale(16),
-        fontWeight: 'normal',
+        fontSize: scale(14),
+        fontWeight: 'medium',
         textAlign: 'left',
         color: '#4A4D34',
-        fontFamily: 'MontserratAlternates-SemiBold',
+        fontFamily: 'MontserratAlternates-Medium',
     },
     metaRow: {
         marginLeft:scale(30),
@@ -292,8 +291,8 @@ const styles = StyleSheet.create({
         fontSize: scale(10),
         textAlign: 'left',
         textAlignVertical: 'center',
-        fontStyle: 'italic',
         color: 'black',
+        fontWeight: "normal",
         fontFamily: 'MontserratAlternates-Regular',
     },
     description: {

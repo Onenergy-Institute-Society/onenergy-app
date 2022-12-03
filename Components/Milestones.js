@@ -39,11 +39,9 @@ const Milestones = (props) => {
     const handleOnPress = (item, mode) => {
         if(item.complete_date&&!item.claim_date) {
             playPause();
-            if (Platform.OS !== "android") {
-                LayoutAnimation.configureNext(
-                    LayoutAnimation.Presets.spring
-                );
-            }
+            LayoutAnimation.configureNext(
+                LayoutAnimation.Presets.spring
+            );
             dispatch({
                 type: "ONENERGY_ACHIEVEMENT_CLAIM",
                 payload: {

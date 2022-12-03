@@ -99,13 +99,13 @@ const PracticesContent = props => {
                 <ScrollView style={{flexGrow: 1}} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length) ?
                         <View>
-                            <EventList location={'practice'}/>
+                            <EventList location={'practice'} {...props} />
                         </View>
                         : null
                     }
                     {
                         user ?
-                            <PracticeTipsRow/>
+                            <PracticeTipsRow {...props} />
                             : null
                     }
                     <TouchableScale
@@ -119,11 +119,11 @@ const PracticesContent = props => {
                             background={true}
                         >
                             <Text style={styles.practiceType}>Guided{"\n"}Practice</Text>
+                            <AuthWrapper actionOnGuestLogin={'hide'}>
+                                <NotificationTabBarIcon notificationID={'guide_personal'} top={10} right={10}
+                                                        size={scale(25)} fontSize={12} showNumber={true}/>
+                            </AuthWrapper>
                         </ImageBackground>
-                        <AuthWrapper actionOnGuestLogin={'hide'}>
-                            <NotificationTabBarIcon notificationID={'guide_personal'} top={3} right={3}
-                                                    size={scale(15)} fontSize={10} showNumber={true}/>
-                        </AuthWrapper>
                     </TouchableScale>
 
                     <TouchableScale
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
         marginLeft: 15,
     },
     practiceType: {
-        color: '#4A4D34',
+        color: '#8c79ea',
         fontFamily:"MontserratAlternates-SemiBold",
         fontWeight:"bold",
         fontSize: scale(28)

@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import OnBoarding from './Screens/OnBoarding';
 import {
-    Image,
     Platform,
     StyleSheet,
     Text,
@@ -10,7 +9,7 @@ import {
     ActivityIndicator,
     Alert
 } from "react-native";
-import Svg, {Circle, Path, Rect} from 'react-native-svg';
+import Svg, {Circle, Path} from 'react-native-svg';
 import {getApi} from "@src/services";
 import Icon from "@src/components/Icon";
 import { CourseVideo } from "@src/components/Course/CourseStatus";
@@ -835,7 +834,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     }else{
                         weekProgress = [state.progressReducer.todayDuration]
                     }
-                    if(weekProgress.length>=7) {
+                    if(weekProgress.length>7) {
                         weekProgress.pop();
                     }
                     return {
@@ -2139,10 +2138,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     externalCodeSetup.cssApi.addGlobalStyle("forumListTitle", {"fontWeight": "bold"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("subForumTitle", {"fontWeight": "bold"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("settingsItemTitle", {"fontWeight": "bold"}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("textHeaderTitle", {"fontWeight": "bold"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("widgetTitle", {"fontWeight": "bold"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("itemTitle", {"fontWeight": "bold"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("pointTitle", {"fontWeight": "medium"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("itemMeta", {"fontWeight": "normal"}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("courseRoundBoxTitleAbove", {"fontWeight": "bold"}, false);
     externalCodeSetup.cssApi.addCustomColors({"altCardColor": "#FFEEE7"});
 
     externalCodeSetup.courseSingleApi.setCourseHeaderDetails(props => {

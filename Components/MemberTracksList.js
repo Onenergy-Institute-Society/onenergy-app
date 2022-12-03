@@ -19,7 +19,7 @@ import TouchableScale from "./TouchableScale";
 
 const MemberTracksList = (props) => {
     const {setMessageBarDisplay,screenProps} = props;
-    const {colors, global} = screenProps;
+    const {global} = screenProps;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
     const [selectedRoutine, setSelectedRoutine] = useState(null);
@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
         fontWeight: 'normal',
     },
     title: {
+        fontFamily:"MontserratAlternates-SemiBold",
         fontSize: scale(16),
         fontWeight: 'bold',
         color: "white",
@@ -244,6 +245,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
     },
     subTitle: {
+        fontFamily:"MontserratAlternates-Regular",
         fontSize: scale(10),
         color:"white",
         backgroundColor:'rgba(0,0,0,0.2)',
@@ -254,6 +256,7 @@ const styles = StyleSheet.create({
         marginBottom:2,
     },
     duration: {
+        fontFamily:"MontserratAlternates-Regular",
         fontSize: scale(12),
         color: "white",
         textShadowColor: 'grey',

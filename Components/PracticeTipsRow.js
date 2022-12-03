@@ -1,7 +1,6 @@
 import React, {useEffect, useState } from "react";
 import {
     StyleSheet,
-    Platform,
     View,
     Text,
     FlatList,
@@ -16,12 +15,12 @@ import {windowWidth} from "../Utils/Dimensions";
 
 const PracticeTipsRow = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const user = useSelector((state) => state.user.userObject);
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const postReducer = useSelector((state) => state.postReducer);
     const [ dataPosts, setPostsData ] = useState([]);
     const [ showTitle, setShowTitle ] = useState(false);
-    const { navigation } = props;
+    const { navigation, screenProps } = props;
+    const {global} = screenProps;
     const dispatch = useDispatch();
     const categoryIndex = postReducer.lastView&&postReducer.lastView.length?postReducer.lastView.findIndex(lv => lv.category === 258):null;
     const fetchPostsData = async () => {
@@ -135,7 +134,7 @@ const PracticeTipsRow = props => {
             <View style={styles.ScrollView}>
                 {showTitle?
                     <View style={styles.view_blog_title}>
-                        <Text style={styles.heading}>Practice Tips</Text>
+                        <Text style={global.widgetTitle}>Practice Tips</Text>
                     </View>
                     :null
                 }

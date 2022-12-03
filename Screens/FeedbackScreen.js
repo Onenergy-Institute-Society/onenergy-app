@@ -4,7 +4,6 @@ import {connect, useSelector} from "react-redux";
 import {
     Alert,
     TouchableOpacity,
-    Platform,
     StyleSheet,
     Text,
     TextInput,
@@ -17,7 +16,6 @@ import {
 } from 'react-native';
 import { Modalize } from 'react-native-modalize';
 import {windowWidth} from "../Utils/Dimensions";
-import IconButton from "@src/components/IconButton";
 import { scale } from '../Utils/scale';
 import Recaptcha from "../Components/Recaptcha";
 import { BlurView } from "@react-native-community/blur";
@@ -25,8 +23,8 @@ import analytics from '@react-native-firebase/analytics';
 import Svg, {Circle, Path} from "react-native-svg";
 
 const FeedbackScreen = props => {
-    const {navigate, screenProps} = props;
-    const {colors, global} = screenProps
+    const {screenProps} = props;
+    const {colors} = screenProps
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [ loading, setLoading ] = useState(false);
     const [content, setContent] = useState('');
@@ -106,11 +104,23 @@ const FeedbackScreen = props => {
                         {item.item}
                     </Text>
                     {subject === item.item?(
-                        <IconButton
-                            icon={require("@src/assets/img/check-simple.png")}
-                            tintColor={"#4942e1"}
-                            style={{ height: 20, width: 20 }}
-                        />
+                        <Svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            style={{marginLeft:scale(10)}}
+                        >
+                            <Path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+                                  fill=""
+                                  stroke={colors.primaryColor}
+                                  strokeWidth="2"
+                            />
+                            <Path d="M22 4 12 14.01l-3-3"
+                                  fill=""
+                                  stroke={colors.primaryColor}
+                                  strokeWidth="2"
+                            />
+                        </Svg>
                     ):null}
                 </View>
             </TouchableWithoutFeedback>
@@ -168,7 +178,7 @@ const FeedbackScreen = props => {
             </View>
             <Modalize
                 ref={(subjectDialog) => { this.subjectDialog = subjectDialog; }}
-                modalStyle={{backgroundColor:colors.bodyBg}}
+                modalStyle={{backgroundColor:colors.bodyFrontBg}}
                 childrenStyle={{padding:25}}
                 adjustToContentHeight = "true"
                 withHandle = "false"

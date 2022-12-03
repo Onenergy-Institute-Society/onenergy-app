@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {
     StyleSheet,
-    Platform,
     View,
     Text,
     SafeAreaView,
@@ -234,16 +233,15 @@ const styles = StyleSheet.create({
     },
     title: {
         top:0,
-        fontSize: scale(11),
+        fontSize: scale(10),
         textAlign: 'left',
         color: 'black',
-        fontWeight: "normal",
-        fontFamily: 'MontserratAlternates-SemiBold',
+        fontWeight: "medium",
+        fontFamily: 'MontserratAlternates-Medium',
     },
     author: {
         fontSize: scale(9),
         textAlign: 'left',
-        fontStyle: 'italic',
         color: 'black',
         fontWeight: "normal",
         fontFamily: 'MontserratAlternates-Regular',
