@@ -6,7 +6,7 @@ import {
     View,
     SafeAreaView,
     Text,
-    AppState, Platform, Picker, TouchableOpacity
+    AppState, Platform, TouchableOpacity, TouchableWithoutFeedback
 } from "react-native";
 import {getApi} from "@src/services";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
@@ -24,6 +24,7 @@ import EventList from "../Components/EventList";
 import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 import analytics from '@react-native-firebase/analytics';
 import ForumsScreen from "@src/containers/Custom/ForumsScreen";
+import IconButton from "@src/components/IconButton";
 import Svg, {Circle, Path} from "react-native-svg";
 import {
     ProgressChart,
@@ -224,25 +225,64 @@ const HomeContent = (props) => {
             }
         }
     }
+    const minutes = [5,10,15,20,25,30,35,40,45,50,55,60];
+    const renderGoalSelector = (item) => {
+        let cornerStyle = {};
+        let bottomStyle = {};
+        switch(item.index)
+        {
+            case 0:
+                cornerStyle = {borderTopLeftRadius:9, borderTopRightRadius:9, marginTop:25};
+                bottomStyle = {borderBottomWidth:1, borderBottomColor:'#E6E6E8'};
+                break;
+            case 11:
+                cornerStyle = {borderBottomLeftRadius:9, borderBottomRightRadius:9, marginBottom:25};
+                break;
+            default:
+                bottomStyle = {borderBottomWidth:1, borderBottomColor:'#E6E6E8'};
+                break;
+        }
+        return (
+            <TouchableWithoutFeedback onPress={() => {
+                dispatch({
+                    type: "ONENERGY_PROGRESS_GOAL",
+                    payload: {
+                        'mode': 'todayGoal',
+                        'data': item.item
+                    }
+                });
+                this.todayGoalDialog.close();
+            }}>
+                <View style={[cornerStyle, bottomStyle, {width: windowWidth-50, marginHorizontal:25, paddingHorizontal:25, backgroundColor:colors.bodyBg, paddingVertical:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
+                    <Text
+                        style={{fontSize:18}}>
+                        {item.item} minutes
+                    </Text>
+                    {progressReducer.todayGoal&&
+                        parseInt(progressReducer.todayGoal) === parseInt(item.item)?(
+                            <Svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                style={{marginLeft:scale(10)}}
+                            >
+                                <Path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+                                      fill=""
+                                      stroke={colors.primaryColor}
+                                      strokeWidth="2"
+                                />
+                                <Path d="M22 4 12 14.01l-3-3"
+                                      fill=""
+                                      stroke={colors.primaryColor}
+                                      strokeWidth="2"
+                                />
+                            </Svg>
+                    ):null}
+                </View>
+            </TouchableWithoutFeedback>
+        )
+    }
 
-    const renderGoalSelector = () => {
-        const minutes = [5,10,15,20,25,30,35,40,45,50,55,60];
-        return minutes.map((item, index)=>{
-            return (
-                <Picker.Item label={item+' minutes'} value={item} key={index} />
-            )
-        })
-    }
-    const chooseGoal = (itemValue, itemIndex) => {
-        dispatch({
-            type: "ONENERGY_PROGRESS_GOAL",
-            payload: {
-                'mode': 'todayGoal',
-                'data': itemValue
-            }
-        });
-        this.todayGoalDialog.close();
-    }
     return (
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
@@ -278,10 +318,10 @@ const HomeContent = (props) => {
                         <View style={{flexDirection:'row', justifyContent:"space-between"}}>
                             <View style={{width:(windowWidth-30)/3, justifyContent:"flex-start", alignItems:"flex-start", paddingLeft:scale(15), paddingTop:scale(15)}}>
                                 <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom:scale(10)}}>
-                                    <Text style={[global.itemTitle,{color:colors.primaryButtonBg}]}>Today: </Text><Text style={[global.text,{color:"#4B34BD"}]}>{progressReducer.todayDuration?Math.round(progressReducer.todayDuration / 60 )>60?Math.round(progressReducer.todayDuration /3600)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.todayDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                    <Text style={[global.itemTitle,{color:colors.primaryColor}]}>Today: </Text><Text style={[global.text,{color:colors.primaryColor}]}>{progressReducer.todayDuration?Math.round(progressReducer.todayDuration / 60 )>60?Math.round(progressReducer.todayDuration /3600)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.todayDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                 </View>
                                 <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
-                                    <Text style={[global.itemTitle,{color:colors.primaryButtonBg}]}>Goal: </Text><Text style={[global.text,{color:"#4B34BD"}]}>{progressReducer.todayGoal?Math.round(progressReducer.todayGoal)>60?Math.round(progressReducer.todayGoal /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:progressReducer.todayGoal + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                    <Text style={[global.itemTitle,{color:colors.primaryColor}]}>Goal: </Text><Text style={[global.text,{color:colors.primaryColor}]}>{progressReducer.todayGoal?Math.round(progressReducer.todayGoal)>60?Math.round(progressReducer.todayGoal /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:progressReducer.todayGoal + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                 </View>
                             </View>
                             <ProgressChart
@@ -298,26 +338,27 @@ const HomeContent = (props) => {
                             />
                         </View>
                     </TouchableScale>
-                    <View style={{position: "absolute", bottom:scale(10),left:scale(10)}}>
+                    <View style={{position: "absolute", bottom:0,left:0}}>
                         <TouchableScale
+                            style={{width:48, height:48, alignItems:"center", justifyContent:"center"}}
                             onPress={
                                 () => {this.todayGoalDialog.open();}}>
                             <Svg
-                                width="32"
-                                height="32"
+                                width="24"
+                                height="24"
                                 viewBox="0 0 24 24"
                             >
                                 <Circle cx="12"
                                         cy="12"
                                         r="3"
                                         fill="none"
-                                        stroke={colors.primaryButtonBg}
+                                        stroke={colors.primaryColor}
                                         strokeWidth="2"
                                 />
                                 <Path
                                     d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
                                     fill="none"
-                                    stroke={colors.primaryButtonBg}
+                                    stroke={colors.primaryColor}
                                     strokeWidth="2"
                                 />
                             </Svg>
@@ -443,7 +484,7 @@ const HomeContent = (props) => {
                         backgroundColor: colors.bodyBg,
                         borderBottomColor: colors.borderColor
                     }}>
-                        <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Choose Goal</Text>
+                        <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Daily Goal</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 this.todayGoalDialog.close();
@@ -465,12 +506,14 @@ const HomeContent = (props) => {
                         </TouchableOpacity>
                     </View>
                 }
-            >
-                <Picker selectedValue={progressReducer.todayGoal} onValueChange={(itemValue, itemIndex) => {chooseGoal(itemValue, itemIndex)}}>
-                    {renderGoalSelector()}
-                </Picker>
-        </Modalize>
-    </SafeAreaView>
+                flatListProps = {{
+                    data: minutes,
+                    renderItem: renderGoalSelector,
+                    keyExtractor: (item, index) => `${item.title}-${index}`,
+                    showsVerticalScrollIndicator: false
+                }}
+            />
+        </SafeAreaView>
     );
 };
 
@@ -646,6 +689,7 @@ const styles = StyleSheet.create({
 
 HomeContent.navigationOptions = ({navigation, screenProps}) => {
     const {colors, global} = screenProps;
+    console.log(global);
     return ({
         title: navigation.getParam('title'),
         headerStyle: {
@@ -688,9 +732,9 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
                             viewBox="0 0 32 32"
                             style={{marginRight:scale(10)}}
                         >
-                            <Path d="M16 1a15 15 0 1 0 15 15A15 15 0 0 0 16 1Zm0 28a13 13 0 1 1 13-13 13 13 0 0 1-13 13Z" fill={colors.headerIconColor} />
-                            <Path d="M16 5a11 11 0 1 0 11 11A11 11 0 0 0 16 5Zm0 20a9 9 0 1 1 9-9 9 9 0 0 1-9 9Z" fill={colors.headerIconColor} />
-                            <Path d="M22.9 14.26a2 2 0 0 0-1.9-1.39h-2.36l-.72-2.22a2 2 0 0 0-3.84 0l-.73 2.23H11a2 2 0 0 0-1.19 3.64l1.89 1.38-.7 2.21a2 2 0 0 0 .73 2.25 2 2 0 0 0 1.19.39 2 2 0 0 0 1.18-.39L16 21l1.89 1.37A2 2 0 0 0 21 20.11l-.72-2.23 1.89-1.37a2 2 0 0 0 .73-2.25Zm-3.79 2a2 2 0 0 0-.74 2.25l.7 2.23-1.89-1.37a2 2 0 0 0-2.36 0l-1.91 1.36.72-2.22a2 2 0 0 0-.74-2.25L11 14.87h2.33a2 2 0 0 0 1.92-1.39l.75-2.24.72 2.22a2 2 0 0 0 1.92 1.39h2.34Z" fill={colors.headerIconColor} />
+                            <Path d="M16 1a15 15 0 1 0 15 15A15 15 0 0 0 16 1Zm0 28a13 13 0 1 1 13-13 13 13 0 0 1-13 13Z" fill={colors.primaryButtonBg} />
+                            <Path d="M16 5a11 11 0 1 0 11 11A11 11 0 0 0 16 5Zm0 20a9 9 0 1 1 9-9 9 9 0 0 1-9 9Z" fill={colors.primaryButtonBg} />
+                            <Path d="M22.9 14.26a2 2 0 0 0-1.9-1.39h-2.36l-.72-2.22a2 2 0 0 0-3.84 0l-.73 2.23H11a2 2 0 0 0-1.19 3.64l1.89 1.38-.7 2.21a2 2 0 0 0 .73 2.25 2 2 0 0 0 1.19.39 2 2 0 0 0 1.18-.39L16 21l1.89 1.37A2 2 0 0 0 21 20.11l-.72-2.23 1.89-1.37a2 2 0 0 0 .73-2.25Zm-3.79 2a2 2 0 0 0-.74 2.25l.7 2.23-1.89-1.37a2 2 0 0 0-2.36 0l-1.91 1.36.72-2.22a2 2 0 0 0-.74-2.25L11 14.87h2.33a2 2 0 0 0 1.92-1.39l.75-2.24.72 2.22a2 2 0 0 0 1.92 1.39h2.34Z" fill={colors.primaryButtonBg} />
                         </Svg>
                         <NotificationTabBarIcon notificationID={'quest'} top={-5} right={5} size={scale(10)} showNumber={false} />
                     </TouchableScale>
@@ -705,8 +749,8 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
                             viewBox="0 0 32 32"
                             style={{marginRight:scale(10)}}
                         >
-                            <Path d="m30.77 24.21-3.36-4a13 13 0 1 0-22.82 0l-3.36 4a1 1 0 0 0-.18 1 1 1 0 0 0 .72.66l3.86.92 1.58 3.61A1 1 0 0 0 8 31h.15a1 1 0 0 0 .76-.36l3.5-4.16a12.79 12.79 0 0 0 7.22 0l3.5 4.16a1 1 0 0 0 .76.36H24a1 1 0 0 0 .77-.59l1.58-3.65 3.86-.92a1 1 0 0 0 .72-.66 1 1 0 0 0-.16-.97ZM8.4 28.12 7.27 25.5a1 1 0 0 0-.69-.58l-2.77-.66L5.74 22a13.07 13.07 0 0 0 4.67 3.77ZM5 14a11 11 0 1 1 11 11A11 11 0 0 1 5 14Zm20.42 10.92a1 1 0 0 0-.69.58l-1.13 2.62-2-2.4A13.07 13.07 0 0 0 26.26 22l1.93 2.31Z" fill={colors.headerIconColor} />
-                            <Path d="M23.89 12a2.15 2.15 0 0 0-2.07-1.51h-2.73a.17.17 0 0 1-.17-.12l-.84-2.57a2.19 2.19 0 0 0-4.16 0l-.84 2.59a.17.17 0 0 1-.17.12h-2.73a2.19 2.19 0 0 0-1.28 4l2.2 1.6a.16.16 0 0 1 .07.2l-.84 2.59a2.15 2.15 0 0 0 .79 2.44 2.18 2.18 0 0 0 2.57 0l2.2-1.6a.18.18 0 0 1 .22 0l2.2 1.6a2.18 2.18 0 0 0 2.57 0 2.15 2.15 0 0 0 .79-2.44l-.84-2.59a.17.17 0 0 1 .06-.2l2.21-1.6a2.14 2.14 0 0 0 .79-2.51Zm-2 .82-2.2 1.6a2.16 2.16 0 0 0-.79 2.44l.84 2.59a.16.16 0 0 1-.07.2.16.16 0 0 1-.21 0l-2.21-1.6a2.16 2.16 0 0 0-2.56 0l-2.21 1.6a.16.16 0 0 1-.21 0 .16.16 0 0 1-.07-.2l.84-2.59a2.16 2.16 0 0 0-.79-2.44l-2.2-1.6a.16.16 0 0 1-.07-.2.16.16 0 0 1 .17-.13h2.73A2.16 2.16 0 0 0 15 11l.85-2.59a.18.18 0 0 1 .34 0L17 11a2.16 2.16 0 0 0 2.07 1.5h2.73a.16.16 0 0 1 .17.13.16.16 0 0 1-.05.21Z" fill={colors.headerIconColor} />
+                            <Path d="m30.77 24.21-3.36-4a13 13 0 1 0-22.82 0l-3.36 4a1 1 0 0 0-.18 1 1 1 0 0 0 .72.66l3.86.92 1.58 3.61A1 1 0 0 0 8 31h.15a1 1 0 0 0 .76-.36l3.5-4.16a12.79 12.79 0 0 0 7.22 0l3.5 4.16a1 1 0 0 0 .76.36H24a1 1 0 0 0 .77-.59l1.58-3.65 3.86-.92a1 1 0 0 0 .72-.66 1 1 0 0 0-.16-.97ZM8.4 28.12 7.27 25.5a1 1 0 0 0-.69-.58l-2.77-.66L5.74 22a13.07 13.07 0 0 0 4.67 3.77ZM5 14a11 11 0 1 1 11 11A11 11 0 0 1 5 14Zm20.42 10.92a1 1 0 0 0-.69.58l-1.13 2.62-2-2.4A13.07 13.07 0 0 0 26.26 22l1.93 2.31Z" fill={colors.primaryButtonBg} />
+                            <Path d="M23.89 12a2.15 2.15 0 0 0-2.07-1.51h-2.73a.17.17 0 0 1-.17-.12l-.84-2.57a2.19 2.19 0 0 0-4.16 0l-.84 2.59a.17.17 0 0 1-.17.12h-2.73a2.19 2.19 0 0 0-1.28 4l2.2 1.6a.16.16 0 0 1 .07.2l-.84 2.59a2.15 2.15 0 0 0 .79 2.44 2.18 2.18 0 0 0 2.57 0l2.2-1.6a.18.18 0 0 1 .22 0l2.2 1.6a2.18 2.18 0 0 0 2.57 0 2.15 2.15 0 0 0 .79-2.44l-.84-2.59a.17.17 0 0 1 .06-.2l2.21-1.6a2.14 2.14 0 0 0 .79-2.51Zm-2 .82-2.2 1.6a2.16 2.16 0 0 0-.79 2.44l.84 2.59a.16.16 0 0 1-.07.2.16.16 0 0 1-.21 0l-2.21-1.6a2.16 2.16 0 0 0-2.56 0l-2.21 1.6a.16.16 0 0 1-.21 0 .16.16 0 0 1-.07-.2l.84-2.59a2.16 2.16 0 0 0-.79-2.44l-2.2-1.6a.16.16 0 0 1-.07-.2.16.16 0 0 1 .17-.13h2.73A2.16 2.16 0 0 0 15 11l.85-2.59a.18.18 0 0 1 .34 0L17 11a2.16 2.16 0 0 0 2.07 1.5h2.73a.16.16 0 0 1 .17.13.16.16 0 0 1-.05.21Z" fill={colors.primaryButtonBg} />
                         </Svg>
                         <NotificationTabBarIcon notificationID={'milestone'} top={-5} right={5} size={scale(10)} showNumber={false} />
                     </TouchableScale>
@@ -723,7 +767,7 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
                         >
                             <Path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"
                                   fill="none"
-                                  stroke={colors.headerIconColor}
+                                  stroke={colors.primaryButtonBg}
                                   strokeWidth="2"
                             />
                         </Svg>

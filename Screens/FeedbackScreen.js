@@ -100,7 +100,7 @@ const FeedbackScreen = props => {
         }
         return (
             <TouchableWithoutFeedback onPress={() => {setSubject(item.item);this.subjectDialog.close();}}>
-                <View style={[cornerStyle, bottomStyle, {paddingHorizontal:25, backgroundColor:"#F2F2F2", paddingVertical:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
+                <View style={[cornerStyle, bottomStyle, {paddingHorizontal:25, backgroundColor:colors.bodyBg, paddingVertical:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
                     <Text
                         style={{fontSize:18}}>
                         {item.item}

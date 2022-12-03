@@ -384,7 +384,7 @@ const EditRoutine = props => {
                 this.countDialog.close();
             }
             }>
-                <View style={[cornerStyle,bottomStyle, {width: windowWidth-50, marginHorizontal:25, paddingHorizontal:25, backgroundColor:"#F2F2F2", paddingVertical:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
+                <View style={[cornerStyle,bottomStyle, {width: windowWidth-50, marginHorizontal:25, paddingHorizontal:25, backgroundColor:colors.bodyBg, paddingVertical:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
                     <Text
                         style={{fontSize:18}}>
                         {item.item} {currentTrack.item.mode === "1"?item.index>0?" minutes":" minute":item.index>0?" times":" time"}
@@ -418,7 +418,7 @@ const EditRoutine = props => {
         }
         return (
             <TouchableWithoutFeedback onPress={() => {setRoutineDetail(prevState => ({...prevState, bgm:item.item.name}));setSelectBgm(item.item.name);setChangedStatus(true);this.bgmDialog.close();}}>
-                <View style={[cornerStyle,bottomStyle, {paddingHorizontal:25, backgroundColor:"#F2F2F2", paddingVertical:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
+                <View style={[cornerStyle,bottomStyle, {paddingHorizontal:25, backgroundColor:colors.bodyBg, paddingVertical:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
                     <Text
                         style={{fontSize:18}}>
                         {item.item.name}
@@ -427,7 +427,7 @@ const EditRoutine = props => {
                         <IconButton
                             icon={require("@src/assets/img/check-simple.png")}
                             tintColor={"#4942e1"}
-                            style={{ height: 20, width: 20 }}
+                            style={{ position:"absolute", right:10, height: 20, width: 20 }}
                         />
                     ):null}
                 </View>
@@ -541,7 +541,7 @@ const EditRoutine = props => {
             }
             <Modalize
                 ref={(countDialog) => { this.countDialog = countDialog; }}
-                modalStyle={{backgroundColor:"#F8F0E2"}}
+                modalStyle={{backgroundColor:colors.bodyFrontBg}}
                 modalHeight={windowHeight/2}
                 withHandle = "false"
                 HeaderComponent={
