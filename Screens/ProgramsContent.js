@@ -1,14 +1,14 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {
     StyleSheet,
     View,
     Text,
     TouchableOpacity,
     SafeAreaView,
-    ScrollView, TouchableWithoutFeedback, FlatList
+    ScrollView, TouchableWithoutFeedback, FlatList, ActivityIndicator
 } from "react-native";
-import {useSelector} from "react-redux";
-import {windowWidth} from "../Utils/Dimensions";
+import {useSelector, useDispatch} from "react-redux";
+import {windowWidth, windowHeight} from "../Utils/Dimensions";
 import {NavigationActions, withNavigation} from "react-navigation";
 import CoursesScreen from "@src/containers/Custom/CoursesScreen";
 import TouchableScale from "../Components/TouchableScale";
@@ -26,19 +26,10 @@ const ProgramsContent = props => {
     const { navigation, screenProps } = props;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
     const coursesCache = useSelector((state) => state.coursesCache.byId);
     const { global, colors } = screenProps;
-    let courses = [];
-
-    if(coursesCache&&coursesCache._root&&coursesCache._root.nodes.length) {
-            Object.values(coursesCache._root.nodes).map((course) => {
-                courses.push({'id': course.entry[0], 'data': course.entry[1]});
-            })
-            courses.sort((a, b) => {
-                return a.id > b.id
-            })
-            console.log("courses", courses)
-    }
+    const dispatch = useDispatch();
 
     const onFocusHandler=() =>{
         try
@@ -57,6 +48,11 @@ const ProgramsContent = props => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'programs_title').title,
         });
+        if(progressReducer.loadCourses){
+            dispatch({
+                type: 'ONENERGY_COURSE_UPDATE',
+            });
+        }
         if(user) {
             navigation.addListener('willFocus', onFocusHandler)
             return () => {
@@ -65,7 +61,7 @@ const ProgramsContent = props => {
         }
     },[]);
     const renderCourse = ({item}) => {
-        let viewModel = item['data'];
+        let viewModel = item;
         let featuredUrl = viewModel.featured_media.large;
         let statusText;
         let statusBarColor;
@@ -165,7 +161,6 @@ const ProgramsContent = props => {
                             :null
                         }
                         <ImageCache style={styles.image} source={{uri: featuredUrl ? featuredUrl : ''}}/>
-                        <Text style={styles.title}>{viewModel.title.rendered}</Text>
                         <View style={styles.metaOverlay}>
                             {viewModel.progression > 0 && viewModel.progression < 100 && !viewModel.price.expired ?
                                 <View style={styles.progressBar}><View style={{
@@ -189,7 +184,7 @@ const ProgramsContent = props => {
     }
 
     return (
-        <SafeAreaView style={global.container}>
+        <SafeAreaView style={[global.container, {flex:1}]}>
             <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                 <View style={{marginVertical: scale(5)}}>
                     <EventList location={'program'} {...props} />
@@ -197,16 +192,22 @@ const ProgramsContent = props => {
                 <View style={styles.heading_title}>
                     <Text style={global.widgetTitle}>Preparatory Courses</Text>
                 </View>
-                {coursesCache&&coursesCache._root&&coursesCache._root.nodes.length ?
+                {!progressReducer.loadCourses||coursesCache&&coursesCache.valueSeq()&&coursesCache.valueSeq().toJS().length?
+                    <>
+                    <Text>Test</Text>
                     <FlatList
                         contentContainerStyle={{paddingBottom: scale(60)}}
-                        data={Object.values(courses)}
+                        data={coursesCache.valueSeq().toJS()}
                         renderItem={renderCourse}
                         keyExtractor={item => item.id}
                     />
+                    </>
                     :
-                    <CoursesScreen style={{flex:1}} {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
-                                   hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
+                    <>
+                        <ActivityIndicator style={styles.loading} size="large"/>
+                        <CoursesScreen style={{width:0, height:0}} {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
+                                       hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
+                    </>
                 }
             </ScrollView>
         </SafeAreaView>

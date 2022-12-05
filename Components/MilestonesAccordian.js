@@ -31,7 +31,7 @@ class MilestonesAccordian extends Component {
         let claim_date = '';
         if(this.props.item.complete_date) complete_date = this.props.item.complete_date;
         if(this.props.item.claim_date) claim_date = this.props.item.claim_date;
-
+console.log(this.props.item)
         return (
             <View style={[styles.column, styles.boxShadow, {backgroundColor: this.props.screenProps.colors.bodyBg}]}>
                 <View style={[styles.row, {
@@ -70,7 +70,7 @@ class MilestonesAccordian extends Component {
                         <View style={[styles.rowRight, {backgroundColor:!complete_date?this.props.screenProps.colors.primaryButtonBg:!claim_date?this.props.screenProps.colors.primaryColor:'grey',
                             borderBottomRightRadius: this.state.expanded ? 0 : 9,}]}>
                             {
-                                complete_date?
+                                !complete_date?
                                 <>
                                     <Text
                                         style={[this.props.screenProps.global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
@@ -145,12 +145,12 @@ class MilestonesAccordian extends Component {
                                                 style={{marginLeft:scale(10)}}
                                             >
                                                 <Path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
-                                                      fill=""
+                                                      fill="none"
                                                       stroke={this.props.screenProps.colors.primaryColor}
                                                       strokeWidth="2"
                                                 />
                                                 <Path d="M22 4 12 14.01l-3-3"
-                                                      fill=""
+                                                      fill="none"
                                                       stroke={this.props.screenProps.colors.primaryColor}
                                                       strokeWidth="2"
                                                 />

@@ -34,12 +34,12 @@ const PostList = props => {
             let notify = false;
             const api = getApi(props.config);
             const data = await api.customRequest(
-                "wp-json/wp/v2/posts?_embed&categories="+postCategory+"&order="+postOrder+"&orderby="+postOrderBy+"&per_page="+postPerPage+"&page="+page,          // Endpoint suffix or full url. Suffix will be appended to the site url that app uses. Example of a suffix is "wp-json/buddyboss/v1/members". Example of full url would be "https://app-demos.buddyboss.com/learndash/wp-json/buddyboss/v1/members".
-                "get",       // get, post, patch, delete etc.
-                {},               // JSON, FormData or any other type of payload you want to send in a body of request
-                null,             // validation function or null
-                {},               // request headers object
-                false   // true - if full url is given, false if you use the suffix for the url. False is default.
+                "wp-json/wp/v2/posts?_embed&categories="+postCategory+"&order="+postOrder+"&orderby="+postOrderBy+"&per_page="+postPerPage+"&page="+page,
+                "get",
+                {},
+                null,
+                {},
+                false
             ).then(response => response.data);
             let posts = [];
             data.map((item) => {
@@ -268,10 +268,10 @@ const styles = StyleSheet.create({
     title: {
         top:0,
         fontSize: scale(14),
-        fontWeight: 'medium',
+        fontWeight: 'bold',
         textAlign: 'left',
         color: '#4A4D34',
-        fontFamily: 'MontserratAlternates-Medium',
+        fontFamily: 'MontserratAlternates-SemiBold',
     },
     metaRow: {
         marginLeft:scale(30),

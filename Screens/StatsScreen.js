@@ -12,7 +12,8 @@ import {windowWidth} from "../Utils/Dimensions";
 import LinearGradient from 'react-native-linear-gradient';
 import analytics from '@react-native-firebase/analytics';
 import Svg, {Circle, Path} from "react-native-svg";
-/*import {LineChart, PieChart} from "react-native-chart-kit";*/
+import {LineChart, PieChart} from "react-native-chart-kit";
+import moment from 'moment';
 
 const StatsScreen = (props) => {
     const {screenProps} = props;
@@ -27,27 +28,38 @@ const StatsScreen = (props) => {
         screen_name: 'Progress Screen',
     });
 
-/*    let tmpWeek=[];
+    let tmpWeek=[];
     let today = new Date();
     tmpWeek=[today.getDay()];
-    console.log(today.getDay())
+
     Array.from({length: 6}, (_, i) => {
         today.setDate(today.getDate() - 1);
-        tmpWeek.push(today.getDay());
+        tmpWeek.push({day:today.getDay(),date:new moment().add(-i, 'days').format('YYYY-MM-DD')});
     });
-console.log(progressReducer.weekProgress)
+
+    let weekProgress = [];
+    tmpWeek.map((day)=>{
+        let weekIndex = progressReducer.progress.findIndex(item=>item.date===day.date);
+        if (weekIndex !== -1)
+        {
+            weekProgress.push(progressReducer.progress[weekIndex].duration);
+        }else{
+            weekProgress.push(0);
+        }
+    })
+
     const weekDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const dataWeekly = {
-        labels: [weekDay[tmpWeek[6]], weekDay[tmpWeek[5]], weekDay[tmpWeek[4]], weekDay[tmpWeek[3]], weekDay[tmpWeek[2]], weekDay[tmpWeek[1]], weekDay[tmpWeek[0]]],
+        labels: [weekDay[tmpWeek[6].day], weekDay[tmpWeek[5].day], weekDay[tmpWeek[4].day], weekDay[tmpWeek[3].day], weekDay[tmpWeek[2].day], weekDay[tmpWeek[1].day], weekDay[tmpWeek[0].day]],
         datasets: [
             {
-                data: progressReducer.weekProgress,
+                data: weekProgress,
                 color: (opacity = 1) => `rgba(236, 87, 24, ${opacity})`,
                 strokeWidth: 2
             }
         ],
-    };*/
-/*
+    };
+
     let pieData=[];
     let pieLegend=['#093423', '#157d54', '#1eb478', '#22cc89', '#2edc97', '#65e5b2', '#95eecb', '#b4f3da', '#ccf7e6', '#fdfffe', '#ffffff'];
     if(progressReducer.practicesStats&&progressReducer.practicesStats.length) {
@@ -72,7 +84,7 @@ console.log(progressReducer.weekProgress)
         strokeWidth: 3, // optional, default 3
         barPercentage: 1,
         useShadowColorFromDataset: false, // optional
-    };*/
+    };
 
     useEffect(() => {
         props.navigation.setParams({
@@ -120,7 +132,7 @@ console.log(progressReducer.weekProgress)
                 <View style={[styles.card, styles.boxShadow]}>
                     <View style={[styles.header, {backgroundColor: "#f29066"}]}>
                         <Text style={styles.headerText}>
-                            Weekly Progress
+                            Weekly Progress (minutes)
                         </Text>
                     </View>
                     <View style={[styles.container,{
@@ -132,13 +144,15 @@ console.log(progressReducer.weekProgress)
                         backgroundColor: "#fceee8",
                         paddingVertical: scale(15)
                     }]}>
-{/*                        <LineChart
+                        <LineChart
                             data={dataWeekly}
                             width={windowWidth-scale(40)}
                             height={scale(150)}
                             verticalLabelRotation={0}
                             chartConfig={chartConfig}
-                        />*/}
+                            formatYLabel={(value) => value/60}
+                            bezier
+                        />
                     </View>
                 </View>
                 <View style={[styles.boxShadow, styles.card]}>
@@ -351,7 +365,7 @@ console.log(progressReducer.weekProgress)
                                         </>
                                     )
                                 })}
-{/*                                    <PieChart
+                                    <PieChart
                                         data={pieData}
                                         accessor={"duration"}
                                         width={windowWidth-scale(40)}
@@ -360,7 +374,7 @@ console.log(progressReducer.weekProgress)
                                         verticalLabelRotation={0}
                                         chartConfig={chartConfig}
                                         hasLegend={false}
-                                    />*/}
+                                    />
                                 </>
                                 :
                                 <View style={[styles.row, styles.lastRow]}>

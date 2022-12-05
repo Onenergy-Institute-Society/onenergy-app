@@ -10,6 +10,7 @@ import {
     Alert
 } from "react-native";
 import Svg, {Circle, Path} from 'react-native-svg';
+import {Map} from 'immutable';
 import {getApi} from "@src/services";
 import Icon from "@src/components/Icon";
 import { CourseVideo } from "@src/components/Course/CourseStatus";
@@ -66,6 +67,7 @@ import ProgramsContent from "./Screens/ProgramsContent";
 import HomeScreen from './Screens/HomeScreen';
 import ForumItem from "./Components/ForumItem";
 import CourseIcons from "./Components/CourseIcons";
+import {getConstantsForViewManager} from "react-native/Libraries/ReactNative/DummyUIManager";
 
 export const applyCustomCode = (externalCodeSetup: any) => {
     externalCodeSetup.navigationApi.addNavigationRoute(
@@ -671,7 +673,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 completedLessons: [],
                 enrolledCourses: [],
                 completedCourses: [],
-                weekProgress:[0,0,0,0,0,0,0]
+                progress:[],
+                loadCourses: false,
             },
             achievementReducer: {
                 weekly: {days: [], complete_date: '', claim_date: ''},
@@ -738,7 +741,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             idProgressReducer.todayDuration = 0;
                             idProgressReducer.todayGoal = 10;
                             idProgressReducer.weekDuration = 0;
-                            idProgressReducer.weekProgress = [0,0,0,0,0,0,0];
+                            idProgressReducer.progress = [];
                             idProgressReducer.totalDays = 0;
                             idProgressReducer.lastPractice = '';
                             idProgressReducer.latestUpdate = '';
@@ -754,11 +757,20 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         idProgressReducer.progressUpdate = new Date().toISOString();
                     }
                     console.log('7', idPracticeReducer, idAchievementReducer, idProgressReducer)
+                    idProgressReducer.loadCourses = true;
                     return {
                         ...state,
                         practiceReducer: idPracticeReducer,
                         achievementReducer: idAchievementReducer,
                         progressReducer: idProgressReducer,
+                    };
+                case "ONENERGY_COURSE_UPDATE":
+                    return {
+                        ...state,
+                        practiceReducer: {
+                            ...state.progressReducer,
+                            loadCourses: false,
+                        }
                     };
                 case "ONENERGY_ROUTINE_UPDATE":
                     return {
@@ -827,23 +839,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             };
                     }
                     break;
-                case "ONENERGY_PROGRESS_TODAY_RESET":
-                    let weekProgress = state.progressReducer.weekProgress;
-                    if(weekProgress) {
-                        weekProgress.push(state.progressReducer.todayDuration);
-                    }else{
-                        weekProgress = [state.progressReducer.todayDuration]
-                    }
-                    if(weekProgress.length>7) {
-                        weekProgress.pop();
-                    }
-                    return {
-                        ...state,
-                        progressReducer: {
-                            ...state.progressReducer,
-                            weekProgress: weekProgress,
-                        }
-                    };
                 case "ONENERGY_PROGRESS_UPLOADED":
                     console.log('upload_done')
                     return {
@@ -867,6 +862,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     let acpTempIndex;
 
                     updateDaily = today !== state.progressReducer.lastPractice;
+
                     if (updateDaily) {
                         console.log('21')
                         acpTempProgressState.todayDuration = 0;
@@ -955,7 +951,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     switch (acpMode) {
                         case 'PP':
                             console.log('31')
-
                             tempArray.push({'id': acpData, 'count': 1});
                             break;
                         case 'PR':
@@ -1105,6 +1100,16 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         });
                     })
                     console.log('5', acpTempProgressState)
+
+                    let todayProgressIndex = acpTempProgressState.progress.findIndex(item=> item.date === today);
+                    if(todayProgressIndex!==-1){
+                        acpTempProgressState.progress[todayProgressIndex].duration = acpTempProgressState.todayDuration;
+                    }else{
+                        acpTempProgressState.progress.push({
+                            data: today,
+                            duration: acpTempProgressState.todayDuration
+                        })
+                    }
 
                     acpTempProgressState.actionList.push({
                         'mode': acpMode,
@@ -1970,10 +1975,14 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                                                 logout
                                                             }) => {
         const dispatch = useDispatch();
+
         const config = useSelector((state) => state.config ? state.config : null);
         const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
         const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
-        return <View style={global.tabLinksContainer}>
+        const user = useSelector((state) => state.user.userObject);
+        return (
+        user?
+        <View style={global.tabLinksContainer}>
             <AppTouchableOpacity
                 style={global.logout}
                 onPress={() => {
@@ -2059,6 +2068,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 )}
             </AppTouchableOpacity>
         </View>
+            :null
+        )
     })
 
     externalCodeSetup.forumsHooksApi.setForumItemComponent(props => <ForumItem {...props} />)
