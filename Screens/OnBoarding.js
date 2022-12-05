@@ -48,7 +48,7 @@ console.log(colors)
             <View style={styles.bottomSlides}>
                 <FastImage style={styles.imageLeaves} source={require('../assets/images/leaves_yellow.png')} resizeMode="contain" />
                 <View style={[styles.topPagerView, {backgroundColor: colors.primaryButtonBg}]}>
-                    <Text style={[global.textItemSubtitle, {color: colors.bodyFrontBg}]}>{currentIndex + 1} of {optionData.feature_slider.length}</Text>
+                    <Text style={[global.textAlt, {color: colors.bodyFrontBg}]}>{currentIndex + 1} of {optionData.feature_slider.length}</Text>
                 </View>
                 <FlatList
                     data = {optionData.feature_slider}
