@@ -674,7 +674,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 enrolledCourses: [],
                 completedCourses: [],
                 progress:[],
-                loadCourses: false,
+                loadCourses: true,
             },
             achievementReducer: {
                 weekly: {days: [], complete_date: '', claim_date: ''},
@@ -1369,6 +1369,32 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     return state;
             }
         }
+    );
+
+    const customBlogReducer = reducer => (state = reducer(undefined, {}), action) => {
+        switch (action.type) {
+            case "ONENERGY_BLOG_UPDATE":
+                let blogCache = state.blogCache;
+/*                console.log('action.payload',action.payload)
+                action.payload.map((item) => {
+                    blogCache = blogCache.set(item.id, item);
+                });*/
+                console.log('blogCache', blogCache)
+                const newBlogs = {
+                    ...state,
+                    blogCache: {
+                        ...state.blogCache,
+                        byId: blogCache
+                    }
+                }
+                return reducer(newBlogs, action);
+            default:
+                return reducer(state, action);
+        }
+    }
+    externalCodeSetup.reduxApi.wrapReducer(
+        'blogCache',
+        customBlogReducer
     );
 
     // Add Video reducer for course completion

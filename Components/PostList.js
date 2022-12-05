@@ -42,6 +42,10 @@ const PostList = props => {
                 false
             ).then(response => response.data);
             let posts = [];
+/*            dispatch({
+                type: 'ONENERGY_BLOG_UPDATE',
+                payload: data,
+            });*/
             data.map((item) => {
                 if (!postReducer.posts.length || !postReducer.posts.find(post => post.id === item.id)) {
                     if(categoryIndex&&categoryIndex>=0){

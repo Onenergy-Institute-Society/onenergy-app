@@ -194,7 +194,6 @@ const ProgramsContent = props => {
                 </View>
                 {!progressReducer.loadCourses||coursesCache&&coursesCache.valueSeq()&&coursesCache.valueSeq().toJS().length?
                     <>
-                    <Text>Test</Text>
                     <FlatList
                         contentContainerStyle={{paddingBottom: scale(60)}}
                         data={coursesCache.valueSeq().toJS()}
