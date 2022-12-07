@@ -9,9 +9,9 @@ import {
     ActivityIndicator,
     PermissionsAndroid,
     SafeAreaView,
-    FlatList,
-    Share
+    FlatList
 } from "react-native";
+import Share from "react-native-share";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {getApi} from "@src/services";
 import {windowWidth, windowHeight} from "../Utils/Dimensions";
@@ -183,9 +183,9 @@ const QuotesScreen = props => {
             {item.share_url?
             <TouchableScale
                 onPress={() => {
-                    Share.share({
-                        url: item.share_url
-                    }, {})
+                    Share.open({
+                        url: item.share_url,
+                    })
                 }}
             >
                 <View style={[styles.buttonShare, styles.boxShadow]}>

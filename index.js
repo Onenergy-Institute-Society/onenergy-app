@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+/*import React, {useState} from "react";
 import OnBoarding from './Screens/OnBoarding';
 import {
     Platform,
@@ -10,7 +10,6 @@ import {
     Alert
 } from "react-native";
 import Svg, {Circle, Path} from 'react-native-svg';
-import {Map} from 'immutable';
 import {getApi} from "@src/services";
 import Icon from "@src/components/Icon";
 import { CourseVideo } from "@src/components/Course/CourseStatus";
@@ -66,11 +65,10 @@ import PracticesContent from "./Screens/PracticesContent";
 import ProgramsContent from "./Screens/ProgramsContent";
 import HomeScreen from './Screens/HomeScreen';
 import ForumItem from "./Components/ForumItem";
-import CourseIcons from "./Components/CourseIcons";
-import {getConstantsForViewManager} from "react-native/Libraries/ReactNative/DummyUIManager";
+import CourseIcons from "./Components/CourseIcons";*/
 
 export const applyCustomCode = (externalCodeSetup: any) => {
-    externalCodeSetup.navigationApi.addNavigationRoute(
+/*    externalCodeSetup.navigationApi.addNavigationRoute(
         "homePage",
         "Home",
         HomeScreen,
@@ -1375,10 +1373,10 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         switch (action.type) {
             case "ONENERGY_BLOG_UPDATE":
                 let blogCache = state.blogCache;
-/*                console.log('action.payload',action.payload)
+/!*                console.log('action.payload',action.payload)
                 action.payload.map((item) => {
                     blogCache = blogCache.set(item.id, item);
-                });*/
+                });*!/
                 console.log('blogCache', blogCache)
                 const newBlogs = {
                     ...state,
@@ -2351,7 +2349,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 </View>
             </>
         );
-    })
+    })*/
 }
 
 
