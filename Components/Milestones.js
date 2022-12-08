@@ -14,13 +14,12 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import MilestonesAccordian from "./MilestonesAccordian";
 import AchievementItem from "./AchievementItem";
-import Sound from 'react-native-sound';
-Sound.setCategory('Playback');
-const ding = new Sound('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
+import SoundPlayer from 'react-native-sound-player';
+/*const ding = SoundPlayer.playUrl('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
     if (error) {
         console.log('failed to load the sound', error);
     }
-});
+});*/
 if (Platform.OS === "android"){
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 }
@@ -34,7 +33,7 @@ const Milestones = (props) => {
     const dispatch = useDispatch();
 
     const playPause = () => {
-        ding.play();
+        SoundPlayer.playUrl('https://cdn.onenergy.institute/audios/bonus_bell.mp3');
     };
     const handleOnPress = (item, mode) => {
         if(item.complete_date&&!item.claim_date) {

@@ -13,13 +13,13 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import AchievementItem from "./AchievementItem";
 import moment from 'moment';
-import Sound from 'react-native-sound';
-Sound.setCategory('Playback');
+import SoundPlayer from 'react-native-sound-player';
+/*Sound.setCategory('Playback');
 const ding = new Sound('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
     if (error) {
         console.log('failed to load the sound', error);
     }
-});
+});*/
 if (Platform.OS === "android"){
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 }
@@ -33,7 +33,7 @@ const QuestsDaily = (props) => {
     const dispatch = useDispatch();
 
     const playPause = () => {
-        ding.play();
+        SoundPlayer.playUrl('https://cdn.onenergy.institute/audios/bonus_bell.mp3');
     };
     const handleOnPress = (item, date, mode) => {
         switch (mode) {
