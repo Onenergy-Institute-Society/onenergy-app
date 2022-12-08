@@ -14,8 +14,8 @@
   ],
   "author": "",
   "peerDependencies": {
-    "react": "16.9.0",
-    "react-native": "0.61.5"
+    "react": "17.0.2",
+    "react-native": "0.67.4"
   },
   "dependencies": {
     "react-native-chart-kit": "^6.12.0",
