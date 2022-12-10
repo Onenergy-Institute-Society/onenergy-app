@@ -21,7 +21,7 @@ import AuthWrapper from "@src/components/AuthWrapper";
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import EventList from "../Components/EventList";
-import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
+import TrackPlayer, {Capability, RepeatMode, AppKilledPlaybackBehavior} from 'react-native-track-player';
 import analytics from '@react-native-firebase/analytics';
 import ForumsScreen from "@src/containers/Custom/ForumsScreen";
 import Svg, {Circle, Path} from "react-native-svg";
@@ -118,7 +118,9 @@ const HomeContent = (props) => {
             const subscription = AppState.addEventListener("change", _handleAppStateChange);
             TrackPlayer.setupPlayer();
             TrackPlayer.updateOptions({
-                stoppingAppPausesPlayback: true,
+/*                android: {
+                    appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
+                },*/
                 alwaysPauseOnInterruption: false,
                 // Media controls capabilities
                 capabilities: [

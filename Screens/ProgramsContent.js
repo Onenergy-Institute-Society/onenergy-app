@@ -5,7 +5,7 @@ import {
     Text,
     TouchableOpacity,
     SafeAreaView,
-    ScrollView, TouchableWithoutFeedback, FlatList, ActivityIndicator
+    ScrollView, TouchableWithoutFeedback, FlatList, ActivityIndicator, Platform
 } from "react-native";
 import {useSelector, useDispatch} from "react-redux";
 import {windowWidth, windowHeight} from "../Utils/Dimensions";
@@ -192,7 +192,7 @@ const ProgramsContent = props => {
                 <View style={styles.heading_title}>
                     <Text style={global.widgetTitle}>Preparatory Courses</Text>
                 </View>
-                {!progressReducer.loadCourses||coursesCache&&coursesCache.valueSeq()&&coursesCache.valueSeq().toJS().length?
+{/*                {!progressReducer.loadCourses||coursesCache&&coursesCache.valueSeq()&&coursesCache.valueSeq().toJS().length?
                     <>
                     <FlatList
                         contentContainerStyle={{paddingBottom: scale(60)}}
@@ -202,11 +202,12 @@ const ProgramsContent = props => {
                     />
                     </>
                     :
-                    <>
-                        <ActivityIndicator style={styles.loading} size="large"/>
-                        <CoursesScreen style={{width:0, height:0}} {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
+                    <>*/}
+                        <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
                                        hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
+{/*
                     </>
+*/}
                 }
             </ScrollView>
         </SafeAreaView>
