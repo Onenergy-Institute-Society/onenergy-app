@@ -192,23 +192,9 @@ const ProgramsContent = props => {
                 <View style={styles.heading_title}>
                     <Text style={global.widgetTitle}>Preparatory Courses</Text>
                 </View>
-{/*                {!progressReducer.loadCourses||coursesCache&&coursesCache.valueSeq()&&coursesCache.valueSeq().toJS().length?
-                    <>
-                    <FlatList
-                        contentContainerStyle={{paddingBottom: scale(60)}}
-                        data={coursesCache.valueSeq().toJS()}
-                        renderItem={renderCourse}
-                        keyExtractor={item => item.id}
-                    />
-                    </>
-                    :
-                    <>*/}
+
                         <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
                                        hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
-{/*
-                    </>
-*/}
-                }
             </ScrollView>
         </SafeAreaView>
     );
