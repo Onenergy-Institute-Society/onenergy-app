@@ -18,13 +18,8 @@
     "react-native": "0.67.4"
   },
   "dependencies": {
-    "react-native-chart-kit": "^6.12.0",
-    "react-native-sound": "^0.11.2"
+    "react-native-chart-kit": "^6.12.0"
   },
-  "nativeDependencies": {
-    "react-native-sound": "^0.11.2"
-  },
-  "podDependencies": {
-    "RNSound": "react-native-sound"
-  }
+  "nativeDependencies": {},
+  "podDependencies": {}
 }
