@@ -10,7 +10,6 @@ import {
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import moment from 'moment';
-import SoundPlayer from "react-native-sound-player";
 
 const QuestsMonthly = (props) => {
     const {screenProps} = props;
@@ -19,7 +18,6 @@ const QuestsMonthly = (props) => {
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
     const playPause = () => {
-        SoundPlayer.playUrl('https://cdn.onenergy.institute/audios/bonus_bell.mp3');
 /*        let ding = new Sound('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
             if (error) {
                 console.log('failed to load the sound', error);

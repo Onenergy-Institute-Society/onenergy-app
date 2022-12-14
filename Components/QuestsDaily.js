@@ -13,7 +13,6 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import AchievementItem from "./AchievementItem";
 import moment from 'moment';
-import SoundPlayer from 'react-native-sound-player';
 /*Sound.setCategory('Playback');
 const ding = new Sound('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
     if (error) {
@@ -33,7 +32,6 @@ const QuestsDaily = (props) => {
     const dispatch = useDispatch();
 
     const playPause = () => {
-        SoundPlayer.playUrl('https://cdn.onenergy.institute/audios/bonus_bell.mp3');
     };
     const handleOnPress = (item, date, mode) => {
         switch (mode) {
@@ -57,7 +55,7 @@ const QuestsDaily = (props) => {
                 if (item.complete_date !== '' && item.claim_date === '') {
                     LayoutAnimation.configureNext(
                         LayoutAnimation.Presets.spring
-                    );
+                   );
                     playPause();
                     dispatch({
                         type: "ONENERGY_ACHIEVEMENT_CLAIM",

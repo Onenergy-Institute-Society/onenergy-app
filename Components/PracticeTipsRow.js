@@ -247,6 +247,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         marginLeft:scale(15),
     },
+
     heading: {
         fontSize: scale(18),
         fontStyle: "italic",

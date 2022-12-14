@@ -21,6 +21,7 @@ import Svg, {Circle, Path} from "react-native-svg";
 import ImageCache from "../Components/ImageCache";
 import CourseIcons from "../Components/CourseIcons";
 import moment from 'moment';
+import PracticeTipsRow from "../Components/PracticeTipsRow";
 
 const ProgramsContent = props => {
     const { navigation, screenProps } = props;
@@ -189,12 +190,32 @@ const ProgramsContent = props => {
                 <View style={{marginVertical: scale(5)}}>
                     <EventList location={'program'} {...props} />
                 </View>
+                {
+                    user ?
+                        <PracticeTipsRow {...props} />
+                        : null
+                }
                 <View style={styles.heading_title}>
                     <Text style={global.widgetTitle}>Preparatory Courses</Text>
                 </View>
-
+                {!progressReducer.loadCourses||coursesCache&&coursesCache.valueSeq()&&coursesCache.valueSeq().toJS().length?
+                    <>
+                    <FlatList
+                        contentContainerStyle={{paddingBottom: scale(60)}}
+                        data={coursesCache.valueSeq().toJS()}
+                        renderItem={renderCourse}
+                        keyExtractor={item => item.id}
+                    />
+                    </>
+                    :
+                    <>
+                        {Platform.OS === 'android'?
+                        <ActivityIndicator style={styles.loading} size="large"/>
+                            :null}
                         <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
                                        hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
+                    </>
+                }
             </ScrollView>
         </SafeAreaView>
     );

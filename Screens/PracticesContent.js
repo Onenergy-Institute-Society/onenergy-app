@@ -103,11 +103,6 @@ const PracticesContent = props => {
                         </View>
                         : null
                     }
-                    {
-                        user ?
-                            <PracticeTipsRow {...props} />
-                            : null
-                    }
                     <TouchableScale
                         onPress={personalPracticePressed}>
                         <ImageBackground

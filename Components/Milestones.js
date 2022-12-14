@@ -14,7 +14,6 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import MilestonesAccordian from "./MilestonesAccordian";
 import AchievementItem from "./AchievementItem";
-import SoundPlayer from 'react-native-sound-player';
 /*const ding = SoundPlayer.playUrl('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
     if (error) {
         console.log('failed to load the sound', error);
@@ -33,7 +32,6 @@ const Milestones = (props) => {
     const dispatch = useDispatch();
 
     const playPause = () => {
-        SoundPlayer.playUrl('https://cdn.onenergy.institute/audios/bonus_bell.mp3');
     };
     const handleOnPress = (item, mode) => {
         if(item.complete_date&&!item.claim_date) {
