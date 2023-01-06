@@ -158,8 +158,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         paddingHorizontal: scale(25),
-        paddingVertical: scale(10),
-        height: scale(32),
+        paddingVertical: scale(5),
         borderRadius: 18,
     },
     title:{
@@ -180,7 +179,5 @@ const mapStateToProps = (state) => ({
     config: state.config,  // not needed if axios or fetch is used
     accessToken: state.auth.token,
 });
-OnBoarding.navigationOptions = () => ({
-    header: 'null'
-})
+OnBoarding.navigationOptions = {header: null};
 export default connect(mapStateToProps)(withNavigation(OnBoarding));

@@ -682,7 +682,6 @@ const styles = StyleSheet.create({
 
 HomeContent.navigationOptions = ({navigation, screenProps}) => {
     const {colors, global} = screenProps;
-    console.log(global)
     return ({
         title: navigation.getParam('title'),
         headerStyle: {

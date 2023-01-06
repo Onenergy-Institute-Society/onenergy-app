@@ -59,7 +59,7 @@ const PracticePersonal = props => {
     },[messageBarDisplay])
     return (
         <SafeAreaView style={global.container}>
-            {progressReducer.completedLessons.length?
+            {progressReducer.completedLessons&&progressReducer.completedLessons.length?
                 <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length) ?
                         <View>

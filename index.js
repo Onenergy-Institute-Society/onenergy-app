@@ -731,8 +731,10 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     }
                     console.log('6')
                     if (loadProgress) {
+                        console.log('data.progress', data.progress)
                         if (data.progress) {
                             idProgressReducer = data.progress;
+                            if(!idProgressReducer.todayGoal) idProgressReducer.todayGoal = 10;
                         } else {
                             idProgressReducer.points = {'qi': 0};
                             idProgressReducer.totalDuration = 0;

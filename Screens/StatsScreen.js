@@ -461,25 +461,32 @@ const styles = StyleSheet.create({
         marginVertical: 2,
     }
 });
-StatsScreen.navigationOptions = ({navigation, screenProps}) => ({
-    title: navigation.getParam('title'),
-    headerTitleStyle: screenProps.global.appHeaderTitle,
-    headerLeft:
-        <TouchableOpacity
-            onPress={() => {navigation.goBack()}}
-        >
-            <Svg
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                style={{marginLeft:scale(10)}}
+StatsScreen.navigationOptions = ({navigation, screenProps}) => {
+    const {colors, global} = screenProps;
+    return {
+        title: navigation.getParam('title'),
+        headerStyle: {
+            backgroundColor: colors.headerBg,
+        },
+        headerTintColor: colors.headerColor,
+        headerTitleStyle: global.appHeaderTitle,
+        headerLeft:
+            <TouchableOpacity
+                onPress={() => {navigation.goBack()}}
             >
-                <Path d="m15 18-6-6 6-6"
-                      fill="none"
-                      stroke={screenProps.colors.headerIconColor}
-                      strokeWidth="2"
-                />
-            </Svg>
-        </TouchableOpacity>,
-})
+                <Svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    style={{marginLeft:scale(10)}}
+                >
+                    <Path d="m15 18-6-6 6-6"
+                          fill="none"
+                          stroke={screenProps.colors.headerIconColor}
+                          strokeWidth="2"
+                    />
+                </Svg>
+            </TouchableOpacity>,
+        }
+}
 export default StatsScreen;

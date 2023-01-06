@@ -85,7 +85,5 @@ const mapStateToProps = (state) => ({
     config: state.config,  // not needed if axios or fetch is used
     accessToken: state.auth.token,
 });
-OnBoarding.navigationOptions = () => ({
-    header: 'null'
-})
+OnBoarding.navigationOptions = {header: null};
 export default connect(mapStateToProps)(withNavigation(OnBoarding));

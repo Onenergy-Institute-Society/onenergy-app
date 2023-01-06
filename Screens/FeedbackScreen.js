@@ -28,7 +28,8 @@ const FeedbackScreen = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [ loading, setLoading ] = useState(false);
     const [content, setContent] = useState('');
-    const [subject, setSubject] = useState('Choose a subject');
+    const [department, setDepartment] = useState('');
+    const [subject, setSubject] = useState('Choose a Department');
     const recaptcha = useRef();
     analytics().logScreenView({
         screen_class: 'MainActivity',
@@ -39,9 +40,9 @@ const FeedbackScreen = props => {
         try {
             const apiSlide = getApi(props.config);
             await apiSlide.customRequest(
-                "wp-json/onenergy/v1/feedback",
+                "wp-json/onenergy/v1/support",
                 "post",
-                {"subject":subject, "content":content},
+                {"department":department, "subject":subject, "content":content},
                 null,
                 {},
                 false
@@ -63,12 +64,16 @@ const FeedbackScreen = props => {
         });
     }, [])
     const onSendPress = () => {
-        if (subject === 'Choose a subject') {
-            alert('Please choose a subject.');
+        if (department === 'Choose a Department') {
+            alert('Please choose a department.');
+            return false;
+        }
+        if (subject === '') {
+            alert('Please type the subject.');
             return false;
         }
         if (content === '') {
-            alert('Please write the message.');
+            alert('Please type the message.');
             return false;
         }
         recaptcha.current.open();
@@ -127,7 +132,7 @@ const FeedbackScreen = props => {
         )
     }
     return (
-        <SafeAreaView style={styles.Container}>
+        <SafeAreaView style={global.container}>
             <View style={styles.ContainerStyle}>
                 <View style={styles.listContainer}>
                     <TouchableWithoutFeedback
@@ -193,7 +198,7 @@ const FeedbackScreen = props => {
                         backgroundColor: colors.bodyBg,
                         borderBottomColor: colors.borderColor
                     }}>
-                        <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Subject</Text>
+                        <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Department</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 this.subjectDialog.close();
@@ -291,12 +296,20 @@ const styles = StyleSheet.create({
         fontSize: 18,
         paddingLeft: 10,
         flex:4,
+        fontWeight:"700",
+        fontFamily: 'MontserratAlternates-SemiBold',
     },
 });
 FeedbackScreen.navigationOptions = ({ navigation, screenProps }) => {
     const {params = {}} = navigation.state;
+    const {colors, global} = screenProps;
     return({
         headerTitle: params.title?params.title:navigation.getParam('title'),
+        headerStyle: {
+            backgroundColor: colors.headerBg,
+        },
+        headerTintColor: colors.headerColor,
+        headerTitleStyle: global.appHeaderTitle,
         headerLeft:
             <TouchableOpacity
                 onPress={() => navigation.goBack()}

@@ -34,7 +34,7 @@ const AppPageScreen = (props) => {
 }
 
 AppPageScreen.navigationOptions = ({ navigation, screenProps }) => {
-    const {colors} = screenProps;
+    const {global, colors} = screenProps;
     let headerLeft = null;
     let navRoutes = navigation.dangerouslyGetParent().state.routes;
     if(navRoutes.length >= 2){
@@ -60,6 +60,11 @@ AppPageScreen.navigationOptions = ({ navigation, screenProps }) => {
     }
     return {
         title: navigation.getParam('title')?navigation.getParam('title'):'',
+        headerStyle: {
+            backgroundColor: colors.headerBg,
+        },
+        headerTintColor: colors.headerColor,
+        headerTitleStyle: global.appHeaderTitle,
         headerLeft: headerLeft,
     }
 };

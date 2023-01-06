@@ -239,7 +239,13 @@ const CustomDrawerContentComponent = (props) => {
                                                 viewBox="0 0 24 24"
                                             >
                                                 <Path
-                                                    d="M12 20V10M18 20V4M6 20v-4"
+                                                    d="m23 6-9.5 9.5-5-5L1 18"
+                                                    fill="none"
+                                                    stroke={colors.secondaryButtonColor}
+                                                    strokeWidth="2"
+                                                />
+                                                <Path
+                                                    d="M17 6h6v6"
                                                     fill="none"
                                                     stroke={colors.secondaryButtonColor}
                                                     strokeWidth="2"
@@ -442,6 +448,7 @@ const CustomDrawerContentComponent = (props) => {
                                 />
                             </View>
                         </TouchableWithoutFeedback>
+                        {user?
                         <TouchableWithoutFeedback onPress={() => {
                             navigation.navigate("FeedbackScreen");
                         }}>
@@ -461,7 +468,7 @@ const CustomDrawerContentComponent = (props) => {
                                         viewBox="0 0 24 24"
                                     >
                                         <Path
-                                            d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"
+                                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
                                             fill="none"
                                             stroke={colors.secondaryButtonColor}
                                             strokeWidth="2"
@@ -481,6 +488,7 @@ const CustomDrawerContentComponent = (props) => {
                                 />
                             </View>
                         </TouchableWithoutFeedback>
+                            :null}
                         <TouchableWithoutFeedback onPress={() =>
                             navigation.navigate("SettingsScreen")}>
                             <View style={{

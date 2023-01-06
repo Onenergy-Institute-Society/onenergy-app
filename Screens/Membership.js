@@ -148,9 +148,15 @@ const styles = StyleSheet.create({
         marginBottom:scale(10),
     }
 });
-Membership.navigationOptions = ({navigation, screenProps}) => ({
+Membership.navigationOptions = ({navigation, screenProps}) => {
+    const {global, colors} = screenProps;
+    return {
     title: "My Membership",
-    headerTitleStyle: {textAlign:'left'},
+    headerStyle: {
+        backgroundColor: colors.headerBg,
+    },
+    headerTintColor: colors.headerColor,
+    headerTitleStyle: global.appHeaderTitle,
     headerLeft:
         <TouchableOpacity
             onPress={() => {navigation.goBack()}}
@@ -168,5 +174,6 @@ Membership.navigationOptions = ({navigation, screenProps}) => ({
                 />
             </Svg>
         </TouchableOpacity>,
-})
+    }
+}
 export default withDeeplinkClickHandler(Membership);

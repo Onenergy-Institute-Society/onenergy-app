@@ -32,10 +32,11 @@ const PracticeGroup = props => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [loading, setLoading] = useState(false);
-    const groupReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer.groups:null);
-    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
+    const groupReducer = useSelector((state) => state.onenergyReducer.practiceReducer.groups);
+    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
     const [groupPracticeDetail, setGroupPracticeDetail] = useState(0);
     const [currentMinutes, setCurrentMinutes] = useState(new Date().getMinutes());
+
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Group Practice Screen',
@@ -170,19 +171,19 @@ const PracticeGroup = props => {
                                 <Text style={styles.title}>{item.name}</Text>
                                 <View style={{flexDirection: "row", justifyContent: "space-between",marginHorizontal: scale(15)}}>
                                     <View style={{flexDirection: "row", justifyContent: "flex-start",}}>
-                                        <FastImage tintColor="black" source={require("@src/assets/img/stopwatch.png")} style={{width:16, height:16}} />
+                                        <FastImage tintColor={colors.primaryColor} source={require("@src/assets/img/stopwatch.png")} style={{width:16, height:16}} />
                                         <Text style={styles.waitTime}>Start in {timeToGo} mins</Text>
                                     </View>
                                     <WaitingGroupPractice gp_id={item.id}
                                                           gp_time={CurrentStartTime}
-                                                          waitingIconColor={"black"}
+                                                          waitingIconColor={colors.primaryColor}
                                                           waitingStyle={styles.waitingStyle}
                                                           waitingIconStyle={styles.waitingIconStyle}
                                                           waitingTextStyle={styles.waitingTextStyle}/>
                                 </View>
                             </View>
-                            {conditionLessons||optionData.testing_mode||user.test_mode?
-                                timeToGo <= 30||optionData.testing_mode||user.test_mode?
+                            {conditionLessons||(optionData.testing_mode&&user.test_mode)?
+                                timeToGo <= 30||(optionData.testing_mode&&user.test_mode)?
                                     <TouchableOpacity style={styles.btnJoin}
                                                       onPress={() => {
                                                           handlePress(item, CurrentStartTime, startMinutes)
@@ -190,8 +191,9 @@ const PracticeGroup = props => {
                                     >
                                         <Text style={{
                                             color: "white",
-                                            fontSize: scale(20),
-                                            fontWeight: "700"
+                                            fontSize: scale(14),
+                                            fontWeight: "700",
+                                            fontFamily: 'MontserratAlternates-SemiBold',
                                         }}>JOIN</Text>
                                     </TouchableOpacity>
                                     :
@@ -200,9 +202,10 @@ const PracticeGroup = props => {
                                                       }}
                                     >
                                         <Text style={{
-                                            color: "white",
-                                            fontSize: scale(20),
-                                            fontWeight: "700"
+                                            color: "#ef713c",
+                                            fontSize: scale(14),
+                                            fontWeight: "700",
+                                            fontFamily: 'MontserratAlternates-SemiBold',
                                         }}>WAIT</Text>
                                     </TouchableOpacity>
                                 :
@@ -211,17 +214,18 @@ const PracticeGroup = props => {
                                                   }}
                                 >
                                     <Text style={{
-                                        color: "white",
-                                        fontSize: scale(20),
-                                        fontWeight: "700"
+                                        color: "#ef713c",
+                                        fontSize: scale(14),
+                                        fontWeight: "700",
+                                        fontFamily: 'MontserratAlternates-SemiBold',
                                     }}>LOCKED</Text>
                                 </TouchableOpacity>
                             }
                         </View>
-                        {conditionLessons||optionData.testing_mode||user.test_mode?
-                            <Text style={{fontSize: scale(12), textAlign: "center"}}>last for {new Date(item.duration * 1000).toISOString().substring(14, 19)}, repeat every {loop} mins</Text>
+                        {conditionLessons||(optionData.testing_mode&&user.test_mode)?
+                            <Text style={{fontSize: scale(10), textAlign: "center", color:"black", fontFamily: 'MontserratAlternates-Regular'}}>last for {new Date(item.duration * 1000).toISOString().substring(14, 19)}, repeat every {loop} mins</Text>
                             :
-                            <Text style={{fontSize: scale(12), textAlign: "center"}}>Finish required lessons to unlock this group practice.</Text>
+                            <Text style={{fontSize: scale(10), textAlign: "center", color:"black", fontFamily: 'MontserratAlternates-Regular'}}>Finish required lessons to unlock this group practice.</Text>
                         }
                         <Text style={styles.description}>tap to view detail</Text>
                     </ImageBackground>
@@ -231,7 +235,7 @@ const PracticeGroup = props => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={global.container}>
             {groupReducer&&groupReducer.length ? (
                 <ScrollView nestedScrollEnabled={true} styles={styles.scrollView} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length)?
@@ -381,7 +385,7 @@ const styles = StyleSheet.create({
         fontStyle: "italic",
         color: '#000',
         backgroundColor: 'transparent',
-        fontFamily: 'MontserratAlternates-Regular',
+        fontFamily: 'MontserratAlternates-RegularItalic',
     },
     loading: {
         position: 'absolute',
@@ -426,45 +430,48 @@ const styles = StyleSheet.create({
     },
     waitTime: {
         fontSize: scale(12),
-        fontWeight: "700",
-        marginLeft:5
+        color: "black",
+        fontWeight: "500",
+        marginLeft:5,
+        fontFamily: 'MontserratAlternates-Regular',
     },
     waitingStyle: {
         flexDirection: "row", justifyContent: "flex-start", alignItems:"center"
     },
     waitingTextStyle: {
         fontSize: scale(12),
-        fontWeight: "700",
+        color: "black",
+        fontWeight: "500",
         alignSelf: "center",
         textAlign: "center",
-        marginLeft:5
+        marginLeft:5,
+        fontFamily: 'MontserratAlternates-Regular',
     },
     waitingIconStyle: {
+
         width:16,
         height:16,
     },
     btnJoin: {
         fontSize: scale(20),
-        color: "white",
         borderRadius: 9,
-        backgroundColor: "#4942e1",
-        padding: 10,
-        marginRight: scale(15),
+        backgroundColor: "#8C79EA",
+        padding: 5,
+        marginRight: scale(10),
     },
     btnWait: {
         fontSize: scale(20),
-        color: "white",
         borderRadius: 9,
-        backgroundColor: "grey",
-        padding: 10,
-        marginRight: scale(15),
+        backgroundColor: "#e6e6e8",
+        padding: 5,
+        marginRight: scale(10),
     },
     btnOff: {
         fontSize: scale(20),
-        color: "grey",
         borderRadius: 9,
-        padding: 10,
-        marginRight: scale(15),
+        backgroundColor: "#e6e6e8",
+        padding: 5,
+        marginRight: scale(10),
     },
 });
 const mapStateToProps = (state) => ({
@@ -472,10 +479,14 @@ const mapStateToProps = (state) => ({
     accessToken: state.auth.token,
 });
 PracticeGroup.navigationOptions = ({navigation, screenProps}) => {
-    const {params = {}} = navigation.state;
+    const {colors, global} = screenProps;
     return ({
         headerTitle: navigation.getParam('title'),
-        headerTitleStyle: {textAlign: 'left'},
+        headerStyle: {
+            backgroundColor: colors.headerBg,
+        },
+        headerTintColor: colors.headerColor,
+        headerTitleStyle: global.appHeaderTitle,
         headerLeft:
             <TouchableOpacity
                 onPress={() => {

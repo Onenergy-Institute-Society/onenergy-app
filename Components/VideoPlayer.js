@@ -71,11 +71,11 @@ const VideoPlayer = (props) => {
     const handleBackButtonClick = () => {
         Alert.alert(
             "Please Confirm",
-            optionData.testing_mode||user.test_mode?"Testing mode: Update progress and exit?":"Stop before session ends will result not counting as one complete practice, are you sure you want to exit?",
+            optionData.testing_mode&&user.test_mode?"Testing mode: Update progress and exit?":"Stop before session ends will result not counting as one complete practice, are you sure you want to exit?",
             [
                 {
                     text: "OK", onPress: () => {
-                        optionData.testing_mode||user.test_mode?
+                        optionData.testing_mode&&user.test_mode?
                             updateProgress().then():null;
                         navigation.goBack();
                     }

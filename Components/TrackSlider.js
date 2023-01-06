@@ -51,7 +51,7 @@ const TrackSlider = (props) => {
                         maximumValue={duration}
                         minimumTrackTintColor={'#4942E1'}
                         maximumTrackTintColor={'#7DE7FA'}
-                        disabled={!optionData.testing_mode&&!user.test_mode}
+                        disabled={!(optionData.testing_mode&&user.test_mode)}
                         onValueChange={ val => {
                              TrackPlayer.pause();
                         }}

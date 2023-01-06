@@ -8,8 +8,6 @@ const MyLoginScreen = (props) => {
     )
 }
 
-MyLoginScreen.navigationOptions = {
-    header: null
-}
+MyLoginScreen.navigationOptions = {header: null};
 
 export default MyLoginScreen;

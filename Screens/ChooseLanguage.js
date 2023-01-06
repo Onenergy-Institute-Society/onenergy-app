@@ -153,7 +153,5 @@ const styles = StyleSheet.create({
         color: "#fff",
     }
 });
-ChooseLanguage.navigationOptions = {
-    header: null
-}
+ChooseLanguage.navigationOptions = {header: null};
 export default ChooseLanguage;

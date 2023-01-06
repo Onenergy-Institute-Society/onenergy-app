@@ -55,7 +55,7 @@ export default class AwesomeAlert extends Component {
             Animated.spring(this.springValue, {
                 toValue: 0,
                 tension: 10,
-                useNativeDriver,
+                useNativeDriver: true,
             }).start();
 
             setTimeout(() => {

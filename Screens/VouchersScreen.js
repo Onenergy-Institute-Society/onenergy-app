@@ -233,7 +233,11 @@ const mapStateToProps = (state) => ({
 });
 VouchersScreen.navigationOptions = ({navigation, screenProps}) => ({
     title: navigation.getParam('title'),
-    headerTitleStyle: {textAlign:'left'},
+    headerStyle: {
+        backgroundColor: colors.headerBg,
+    },
+    headerTintColor: colors.headerColor,
+    headerTitleStyle: global.appHeaderTitle,
     headerLeft:
         <TouchableOpacity
             onPress={() => {navigation.goBack()}}

@@ -317,7 +317,6 @@ const mapStateToProps = (state) => ({
 });
 QuotesScreen.navigationOptions = ({ navigation, screenProps }) => {
     const {colors, global} = screenProps;
-    const {params = {}} = navigation.state;
     return ({
         headerTitle: navigation.getParam('title'),
         headerStyle: {

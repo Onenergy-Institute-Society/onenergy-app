@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0,
         marginTop: scale(15),
         marginHorizontal: scale(15),
-        alignItems: 'center',
+        alignItems: 'left',
         justifyContent: 'center',
     },
     boxShadow: {
@@ -279,6 +279,7 @@ const styles = StyleSheet.create({
         marginLeft: 15,
     },
     practiceType: {
+        marginLeft: (windowWidth-scale(30))*2/7,
         color: '#8c79ea',
         fontFamily:"MontserratAlternates-SemiBold",
         fontWeight:"bold",

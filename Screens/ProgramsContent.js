@@ -28,7 +28,7 @@ const ProgramsContent = props => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
-    const coursesCache = useSelector((state) => state.coursesCache.byId);
+/*    const coursesCache = useSelector((state) => state.coursesCache.byId);*/
     const { global, colors } = screenProps;
     const dispatch = useDispatch();
 
@@ -61,7 +61,8 @@ const ProgramsContent = props => {
             }
         }
     },[]);
-    const renderCourse = ({item}) => {
+ /*   const renderCourse = ({item}) => {
+        console.log(item);
         let viewModel = item;
         let featuredUrl = viewModel.featured_media.large;
         let statusText;
@@ -162,6 +163,7 @@ const ProgramsContent = props => {
                             :null
                         }
                         <ImageCache style={styles.image} source={{uri: featuredUrl ? featuredUrl : ''}}/>
+                        <Text style={styles.title}>{viewModel.title.rendered}</Text>
                         <View style={styles.metaOverlay}>
                             {viewModel.progression > 0 && viewModel.progression < 100 && !viewModel.price.expired ?
                                 <View style={styles.progressBar}><View style={{
@@ -183,9 +185,9 @@ const ProgramsContent = props => {
             </View>
         )
     }
-
+*/
     return (
-        <SafeAreaView style={[global.container, {flex:1}]}>
+        <SafeAreaView style={global.container}>
             <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                 <View style={{marginVertical: scale(5)}}>
                     <EventList location={'program'} {...props} />
@@ -198,24 +200,24 @@ const ProgramsContent = props => {
                 <View style={styles.heading_title}>
                     <Text style={global.widgetTitle}>Preparatory Courses</Text>
                 </View>
-                {!progressReducer.loadCourses||coursesCache&&coursesCache.valueSeq()&&coursesCache.valueSeq().toJS().length?
+{/*                {!progressReducer.loadCourses||coursesCache&&coursesCache.valueSeq()&&coursesCache.valueSeq().toJS().length?
                     <>
                     <FlatList
                         contentContainerStyle={{paddingBottom: scale(60)}}
-                        data={coursesCache.valueSeq().toJS()}
+                        data={coursesCache.valueSeq().sort((x, y) => x.id - y.id).toJS()}
                         renderItem={renderCourse}
                         keyExtractor={item => item.id}
                     />
                     </>
                     :
-                    <>
+                    <>*/}
                         {Platform.OS === 'android'?
                         <ActivityIndicator style={styles.loading} size="large"/>
                             :null}
                         <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
                                        hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
-                    </>
-                }
+{/*                    </>
+                }*/}
             </ScrollView>
         </SafeAreaView>
     );
@@ -230,6 +232,7 @@ const styles = StyleSheet.create({
     scroll_view: {
         flex:1,
         justifyContent: "space-between",
+        marginBottom: scale(25),
     },
     eventRow: {
         marginHorizontal: 15,
