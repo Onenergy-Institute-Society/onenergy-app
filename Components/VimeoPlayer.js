@@ -141,11 +141,11 @@ class VimeoPlayer extends Component {
                                     >
                                         <View style={styles.skipButtonView}>
                                             <Image
-                                                tintColor={"#FFFFFF"}
+                                                tintColor={'#FFFFFF'}
                                                 style={{
                                                     width:48,
                                                     height:48,
-                                                    tintColor:"#FFFFFF",
+                                                    tintColor:'#FFFFFF',
                                                     opacity: 0.5
                                                 }}
                                                 source={require('../assets/images/skipback10.png')}
@@ -159,11 +159,11 @@ class VimeoPlayer extends Component {
                                     >
                                         <View style={styles.playButtonView}>
                                             <Image
-                                                tintColor={"#FFFFFF"}
+                                                tintColor={'#FFFFFF'}
                                                 style={{
                                                     width:48,
                                                     height:48,
-                                                    tintColor:"#FFFFFF",
+                                                    tintColor:'#FFFFFF',
                                                     opacity: 0.5
                                                 }}
                                                 source={require('../assets/images/arrow_right-1.png')}
@@ -188,11 +188,11 @@ class VimeoPlayer extends Component {
                                         >
                                         <View style={styles.skipButtonView}>
                                             <Image
-                                                tintColor={"#FFFFFF"}
+                                                tintColor={'#FFFFFF'}
                                                 style={{
                                                     width:48,
                                                     height:48,
-                                                    tintColor:"#FFFFFF",
+                                                    tintColor:'#FFFFFF',
                                                     opacity: 0.5
                                                 }}
                                                 source={require('../assets/images/skip10.png')}
@@ -212,7 +212,7 @@ class VimeoPlayer extends Component {
                             <View style={styles.remainingView}><Text style={styles.remaining}>{new Date(Math.round(this.state.seekableDuration - this.state.currentTime) * 1000).toISOString().substring(14, 19)}</Text></View>
                                 :null}
                             {(this.state.textTracks.length>0&&this.state.paused)?
-                                <ChooseSubtitle textTracks={this.state.textTracks} setSelectedCCUrl={this.setSelectedCCUrl} />
+                                <ChooseSubtitle textTracks={this.state.textTracks} setSelectedCCUrl={this.setSelectedCCUrl} {...this.props} />
                                 :null}
                             {this.state.selectedCCUrl?(
                                 <View style={styles.subTitle}>
@@ -251,11 +251,11 @@ class VimeoPlayer extends Component {
                                 >
                                     <View style={[styles.buttonView,{right:scale(20)}]}>
                                         <Image
-                                            tintColor={"#FFFFFF"}
+                                            tintColor={'#FFFFFF'}
                                             style={{
-                                                width:24,
-                                                height:24,
-                                                tintColor:"#FFFFFF",
+                                                width:scale(36),
+                                                height:scale(36),
+                                                tintColor:'#FFFFFF',
                                                 opacity: 0.5
                                             }}
                                             source={require("@src/assets/img/close.png")}

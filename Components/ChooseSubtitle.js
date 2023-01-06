@@ -26,9 +26,9 @@ const ChooseSubtitle =(props) => {
                 });
                 this.ccDialog.close();
             }}>
-                <View style={{paddingHorizontal:5, paddingVertical:2, borderBottomWidth:1, borderBottomColor:'#ccc', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                <View style={{paddingHorizontal:5, paddingVertical:5, borderBottomWidth:1, borderBottomColor:'#ccc', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <Text
-                        style={{fontSize:scale(16)}}>
+                        style={{fontSize:scale(20)}}>
                         {item.item.title}
                     </Text>
                     {language.subtitle === item.item.language?(
@@ -62,11 +62,11 @@ const ChooseSubtitle =(props) => {
             >
                 <View style={styles.buttonView}>
                 <Image
-                    tintColor={"#FFFFFF"}
+                    tintColor={'#FFFFFF'}
                     style={{
-                        width:24,
-                        height:24,
-                        tintColor:"#FFFFFF",
+                        width:scale(36),
+                        height:scale(36),
+                        tintColor:'#FFFFFF',
                         opacity: 0.5
                     }}
                     source={require('../assets/images/closed-caption.png')}
@@ -75,7 +75,7 @@ const ChooseSubtitle =(props) => {
             </TouchableWithoutFeedback>
             <Modalize
                 ref={(ccDialog) => { this.ccDialog = ccDialog; }}
-                modalStyle={{backgroundColor:colors.bodyFrontBg, width:windowHeight/2, justifyContent:"center", alignSelf:"center", zIndex:9999}}
+                modalStyle={{backgroundColor:colors.bodyFrontBg, width:windowHeight/3, justifyContent:"center", alignSelf:"center", zIndex:9999}}
                 childrenStyle={{paddingHorizontal:10, paddingTop:10}}
                 adjustToContentHeight={true}
                 disableScrollIfPossible={true}
@@ -94,8 +94,8 @@ const ChooseSubtitle =(props) => {
 
 const styles = StyleSheet.create({
     buttonView: {
-        width:36,
-        height:36,
+        width:scale(36),
+        height:scale(36),
         justifyContent:"center",
         alignItems:"center",
         backgroundColor:'rgba(0,0,0,0.4)',
