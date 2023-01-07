@@ -165,7 +165,7 @@ const LessonButton = (props) => {
                     </View>
                 </View>
             :
-                videoComplete || lesson.settings.no_video || (optionData.testing_mode && user.test_mode)?
+                videoComplete || lesson.settings.no_video || user.test_mode?
                     <TouchableOpacity
                         style={[
                             global.completeLessonButtonW,

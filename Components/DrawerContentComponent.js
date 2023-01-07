@@ -59,30 +59,28 @@ const CustomDrawerContentComponent = (props) => {
                                     }}>
                                     {user.name}
                                 </Text>
-                                {user.rank ? (
-                                    <View style={{
-                                        flexDirection: "row",
-                                        justifyContent: "flex-end",
-                                        alignItems: "center"
-                                    }}>
-                                        <FastImage source={{uri: optionData.ranks[parseInt(user.rank)].rankImage}}
-                                                   style={{width: 24, height: 24, alignSelf: "center"}}/>
-                                        <Text
-                                            style={{
-                                                color: '#fff',
-                                                fontSize: scale(14),
-                                                marginLeft: 5,
-                                                textShadowColor: 'grey',
-                                                textShadowRadius: 1,
-                                                textShadowOffset: {
-                                                    width: -1,
-                                                    height: 1
-                                                }
-                                            }}>
-                                            {optionData.ranks[parseInt(user.rank)].rankName}
-                                        </Text>
-                                    </View>
-                                ) : null}
+                                <View style={{
+                                    flexDirection: "row",
+                                    justifyContent: "flex-end",
+                                    alignItems: "center"
+                                }}>
+                                    <FastImage source={{uri: optionData.ranks[parseInt(user.rank)].rankImage}}
+                                               style={{width: 24, height: 24, alignSelf: "center"}}/>
+                                    <Text
+                                        style={{
+                                            color: '#fff',
+                                            fontSize: scale(14),
+                                            marginLeft: 5,
+                                            textShadowColor: 'grey',
+                                            textShadowRadius: 1,
+                                            textShadowOffset: {
+                                                width: -1,
+                                                height: 1
+                                            }
+                                        }}>
+                                        {optionData.ranks[parseInt(user.rank)].rankName}
+                                    </Text>
+                                </View>
                                 {progressReducer && progressReducer.points && progressReducer.points.length ? Object.entries(progressReducer.points).map(([key, value]) => (
                                     <View>
                                         <View style={{
@@ -186,15 +184,6 @@ const CustomDrawerContentComponent = (props) => {
                                                 height="24"
                                                 viewBox="0 0 24 24"
                                             >
-                                                <Rect width="18"
-                                                      height="11"
-                                                      x="3" y="11"
-                                                      rx="2"
-                                                      ry="2"
-                                                      fill="none"
-                                                      stroke={colors.secondaryButtonColor}
-                                                      strokeWidth="2"
-                                                />
                                                 <Path
                                                     d="M7 11V7a5 5 0 0 1 9.9-1"
                                                     fill="none"
@@ -239,13 +228,7 @@ const CustomDrawerContentComponent = (props) => {
                                                 viewBox="0 0 24 24"
                                             >
                                                 <Path
-                                                    d="m23 6-9.5 9.5-5-5L1 18"
-                                                    fill="none"
-                                                    stroke={colors.secondaryButtonColor}
-                                                    strokeWidth="2"
-                                                />
-                                                <Path
-                                                    d="M17 6h6v6"
+                                                    d="M12 20V10M18 20V4M6 20v-4"
                                                     fill="none"
                                                     stroke={colors.secondaryButtonColor}
                                                     strokeWidth="2"
@@ -393,6 +376,50 @@ const CustomDrawerContentComponent = (props) => {
                                         />
                                     </View>
                                 </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback
+                                    onPress={() => {
+                                        navigation.navigate("NotificationsScreen")
+                                    }}
+                                >
+                                    <View style={{
+                                        paddingHorizontal: 5,
+                                        paddingVertical: 10,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: colors.borderColor,
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                        <View style={{flexDirection: "row", alignItems: "center"}}>
+                                            <Svg
+                                                width="24"
+                                                height="24"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <Path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"
+                                                      fill="none"
+                                                      stroke={colors.secondaryButtonColor}
+                                                      strokeWidth="2"
+                                                />
+                                            </Svg>
+                                            <Text
+                                                style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
+                                                {optionData.titles.find(el => el.id === 'left_menu_notifications').title}
+                                            </Text>
+                                        </View>
+                                        <AuthWrapper actionOnGuestLogin={'hide'}>
+                                            <NotificationTabBarIcon notificationID={'voucher'} top={5} right={5}
+                                                                    size={scale(10)} showNumber={false}/>
+                                        </AuthWrapper>
+                                        <IconButton
+                                            icon={require("@src/assets/img/arrow-right.png")}
+                                            style={{
+                                                height: 32,
+                                                marginRight: 10,
+                                            }}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
                             </>
                         }
                         <TouchableWithoutFeedback onPress={() => {
@@ -468,7 +495,7 @@ const CustomDrawerContentComponent = (props) => {
                                         viewBox="0 0 24 24"
                                     >
                                         <Path
-                                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                                            d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
                                             fill="none"
                                             stroke={colors.secondaryButtonColor}
                                             strokeWidth="2"

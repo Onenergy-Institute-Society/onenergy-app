@@ -190,10 +190,7 @@ const QuotesScreen = props => {
             >
                 <View style={[styles.buttonShare, styles.boxShadow]}>
                     <Text
-                        style={{ fontSize: scale(20), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                width: -1,
-                                height: 1
-                            }}}
+                        style={{ fontSize: scale(20), color: '#FFF'}}
                     >
                         SHARE
                     </Text>

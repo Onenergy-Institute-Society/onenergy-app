@@ -28,15 +28,12 @@ const AchievementItem = (props) => {
                     </View>
                     :null}
                     <View style={{marginTop: 10, justifyContent:"center", alignItems:"center", width:mode!=='past'&&!item.claim_date?'100%':0, height:mode!=='past'&&!item.claim_date?'auto':0}}>
-                        <Progress.Bar showsText={true} borderWidth={0} color={item.complete_date===today&&mode==='daily'||mode!=='daily'?"lightgreen":colors.primaryButtonBg} unfilledColor={"black"} borderRadius={9}
-                                      progress={item.complete_date===today&&mode==='daily'||mode!=='daily'?item.step:0 / item.total}
+                        <Progress.Bar showsText={true} borderWidth={0} color={item.complete_date===today&&mode==='daily'||item.complete_date&&mode!=='daily'?"lightgreen":colors.primaryButtonBg} unfilledColor={"black"} borderRadius={9}
+                                      progress={item.complete_date===today&&mode==='daily'||item.complete_date&&mode!=='daily'?item.step:0 / item.total}
                                       width={windowWidth/2} height={scale(16)}/>
                         <View
                             style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
-                            <Text style={[global.textItemSubtitle, {color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
-                                width: -1,
-                                height: 1
-                            }}]}>{item.complete_date===today&&mode==='daily'||mode!=='daily'?"completed!":0 + ' / ' + item.total}</Text>
+                            <Text style={[global.textItemSubtitle, {color: '#FFF'}]}>{item.complete_date===today&&mode==='daily'||item.complete_date&&mode!=='daily'?"completed!":0 + ' / ' + item.total}</Text>
                         </View>
                     </View>
             </View>
@@ -50,12 +47,7 @@ const AchievementItem = (props) => {
                         mode !== 'past' && !item.complete_date ?
                         <>
                             <Text
-                                style={[global.boxTitle, {
-                                    color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                        width: -1,
-                                        height: 1
-                                    }
-                                }]}
+                                style={[global.boxTitle, {color: '#FFF'}]}
                             >
                                 REWARD
                             </Text>
@@ -64,13 +56,7 @@ const AchievementItem = (props) => {
                                     style={[global.pointTitle, {
                                         flexWrap: "nowrap",
                                         fontSize: scale(24),
-                                        color: '#FFF',
-                                        textShadowColor: 'grey',
-                                        textShadowRadius: 1,
-                                        textShadowOffset: {
-                                            width: -1,
-                                            height: 1
-                                        }
+                                        color: '#FFF'
                                     }]}
                                 >
                                     +{point.point} {optionData.points.find(pt => pt.pointName === point.name).pointTitle}
@@ -80,12 +66,7 @@ const AchievementItem = (props) => {
                         :
                         <>
                             <Text
-                                style={[global.boxTitle, {
-                                    color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                        width: -1,
-                                        height: 1
-                                    }
-                                }]}
+                                style={[global.boxTitle, {color: '#FFF'}]}
                             >
                                 {mode !== 'past' && item.claim_date ?'CLEARED':'CLAIM'}
                             </Text>
@@ -94,13 +75,7 @@ const AchievementItem = (props) => {
                                 style={[global.itemMeta, {
                                     flexWrap: "nowrap",
                                     fontSize: scale(mode !== 'past' && item.claim_date ?11:24),
-                                    color: '#FFF',
-                                    textShadowColor: 'grey',
-                                    textShadowRadius: 1,
-                                    textShadowOffset: {
-                                        width: -1,
-                                        height: 1
-                                    }
+                                    color: '#FFF'
                                 }]}
                             >
                                 {mode !== 'past' && item.claim_date ? item.claim_date :

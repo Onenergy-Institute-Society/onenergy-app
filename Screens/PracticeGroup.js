@@ -182,8 +182,8 @@ const PracticeGroup = props => {
                                                           waitingTextStyle={styles.waitingTextStyle}/>
                                 </View>
                             </View>
-                            {conditionLessons||(optionData.testing_mode&&user.test_mode)?
-                                timeToGo <= 30||(optionData.testing_mode&&user.test_mode)?
+                            {conditionLessons||user.test_mode?
+                                timeToGo <= 30||user.test_mode?
                                     <TouchableOpacity style={styles.btnJoin}
                                                       onPress={() => {
                                                           handlePress(item, CurrentStartTime, startMinutes)
@@ -222,7 +222,7 @@ const PracticeGroup = props => {
                                 </TouchableOpacity>
                             }
                         </View>
-                        {conditionLessons||(optionData.testing_mode&&user.test_mode)?
+                        {conditionLessons||user.test_mode?
                             <Text style={{fontSize: scale(10), textAlign: "center", color:"black", fontFamily: 'MontserratAlternates-Regular'}}>last for {new Date(item.duration * 1000).toISOString().substring(14, 19)}, repeat every {loop} mins</Text>
                             :
                             <Text style={{fontSize: scale(10), textAlign: "center", color:"black", fontFamily: 'MontserratAlternates-Regular'}}>Finish required lessons to unlock this group practice.</Text>

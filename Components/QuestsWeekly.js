@@ -17,27 +17,21 @@ const QuestsWeekly = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.weekly:null);
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
-    const playPause = () => {
-/*        let ding = new Sound('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
-            if (error) {
-                console.log('failed to load the sound', error);
-                return;
-            }
-            ding.play(() => {
-                ding.release();
-            });
-        });*/
-    };
-    console.log(achievementReducer)
+
     return(
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.containerStyle}>
+                <View style={{marginHorizontal: scale(15), paddingHorizontal:scale(10),
+                    paddingVertical:scale(10),
+                    borderRadius: 9, alignItems: 'center',
+                    justifyContent: 'center',backgroundColor: colors.labelBgColor,
+                    marginTop: scale(10),}}><Text style={[global.text, {color: colors.labelTextColor}]}>7 days streak REWARD +20 Qi</Text></View>
                 {Array(7).fill().map((_, idx) => 1 + idx).map((day,index)=>{
                     return (
                         <View style={[styles.row, styles.boxShadow, {backgroundColor: achievementReducer&&achievementReducer.days&&achievementReducer.days.length&&achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?colors.primaryButtonBg:colors.bodyBg}]} >
-                            <Text style={[global.title,{textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===6?colors.secondaryButtonColor:achievementReducer&&achievementReducer.days&&achievementReducer.days.length&&achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'white':colors.primaryButtonBg}]}>Day {day} {index===6?'REWARD +20 Qi':''}</Text>
+                            <Text style={[global.title, {color:achievementReducer&&achievementReducer.days&&achievementReducer.days.length&&achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'white':colors.primaryButtonBg}]}>Day {day}</Text>
                             <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
-                                <Text style={{marginRight:10, color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}}}>{achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?achievementReducer.days[index]:'':'':''}</Text>
+                                <Text style={{marginRight:10, color: '#FFF'}}>{achievementReducer?achievementReducer.days&&achievementReducer.days.length?achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?achievementReducer.days[index]:'':'':''}</Text>
                                 {
                                     achievementReducer&&achievementReducer.days&&achievementReducer.days.length&&achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?
                                         <Image source={require("@src/assets/img/check2.png")} />
@@ -57,19 +51,13 @@ const QuestsWeekly = (props) => {
                             </View>
                             <View style={[styles.rowRight, {backgroundColor:!achievementReducer.complete_date?'gold':!achievementReducer.claim_date?colors.secondaryButtonColor:'gray'}]}>
                                 <Text
-                                    style={[global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                            width: -1,
-                                            height: 1
-                                        }}]}
+                                    style={[global.boxTitle, {color: '#FFF'}]}
                                 >
                                     CLEARED
                                 </Text>
                                 <Text
                                     numberOfLines={1}
-                                    style={[global.itemMeta, {flexWrap: "nowrap", fontSize:scale(11), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                            width: -1,
-                                            height: 1
-                                        }}]}
+                                    style={[global.itemMeta, {flexWrap: "nowrap", fontSize:scale(11), color: '#FFF'}]}
                                 >
                                     {achievementReducer.complete_date}
                                 </Text>
@@ -87,7 +75,6 @@ const QuestsWeekly = (props) => {
                             </View>
                             <TouchableWithoutFeedback
                                 onPress={() => {
-                                    playPause();
                                     dispatch({
                                         type: "ONENERGY_ACHIEVEMENT_CLAIM_WEEKLY_MONTHLY",
                                         payload:{
@@ -99,18 +86,12 @@ const QuestsWeekly = (props) => {
                             >
                                 <View style={[styles.rowRight, {backgroundColor:colors.secondaryButtonColor}]}>
                                     <Text
-                                        style={[global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                width: -1,
-                                                height: 1
-                                            }}]}
+                                        style={[global.boxTitle, {color: '#FFF'}]}
                                     >
                                         CLAIM
                                     </Text>
                                     <Text
-                                        style={[global.pointTitle, {fontSize:24, fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                width: -1,
-                                                height: 1
-                                            }}]}
+                                        style={[global.pointTitle, {fontSize:24, fontWeight:"700", color: '#FFF'}]}
                                     >
                                         +20 Qi
                                     </Text>

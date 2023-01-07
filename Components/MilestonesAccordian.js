@@ -48,10 +48,7 @@ console.log(this.props.item)
                                               width={windowWidth/2} height={scale(16)}/>
                                 <View
                                     style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
-                                    <Text style={[this.props.screenProps.global.textItemSubtitle, {color: '#FFF', textShadowColor: 'black', textShadowRadius: 1, textShadowOffset: {
-                                        width: -1,
-                                        height: 1
-                                    }}]}>{complete_date?"completed":completed_steps + ' / ' + this.props.item.step.length}</Text>
+                                    <Text style={[this.props.screenProps.global.textItemSubtitle, {color: '#FFF'}]}>{complete_date?"completed":completed_steps + ' / ' + this.props.item.step.length}</Text>
                                 </View>
                             </View>
                         </View>
@@ -73,19 +70,13 @@ console.log(this.props.item)
                                 !complete_date?
                                 <>
                                     <Text
-                                        style={[this.props.screenProps.global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                width: -1,
-                                                height: 1
-                                            }}]}
+                                        style={[this.props.screenProps.global.boxTitle, {color: '#FFF'}]}
                                     >
                                         REWARD
                                     </Text>
                                     {this.props.item.awards.map(point =>
                                         <Text
-                                            style={[this.props.screenProps.global.pointTitle, {flexWrap: "nowrap", fontSize:scale(24), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                    width: -1,
-                                                    height: 1
-                                                }}]}
+                                            style={[this.props.screenProps.global.pointTitle, {flexWrap: "nowrap", fontSize:scale(24), color: '#FFF'}]}
                                         >
                                             +{point.point} {this.props.optionData.points.find(pt => pt.pointName === point.name).pointTitle}
                                         </Text>
@@ -94,18 +85,12 @@ console.log(this.props.item)
                                 :
                                 <>
                                     <Text
-                                        style={[this.props.screenProps.global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                width: -1,
-                                                height: 1
-                                            }}]}
+                                        style={[this.props.screenProps.global.boxTitle, {color: '#FFF'}]}
                                     >
                                         {claim_date?'CLEARED':'CLAIM'}
                                     </Text>
                                     <Text
-                                        style={[this.props.screenProps.global.itemMeta, {flexWrap: "nowrap", fontSize:scale(claim_date?11:24), color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                width: -1,
-                                                height: 1
-                                            }}]}
+                                        style={[this.props.screenProps.global.itemMeta, {flexWrap: "nowrap", fontSize:scale(claim_date?11:24), color: '#FFF'}]}
                                     >
                                         {claim_date?claim_date :
                                             this.props.item.awards.map(point => {return (

@@ -17,21 +17,15 @@ const QuestsMonthly = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.monthly:null);
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
-    const playPause = () => {
-/*        let ding = new Sound('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
-            if (error) {
-                console.log('failed to load the sound', error);
-                return;
-            }
-            ding.play(() => {
-                ding.release();
-            });
-        });*/
-    };
-    console.log('achievementReducer',achievementReducer)
+
     return(
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.containerStyle}>
+                <View style={{marginHorizontal: scale(15), paddingHorizontal:scale(10),
+                    paddingVertical:scale(10),
+                    borderRadius: 9, alignItems: 'center',
+                    justifyContent: 'center',backgroundColor: colors.labelBgColor,
+                    marginTop: scale(10),}}><Text style={[global.text, {color: colors.labelTextColor}]}>30 days streak REWARD +100 Qi</Text></View>
                 <View style={styles.daysContainer}>
                 {Array(30).fill().map((_, idx) => 1 + idx).map((day,index)=>{
                     return (
@@ -45,16 +39,11 @@ const QuestsMonthly = (props) => {
                                     <Image source={require("@src/assets/img/radio_unchecked_icon.png")}/>
                                 }
                             </View>
-                            <Text numberOfLines={1} style={[global.text, {fontSize: scale(10), textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {width: -1,height: 1}, color:index===30?colors.secondaryButtonColor:achievementReducer&&achievementReducer.days&&achievementReducer.days.length&&achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'white':colors.primaryButtonBg}]}>Day {day}</Text>
+                            <Text numberOfLines={1} style={[global.text, {fontWeight: "bold", fontSize: scale(10), color:index===30?colors.secondaryButtonColor:achievementReducer&&achievementReducer.days&&achievementReducer.days.length&&achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'white':colors.primaryButtonBg}]}>Day {day}</Text>
                         </View>
                     )
                 })}
                 </View>
-                <View style={{marginHorizontal: scale(15), paddingHorizontal:scale(10),
-                    paddingVertical:scale(10),
-                    borderRadius: 9, alignItems: 'center',
-                    justifyContent: 'center',color: colors.primaryButtonBg,
-                    marginTop: scale(5),}}><Text style={global.text}>Practice 30 days streak REWARD +100 Qi</Text></View>
                 <View style={{marginBottom: scale(20)}}>
                 {achievementReducer.complete_date?
                     achievementReducer.claim_date?
@@ -64,19 +53,13 @@ const QuestsMonthly = (props) => {
                             </View>
                             <View style={[styles.rowRight, {backgroundColor:!achievementReducer.complete_date?'gold':!achievementReducer.claim_date?colors.secondaryButtonColor:'gray'}]}>
                                 <Text
-                                    style={[global.boxTitle, {color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                            width: -1,
-                                            height: 1
-                                        }}]}
+                                    style={[global.boxTitle, {color: '#FFF'}]}
                                 >
                                     CLEARED
                                 </Text>
                                 <Text
                                     numberOfLines={1}
-                                    style={[global.itemMeta, {fontSize:11, fontWeight:"700", color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                            width: -1,
-                                            height: 1
-                                        }}]}
+                                    style={[global.itemMeta, {fontSize:11, fontWeight:"700", color: '#FFF'}]}
                                 >
                                     {achievementReducer.complete_date}
                                 </Text>
@@ -94,7 +77,6 @@ const QuestsMonthly = (props) => {
                             </View>
                             <TouchableWithoutFeedback
                                 onPress={() => {
-                                    playPause();
                                     dispatch({
                                         type: "ONENERGY_ACHIEVEMENT_CLAIM_WEEKLY_MONTHLY",
                                         payload: {
@@ -106,12 +88,7 @@ const QuestsMonthly = (props) => {
                             >
                                 <View style={[styles.rowRight, {backgroundColor:colors.secondaryButtonColor}]}>
                                     <Text
-                                        style={[global.boxTitle, {
-                                            color: '#FFF', textShadowColor: 'grey', textShadowRadius: 1, textShadowOffset: {
-                                                width: -1,
-                                                height: 1
-                                            }
-                                        }]}
+                                        style={[global.boxTitle, {color: '#FFF'}]}
                                     >
                                         CLAIM
                                     </Text>
@@ -120,12 +97,6 @@ const QuestsMonthly = (props) => {
                                             fontSize: 24,
                                             fontWeight: "700",
                                             color: '#FFF',
-                                            textShadowColor: 'grey',
-                                            textShadowRadius: 1,
-                                            textShadowOffset: {
-                                                width: -1,
-                                                height: 1
-                                            }
                                         }]}
                                     >
                                         +100 Qi

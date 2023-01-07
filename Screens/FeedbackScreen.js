@@ -24,12 +24,12 @@ import Svg, {Circle, Path} from "react-native-svg";
 
 const FeedbackScreen = props => {
     const {screenProps} = props;
-    const {colors} = screenProps
+    const {global, colors} = screenProps
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [ loading, setLoading ] = useState(false);
     const [content, setContent] = useState('');
-    const [department, setDepartment] = useState('');
-    const [subject, setSubject] = useState('Choose a Department');
+    const [department, setDepartment] = useState('Choose a department');
+    const [subject, setSubject] = useState('');
     const recaptcha = useRef();
     analytics().logScreenView({
         screen_class: 'MainActivity',
@@ -49,7 +49,7 @@ const FeedbackScreen = props => {
             ).then(response => {
                 if(response.data)
                     setLoading(false);
-                    Alert.alert('Notice', 'Feedback sent successfully, we will reply you shortly.', [
+                    Alert.alert('Notice', 'Support ticket sent successfully, we will reply to your email shortly.', [
                         {text: 'OK', onPress: () => props.navigation.goBack()},
                     ]);
             });
@@ -64,7 +64,7 @@ const FeedbackScreen = props => {
         });
     }, [])
     const onSendPress = () => {
-        if (department === 'Choose a Department') {
+        if (department === 'Choose a department') {
             alert('Please choose a department.');
             return false;
         }
@@ -102,13 +102,13 @@ const FeedbackScreen = props => {
                 break;
         }
         return (
-            <TouchableWithoutFeedback onPress={() => {setSubject(item.item);this.subjectDialog.close();}}>
+            <TouchableWithoutFeedback onPress={() => {setDepartment(item.item);this.departmentDialog.close();}}>
                 <View style={[cornerStyle, bottomStyle, {paddingHorizontal:25, backgroundColor:colors.bodyBg, paddingVertical:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
                     <Text
-                        style={{fontSize:18}}>
+                        style={styles.subject}>
                         {item.item}
                     </Text>
-                    {subject === item.item?(
+                    {department === item.item?(
                         <Svg
                             width="24"
                             height="24"
@@ -136,10 +136,10 @@ const FeedbackScreen = props => {
             <View style={styles.ContainerStyle}>
                 <View style={styles.listContainer}>
                     <TouchableWithoutFeedback
-                        onPress={() => {Keyboard.dismiss();this.subjectDialog.open();}}>
+                        onPress={() => {Keyboard.dismiss();this.departmentDialog.open();}}>
                         <View style={styles.content}>
                                 <Text style={styles.subject}>
-                                    {subject}
+                                    {department}
                                 </Text>
                             <View>
                                 <Image style={{marginRight:25,tintColor:"#4942e1"}} source={require("@src/assets/img/arrow-down.png")} />
@@ -148,41 +148,43 @@ const FeedbackScreen = props => {
                     </TouchableWithoutFeedback>
                 </View>
                 <TextInput
+                    style={styles.inputContentLine}
+                    multiline={false}
+                    numberOfLines={1}
+                    placeholder={"Type your subject"}
+                    onChangeText={(text) => setSubject(text)}
+                    value={subject} />
+                <TextInput
                     style={styles.inputContent}
                     multiline={true}
                     numberOfLines={4}
-                    placeholder={"Write your feedback"}
+                    placeholder={"Please write your question"}
                     onChangeText={(text) => setContent(text)}
                     value={content} />
+                <TouchableOpacity
+                    onPress={() => {Keyboard.dismiss();onSendPress();}}
+                >
+                    <View style={{borderRadius:9, height:scale(40), width:windowWidth-scale(30), marginTop:15, justifyContent:"center", alignItems:"center", backgroundColor:colors.primaryButtonBg, paddingVertical:10}}>
+                        <Text style={{
+                            fontWeight: "bold",
+                            fontFamily: 'Montserrat-SemiBold',
+                            fontSize: 16,
+                            color: "white"
+                        }}>Send</Text>
+                    </View>
+                </TouchableOpacity>
                 <Recaptcha
                     ref={recaptcha}
                     siteKey="6LcFHZYfAAAAAJse3WDaZeQufd2-e-BVqF_oJQbK"
                     baseUrl="https://app.onenergy.institute"
                     onVerify={onVerify}
                     onError={onError}
-/*
-                    onLoad={() => alert('onLoad event')}
-                    onClose={() => alert('onClose event')}
-                    onExpire={() => alert('onExpire event')}
-*/
                     size="invisible"
                     enterprise
                 />
-                <TouchableOpacity
-                    onPress={() => {Keyboard.dismiss();onSendPress();}}
-                >
-                    <View style={{borderRadius:9, width:windowWidth-scale(30), marginTop:15, justifyContent:"center", alignItems:"center", backgroundColor:colors.primaryButtonBG,paddingVertical:10}}>
-                            <Text style={{
-
-                                fontWeight: "bold",
-                                fontSize: 16,
-                                color: "white"
-                            }}>Send</Text>
-                    </View>
-                </TouchableOpacity>
             </View>
             <Modalize
-                ref={(subjectDialog) => { this.subjectDialog = subjectDialog; }}
+                ref={(departmentDialog) => { this.departmentDialog = departmentDialog; }}
                 modalStyle={{backgroundColor:colors.bodyFrontBg}}
                 childrenStyle={{padding:25}}
                 adjustToContentHeight = "true"
@@ -201,7 +203,7 @@ const FeedbackScreen = props => {
                         <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Department</Text>
                         <TouchableOpacity
                             onPress={() => {
-                                this.subjectDialog.close();
+                                this.departmentDialog.close();
                             }}
                         >
                             <Svg
@@ -253,7 +255,6 @@ const styles = StyleSheet.create({
         justifyContent:"flex-start",
         alignItems: "flex-start",
         paddingHorizontal:15,
-        paddingVertical:25,
     },
     title: {
         fontSize: scale(16),
@@ -262,26 +263,43 @@ const styles = StyleSheet.create({
         color: 'black',
         fontFamily: 'MontserratAlternates-SemiBold',
     },
+    inputContentLine:{
+        width: windowWidth - scale(30),
+        height: scale(40),
+        fontSize: 18,
+        fontWeight:"normal",
+        fontFamily: 'Montserrat-Regular',
+        borderRadius: 9,
+        borderWidth:1,
+        borderColor: "#c6c6c8",
+        backgroundColor: "#fffdff",
+        paddingLeft:15,
+        marginTop:15,
+        textAlignVertical: "top",
+    },
     inputContent:{
         width: windowWidth - scale(30),
-        height:160,
+        height:scale(180),
         fontSize: 18,
+        fontWeight:"normal",
+        fontFamily: 'Montserrat-Regular',
         borderRadius: 9,
-        backgroundColor: "#e6e6e8",
+        borderWidth:1,
+        borderColor: "#c6c6c8",
+        backgroundColor: "#fffdff",
         paddingLeft:15,
         marginTop:15,
         textAlignVertical: "top",
     },
     listContainer:{
-        width:windowWidth-scale(30),
+        width: windowWidth-scale(30),
         aspectRatio:8,
         flexDirection:'row',
-        marginVertical:15,
-        marginBottom:5,
+        marginTop:15,
         borderRadius:9,
         borderWidth:1,
         borderColor: "#c6c6c8",
-        backgroundColor: "rgba(250,250,250,1)",
+        backgroundColor: "#fffdff",
         justifyContent:'space-between',
         alignItems:'center',
         overflow:'hidden',
@@ -292,12 +310,19 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
     },
-    subject:{
-        fontSize: 18,
+    department:{
+        fontSize: scale(18),
         paddingLeft: 10,
         flex:4,
-        fontWeight:"700",
-        fontFamily: 'MontserratAlternates-SemiBold',
+        fontWeight:"bold",
+        fontFamily: 'Montserrat-SemiBold',
+    },
+    subject:{
+        fontSize: scale(18),
+        paddingLeft: 10,
+        flex:4,
+        fontWeight:"normal",
+        fontFamily: 'Montserrat-Regular',
     },
 });
 FeedbackScreen.navigationOptions = ({ navigation, screenProps }) => {
@@ -329,7 +354,7 @@ FeedbackScreen.navigationOptions = ({ navigation, screenProps }) => {
                     </Svg>
                     <Text style={{
                         fontSize: 16,
-                        color: "#4942e1"
+                        color: screenProps.colors.headerIconColor
                     }}>Back</Text>
                 </View>
             </TouchableOpacity>

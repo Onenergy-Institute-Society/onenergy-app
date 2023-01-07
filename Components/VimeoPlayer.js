@@ -1,15 +1,12 @@
 import React, { Component } from "react";
 import {
     View,
-    Dimensions,
     StyleSheet,
     TouchableWithoutFeedback,
     Image,
     StatusBar,
-    Platform,
     Text,
     PixelRatio,
-    Alert,
     BackHandler
 } from "react-native";
 import {connect} from "react-redux";

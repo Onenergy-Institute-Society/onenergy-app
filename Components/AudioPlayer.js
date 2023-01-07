@@ -83,10 +83,15 @@ const AudioPlayer = (props) => {
             deactivateKeepAwake();
         }
         if (event.type === 'playback-queue-ended') {
+            console.log(event.type)
             TrackPlayer.reset();
+            console.log('after reset')
             setPlaying(false);
+            console.log('after play false')
             setStopped(true);
+            console.log('after step')
             updateProgress();
+            console.log('after update')
         }
     });
 

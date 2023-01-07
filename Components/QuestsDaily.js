@@ -31,13 +31,10 @@ const QuestsDaily = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === 'daily'):null);
     const dispatch = useDispatch();
 
-    const playPause = () => {
-    };
     const handleOnPress = (item, date, mode) => {
         switch (mode) {
             case 'past':
                 if(item.complete_date) {
-                    playPause();
                     LayoutAnimation.configureNext(
                         LayoutAnimation.Presets.spring
                     );
@@ -56,7 +53,6 @@ const QuestsDaily = (props) => {
                     LayoutAnimation.configureNext(
                         LayoutAnimation.Presets.spring
                    );
-                    playPause();
                     dispatch({
                         type: "ONENERGY_ACHIEVEMENT_CLAIM",
                         payload: {
@@ -117,7 +113,7 @@ const QuestsDaily = (props) => {
                 achievementReducer && achievementReducer.length ?
                     <FlatList
                         contentContainerStyle={{ paddingBottom: scale(20) }}
-                        data={achievementReducer}
+                        data={achievementReducer.sort((a,b)=>a.complete_date.localeCompare(b.complete_date)).sort((a,b)=>a.claim_date.localeCompare(b.claim_date))}
                         renderItem={renderItem}
                         keyExtractor={item => item.id}
                         showsVerticalScrollIndicator={false}

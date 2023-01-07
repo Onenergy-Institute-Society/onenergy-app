@@ -237,14 +237,14 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         color: 'black',
         fontWeight: "bold",
-        fontFamily: 'MontserratAlternates-SemiBold',
+        fontFamily: 'Montserrat-SemiBold',
     },
     author: {
         fontSize: scale(9),
         textAlign: 'left',
         color: 'black',
         fontWeight: "normal",
-        fontFamily: 'MontserratAlternates-Regular',
+        fontFamily: 'Montserrat-Regular',
     },
     overlay_button:{
         flex: 1,

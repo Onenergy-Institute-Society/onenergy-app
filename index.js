@@ -351,17 +351,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 backgroundColor: 'transparent',
                 fontFamily: "MontserratAlternates-Regular"
             },
-            lessonTime: {
-                color: "white",
-                fontWeight: "700",
-                fontSize: scale(14),
-                position: 'absolute',
-                bottom: 25,
-                alignSelf: "center",
-                textShadowColor: 'grey',
-                textShadowOffset: {width: -1, height: 1},
-                textShadowRadius: 1
-            },
             progressBar: {
                 height: 3,
                 position: 'absolute',
@@ -711,11 +700,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     console.log('5')
                     if (loadAchievement) {
                         if (data.achievements) {
-                            idAchievementReducer.achievements = data.achievements.achievements.sort((a, b) => {
-                                return a.complete_date > b.complete_date
-                            }).sort((a, b) => {
-                                return a.claim_date > b.claim_date
-                            });
+                            idAchievementReducer.achievements = data.achievements.achievements;
                             idAchievementReducer.weekly = data.achievements.weekly ? data.achievements.weekly : {
                                 days: [],
                                 complete_date: '',
@@ -1101,14 +1086,21 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     })
                     console.log('5', acpTempProgressState)
 
-                    let todayProgressIndex = acpTempProgressState.progress.findIndex(item=> item.date === today);
-                    if(todayProgressIndex!==-1){
+                    let todayProgressIndex = acpTempProgressState.progress&&acpTempProgressState.progress.findIndex(item=> item.date === today);
+                    if(acpTempProgressState.progress&&todayProgressIndex!==-1){
                         acpTempProgressState.progress[todayProgressIndex].duration = acpTempProgressState.todayDuration;
                     }else{
-                        acpTempProgressState.progress.push({
-                            data: today,
-                            duration: acpTempProgressState.todayDuration
-                        })
+                        if(acpTempProgressState.progress) {
+                            acpTempProgressState.progress.push({
+                                date: today,
+                                duration: acpTempProgressState.todayDuration
+                            })
+                        }else{
+                            acpTempProgressState.progress = [{
+                                date: today,
+                                duration: acpTempProgressState.todayDuration
+                            }]
+                        }
                     }
 
                     acpTempProgressState.actionList.push({
@@ -1125,11 +1117,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         achievementReducer: {
                             ...state.achievementReducer,
                             achievements:
-                                acpTempAchievementState.achievements.sort((a, b) => {
-                                    return a.complete_date > b.complete_date
-                                }).sort((a, b) => {
-                                    return a.claim_date > b.claim_date
-                                }),
+                                acpTempAchievementState.achievements,
                             weekly: acpTempAchievementState.weekly,
                             monthly: acpTempAchievementState.monthly
                         },
@@ -1166,11 +1154,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         ...state,
                         achievementReducer: {
                             ...state.achievementReducer,
-                            achievements: acTempAchievementState.sort((a, b) => {
-                                return a.complete_date > b.complete_date
-                            }).sort((a, b) => {
-                                return a.claim_date > b.claim_date
-                            }),
+                            achievements: acTempAchievementState,
                         },
                         progressReducer: acTempProgressState
                     };
@@ -1298,11 +1282,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         achievementReducer: {
                             ...state.achievementReducer,
                             achievements:
-                                olcTempAchievementState.sort((a, b) => {
-                                    return a.complete_date > b.complete_date
-                                }).sort((a, b) => {
-                                    return a.claim_date > b.claim_date
-                                }),
+                                olcTempAchievementState,
                         },
                         progressReducer: olcTempProgressState
                     };
@@ -2181,6 +2161,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     externalCodeSetup.cssApi.addGlobalStyle("pointTitle", {"fontWeight": "medium"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("itemMeta", {"fontWeight": "normal"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("courseRoundBoxTitleAbove", {"fontWeight": "bold"}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("bodyText", {"fontWeight": "normal"}, false);
     externalCodeSetup.cssApi.addCustomColors({"altCardColor": "#FFEEE7"});
 
     externalCodeSetup.courseSingleApi.setCourseHeaderDetails(props => {

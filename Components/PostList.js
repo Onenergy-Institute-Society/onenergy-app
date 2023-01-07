@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'left',
         color: '#4A4D34',
-        fontFamily: 'MontserratAlternates-SemiBold',
+        fontFamily: 'Montserrat-SemiBold',
     },
     metaRow: {
         marginLeft:scale(30),
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center',
         color: 'black',
         fontWeight: "normal",
-        fontFamily: 'MontserratAlternates-Regular',
+        fontFamily: 'Montserrat-Regular',
     },
     description: {
         fontSize: scale(12),
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
         marginTop: scale(5),
         marginBottom: scale(15),
         backgroundColor: 'transparent',
-        fontFamily: 'MontserratAlternates-Regular',
+        fontFamily: 'Montserrat-Regular',
     },
     loading:{
         textAlign: 'center',

@@ -127,7 +127,7 @@ const NotificationTabBarIcon = props => {
                 break;
             case 'left_menu':
                 if (user&&achievementReducer){
-                    let dailyCount = achievementReducer.achievements.filter(item => item.type==='daily' && item.complete_date&& item.claim_date).length;
+                    let dailyCount = achievementReducer.achievements.filter(item => item.type==='daily'&&item.complete_date&&!item.claim_date).length;
                     let weeklyCount = achievementReducer.weekly.complete_date && !achievementReducer.weekly.claim_date;
                     let monthlyCount = achievementReducer.monthly.complete_date && !achievementReducer.monthly.claim_date;
                     let milestoneCount = achievementReducer.achievements.filter(item => item.type!=='daily'&&item.complete_date&&!item.claim_date).length;

@@ -31,11 +31,8 @@ const Milestones = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === type):null);
     const dispatch = useDispatch();
 
-    const playPause = () => {
-    };
     const handleOnPress = (item, mode) => {
         if(item.complete_date&&!item.claim_date) {
-            playPause();
             LayoutAnimation.configureNext(
                 LayoutAnimation.Presets.spring
             );
@@ -86,7 +83,7 @@ const Milestones = (props) => {
             {achievementReducer&&achievementReducer.length?
                 <FlatList
                     contentContainerStyle={{ paddingBottom: scale(20) }}
-                    data={achievementReducer}
+                    data={achievementReducer.sort((a,b)=>a.complete_date.localeCompare(b.complete_date)).sort((a,b)=>a.claim_date.localeCompare(b.claim_date))}
                     renderItem={renderItem}
                     keyExtractor={item => item.id}
                     showsVerticalScrollIndicator={false}

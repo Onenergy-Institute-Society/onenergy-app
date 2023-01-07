@@ -10,6 +10,7 @@ import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workarou
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import {windowWidth} from "../Utils/Dimensions";
 import HTML from "react-native-render-html";
+const systemFonts = ['Montserrat-Regular', 'Montserrat-SemiBold', 'Montserrat-SemiBold'];
 
 const TextBlock =(props) => {
     const {block, navigation} = props;
@@ -51,6 +52,8 @@ const TextBlock =(props) => {
     const htmlStyle = {
         a: {
             fontSize: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize):scale(14),
+            fontFamily: "Montserrat-Regular",
+            fontWeight: "normal",
         },
 /*        ul:{
             width:"100%",
@@ -60,18 +63,24 @@ const TextBlock =(props) => {
             fontSize: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize):scale(14),
             color: block.data.data.bodyColor?block.data.data.bodyColor:"#000",
             textAlign: block.data.data.bodyAlign?block.data.data.bodyAlign:"left",
+            fontFamily: "Montserrat-Regular",
+            fontWeight: "normal",
         },
         p: {
             lineHeight: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize*1.47):scale(14*1.47),
             fontSize: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize):scale(14),
             color: block.data.data.bodyColor?block.data.data.bodyColor:"#000",
             textAlign: block.data.data.bodyAlign?block.data.data.bodyAlign:"left",
+            fontFamily: "Montserrat-Regular",
+            fontWeight: "normal",
         },
         rawtext: {
             lineHeight: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize*1.47):scale(14*1.47),
             fontSize: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize):scale(14),
             color: block.data.data.bodyColor?block.data.data.bodyColor:"#000",
             textAlign: block.data.data.bodyAlign?block.data.data.bodyAlign:"left",
+            fontFamily: "Montserrat-Regular",
+            fontWeight: "normal",
         }
     };
     const TextComponent = () => {
@@ -88,6 +97,7 @@ const TextBlock =(props) => {
                 :null}
             {block.data.data.body?
                 <HTML html={block.data.data.body}
+                      systemFonts={systemFonts}
                       tagsStyles={htmlStyle}
                       ignoredStyles={['height', 'width']}
                       style={{flex:1}}
@@ -198,7 +208,8 @@ const styles = StyleSheet.create({
     },
     title:{
         marginBottom:scale(20),
-        fontWeight: "500",
+        fontFamily: "MontserratAlternates-SemiBold",
+        fontWeight: "bold",
     },
     image:{
         borderRadius: 9,
