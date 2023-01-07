@@ -42,7 +42,7 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
-
+console.log(optionData)
     const chartConfig = {
         backgroundGradientFrom: "#FFEEE7",
         backgroundGradientFromOpacity: 1,
@@ -298,7 +298,7 @@ const HomeContent = (props) => {
                     <View style={styles.topRow}>
                         <View style={{width: windowWidth*2/3, justifyContent:"space-between"}}>
                             <Text style={global.textHeaderTitle}>Hi, {user.name}</Text>
-                            <Text style={[global.title, {fontSize: scale(12)}]}>{optionData.greetings[Math.floor(Math.random() * optionData.greetings.length)]}</Text>
+                            <Text style={[global.title, {fontSize: scale(12)}]}>{optionData.greetings}</Text>
                         </View>
                         <View style={{justifyContent: "center", alignItems: "flex-end"}}>
                             <TouchableOpacity
