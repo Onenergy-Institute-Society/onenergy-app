@@ -824,6 +824,99 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             lastUpload: Math.floor(new Date().getTime() / 1000),
                         }
                     };
+                case "ONENERGY_DAILY_UPDATE":
+                    let oduTempProgressState = state.progressReducer;
+                    let oduTempAchievementState = state.achievementReducer;
+                    let oduToday = new moment().format('YYYY-MM-DD');
+
+                    oduTempProgressState.todayDuration = 0;
+                    if (new Date().getDay() === 1) {
+                        oduTempProgressState.weekDuration = 0;
+                    }
+                    oduTempProgressState.totalDays += 1;
+                    console.log('22')
+
+                    oduTempAchievementState.achievements.map((item, tempIndex) => {
+                        if (item.type === 'daily') {
+                            oduTempAchievementState.achievements[tempIndex].complete_date = '';
+                            oduTempAchievementState.achievements[tempIndex].claim_date = '';
+                        }
+                        if (item.trigger === 'progress' && item.triggerField === 'totalDays' && item.complete_date !== today) {
+                            oduTempAchievementState.achievements[tempIndex].step += 1;
+                            if (parseInt(item.total) <= oduTempProgressState.totalDays) {
+                                oduTempAchievementState.achievements[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
+                                if (oduTempAchievementState.achievements[tempIndex].type === 'daily') {
+                                    oduTempAchievementState.achievements[tempIndex].step = 0;
+                                    oduTempAchievementState.achievements[tempIndex].list.push(today);
+                                }
+                                oduTempProgressState.actionList.push({
+                                    'mode': 'CA',
+                                    'data': {'id': item.id, 'points': item.awards},
+                                    'time': Math.floor(new Date().getTime() / 1000)
+                                });
+                            }
+                        }
+                    })
+
+                    console.log('23')
+
+                    //weekly
+                    if (oduTempAchievementState.weekly.days && oduTempAchievementState.weekly.days.length) {
+                        console.log('w1')
+                        let lastDay = oduTempAchievementState.weekly.days[oduTempAchievementState.weekly.days.length - 1];
+                        if (moment(oduToday).diff(moment(lastDay), 'days') > 1) {
+                            console.log('w2')
+                            oduTempAchievementState.weekly.days = [];
+                            oduTempAchievementState.weekly.days.push(oduToday);
+                        } else if (oduTempAchievementState.weekly.days.length > 7) {
+                            console.log('w3')
+                            oduTempAchievementState.weekly.days = [];
+                            oduTempAchievementState.weekly.days.push(oduToday);
+                        } else {
+                            console.log('w4')
+                            oduTempAchievementState.weekly.days.push(oduToday);
+                            if (oduTempAchievementState.weekly.days.length === 7) {
+                                oduTempAchievementState.weekly.complete_date = oduToday;
+                                oduTempAchievementState.weekly.claim_date = '';
+                            }
+                        }
+                    } else {
+                        console.log('w5')
+                        oduTempAchievementState.weekly.days = [];
+                        oduTempAchievementState.weekly.days.push(oduToday);
+                    }
+
+                    //monthly
+                    if (oduTempAchievementState.monthly.days && oduTempAchievementState.monthly.days.length) {
+                        let lastDay = oduTempAchievementState.monthly.days[oduTempAchievementState.monthly.days.length - 1];
+                        if (moment(oduToday).diff(moment(lastDay), 'days') > 1) {
+                            oduTempAchievementState.monthly.days = [];
+                            oduTempAchievementState.monthly.days.push(oduToday);
+                        } else if (oduTempAchievementState.monthly.days.length > 30) {
+                            oduTempAchievementState.monthly.days = [];
+                            oduTempAchievementState.monthly.days.push(oduToday);
+                        } else {
+                            oduTempAchievementState.monthly.days.push(oduToday);
+                            if (oduTempAchievementState.monthly.days.length === 30) {
+                                oduTempAchievementState.monthly.complete_date = oduToday;
+                                oduTempAchievementState.monthly.claim_date = '';
+                            }
+                        }
+                    } else {
+                        oduTempAchievementState.monthly.days = [];
+                        oduTempAchievementState.monthly.days.push(oduToday)
+                    }
+                    oduTempProgressState.lastPractice = new moment().format('YYYY-MM-DD');
+                    return {
+                        ...state,
+                        achievementReducer: {
+                            ...state.achievementReducer,
+                            achievements: oduTempAchievementState.achievements,
+                            weekly: oduTempAchievementState.weekly,
+                            monthly: oduTempAchievementState.monthly
+                        },
+                        progressReducer: oduTempProgressState,
+                    };
                 case "ONENERGY_PRACTICE_COMPLETED":
                     let acpTempPracticeState = state.practiceReducer;
                     let acpTempProgressState = state.progressReducer;
@@ -832,92 +925,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     let acpData = action.payload.data;
                     let today = new moment().format('YYYY-MM-DD');
                     let tempSection;
-                    let updateDaily;
                     let tmpAchievements;
                     let acpTempIndex;
-
-                    updateDaily = today !== state.progressReducer.lastPractice;
-
-                    if (updateDaily) {
-                        console.log('21')
-                        acpTempProgressState.todayDuration = 0;
-                        if (new Date().getDay() === 1) {
-                            acpTempProgressState.weekDuration = 0;
-                        }
-                        acpTempProgressState.totalDays += 1;
-                        console.log('22')
-
-                        acpTempAchievementState.achievements.map((item, tempIndex) => {
-                            if (item.type === 'daily') {
-                                acpTempAchievementState.achievements[tempIndex].complete_date = '';
-                                acpTempAchievementState.achievements[tempIndex].claim_date = '';
-                            }
-                            if (item.trigger === 'progress' && item.triggerField === 'totalDays' && item.complete_date !== today) {
-                                acpTempAchievementState.achievements[tempIndex].step += 1;
-                                if (parseInt(item.total) <= acpTempProgressState.totalDays) {
-                                    acpTempAchievementState.achievements[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
-                                    if (acpTempAchievementState.achievements[tempIndex].type === 'daily') {
-                                        acpTempAchievementState.achievements[tempIndex].step = 0;
-                                        acpTempAchievementState.achievements[tempIndex].list.push(today);
-                                    }
-                                    acpTempProgressState.actionList.push({
-                                        'mode': 'CA',
-                                        'data': {'id': item.id, 'points': item.awards},
-                                        'time': Math.floor(new Date().getTime() / 1000)
-                                    });
-                                }
-                            }
-                        })
-
-                        console.log('23')
-
-                        //weekly
-                        if (acpTempAchievementState.weekly.days && acpTempAchievementState.weekly.days.length) {
-                            console.log('w1')
-                            let lastDay = acpTempAchievementState.weekly.days[acpTempAchievementState.weekly.days.length - 1];
-                            if (moment(today).diff(moment(lastDay), 'days') > 1) {
-                                console.log('w2')
-                                acpTempAchievementState.weekly.days = [];
-                                acpTempAchievementState.weekly.days.push(today);
-                            } else if (acpTempAchievementState.weekly.days.length > 7) {
-                                console.log('w3')
-                                acpTempAchievementState.weekly.days = [];
-                                acpTempAchievementState.weekly.days.push(today);
-                            } else {
-                                console.log('w4')
-                                acpTempAchievementState.weekly.days.push(today);
-                                if (acpTempAchievementState.weekly.days.length === 7) {
-                                    acpTempAchievementState.weekly.complete_date = today;
-                                    acpTempAchievementState.weekly.claim_date = '';
-                                }
-                            }
-                        } else {
-                            console.log('w5')
-                            acpTempAchievementState.weekly.days = [];
-                            acpTempAchievementState.weekly.days.push(today);
-                        }
-
-                        //monthly
-                        if (acpTempAchievementState.monthly.days && acpTempAchievementState.monthly.days.length) {
-                            let lastDay = acpTempAchievementState.monthly.days[acpTempAchievementState.monthly.days.length - 1];
-                            if (moment(today).diff(moment(lastDay), 'days') > 1) {
-                                acpTempAchievementState.monthly.days = [];
-                                acpTempAchievementState.monthly.days.push(today);
-                            } else if (acpTempAchievementState.monthly.days.length > 30) {
-                                acpTempAchievementState.monthly.days = [];
-                                acpTempAchievementState.monthly.days.push(today);
-                            } else {
-                                acpTempAchievementState.monthly.days.push(today);
-                                if (acpTempAchievementState.monthly.days.length === 30) {
-                                    acpTempAchievementState.monthly.complete_date = today;
-                                    acpTempAchievementState.monthly.claim_date = '';
-                                }
-                            }
-                        } else {
-                            acpTempAchievementState.monthly.days = [];
-                            acpTempAchievementState.monthly.days.push(today)
-                        }
-                    }
 
                     console.log('24')
                     console.log('3')

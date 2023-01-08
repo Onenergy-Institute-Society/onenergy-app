@@ -31,7 +31,7 @@ class MilestonesAccordian extends Component {
         let claim_date = '';
         if(this.props.item.complete_date) complete_date = this.props.item.complete_date;
         if(this.props.item.claim_date) claim_date = this.props.item.claim_date;
-console.log(this.props.item)
+
         return (
             <View style={[styles.column, styles.boxShadow, {backgroundColor: this.props.screenProps.colors.bodyBg}]}>
                 <View style={[styles.row, {

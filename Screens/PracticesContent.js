@@ -205,7 +205,7 @@ const PracticesContent = props => {
                     }}
                     modalHeight={windowHeight * 4 / 5}
                     handlePosition="outside"
-                    childrenStyle={{backgroundColor: colors.bg}}
+                    childrenStyle={{backgroundColor: colors.bodyBg}}
                     HeaderComponent={
                         <View style={{
                             padding: scale(25),

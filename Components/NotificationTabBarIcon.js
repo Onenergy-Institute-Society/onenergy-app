@@ -92,6 +92,7 @@ const NotificationTabBarIcon = props => {
             case 'quest_daily':
                 if (user&&achievementReducer)
                     notificationCount = achievementReducer.achievements.filter(item => item.type==='daily'&&item.complete_date&&!item.claim_date).length;
+                console.log(achievementReducer.achievements.filter(item => item.type==='daily'&&item.complete_date&&!item.claim_date))
                 break;
             case 'quest_weekly':
                 if (user&&achievementReducer)

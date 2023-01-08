@@ -97,12 +97,20 @@ const PracticeGroup = props => {
     const htmlStyle = {
         body: {height: 200},
         img: {width: windowWidth - 80},
-        a: {color: colors.linkColor},
+        a: {
+            fontSize: scale(14),
+            color: colors.linkColor,
+            fontFamily: "Montserrat-Regular",
+            fontWeight: "normal",},
         li: {
-            fontSize: 16
+            fontSize: scale(14),
+            fontFamily: "Montserrat-Regular",
+            fontWeight: "normal",
         },
         p: {
-            lineHeight: (16 * 1.47),
+            fontFamily: "Montserrat-Regular",
+            fontWeight: "normal",
+            lineHeight: scale(14 * 1.47),
             paddingLeft: 8,
             paddingRight: 8,
             fontSize: 20,

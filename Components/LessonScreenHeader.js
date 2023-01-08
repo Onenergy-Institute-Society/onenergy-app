@@ -16,7 +16,6 @@ const LessonScreenHeader = (props) => {
         prevNext,
         navigation,
     } = props;
-    console.log(props)
     return (
         <Animated.View
             style={[

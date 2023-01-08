@@ -223,7 +223,6 @@ const EventList = props => {
                                             break;
                                     }
                                 }
-                                console.log('shadow', shadow)
                             } catch (err) {
                                 console.log(`${err}`);
                             }

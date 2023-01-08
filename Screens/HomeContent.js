@@ -30,6 +30,7 @@ import {
     ProgressChart,
 } from "react-native-chart-kit";
 import { Modalize } from 'react-native-modalize';
+import moment from 'moment';
 
 this.todayGoalDialog = undefined;
 const HomeContent = (props) => {
@@ -42,13 +43,13 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
-
+console.log(progressReducer.todayDuration)
     const chartConfig = {
         backgroundGradientFrom: "#FFF",
         backgroundGradientFromOpacity: 1,
         backgroundGradientTo: "#FFF",
         backgroundGradientToOpacity: 1,
-        color: (opacity = 1) => `rgba(236, 87, 24, ${opacity})`,
+        color: (opacity = 1) => progressReducer.todayDuration/(progressReducer.todayGoal*60)<=1?`rgba(236, 87, 24, ${opacity})`:`rgba(0, 255, 0, ${opacity})`,
         strokeWidth: 3, // optional, default 3
         barPercentage: 1,
         useShadowColorFromDataset: false, // optional
@@ -118,9 +119,9 @@ const HomeContent = (props) => {
             const subscription = AppState.addEventListener("change", _handleAppStateChange);
             TrackPlayer.setupPlayer();
             TrackPlayer.updateOptions({
-/*                android: {
+                android: {
                     appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
-                },*/
+                },
                 alwaysPauseOnInterruption: false,
                 // Media controls capabilities
                 capabilities: [
@@ -157,6 +158,14 @@ const HomeContent = (props) => {
             if (load) {
                 props.navigation.navigate("InitData", { transition: 'fade' });
             }
+            const today = new moment().format('YYYY-MM-DD');
+            if(today !== progressReducer.lastPractice)
+            {
+                dispatch({
+                    type: 'ONENERGY_DAILY_UPDATE',
+                });
+            }
+
             return () => {
                 navigation.removeListener('willFocus', onFocusHandler);
                 subscription.remove();
@@ -488,6 +497,7 @@ const HomeContent = (props) => {
                 ref={(todayGoalDialog) => { this.todayGoalDialog = todayGoalDialog; }}
                 modalStyle={{backgroundColor:colors.bodyFrontBg}}
                 modalHeight={windowHeight/2}
+                childrenStyle={{padding: 25}}
                 withHandle = "false"
                 HeaderComponent={
                     <View style={{
@@ -559,7 +569,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     progressLeftRow: {
-        width: (windowWidth - scale(50))*5 / 8,
+        width: (windowWidth - scale(45))*5 / 8,
         marginLeft: scale(15),
         alignItems: 'center',
         justifyContent: 'center',
@@ -567,7 +577,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFF",
     },
     progressRightRow: {
-        width: (windowWidth - scale(50))*3 / 8,
+        width: (windowWidth - scale(45))*3 / 8,
         paddingVertical: scale(5),
         height:(windowWidth*3/5-scale(15))/2,
         justifyContent: "space-between",
