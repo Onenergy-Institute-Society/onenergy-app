@@ -18,9 +18,6 @@ import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import analytics from '@react-native-firebase/analytics';
 import AuthWrapper from "@src/components/AuthWrapper";
 import Svg, {Circle, Path} from "react-native-svg";
-import ImageCache from "../Components/ImageCache";
-import CourseIcons from "../Components/CourseIcons";
-import moment from 'moment';
 import PracticeTipsRow from "../Components/PracticeTipsRow";
 
 const ProgramsContent = props => {
@@ -49,11 +46,6 @@ const ProgramsContent = props => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'programs_title').title,
         });
-        if(progressReducer.loadCourses){
-            dispatch({
-                type: 'ONENERGY_COURSE_UPDATE',
-            });
-        }
         if(user) {
             navigation.addListener('willFocus', onFocusHandler)
             return () => {
@@ -61,131 +53,7 @@ const ProgramsContent = props => {
             }
         }
     },[]);
- /*   const renderCourse = ({item}) => {
-        console.log(item);
-        let viewModel = item;
-        let featuredUrl = viewModel.featured_media.large;
-        let statusText;
-        let statusBarColor;
-        const lesson_time = new moment.utc(viewModel.date);
-        const current_time = new moment.utc();
-        const diffMinutes = lesson_time.diff(current_time, 'minutes');
-        const diffHours = lesson_time.diff(current_time, 'hours');
-        const diffDays = lesson_time.diff(current_time, 'days');
-        let diffTime;
-        if (diffMinutes < 60) {
-            diffTime = 'in ' + diffMinutes + ' Minutes';
-        } else {
-            if (diffHours < 24) {
-                diffTime = 'tomorrow';
-            } else {
-                diffTime = 'in ' + diffDays + ' Days';
-            }
-        }
-        let lessonNote = '';
-        if (viewModel.progression === 100) {
-            statusBarColor = colors.coursesLabelCompleted;
-            statusText = "Completed";
-            lessonNote = 'Congratulations on completion';
-        } else if (viewModel.price && viewModel.price.expired) {
-            statusBarColor = "black";
-            statusText = "Expired";
-            lessonNote = 'Course is expired, no more access';
-        } else if (viewModel.has_course_access) {
-            if (lesson_time > current_time) {
-                lessonNote = 'Next lesson will be available ' + diffTime;
-            } else {
-                lessonNote = 'Next lesson is available now';
-            }
-            const expiringTime = new moment.utc(viewModel.price.expires_on);
-            const diffExpiringDays = expiringTime.diff(current_time, 'days');
-            let diffExpiringTime;
-            diffExpiringTime = 'Expire in ' + diffExpiringDays + ' Days';
-            if (diffExpiringDays <= 7 && diffExpiringDays > 0) {
-                statusBarColor = "grey";
-                statusText = diffExpiringTime;
-                lessonNote = 'Course is expiring soon';
-            } else {
-                if (viewModel.progression > 0) {
-                    statusBarColor = colors.coursesLabelProgress;
-                    statusText = "In Progress";
-                } else {
-                    statusBarColor = colors.coursesLabelFree;
-                    statusText = "Enrolled";
-                    lessonNote = 'Please start your first lesson';
-                }
-            }
-        } else {
-            statusBarColor = colors.coursesLabelStart;
-            statusText = "Start Course";
-        }
-        return (
-            <View style={styles.containerStyle} key={'course-' + viewModel.id}>
-                <TouchableWithoutFeedback
-                    key={viewModel.id + 'img'}
-                    onPress={() => {viewModel.price.expired && viewModel.has_course_access ? alert('Course is expired') :
-                        navigation.dispatch(
-                            NavigationActions.navigate({
-                                routeName: "CourseScreen",
-                                params: {
-                                    courseId: parseInt(viewModel.id),
-                                }
-                            })
-                        )
-                    }}
-                >
-                    <View style={[styles.card, styles.boxShadow, {backgroundColor: "#C5B3E9"}]}>
-                        <View style={[styles.statusBar, styles.boxShadow, {backgroundColor: statusBarColor}]}><Text
-                            style={styles.statusText}>{statusText}</Text></View>
-                        {viewModel.progression === 100 ?
-                            <View style={{position: "absolute", top: 10, right: 5}}>
-                                <Svg
-                                    width="48"
-                                    height="48"
-                                    viewBox="0 0 32 32"
-                                >
-                                    <Path
-                                        d="M23 13H9a1 1 0 0 0-1 1v16a1 1 0 0 0 1.39.92L16 28.09l6.61 2.83A1 1 0 0 0 23 31a1 1 0 0 0 .55-.17A1 1 0 0 0 24 30V14a1 1 0 0 0-1-1Z"
-                                        fill="#0083fd"/>
-                                    <Path d="M23 13H9a1 1 0 0 0-1 1v8.23a12.94 12.94 0 0 0 16 0V14a1 1 0 0 0-1-1Z"
-                                          fill="#0072fc"/>
-                                    <Circle cx="16" cy="12" r="11" fill="#ffcb5b"/>
-                                    <Path d="M6 13a11 11 0 0 1 18.25-8.25 11 11 0 1 0-15.5 15.5A10.92 10.92 0 0 1 6 13Z"
-                                          fill="#f7b737"/>
-                                    <Path
-                                        d="M22.38 10.38a1.9 1.9 0 0 0-1.83-1.33l-2.06.06-.66-2a1.92 1.92 0 0 0-3.66 0l-.59 2h-2.13a1.93 1.93 0 0 0-1.13 3.49L12 13.7l-.65 2a1.89 1.89 0 0 0 .69 2.15 1.93 1.93 0 0 0 2.27 0L16 16.63l1.72 1.25a1.92 1.92 0 0 0 3-2.15L20 13.79l1.72-1.25a1.91 1.91 0 0 0 .66-2.16Z"
-                                        fill="#fff5f5"/>
-                                    <Path
-                                        d="m19.49 10.11 2.06-.06a1.87 1.87 0 0 1 .75.17 1.88 1.88 0 0 0-1.75-1.17h-1.39ZM10.62 11.38a1.9 1.9 0 0 1 1.83-1.33h2.13l.59-2a1.88 1.88 0 0 1 2.58-1.16 1.91 1.91 0 0 0-3.58.16l-.59 2h-2.13a1.93 1.93 0 0 0-1.13 3.49l.42.29a1.91 1.91 0 0 1-.12-1.45ZM12.36 16.73l.65-2-1.08-.73-.57 1.77a1.89 1.89 0 0 0 .69 2.15 2.69 2.69 0 0 0 .38.19 1.87 1.87 0 0 1-.07-1.38Z"
-                                        fill="#efe2dd"/>
-                                </Svg>
-                            </View>
-                            :null
-                        }
-                        <ImageCache style={styles.image} source={{uri: featuredUrl ? featuredUrl : ''}}/>
-                        <Text style={styles.title}>{viewModel.title.rendered}</Text>
-                        <View style={styles.metaOverlay}>
-                            {viewModel.progression > 0 && viewModel.progression < 100 && !viewModel.price.expired ?
-                                <View style={styles.progressBar}><View style={{
-                                    backgroundColor: colors.primaryColor,
-                                    width: viewModel.progression + '%'
-                                }}/></View>
-                                : null}
-                            <View style={styles.meta}>
-                            </View>
-                        </View>
-                        <View style={styles.icon}>
-                            {viewModel.price.icon?
-                                <CourseIcons icon={viewModel.price.icon} />
-                                :null
-                            }
-                        </View>
-                    </View>
-                </TouchableWithoutFeedback>
-            </View>
-        )
-    }
-*/
+
     return (
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
@@ -200,24 +68,8 @@ const ProgramsContent = props => {
                 <View style={styles.heading_title}>
                     <Text style={global.widgetTitle}>Preparatory Courses</Text>
                 </View>
-{/*                {!progressReducer.loadCourses||coursesCache&&coursesCache.valueSeq()&&coursesCache.valueSeq().toJS().length?
-                    <>
-                    <FlatList
-                        contentContainerStyle={{paddingBottom: scale(60)}}
-                        data={coursesCache.valueSeq().sort((x, y) => x.id - y.id).toJS()}
-                        renderItem={renderCourse}
-                        keyExtractor={item => item.id}
-                    />
-                    </>
-                    :
-                    <>*/}
-                        {Platform.OS === 'android'?
-                        <ActivityIndicator style={styles.loading} size="large"/>
-                            :null}
-                        <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
-                                       hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
-{/*                    </>
-                }*/}
+                <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
+                               hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
             </ScrollView>
         </SafeAreaView>
     );
@@ -505,7 +357,6 @@ ProgramsContent.navigationOptions = ({ navigation, screenProps }) => {
                                 strokeWidth="2"
                             />
                         </Svg>
-                        <NotificationTabBarIcon notificationID={'milestone'} top={-5} right={5} size={scale(10)} showNumber={false} />
                     </TouchableScale>
                 </View>
             </AuthWrapper>

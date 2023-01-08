@@ -184,6 +184,15 @@ const CustomDrawerContentComponent = (props) => {
                                                 height="24"
                                                 viewBox="0 0 24 24"
                                             >
+                                                <Rect width="18"
+                                                      height="11"
+                                                      x="3" y="11"
+                                                      rx="2"
+                                                      ry="2"
+                                                      fill="none"
+                                                      stroke={colors.secondaryButtonColor}
+                                                      strokeWidth="2"
+                                                />
                                                 <Path
                                                     d="M7 11V7a5 5 0 0 1 9.9-1"
                                                     fill="none"
@@ -361,50 +370,6 @@ const CustomDrawerContentComponent = (props) => {
                                             <Text
                                                 style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
                                                 {optionData.titles.find(el => el.id === 'left_menu_vouchers').title}
-                                            </Text>
-                                        </View>
-                                        <AuthWrapper actionOnGuestLogin={'hide'}>
-                                            <NotificationTabBarIcon notificationID={'voucher'} top={5} right={5}
-                                                                    size={scale(10)} showNumber={false}/>
-                                        </AuthWrapper>
-                                        <IconButton
-                                            icon={require("@src/assets/img/arrow-right.png")}
-                                            style={{
-                                                height: 32,
-                                                marginRight: 10,
-                                            }}
-                                        />
-                                    </View>
-                                </TouchableWithoutFeedback>
-                                <TouchableWithoutFeedback
-                                    onPress={() => {
-                                        navigation.navigate("NotificationsScreen")
-                                    }}
-                                >
-                                    <View style={{
-                                        paddingHorizontal: 5,
-                                        paddingVertical: 10,
-                                        borderBottomWidth: 1,
-                                        borderBottomColor: colors.borderColor,
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between'
-                                    }}>
-                                        <View style={{flexDirection: "row", alignItems: "center"}}>
-                                            <Svg
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <Path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"
-                                                      fill="none"
-                                                      stroke={colors.secondaryButtonColor}
-                                                      strokeWidth="2"
-                                                />
-                                            </Svg>
-                                            <Text
-                                                style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
-                                                {optionData.titles.find(el => el.id === 'left_menu_notifications').title}
                                             </Text>
                                         </View>
                                         <AuthWrapper actionOnGuestLogin={'hide'}>

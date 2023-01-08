@@ -117,7 +117,7 @@ const QuestsScreen = createStackNavigator({
     }
 });
 QuestsScreen.navigationOptions = ({navigation, screenProps}) => ({
-    title: 'My Quests',
+    title: 'Quests',
     headerStyle: {
         backgroundColor: screenProps.colors.headerBg,
     },

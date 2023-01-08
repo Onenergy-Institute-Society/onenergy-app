@@ -42,11 +42,11 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
-console.log(optionData)
+
     const chartConfig = {
-        backgroundGradientFrom: "#FFEEE7",
+        backgroundGradientFrom: "#FFF",
         backgroundGradientFromOpacity: 1,
-        backgroundGradientTo: "#FFEEE7",
+        backgroundGradientTo: "#FFF",
         backgroundGradientToOpacity: 1,
         color: (opacity = 1) => `rgba(236, 87, 24, ${opacity})`,
         strokeWidth: 3, // optional, default 3
@@ -279,20 +279,6 @@ console.log(optionData)
     return (
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                {optionData.show.includes('slider')?
-                    <TopSlider
-                        loop={true}
-                        timer={5000}
-                        onPress={(item) => {
-                            OnPress(item).then();
-                        }}
-                        indicatorContainerStyle={{position: 'absolute', bottom: -10}}
-                        indicatorActiveColor={'#8e44ad'}
-                        indicatorInActiveColor={'#ffffff'}
-                        indicatorActiveWidth={30}
-                        animation
-                    />:null
-                }
                 {user?
                 <>
                     <View style={styles.topRow}>
@@ -325,13 +311,13 @@ console.log(optionData)
                                             routeName: "StatsScreen"
                                         })
                                     )}}>
-                            <View style={[styles.progressRow, styles.boxShadow, {height: windowWidth*3/5}]}>
+                            <View style={[styles.progressLeftRow, styles.boxShadow, {height: windowWidth*3/5}]}>
                                 <View style={{width:"100%", paddingTop:scale(10), paddingLeft:scale(10), alignItems:"flex-start"}}>
                                     <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
-                                        <Text style={[global.itemTitle,{fontSize:scale(14),color:colors.primaryColor}]}>Daily Goal: </Text><Text style={[global.textAlt,{fontSize:scale(10),color:colors.primaryColor}]}>{progressReducer.todayGoal?Math.round(progressReducer.todayGoal)>60?Math.round(progressReducer.todayGoal /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:progressReducer.todayGoal + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                        <Text style={[global.itemTitle,{fontSize:scale(14),color:colors.primaryColor}]}>Daily Goal: </Text><Text style={[global.textAlt,{fontSize:scale(12),color:colors.primaryColor}]}>{progressReducer.todayGoal?Math.round(progressReducer.todayGoal)>60?Math.round(progressReducer.todayGoal /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:progressReducer.todayGoal + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                     </View>
                                     <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom:scale(10)}}>
-                                        <Text style={[global.itemTitle,{fontSize:scale(14),color:colors.primaryColor}]}>Today: </Text><Text style={[global.textAlt,{fontSize:scale(10),color:colors.primaryColor}]}>{progressReducer.todayDuration?Math.round(progressReducer.todayDuration / 60 )>60?Math.round(progressReducer.todayDuration /3600)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.todayDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                        <Text style={[global.itemTitle,{fontSize:scale(14),color:colors.primaryColor}]}>Today: </Text><Text style={[global.textAlt,{fontSize:scale(12),color:colors.primaryColor}]}>{progressReducer.todayDuration?Math.round(progressReducer.todayDuration / 60 )>60?Math.round(progressReducer.todayDuration /3600)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.todayDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0+optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                     </View>
                                 </View>
                                 <ProgressChart
@@ -357,53 +343,40 @@ console.log(optionData)
                             </View>
                         </TouchableScale>
                         <View style={{marginRight:scale(15), justifyContent: "space-between"}}>
-                            <View style={[styles.progressRow, styles.boxShadow, {paddingVertical: scale(10), height:(windowWidth*3/5-scale(15))/2, justifyContent: "space-between"}]}>
-                                <View style={{width: "100%", flexDirection: "row", justifyContent: "flex-start", paddingLeft:scale(10), alignItems:"center"}}>
-                                    <Svg
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <Path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"
-                                              fill="none"
-                                              stroke={colors.secondaryButtonColor}
-                                              strokeWidth="2"
-                                        />
-                                    </Svg>
-                                    <Text style={[global.itemTitle,{marginLeft:scale(5),fontSize:scale(14),color:colors.primaryColor}]}>In progress</Text>
+                            <View style={[styles.progressRightRow, styles.boxShadow]}>
+                                <View style={{width: "100%", flexDirection: "row", justifyContent: "center", alignItems:"center"}}>
+                                    <Text style={[global.itemTitle,{fontSize:scale(14),color:colors.primaryColor}]}>courses{"\n"}in progress</Text>
                                 </View>
                                 <View style={{flexDirection: "row", justifyContent: "flex-start"}}>
-                                    <Text style={[global.itemTitle,{fontSize:scale(36),color:colors.primaryButtonBg}]}>{progressReducer.enrolledCourses?progressReducer.completedCourses?progressReducer.enrolledCourses.length-progressReducer.completedCourses.length:progressReducer.enrolledCourses.length:0}</Text>
+                                    <Text style={[global.itemTitle,{fontSize:scale(40),color:colors.primaryButtonBg}]}>{progressReducer.enrolledCourses?progressReducer.completedCourses?progressReducer.enrolledCourses.length-progressReducer.completedCourses.length:progressReducer.enrolledCourses.length:0}</Text>
                                 </View>
                             </View>
-                            <View style={[styles.progressRow, styles.boxShadow, {paddingVertical: scale(10), height:(windowWidth*3/5-scale(15))/2, justifyContent: "space-between"}]}>
-                                <View style={{width: "100%", flexDirection: "row", justifyContent: "flex-start", paddingLeft:scale(10), alignItems:"center"}}>
-                                    <Svg
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <Circle cx="12" cy="12" r="10"
-                                                fill="none"
-                                                stroke={colors.secondaryButtonColor}
-                                                strokeWidth="2"
-                                        />
-                                        <Path d="M12 6v6l4 2"
-                                              fill="none"
-                                              stroke={colors.secondaryButtonColor}
-                                              strokeWidth="2"
-                                        />
-                                    </Svg>
-                                    <Text style={[global.itemTitle,{marginLeft:scale(5),fontSize:scale(14),color:colors.primaryColor}]}>Practiced</Text>
+                            <View style={[styles.progressRightRow, styles.boxShadow]}>
+                                <View style={{width: "100%", flexDirection: "row", justifyContent: "center", alignItems:"center"}}>
+                                    <Text style={[global.itemTitle,{lineHeight:scale(14),fontSize:scale(14),color:colors.primaryColor}]}>time{"\n"}practiced</Text>
                                 </View>
-                                <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
-                                    <Text style={[global.itemTitle,{fontSize:scale(36),color:colors.primaryButtonBg}]}>{progressReducer.totalDuration?Math.round(progressReducer.totalDuration / 60 )>60?Math.round(progressReducer.totalDuration / 60 /60):Math.round(progressReducer.totalDuration / 60):0}</Text><Text style={[global.itemText,{fontSize:scale(24),color:colors.primaryButtonBg}]}>{progressReducer.totalDuration?Math.round(progressReducer.totalDuration / 60 )>60?optionData.titles.find(el => el.id === 'stats_detail_hours').title:optionData.titles.find(el => el.id === 'stats_detail_minutes').title:''}</Text>
+                                <View style={{flexDirection: "row", justifyContent: "center", alignItems: "baseline"}}>
+                                    <Text style={[global.itemTitle,{fontSize:scale(40),color:colors.primaryButtonBg}]}>{progressReducer.totalDuration?Math.round(progressReducer.totalDuration / 60 )>60?Math.round(progressReducer.totalDuration / 60 /60):Math.round(progressReducer.totalDuration / 60):0}</Text><Text style={[global.itemText,{fontSize:scale(14),color:colors.primaryButtonBg}]}>{progressReducer.totalDuration?Math.round(progressReducer.totalDuration / 60 )>60?optionData.titles.find(el => el.id === 'stats_detail_hours').title:optionData.titles.find(el => el.id === 'stats_detail_minutes').title:''}</Text>
                                 </View>
                             </View>
                         </View>
                     </View>
                 </>
                 :null}
+                {optionData.show.includes('slider')?
+                    <TopSlider
+                        loop={true}
+                        timer={5000}
+                        onPress={(item) => {
+                            OnPress(item).then();
+                        }}
+                        indicatorContainerStyle={{position: 'absolute', bottom: -10}}
+                        indicatorActiveColor={colors.primaryButtonBg}
+                        indicatorInActiveColor={'#ffffff'}
+                        indicatorActiveWidth={30}
+                        animation
+                    />:null
+                }
                 {optionData.goals&&optionData.goals.length?
                 <View style={styles.programRow}>
                     <EventList location={'home'} {...props} />
@@ -585,13 +558,23 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
     },
-    progressRow: {
-        width: (windowWidth - scale(50)) / 2,
+    progressLeftRow: {
+        width: (windowWidth - scale(50))*5 / 8,
         marginLeft: scale(15),
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 9,
-        backgroundColor: "#FFEEE7",
+        backgroundColor: "#FFF",
+    },
+    progressRightRow: {
+        width: (windowWidth - scale(50))*3 / 8,
+        paddingVertical: scale(5),
+        height:(windowWidth*3/5-scale(15))/2,
+        justifyContent: "space-between",
+        marginLeft: scale(15),
+        alignItems: 'center',
+        borderRadius: 9,
+        backgroundColor: "#FFF",
     },
     quoteRow: {
         marginHorizontal: scale(15),
@@ -819,7 +802,6 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
                                 strokeWidth="2"
                             />
                         </Svg>
-                        <NotificationTabBarIcon notificationID={'milestone'} top={-5} right={5} size={scale(10)} showNumber={false} />
                     </TouchableScale>
                 </View>
             </AuthWrapper>

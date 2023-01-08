@@ -115,7 +115,7 @@ const MilestonesScreen = createStackNavigator({
     }
 });
 MilestonesScreen.navigationOptions = ({navigation, screenProps}) => ({
-    title: 'My Milestones',
+    title: 'Milestones',
     headerStyle: {
         backgroundColor: screenProps.colors.headerBg,
     },

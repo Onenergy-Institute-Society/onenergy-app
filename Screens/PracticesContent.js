@@ -397,7 +397,6 @@ PracticesContent.navigationOptions = ({navigation, screenProps}) => {
                                 strokeWidth="2"
                             />
                         </Svg>
-                        <NotificationTabBarIcon notificationID={'milestone'} top={-5} right={5} size={scale(10)} showNumber={false} />
                     </TouchableScale>
                 </View>
             </AuthWrapper>

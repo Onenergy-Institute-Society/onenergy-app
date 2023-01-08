@@ -65,128 +65,122 @@ class TopSlider extends Component {
             let show = false;
             let showDate;
             const current_time = new moment.utc();
-            if(item.location === 'top') {
-                switch (item.permission.toString()) {
-                    case 'all':
-                        show = true;
+            switch (item.permission.toString()) {
+                case 'all':
+                    show = true;
+                    break;
+                case 'guest':
+                    user ? show = false : show = true;
+                    break;
+                case 'login':
+                    user ? show = true : show = false;
+                    break;
+                case 'user':
+                    user && !(user.membership && user.membership.length) ? show = true : show = false;
+                    break;
+                case 'member':
+                    user && (user.membership && user.membership.length) ? show = true : show = false;
+                    break;
+                default:
+                    break;
+            }
+            if(show && item.location.includes('top')) {
+                show = false;
+                switch (item.show) {
+                    case 'date':
+                        let date2 = new moment.utc(item.showDate);
+                        if (current_time >= date2) {
+                            showDate = item.showDate;
+                            show = true
+                        }
                         break;
-                    case 'guest':
-                        user ? show = false : show = true;
+                    case 'course':
+                        if (item.showCourseOption === 'enrolled') {
+                            let showCourse = progressReducer.enrolledCourses&&progressReducer.enrolledCourses.find(course => course.id === parseInt(item.showCourse));
+                            if (showCourse) {
+                                showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
+                                if (current_time > showDate) {
+                                    show = true;
+                                }
+                            }
+                        } else if (item.showCourseOption === 'completed') {
+                            let showCourse = progressReducer.completedCourses&&progressReducer.completedCourses.find(course => course.id === parseInt(item.showCourse));
+                            if (showCourse) {
+                                showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
+                                if (current_time > showDate) {
+                                    show = true;
+                                }
+                            }
+                        }
                         break;
-                    case 'login':
-                        user ? show = true : show = false;
+                    case 'lesson':
+                        let showLesson = progressReducer.completedLessons&&progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.showLesson));
+                        if (showLesson) {
+                            show = true;
+                        }
                         break;
-                    case 'user':
-                        user && !(user.membership && user.membership.length) ? show = true : show = false;
-                        break;
-                    case 'member':
-                        user && (user.membership && user.membership.length) ? show = true : show = false;
+                    case 'achievement':
+                        let showAchievement = user&&achievementReducer&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.showAchievement));
+                        if (showAchievement) {
+                            show = true;
+                        }
                         break;
                     default:
+                        show = true;
                         break;
                 }
-                if(show) {
-                    show = false;
-                    switch (item.show) {
+                if (show) {
+                    switch (item.hide) {
                         case 'date':
-                            let date2 = new moment.utc(item.showDate);
-                            if (current_time >= date2) {
-                                showDate = item.showDate;
-                                show = true
+                            switch (item.hideDateOption.hideDateType) {
+                                case 'fix':
+                                    let date2 = new moment.utc(item.hideDateOption.date);
+                                    if (current_time >= date2) {
+                                        show = false
+                                    }
+                                    break;
+                                case 'days':
+                                    let diffDays = current_time.diff(showDate, 'days');
+                                    if (diffDays >= parseInt(item.hideDateOption.days)) {
+                                        show = false
+                                    }
+                                    break;
                             }
                             break;
                         case 'course':
-                            if (item.showCourseOption === 'enrolled') {
-                                let showCourse = progressReducer.enrolledCourses&&progressReducer.enrolledCourses.find(course => course.id === parseInt(item.showCourse));
-                                if (showCourse) {
-                                    showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
-                                    if (current_time > showDate) {
-                                        show = true;
-                                    }
+                            if (item.hideCourseOption === 'enrolled') {
+                                if (progressReducer.enrolledCourses&&progressReducer.enrolledCourses.find(course => course.id === parseInt(item.hideCourse))) {
+                                    show = false;
                                 }
-                            } else if (item.showCourseOption === 'completed') {
-                                let showCourse = progressReducer.completedCourses&&progressReducer.completedCourses.find(course => course.id === parseInt(item.showCourse));
-                                if (showCourse) {
-                                    showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
-                                    if (current_time > showDate) {
-                                        show = true;
-                                    }
+                            } else if (item.hideCourseOption === 'completed') {
+                                if (progressReducer.completedCourses&&progressReducer.completedCourses.find(course => course.id === parseInt(item.hideCourse))) {
+                                    show = false;
                                 }
                             }
                             break;
                         case 'lesson':
-                            let showLesson = progressReducer.completedLessons&&progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.showLesson));
-                            if (showLesson) {
-                                showDate = new moment.unix(showLesson['date']).add(item.delay, 'd');
-                                if (current_time > showDate) {
-                                    show = true;
-                                }
+                            if (progressReducer.completedLessons&&progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
+                                show = false;
                             }
                             break;
                         case 'achievement':
-                            let showAchievement = user&&achievementReducer&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.showAchievement));
-                            if (showAchievement) {
-                                showDate = new moment.unix(showAchievement['date']).add(item.delay, 'd');
-                                if (current_time > showDate) {
-                                    show = true;
-                                }
+                            if (achievementReducer&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.hideAchievement))) {
+                                show = false;
                             }
                             break;
                         default:
                             show = true;
                             break;
                     }
-                    if (show) {
-                        switch (item.hide) {
-                            case 'date':
-                                switch (item.hideDateOption.hideDateType) {
-                                    case 'fix':
-                                        let date2 = new moment.utc(item.hideDateOption.date);
-                                        if (current_time >= date2) {
-                                            show = false
-                                        }
-                                        break;
-                                    case 'days':
-                                        let diffDays = current_time.diff(showDate, 'days');
-                                        if (diffDays >= parseInt(item.hideDateOption.days)) {
-                                            show = false
-                                        }
-                                        break;
-                                }
-                                break;
-                            case 'course':
-                                if (item.hideCourseOption === 'enrolled') {
-                                    if (progressReducer.enrolledCourses&&progressReducer.enrolledCourses.find(course => course.id === parseInt(item.hideCourse))) {
-                                        show = false;
-                                    }
-                                } else if (item.hideCourseOption === 'completed') {
-                                    if (progressReducer.completedCourses&&progressReducer.completedCourses.find(course => course.id === parseInt(item.hideCourse))) {
-                                        show = false;
-                                    }
-                                }
-                                break;
-                            case 'lesson':
-                                if (progressReducer.completedLessons&&progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
-                                    show = false;
-                                }
-                                break;
-                            case 'achievement':
-                                if (achievementReducer&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.hideAchievement))) {
-                                    show = false;
-                                }
-                                break;
-                            default:
-                                show = true;
-                                break;
-                        }
-                    }
                 }
+            }else{
+                show = false;
             }
             return show;
         })
         if(topSlides&&topSlides.length){
-            this.setState({data:topSlides, autoscroll: true} )
-            this.startAutoPlay();
+            this.setState({data:topSlides, autoscroll: false} )
+            //this.startAutoPlay();
         }
     }
 
@@ -194,13 +188,16 @@ class TopSlider extends Component {
         if( this.props.onRef){
           this.props.onRef(this)
         }
+        if (this.props.autoscroll) {
+            this.startAutoPlay();
+        }
     }
 
     componentWillUnmount() {
         if( this.props.onRef){
           this.props.onRef(undefined)
         }
-        if (this.state.autoscroll) {
+        if (this.props.autoscroll) {
             this.stopAutoPlay();
         }
     }
@@ -215,9 +212,8 @@ class TopSlider extends Component {
         const itemWidth = this.props.width;
         const separatorWidth = this.props.separatorWidth;
         const totalItemWidth = itemWidth + separatorWidth;
-
         return (
-            this.state.topSlides&&this.state.topSlides.length?
+            this.state.data&&this.state.data.length?
             <View style={[styles.slideRow, styles.boxShadow]}>
                 <FlatList style={{maxHeight:Math.round((Dimensions.get('window').width-scale(30))/2.5-scale(10))}}
                     ref={this.slider}
@@ -239,7 +235,7 @@ class TopSlider extends Component {
                             item: item,
                             imageKey: this.props.imageKey,
                             onPress: this.props.onPress,
-                            index: this.state.index % this.props.data.length,
+                            index: this.state.index % this.state.data.length,
                             active: index === this.state.index,
                             local: this.props.local,
                             height: this.props.height,
@@ -259,10 +255,10 @@ class TopSlider extends Component {
                     data={this.state.data}
                     removeClippedSubviews={false}
                 />
-                {this.props.indicator && (
+                {this.props.indicator && this.state.data.length>1 && (
                     <Indicator
-                        itemCount={this.props.data.length}
-                        currentIndex={this.state.index % this.props.data.length}
+                        itemCount={this.state.data.length}
+                        currentIndex={this.state.index % this.state.data.length}
                         indicatorStyle={this.props.indicatorStyle}
                         indicatorContainerStyle={[
                             styles.indicatorContainerStyle,
@@ -282,15 +278,15 @@ class TopSlider extends Component {
         if (viewableItems.length > 0) {
             let currentIndex = viewableItems[0].index;
             if (
-                currentIndex % this.props.data.length === this.props.data.length - 1 &&
+                currentIndex % this.state.data.length === this.state.data.length - 1 &&
                 this.props.loop
             ) {
-                this.setState({
+/*                this.setState({
                     index: currentIndex,
-                    data: [...this.state.data, ...this.props.data],
-                });
+                    data: [...this.state.data, ...this.state.data],
+                });*/
             } else {
-                this.setState({index: currentIndex%this.props.data.length});
+                this.setState({index: currentIndex%this.state.data.length});
             }
 
             if (this.props.currentIndexCallback) {
@@ -310,7 +306,7 @@ class TopSlider extends Component {
         }
     this.setState({index: newIndex});
         this.slider.current.scrollToIndex({
-      index: newIndex%this.props.data.length,
+      index: newIndex%this.state.data.length,
             animated: true,
         });
     };
@@ -323,7 +319,7 @@ class TopSlider extends Component {
       }
       this.setState({index: newIndex});
       this.slider.current.scrollToIndex({
-        index: newIndex%this.props.data.length,
+        index: newIndex%this.state.data.length,
         animated: true,
       });
     }

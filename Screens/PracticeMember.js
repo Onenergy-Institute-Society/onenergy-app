@@ -38,12 +38,6 @@ const PracticeMember = props => {
         screen_name: 'Custom Routine Screen',
     });
 
-    React.useEffect(() => {
-        Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 2000,
-        }).start();
-    }, []);
     const fetchTracks = async () => {
         try {
             const apiRoutines = getApi(props.config);
@@ -128,6 +122,10 @@ const PracticeMember = props => {
     useEffect(()=>{
         if(messageBarDisplay)
         {
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 2000,
+            }).start();
             setTimeout(function () {
                 setMessageBarDisplay(false);
             }, 3000)

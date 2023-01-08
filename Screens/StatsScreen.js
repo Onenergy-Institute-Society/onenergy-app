@@ -158,6 +158,9 @@ const StatsScreen = (props) => {
                             values={commitsData}
                             endDate={new Date()}
                             numDays={100}
+                            showOutOfRangeDays={true}
+                            squareSize={(windowWidth-scale(40)-14)/18}
+                            gutterSize={1}
                             width={windowWidth-scale(40)}
                             height={220}
                             chartConfig={heatMapChartConfig}

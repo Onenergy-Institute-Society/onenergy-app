@@ -19,7 +19,7 @@ const TracksList = (props) => {
     const {tracks, setMessageBarDisplay, screenProps} = props;
     const {colors, global} = screenProps;
     const [selectedTrack, setSelectedTrack] = useState(null);
-
+console.log('tracks', tracks)
     const onTrackItemPress = async (track) => {
         if(!selectedTrack || track.id !== selectedTrack.id) {
             setSelectedTrack(track);
@@ -94,6 +94,7 @@ const TracksList = (props) => {
     }
     return (
         <SafeAreaView style={styles.container}>
+            {tracks?
             <SectionList
                 stickySectionHeadersEnabled={false}
                 contentContainerStyle={{ paddingBottom: scale(20) }}
@@ -103,6 +104,7 @@ const TracksList = (props) => {
                 renderSectionHeader={renderSectionHeader}
                 keyExtractor={(item, index) => `${item.title}-${index}`}
             />
+                :null}
         </SafeAreaView>
     );
 };

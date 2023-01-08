@@ -24,16 +24,16 @@ const AchievementItem = (props) => {
                     <View style={{marginVertical: 10}}>
                         <View
                             style={{justifyContent: 'center', alignItems: 'center'}}>
-                            <Text style={{color:colors.primaryButtonBg}}>Expire in {7 - moment(today).diff(moment(item.complete_date), 'days')} days</Text></View>
+                            <Text style={{color:colors.primaryButtonBg}}>Expire in {7 - moment(today).diff(moment(date), 'days')} days</Text></View>
                     </View>
                     :null}
                     <View style={{marginTop: 10, justifyContent:"center", alignItems:"center", width:mode!=='past'&&!item.claim_date?'100%':0, height:mode!=='past'&&!item.claim_date?'auto':0}}>
-                        <Progress.Bar showsText={true} borderWidth={0} color={item.complete_date===today&&mode==='daily'||item.complete_date&&mode!=='daily'?"lightgreen":colors.primaryButtonBg} unfilledColor={"black"} borderRadius={9}
-                                      progress={item.complete_date===today&&mode==='daily'||item.complete_date&&mode!=='daily'?item.step:0 / item.total}
+                        <Progress.Bar showsText={true} borderWidth={0} color={item.complete_date===today&&mode==='daily'?"lightgreen":item.complete_date?"lightgreen":colors.primaryButtonBg} unfilledColor={"black"} borderRadius={9}
+                                      progress={mode==='daily'?item.complete_date===today?item.total:0:item.complete_date?item.total:item.step / item.total}
                                       width={windowWidth/2} height={scale(16)}/>
                         <View
                             style={{position: "absolute", top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
-                            <Text style={[global.textItemSubtitle, {color: '#FFF'}]}>{item.complete_date===today&&mode==='daily'||item.complete_date&&mode!=='daily'?"completed!":0 + ' / ' + item.total}</Text>
+                            <Text style={[global.textItemSubtitle, {color: '#FFF'}]}>{mode==='daily'?item.complete_date===today?"completed!":'0 / ' + item.total:item.complete_date?"completed!":item.step + ' / ' + item.total}</Text>
                         </View>
                     </View>
             </View>
@@ -42,7 +42,7 @@ const AchievementItem = (props) => {
                     handleOnPress(item, date, mode);
                 }}
             >
-                <View style={[styles.rowRight, {backgroundColor:!item.complete_date?colors.primaryButtonBg:mode==='past'||!item.claim_date?colors.primaryColor:'grey'}]}>
+                <View style={[styles.rowRight, {backgroundColor:mode==='past'?colors.primaryColor:!item.complete_date?colors.primaryButtonBg:!item.claim_date?colors.primaryColor:'grey'}]}>
                     {
                         mode !== 'past' && !item.complete_date ?
                         <>

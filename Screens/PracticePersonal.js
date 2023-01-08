@@ -31,19 +31,12 @@ const PracticePersonal = props => {
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
-
+console.log('guideReducer', guideReducer)
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Personal Practice Screen',
     });
 
-    React.useEffect(() => {
-        Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 2000,
-            easing: Easing.bounce
-        }).start();
-    }, []);
     useEffect(() => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'practices_basic').title,
@@ -52,6 +45,11 @@ const PracticePersonal = props => {
     useEffect(()=>{
         if(messageBarDisplay)
         {
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 2000,
+                easing: Easing.bounce
+            }).start();
             setTimeout(function () {
                 setMessageBarDisplay(false);
             }, 3000)

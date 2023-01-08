@@ -661,7 +661,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 enrolledCourses: [],
                 completedCourses: [],
                 progress:[],
-                loadCourses: true,
             },
             achievementReducer: {
                 weekly: {days: [], complete_date: '', claim_date: ''},
@@ -742,20 +741,11 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         idProgressReducer.progressUpdate = new Date().toISOString();
                     }
                     console.log('7', idPracticeReducer, idAchievementReducer, idProgressReducer)
-                    idProgressReducer.loadCourses = true;
                     return {
                         ...state,
                         practiceReducer: idPracticeReducer,
                         achievementReducer: idAchievementReducer,
                         progressReducer: idProgressReducer,
-                    };
-                case "ONENERGY_COURSE_UPDATE":
-                    return {
-                        ...state,
-                        practiceReducer: {
-                            ...state.progressReducer,
-                            loadCourses: false,
-                        }
                     };
                 case "ONENERGY_ROUTINE_UPDATE":
                     return {
@@ -1438,6 +1428,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
         let whiteList = [...props.whitelist, "languagesReducer", "postReducer", "onenergyReducer",];
+        console.log(whiteList);
         return {
             ...props,
             whitelist: whiteList

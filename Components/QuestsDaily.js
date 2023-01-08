@@ -68,6 +68,7 @@ const QuestsDaily = (props) => {
     const renderItem = ({item}) => {
         let show = -1;
         let today = new moment().format('YYYY-MM-DD');
+        console.log(item.title, item)
 
         switch(item.show){
             case 'course':
@@ -113,7 +114,14 @@ const QuestsDaily = (props) => {
                 achievementReducer && achievementReducer.length ?
                     <FlatList
                         contentContainerStyle={{ paddingBottom: scale(20) }}
-                        data={achievementReducer.sort((a,b)=>a.complete_date.localeCompare(b.complete_date)).sort((a,b)=>a.claim_date.localeCompare(b.claim_date))}
+                        data={achievementReducer.sort((a,b)=>{
+                            if(a.claim_date===''&&b.claim_date==='')
+                            {
+                                if(a.complete_date < b.complete_date){return 1}else{return -1}
+                            }else{
+                                if(a.claim_date > b.claim_date){return 1}else{return -1}
+                            }
+                        })}
                         renderItem={renderItem}
                         keyExtractor={item => item.id}
                         showsVerticalScrollIndicator={false}
