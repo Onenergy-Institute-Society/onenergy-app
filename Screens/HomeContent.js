@@ -107,9 +107,9 @@ const HomeContent = (props) => {
             const subscription = AppState.addEventListener("change", _handleAppStateChange);
             TrackPlayer.setupPlayer();
             TrackPlayer.updateOptions({
-                android: {
+/*                android: {
                     appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
-                },
+                },*/
                 alwaysPauseOnInterruption: false,
                 // Media controls capabilities
                 capabilities: [
