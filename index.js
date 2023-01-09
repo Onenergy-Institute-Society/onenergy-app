@@ -1158,11 +1158,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         progressReducer: acTempProgressState
                     };
                 case "ONENERGY_ACHIEVEMENT_CLAIM_DAILY":
+                    console.log('claim daily')
                     let awcTempQuestState = state.achievementReducer.achievements;
                     let awcAchievementIndex = awcTempQuestState.findIndex(achievement => achievement.id === action.payload.id);
                     let awcTempProgressState = state.progressReducer;
                     let awcWaitItemIndex = awcTempQuestState[awcAchievementIndex].list.findIndex(waitItem => waitItem === action.payload.date);
-                    console.log('claim daily')
+
                     console.log(awcTempQuestState[awcAchievementIndex], awcAchievementIndex, awcWaitItemIndex)
                     if (awcAchievementIndex >= 0) {
                         awcTempQuestState[awcAchievementIndex].list.splice(awcWaitItemIndex, 1);

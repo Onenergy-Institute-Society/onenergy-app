@@ -176,8 +176,10 @@ class TopSlider extends Component {
             }else{
                 show = false;
             }
+                console.log(show, item.image, item)
             return show;
         })
+console.log(topSlides)
         if(topSlides&&topSlides.length){
             this.setState({data:topSlides, autoscroll: false} )
             //this.startAutoPlay();
@@ -188,7 +190,7 @@ class TopSlider extends Component {
         if( this.props.onRef){
           this.props.onRef(this)
         }
-        if (this.props.autoscroll) {
+        if (this.props.autoscroll && this.state.data && this.state.data.length>1) {
             this.startAutoPlay();
         }
     }
@@ -212,8 +214,8 @@ class TopSlider extends Component {
         const itemWidth = this.props.width;
         const separatorWidth = this.props.separatorWidth;
         const totalItemWidth = itemWidth + separatorWidth;
+        console.log(this.state.data)
         return (
-            this.state.data&&this.state.data.length?
             <View style={[styles.slideRow, styles.boxShadow]}>
                 <FlatList style={{maxHeight:Math.round((Dimensions.get('window').width-scale(30))/2.5-scale(10))}}
                     ref={this.slider}
@@ -229,18 +231,23 @@ class TopSlider extends Component {
                     bounces={false}
                     contentContainerStyle={this.props.contentContainerStyle}
                     showsHorizontalScrollIndicator={false}
-                    renderItem={({item, index}) =>
-                        React.cloneElement(this.props.component, {
-                            style: {width: this.props.width},
-                            item: item,
-                            imageKey: this.props.imageKey,
-                            onPress: this.props.onPress,
-                            index: this.state.index % this.state.data.length,
-                            active: index === this.state.index,
-                            local: this.props.local,
-                            height: this.props.height,
-                        })
+                    renderItem={({item, index}) => {
+                        if(this.state.data && this.state.data.length>1) {
+                            return (
+                                React.cloneElement(this.props.component, {
+                                    style: {width: this.props.width},
+                                    item: item,
+                                    imageKey: this.props.imageKey,
+                                    onPress: this.props.onPress,
+                                    index: this.state.index % this.state.data.length,
+                                    active: index === this.state.index,
+                                    local: this.props.local,
+                                    height: this.props.height,
+                                })
+                            )
+                        }
                     }
+                }
                     ItemSeparatorComponent={() => (
                         <View style={{width: this.props.separatorWidth}} />
                     )}
@@ -255,7 +262,7 @@ class TopSlider extends Component {
                     data={this.state.data}
                     removeClippedSubviews={false}
                 />
-                {this.props.indicator && this.state.data.length>1 && (
+                {this.props.indicator && this.state.data && this.state.data.length>1 && (
                     <Indicator
                         itemCount={this.state.data.length}
                         currentIndex={this.state.index % this.state.data.length}
@@ -270,7 +277,7 @@ class TopSlider extends Component {
                         style={{...styles.indicator, ...this.props.indicatorStyle}}
                     />
                 )}
-            </View>:null
+            </View>
         );
     };
 

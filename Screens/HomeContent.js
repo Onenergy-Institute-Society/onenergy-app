@@ -43,18 +43,6 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
-console.log(progressReducer.todayDuration)
-    const chartConfig = {
-        backgroundGradientFrom: "#FFF",
-        backgroundGradientFromOpacity: 1,
-        backgroundGradientTo: "#FFF",
-        backgroundGradientToOpacity: 1,
-        color: (opacity = 1) => progressReducer.todayDuration/(progressReducer.todayGoal*60)<=1?`rgba(236, 87, 24, ${opacity})`:`rgba(0, 255, 0, ${opacity})`,
-        strokeWidth: 3, // optional, default 3
-        barPercentage: 1,
-        useShadowColorFromDataset: false, // optional
-    };
-
     const onFocusHandler=() =>
     {
         try
@@ -335,7 +323,16 @@ console.log(progressReducer.todayDuration)
                                     height={(windowWidth-scale(80))/2}
                                     strokeWidth={24}
                                     radius={64}
-                                    chartConfig={chartConfig}
+                                    chartConfig={{
+                                        backgroundGradientFrom: "#FFF",
+                                        backgroundGradientFromOpacity: 1,
+                                        backgroundGradientTo: "#FFF",
+                                        backgroundGradientToOpacity: 1,
+                                        color: (opacity = 1) => `rgba(236, 87, 24, ${opacity})`,
+                                        strokeWidth: 3, // optional, default 3
+                                        barPercentage: 1,
+                                        useShadowColorFromDataset: false, // optional
+                                    }}
                                     hideLegend={true}
                                     style={{
                                         borderRadius: 9
@@ -372,7 +369,7 @@ console.log(progressReducer.todayDuration)
                     </View>
                 </>
                 :null}
-                {optionData.show.includes('slider')?
+{/*                {user&&optionData.show.includes('slider')?
                     <TopSlider
                         loop={true}
                         timer={5000}
@@ -385,9 +382,10 @@ console.log(progressReducer.todayDuration)
                         indicatorActiveWidth={30}
                         animation
                     />:null
-                }
+                }*/}
                 {optionData.goals&&optionData.goals.length?
                 <View style={styles.programRow}>
+                    <EventList location={'top'} {...props} />
                     <EventList location={'home'} {...props} />
                 </View>:null}
                 {optionData.show.includes('quotes') && optionData.quote && (

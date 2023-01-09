@@ -32,9 +32,10 @@ const QuestsDaily = (props) => {
     const dispatch = useDispatch();
 
     const handleOnPress = (item, date, mode) => {
+        console.log(item, date, mode)
         switch (mode) {
             case 'past':
-                if(item.complete_date) {
+                if(item.list.find(pastDate=>pastDate===date)) {
                     LayoutAnimation.configureNext(
                         LayoutAnimation.Presets.spring
                     );
