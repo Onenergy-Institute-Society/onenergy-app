@@ -916,7 +916,7 @@ const styles = StyleSheet.create({
 EditRoutine.navigationOptions = ({navigation, screenProps}) => {
     const {params = {}} = navigation.state;
     const {colors, global} = screenProps;
-    return ({
+    return {
         headerTitle: params.title ? params.title : navigation.getParam('title'),
         headerStyle: {
             backgroundColor: colors.headerBg,
@@ -948,7 +948,7 @@ EditRoutine.navigationOptions = ({navigation, screenProps}) => {
                     }}>{params.backButtonTitle}</Text>
                 </View>
             </TouchableOpacity>,
-    })
+    }
 }
 const mapStateToProps = (state) => ({
     config: state.config,

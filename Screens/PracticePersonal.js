@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
 });
 PracticePersonal.navigationOptions = ({ navigation, screenProps }) => {
     const {colors, global} = screenProps;
-    return ({
+    return {
         headerTitle: navigation.getParam('title'),
         headerStyle: {
             backgroundColor: colors.headerBg,
@@ -153,7 +153,7 @@ PracticePersonal.navigationOptions = ({ navigation, screenProps }) => {
             </View>,
         headerRight:
             <QiPointHeader {...screenProps} />
-    });
+    }
 }
 const mapStateToProps = (state) => ({
     config: state.config,

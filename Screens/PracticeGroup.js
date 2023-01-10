@@ -28,7 +28,7 @@ import Svg, {Circle, Path} from "react-native-svg";
 
 const PracticeGroup = props => {
     const {navigation, screenProps} = props;
-    const {colors} = screenProps;
+    const {global, colors} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [loading, setLoading] = useState(false);
@@ -95,7 +95,7 @@ const PracticeGroup = props => {
         this.DetailModal.open();
     };
     const htmlStyle = {
-        body: {height: 200},
+        body: {height: 200, backgroundColor: colors.bodyFrontBg},
         img: {width: windowWidth - 80},
         a: {
             fontSize: scale(14),
@@ -488,7 +488,7 @@ const mapStateToProps = (state) => ({
 });
 PracticeGroup.navigationOptions = ({navigation, screenProps}) => {
     const {colors, global} = screenProps;
-    return ({
+    return {
         headerTitle: navigation.getParam('title'),
         headerStyle: {
             backgroundColor: colors.headerBg,
@@ -514,6 +514,6 @@ PracticeGroup.navigationOptions = ({navigation, screenProps}) => {
                     />
                 </Svg>
             </TouchableOpacity>,
-    })
+    }
 }
 export default connect(mapStateToProps)(withNavigation(withDeeplinkClickHandler(PracticeGroup)));

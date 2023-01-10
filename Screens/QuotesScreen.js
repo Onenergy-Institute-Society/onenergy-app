@@ -314,7 +314,7 @@ const mapStateToProps = (state) => ({
 });
 QuotesScreen.navigationOptions = ({ navigation, screenProps }) => {
     const {colors, global} = screenProps;
-    return ({
+    return {
         headerTitle: navigation.getParam('title'),
         headerStyle: {
             backgroundColor: colors.headerBg,
@@ -340,6 +340,6 @@ QuotesScreen.navigationOptions = ({ navigation, screenProps }) => {
                     />
                 </Svg>
             </TouchableOpacity>,
-    })
+    }
 }
 export default connect(mapStateToProps)(QuotesScreen);

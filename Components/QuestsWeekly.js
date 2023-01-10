@@ -24,7 +24,7 @@ const QuestsWeekly = (props) => {
                 <View style={{marginHorizontal: scale(15), paddingHorizontal:scale(10),
                     paddingVertical:scale(10),
                     borderRadius: 9, alignItems: 'center',
-                    justifyContent: 'center',backgroundColor: colors.labelBgColor,
+                    justifyContent: 'center',backgroundColor: colors.secondaryButtonBg,
                     marginTop: scale(10),}}><Text style={[global.text, {color: colors.labelTextColor}]}>7 days streak REWARD +20 Qi</Text></View>
                 {Array(7).fill().map((_, idx) => 1 + idx).map((day,index)=>{
                     return (

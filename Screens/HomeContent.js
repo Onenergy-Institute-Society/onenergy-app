@@ -13,7 +13,6 @@ import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale} from '../Utils/scale';
 import FastImage from 'react-native-fast-image';
 import TouchableScale from "../Components/TouchableScale";
-import TopSlider from '../Components/TopSlider';
 import DailyQuotes from '../Components/DailyQuotes'
 import PostRow from '../Components/PostRow';
 import ImageCache from "../Components/ImageCache";
@@ -30,6 +29,7 @@ import {
     ProgressChart,
 } from "react-native-chart-kit";
 import { Modalize } from 'react-native-modalize';
+import RNRestart from 'react-native-restart';
 import moment from 'moment';
 
 this.todayGoalDialog = undefined;
@@ -43,6 +43,7 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
+console.log(optionData)
     const onFocusHandler=() =>
     {
         try
@@ -91,6 +92,23 @@ const HomeContent = (props) => {
                             dispatch({
                                 type: 'ONENERGY_PROGRESS_UPLOADED'
                             });
+                        }else{
+                            dispatch({
+                                type: 'ONENERGY_POSTS_RESET',
+                            });
+                            dispatch({
+                                type: 'ONENERGY_PRACTICE_RESET',
+                            });
+                            dispatch({
+                                type: 'ONENERGY_ACHIEVEMENT_RESET',
+                            });
+                            dispatch({
+                                type: 'ONENERGY_ACHIEVEMENT_RESET',
+                            });
+                            dispatch({
+                                type: 'ONENERGY_PROGRESS_RESET',
+                            });
+                            RNRestart.Restart()
                         }
                     });
                 }
@@ -110,6 +128,7 @@ const HomeContent = (props) => {
 /*                android: {
                     appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
                 },*/
+                stoppingAppPausesPlayback: true,
                 alwaysPauseOnInterruption: false,
                 // Media controls capabilities
                 capabilities: [
@@ -147,12 +166,16 @@ const HomeContent = (props) => {
                 props.navigation.navigate("InitData", { transition: 'fade' });
             }
             const today = new moment().format('YYYY-MM-DD');
-            if(today !== progressReducer.lastPractice)
+            console.log(today, new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD'))
+            /*
+
+            if(!TimeStampAreOnSameDay(today, new moment.unix(progressReducer.latestUpdate)))
             {
                 dispatch({
                     type: 'ONENERGY_DAILY_UPDATE',
                 });
             }
+*/
 
             return () => {
                 navigation.removeListener('willFocus', onFocusHandler);
@@ -321,8 +344,8 @@ const HomeContent = (props) => {
                                     data={{data:[progressReducer.todayDuration/(progressReducer.todayGoal*60)<=1?progressReducer.todayDuration/(progressReducer.todayGoal*60):1]}}
                                     width={(windowWidth-scale(80))/2}
                                     height={(windowWidth-scale(80))/2}
-                                    strokeWidth={24}
-                                    radius={64}
+                                    strokeWidth={scale(24)}
+                                    radius={scale(52)}
                                     chartConfig={{
                                         backgroundGradientFrom: "#FFF",
                                         backgroundGradientFromOpacity: 1,
@@ -369,20 +392,6 @@ const HomeContent = (props) => {
                     </View>
                 </>
                 :null}
-{/*                {user&&optionData.show.includes('slider')?
-                    <TopSlider
-                        loop={true}
-                        timer={5000}
-                        onPress={(item) => {
-                            OnPress(item).then();
-                        }}
-                        indicatorContainerStyle={{position: 'absolute', bottom: -10}}
-                        indicatorActiveColor={colors.primaryButtonBg}
-                        indicatorInActiveColor={'#ffffff'}
-                        indicatorActiveWidth={30}
-                        animation
-                    />:null
-                }*/}
                 {optionData.goals&&optionData.goals.length?
                 <View style={styles.programRow}>
                     <EventList location={'top'} {...props} />
@@ -435,6 +444,12 @@ const HomeContent = (props) => {
                                         source={{uri: optionData.currentSolarTermImage ? optionData.currentSolarTermImage : ''}}
                                         style={styles.image_season}
                                     />
+                                    <View style={{position:"absolute", left:scale(12), bottom:scale(3), justifyContent:"center", alignItems:"center"}}>
+                                        <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(16), lineHeight: scale(16), color:'#FFF'}}>{new moment(optionData.currentSolarTermStart).format('MMM')}</Text>
+                                        <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(22), lineHeight: scale(22),color:'#FFF'}}>{new moment(optionData.currentSolarTermStart).format('DD')}</Text></View>
+                                    <View style={{position:"absolute", right:scale(10), bottom:scale(3), justifyContent:"center", alignItems:"center"}}>
+                                        <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(16), lineHeight: scale(16),color:'#FFF'}}>{new moment(optionData.currentSolarTermEnd).format('MMM')}</Text>
+                                        <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(22), lineHeight: scale(22),color:'#FFF'}}>{new moment(optionData.currentSolarTermEnd).format('DD')}</Text></View>
                                 </View>
                             </TouchableScale>
                         )}
@@ -652,6 +667,8 @@ const styles = StyleSheet.create({
         marginRight: 15,
         borderRadius: 9,
         backgroundColor: 'white',
+        justifyContent:"center",
+        alignItems:"center"
     },
     block_half_left: {
         width: (windowWidth - scale(50)) / 2,
@@ -728,7 +745,7 @@ const styles = StyleSheet.create({
 
 HomeContent.navigationOptions = ({navigation, screenProps}) => {
     const {colors, global} = screenProps;
-    return ({
+    return {
         title: navigation.getParam('title'),
         headerStyle: {
             backgroundColor: colors.headerBg,
@@ -813,7 +830,7 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
                     </TouchableScale>
                 </View>
             </AuthWrapper>
-    })
+    }
 }
 const mapStateToProps = (state) => ({
     config: state.config?state.config:null,
