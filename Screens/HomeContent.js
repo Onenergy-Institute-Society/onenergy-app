@@ -43,7 +43,7 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
-console.log(optionData)
+console.log(global, optionData)
     const onFocusHandler=() =>
     {
         try
@@ -166,17 +166,12 @@ console.log(optionData)
                 props.navigation.navigate("InitData", { transition: 'fade' });
             }
             const today = new moment().format('YYYY-MM-DD');
-            console.log(today, new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD'))
-            /*
-
-            if(!TimeStampAreOnSameDay(today, new moment.unix(progressReducer.latestUpdate)))
+            if(today!==new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD'))
             {
                 dispatch({
                     type: 'ONENERGY_DAILY_UPDATE',
                 });
             }
-*/
-
             return () => {
                 navigation.removeListener('willFocus', onFocusHandler);
                 subscription.remove();

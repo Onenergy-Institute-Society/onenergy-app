@@ -103,6 +103,11 @@ const PracticesContent = props => {
                         </View>
                         : null
                     }
+                    {
+                        user ?
+                            <PracticeTipsRow {...props} />
+                            : null
+                    }
                     <TouchableScale
                         onPress={personalPracticePressed}>
                         <ImageBackground
@@ -110,14 +115,15 @@ const PracticesContent = props => {
                             imageStyle={{ borderRadius: 9}}
                             resizeMode={"cover"}
                             width={windowWidth - scale(30)}
-                            source={require('../assets/images/guided_practice_purple_blank.png')}
-                            background={true}
+                            source={require('../assets/images/guided_practice.png')}
                         >
                             <Text style={styles.practiceType}>Guided{"\n"}Practice</Text>
+
                             <AuthWrapper actionOnGuestLogin={'hide'}>
                                 <NotificationTabBarIcon notificationID={'guide_personal'} top={10} right={10}
                                                         size={scale(25)} fontSize={12} showNumber={true}/>
                             </AuthWrapper>
+
                         </ImageBackground>
                     </TouchableScale>
 
@@ -128,8 +134,7 @@ const PracticesContent = props => {
                             imageStyle={{ borderRadius: 9}}
                             resizeMode={"cover"}
                             width={windowWidth - scale(30)}
-                            source={require('../assets/images/group_practice_purple_blank.png')}
-                            background={true}
+                            source={require('../assets/images/group_practice.png')}
                         >
                             <Text style={styles.practiceType}>Group{"\n"}Practice</Text>
                         </ImageBackground>
@@ -142,8 +147,7 @@ const PracticesContent = props => {
                             imageStyle={{ borderRadius: 9}}
                             resizeMode={"cover"}
                             width={windowWidth - scale(30)}
-                            source={require('../assets/images/customize_practice_purple_blank.png')}
-                            background={true}
+                            source={require('../assets/images/customize_practice.png')}
                         >
                             <Text style={styles.practiceType}>Customize{"\n"}Practice</Text>
                         </ImageBackground>

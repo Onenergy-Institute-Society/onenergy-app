@@ -183,7 +183,7 @@ const LessonButton = (props) => {
                         <View style={global.row}>
                             <View style={global.linkWithArrow}>
                                 <Text
-                                    style={{color: "#fff", fontWeight: "bold"}}
+                                    style={global.buttonPrimaryLabel}
                                 >
                                     Mark Complete
                                 </Text>
@@ -215,9 +215,9 @@ const LessonButton = (props) => {
                         { flex: 1, backgroundColor: colors.secondaryButtonBg }
                     ]}>
                         <View style={global.row}>
-                            <View style={global.linkWithArrow}>
+                            <View style={global.buttonSecondary}>
                                 <Text
-                                    style={{color: "#000", fontWeight: "bold"}}
+                                    style={global.buttonSecondaryLabel}
                                 >
                                     Watch the video first
                                 </Text>
