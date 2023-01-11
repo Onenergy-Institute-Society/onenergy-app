@@ -112,10 +112,9 @@ const PracticesContent = props => {
                         onPress={personalPracticePressed}>
                         <ImageBackground
                             style={[styles.card, styles.boxShadow]}
-                            imageStyle={{ borderRadius: 9}}
                             resizeMode={"cover"}
-                            width={windowWidth - scale(30)}
-                            source={require('../assets/images/guided_practice.png')}
+                            imageStyle={{borderRadius: 9}}
+                            source={require('../assets/images/guided_practice.jpg')}
                         >
                             <Text style={styles.practiceType}>Guided{"\n"}Practice</Text>
 
@@ -131,10 +130,9 @@ const PracticesContent = props => {
                         onPress={groupPracticePressed}>
                         <ImageBackground
                             style={[styles.card, styles.boxShadow]}
-                            imageStyle={{ borderRadius: 9}}
                             resizeMode={"cover"}
-                            width={windowWidth - scale(30)}
-                            source={require('../assets/images/group_practice.png')}
+                            imageStyle={{borderRadius: 9}}
+                            source={require('../assets/images/group_practice.jpg')}
                         >
                             <Text style={styles.practiceType}>Group{"\n"}Practice</Text>
                         </ImageBackground>
@@ -143,11 +141,10 @@ const PracticesContent = props => {
                     <TouchableScale
                         onPress={customPracticePressed}>
                         <ImageBackground
-                            style={[styles.card, styles.boxShadow, {marginBottom: scale(15)}]}
-                            imageStyle={{ borderRadius: 9}}
+                            style={[styles.card, styles.boxShadow]}
                             resizeMode={"cover"}
-                            width={windowWidth - scale(30)}
-                            source={require('../assets/images/customize_practice.png')}
+                            imageStyle={{borderRadius: 9}}
+                            source={require('../assets/images/customize_practice.jpg')}
                         >
                             <Text style={styles.practiceType}>Customize{"\n"}Practice</Text>
                         </ImageBackground>
@@ -260,13 +257,10 @@ const styles = StyleSheet.create({
     card: {
         width: windowWidth-scale(30),
         height: (windowWidth-scale(30))*16/45,
-        backgroundColor: 'white',
         borderRadius: 9,
-        paddingVertical: 0,
-        paddingHorizontal: 0,
         marginTop: scale(15),
         marginHorizontal: scale(15),
-        alignItems: 'left',
+        alignItems: 'flex-start',
         justifyContent: 'center',
     },
     boxShadow: {
