@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
     StyleSheet,
@@ -34,6 +34,7 @@ import moment from 'moment';
 import { Moon } from "lunarphase-js";
 import SunCalc from "suncalc";
 import GetLocation from 'react-native-get-location'
+import {SvgIconMoonPhase, SvgIconSunrise, SvgIconSunset} from "../Utils/svg";
 
 this.todayGoalDialog = undefined;
 const HomeContent = (props) => {
@@ -46,17 +47,11 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
-    const phase = Moon.lunarPhase();
-    const phaseEmoji = Moon.lunarPhaseEmoji();
+    const [location, setLocation] = useState(null);
+    const [sunrise, setSunrise] = useState('');
+    const [phase, setPhase] = useState('');
+    const [nextMoonPhase, setNextMoonPhase] = useState({});
 
-    GetLocation.getCurrentPosition({
-        enableHighAccuracy: false,
-        timeout: 15000,
-    }).then(location => {
-        console.log(location);
-    })
-    console.log(phase, phaseEmoji)
-    console.log(progressReducer, optionData)
     const onFocusHandler=() =>
     {
         try
@@ -147,7 +142,27 @@ const HomeContent = (props) => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
         });
-
+        GetLocation.getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 15000,
+        }).then(location => {
+            setLocation(location);
+        })
+        setPhase(Moon.lunarPhase());
+        const lunarAge = Math.floor(Moon.lunarAge());
+        let dateDiff;
+        let moonPhase='';
+        let moonPhaseDate='';
+        const today = new moment().format('YYYY-MM-DD');
+        if(lunarAge < 15){
+            dateDiff = 15 - lunarAge;
+            moonPhase = 'Full Moon';
+        }else{
+            dateDiff = 29 - lunarAge;
+            moonPhase = 'New Moon';
+        }
+        moonPhaseDate = moment(today).add(dateDiff, 'days').format('MMM DD');
+        setNextMoonPhase({'date':moonPhaseDate, 'phase':moonPhase});
         if(user) {
             navigation.addListener('willFocus', onFocusHandler)
             const subscription = AppState.addEventListener("change", _handleAppStateChange);
@@ -199,7 +214,14 @@ const HomeContent = (props) => {
             }
         }
     }, []);
-
+    useEffect(()=>{
+        if(location)
+        {
+            const sunTimes = SunCalc.getTimes(new Date(), location.latitude, location.longitude, 0);
+            setSunrise(sunTimes);
+            console.log(sunTimes)
+        }
+    }, [location])
     const OnPress = async (item) => {
         if (item) {
             switch(item.link)
@@ -420,16 +442,32 @@ const HomeContent = (props) => {
                 )}
                 <View style={styles.eventRow}>
                     <View style={[styles.block_season_left, styles.boxShadow]}>
-                        <ImageCache
-                            source={{uri: optionData.events.image ? optionData.events.image : ''}}
-                            style={styles.image_event}
-                        />
+                        {location?
+                        <>
+                            <View style={{justifyContent:"center", alignItems:"center"}}>
+                                <Text style={{fontFamily:"MontserratAlternates-SemiBold", fontWeight:"bold", fontSize:scale(16)}}>{moment.utc(sunrise.sunrise).local().format('HH:mm')}</Text>
+                                <SvgIconSunrise />
+                            </View>
+                            <View style={{justifyContent:"center", alignItems:"center"}}>
+                                <Text style={{fontFamily:"MontserratAlternates-SemiBold", fontWeight:"bold", fontSize:scale(16)}}>{moment.utc(sunrise.sunset).local().format('HH:mm')}</Text>
+                                <SvgIconSunset />
+                            </View>
+                        </>
+                        :
+                            <View style={{justifyContent:"center", alignItems:"center", padding:scale(15)}}>
+                                <Text style={{fontFamily:"MontserratAlternates-Regular", fontWeight:"normal", fontSize:scale(14)}}>allow location access to see local sunrise / sunset time</Text>
+                            </View>
+                        }
                     </View>
                     <View style={[styles.block_season_center, styles.boxShadow]}>
-                        <ImageCache
-                            source={{uri: optionData.events.image ? optionData.events.image : ''}}
-                            style={styles.image_event}
-                        />
+                        <View style={{justifyContent:"center", alignItems:"center"}}>
+                            <Text style={{fontFamily:"MontserratAlternates-Regular", fontWeight:"normal", fontSize:scale(12), color:"white"}}>{phase}</Text>
+                            <SvgIconMoonPhase moonPhase={phase} />
+                        </View>
+                        <View style={{justifyContent:"center", alignItems:"center"}}>
+                            <Text style={{fontFamily:"MontserratAlternates-SemiBold", fontWeight:"bold", fontSize:scale(14), color:"white"}}>{nextMoonPhase.phase}</Text>
+                            <Text style={{fontFamily:"Montserrat-SemiBold", fontWeight:"bold", fontSize:scale(18), color:"white"}}>{nextMoonPhase.date}</Text>
+                        </View>
                     </View>
                     {optionData.currentSolarTermImage && (
                         <TouchableScale
@@ -459,11 +497,11 @@ const HomeContent = (props) => {
                                     style={styles.image_season}
                                 />
                                 <View style={{position:"absolute", left:scale(12), bottom:scale(3), justifyContent:"center", alignItems:"center"}}>
-                                    <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(16), lineHeight: scale(16), color:'#FFF'}}>{new moment(optionData.currentSolarTermStart).format('MMM')}</Text>
-                                    <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(22), lineHeight: scale(22),color:'#FFF'}}>{new moment(optionData.currentSolarTermStart).format('DD')}</Text></View>
+                                    <Text style={{fontFamily:"Montserrat-SemiBold", fontWeight:"bold", fontSize:scale(16), lineHeight: scale(16), color:'#FFF'}}>{new moment(optionData.currentSolarTermStart).format('MMM')}</Text>
+                                    <Text style={{fontFamily:"Montserrat-SemiBold", fontWeight:"bold", fontSize:scale(22), lineHeight: scale(22),color:'#FFF'}}>{new moment(optionData.currentSolarTermStart).format('DD')}</Text></View>
                                 <View style={{position:"absolute", right:scale(10), bottom:scale(3), justifyContent:"center", alignItems:"center"}}>
-                                    <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(16), lineHeight: scale(16),color:'#FFF'}}>{new moment(optionData.currentSolarTermEnd).format('MMM')}</Text>
-                                    <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(22), lineHeight: scale(22),color:'#FFF'}}>{new moment(optionData.currentSolarTermEnd).format('DD')}</Text></View>
+                                    <Text style={{fontFamily:"Montserrat-SemiBold", fontWeight:"bold", fontSize:scale(16), lineHeight: scale(16),color:'#FFF'}}>{new moment(optionData.currentSolarTermEnd).format('MMM')}</Text>
+                                    <Text style={{fontFamily:"Montserrat-SemiBold", fontWeight:"bold", fontSize:scale(22), lineHeight: scale(22),color:'#FFF'}}>{new moment(optionData.currentSolarTermEnd).format('DD')}</Text></View>
                             </View>
                         </TouchableScale>
                     )}
@@ -668,7 +706,9 @@ const styles = StyleSheet.create({
         marginTop: scale(15),
         marginLeft: 15,
         borderRadius: 9,
-        backgroundColor: 'white',
+        backgroundColor: '#ffeee7',
+        alignItems:"center",
+        justifyContent:"space-evenly"
     },
     block_season_center: {
         width: (windowWidth - scale(50)) / 3,
@@ -676,7 +716,10 @@ const styles = StyleSheet.create({
         marginTop: scale(15),
         marginLeft: 10,
         borderRadius: 9,
-        backgroundColor: 'white',
+        backgroundColor: '#2e2e2e',
+        paddingTop:scale(10),
+        justifyContent:"space-evenly",
+        alignItems: "center"
     },
     block_season_right: {
         width: (windowWidth - scale(50)) / 3,

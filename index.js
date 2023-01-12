@@ -67,6 +67,7 @@ import HomeScreen from './Screens/HomeScreen';
 import ForumItem from "./Components/ForumItem";
 import CourseIcons from "./Components/CourseIcons";
 import TopicItem from "./Components/TopicItem";
+import {SvgIconHomeFocused, SvgIconHomeUnfocused, SvgIconMedal} from "./Utils/svg";
 
 export const applyCustomCode = (externalCodeSetup: any) => {
     externalCodeSetup.topicsApi.setTopicItemComponent(props => {
@@ -446,20 +447,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                     height="48"
                                     viewBox="0 0 32 32"
                                 >
-                                    <Path
-                                        d="M23 13H9a1 1 0 0 0-1 1v16a1 1 0 0 0 1.39.92L16 28.09l6.61 2.83A1 1 0 0 0 23 31a1 1 0 0 0 .55-.17A1 1 0 0 0 24 30V14a1 1 0 0 0-1-1Z"
-                                        fill="#0083fd"/>
-                                    <Path d="M23 13H9a1 1 0 0 0-1 1v8.23a12.94 12.94 0 0 0 16 0V14a1 1 0 0 0-1-1Z"
-                                          fill="#0072fc"/>
-                                    <Circle cx="16" cy="12" r="11" fill="#ffcb5b"/>
-                                    <Path d="M6 13a11 11 0 0 1 18.25-8.25 11 11 0 1 0-15.5 15.5A10.92 10.92 0 0 1 6 13Z"
-                                          fill="#f7b737"/>
-                                    <Path
-                                        d="M22.38 10.38a1.9 1.9 0 0 0-1.83-1.33l-2.06.06-.66-2a1.92 1.92 0 0 0-3.66 0l-.59 2h-2.13a1.93 1.93 0 0 0-1.13 3.49L12 13.7l-.65 2a1.89 1.89 0 0 0 .69 2.15 1.93 1.93 0 0 0 2.27 0L16 16.63l1.72 1.25a1.92 1.92 0 0 0 3-2.15L20 13.79l1.72-1.25a1.91 1.91 0 0 0 .66-2.16Z"
-                                        fill="#fff5f5"/>
-                                    <Path
-                                        d="m19.49 10.11 2.06-.06a1.87 1.87 0 0 1 .75.17 1.88 1.88 0 0 0-1.75-1.17h-1.39ZM10.62 11.38a1.9 1.9 0 0 1 1.83-1.33h2.13l.59-2a1.88 1.88 0 0 1 2.58-1.16 1.91 1.91 0 0 0-3.58.16l-.59 2h-2.13a1.93 1.93 0 0 0-1.13 3.49l.42.29a1.91 1.91 0 0 1-.12-1.45ZM12.36 16.73l.65-2-1.08-.73-.57 1.77a1.89 1.89 0 0 0 .69 2.15 2.69 2.69 0 0 0 .38.19 1.87 1.87 0 0 1-.07-1.38Z"
-                                        fill="#efe2dd"/>
+                                    <SvgIconMedal />
                                 </Svg>
                             </View>
                             :null
@@ -1807,15 +1795,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         viewBox="0 0 24 24"
                     >
                         {iconProps.focused ?
-                            <Path
-                                d="m19.16 8.04-4-3.57a4.739 4.739 0 0 0-6.32 0l-4 3.57c-1.01.9-1.59 2.19-1.59 3.55v6.36c0 2.1 1.68 3.81 3.75 3.81h10c2.07 0 3.75-1.71 3.75-3.81v-6.36c0-1.35-.58-2.65-1.59-3.55Zm-3.41 10.71c0 .41-.34.75-.75.75s-.75-.34-.75-.75v-3c0-1.24-1.01-2.25-2.25-2.25s-2.25 1.01-2.25 2.25v3c0 .41-.34.75-.75.75s-.75-.34-.75-.75v-3C8.25 13.68 9.93 12 12 12s3.75 1.68 3.75 3.75v3Z"
-                                fill={iconProps.tintColor}
-                            />
+                            <SvgIconHomeFocused color={iconProps.tintColor} />
                             :
-                            <Path
-                                d="m19.16 8.04-4-3.57a4.739 4.739 0 0 0-6.32 0l-4 3.57c-1.01.9-1.59 2.19-1.59 3.55v6.36c0 2.1 1.68 3.81 3.75 3.81h10c2.07 0 3.75-1.71 3.75-3.81v-6.36c0-1.35-.58-2.65-1.59-3.55Zm-4.91 12.21h-4.5V17c0-1.24 1.01-2.25 2.25-2.25s2.25 1.01 2.25 2.25v3.25Zm5-2.31c0 1.27-1.01 2.31-2.25 2.31h-1.25V17c0-2.07-1.68-3.75-3.75-3.75S8.25 14.93 8.25 17v3.25H7c-1.24 0-2.25-1.03-2.25-2.31v-6.36c0-.93.4-1.81 1.09-2.43l4-3.57a3.24 3.24 0 0 1 4.32 0l4 3.57c.69.62 1.09 1.5 1.09 2.43v6.36Z"
-                                fill={iconProps.tintColor}
-                            />
+                            <SvgIconHomeUnfocused color={iconProps.tintColor} />
                         }
                     </Svg>
                 </View>
