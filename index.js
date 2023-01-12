@@ -721,7 +721,28 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     if (loadProgress) {
                         console.log('data.progress', data.progress)
                         if (data.progress.totalDuration) {
-                            idProgressReducer = data.progress;
+                            Object.keys(data.progress.points).map(key =>
+                                idProgressReducer.points[key] = parseInt(data.progress.points[key])
+                            )
+                            idProgressReducer.totalDuration = parseInt(data.progress.totalDuration);
+                            idProgressReducer.todayDuration = parseInt(data.progress.todayDuration);
+                            idProgressReducer.todayGoal = parseInt(data.progress.todayGoal);
+                            idProgressReducer.weekDuration = parseInt(data.progress.weekDuration);
+                            idProgressReducer.progress = [];
+                            data.progress.progress.map(progress =>{
+                                idProgressReducer.progress.push({'date':progress.date, 'duration':parseInt(progress.duration)});
+                            })
+                            idProgressReducer.totalDays = parseInt(data.progress.totalDays);
+                            idProgressReducer.lastPractice = data.progress.lastPractice;
+                            idProgressReducer.latestUpdate = parseInt(data.progress.lastPractice);
+                            idProgressReducer.lastUpload = parseInt(data.progress.lastUpload);
+                            idProgressReducer.practicesStats = data.progress.practicesStats;
+                            idProgressReducer.routinesStats = data.progress.routinesStats;
+                            idProgressReducer.groupStats = data.progress.groupStats;
+                            idProgressReducer.completedLessons = data.progress.completedLessons;
+                            idProgressReducer.enrolledCourses = data.progress.enrolledCourses;
+                            idProgressReducer.completedCourses = data.progress.completedCourses;
+                            console.log(idProgressReducer)
                         } else {
                             idProgressReducer.points = {'qi': 0};
                             idProgressReducer.totalDuration = 0;

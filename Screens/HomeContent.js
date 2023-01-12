@@ -21,7 +21,7 @@ import AuthWrapper from "@src/components/AuthWrapper";
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import EventList from "../Components/EventList";
-import TrackPlayer, {Capability, RepeatMode, AppKilledPlaybackBehavior} from 'react-native-track-player';
+import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 import analytics from '@react-native-firebase/analytics';
 import ForumsScreen from "@src/containers/Custom/ForumsScreen";
 import Svg, {Circle, Path} from "react-native-svg";
@@ -31,6 +31,9 @@ import {
 import { Modalize } from 'react-native-modalize';
 import RNRestart from 'react-native-restart';
 import moment from 'moment';
+import { Moon } from "lunarphase-js";
+import SunCalc from "suncalc";
+import GetLocation from 'react-native-get-location'
 
 this.todayGoalDialog = undefined;
 const HomeContent = (props) => {
@@ -43,6 +46,16 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
+    const phase = Moon.lunarPhase();
+    const phaseEmoji = Moon.lunarPhaseEmoji();
+
+    GetLocation.getCurrentPosition({
+        enableHighAccuracy: false,
+        timeout: 15000,
+    }).then(location => {
+        console.log(location);
+    })
+    console.log(phase, phaseEmoji)
     console.log(progressReducer, optionData)
     const onFocusHandler=() =>
     {
@@ -134,6 +147,7 @@ const HomeContent = (props) => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
         });
+
         if(user) {
             navigation.addListener('willFocus', onFocusHandler)
             const subscription = AppState.addEventListener("change", _handleAppStateChange);
@@ -405,19 +419,18 @@ const HomeContent = (props) => {
                     </View>
                 )}
                 <View style={styles.eventRow}>
-                    {optionData.events && (
-                        <TouchableScale
-                            onPress={() => {
-                                OnPress(optionData.events, 'eventType').then();
-                            }}>
-                            <View style={[styles.block_event, styles.boxShadow]}>
-                                <ImageCache
-                                    source={{uri: optionData.events.image ? optionData.events.image : ''}}
-                                    style={styles.image_event}
-                                />
-                            </View>
-                        </TouchableScale>
-                    )}
+                    <View style={[styles.block_season_left, styles.boxShadow]}>
+                        <ImageCache
+                            source={{uri: optionData.events.image ? optionData.events.image : ''}}
+                            style={styles.image_event}
+                        />
+                    </View>
+                    <View style={[styles.block_season_center, styles.boxShadow]}>
+                        <ImageCache
+                            source={{uri: optionData.events.image ? optionData.events.image : ''}}
+                            style={styles.image_event}
+                        />
+                    </View>
                     {optionData.currentSolarTermImage && (
                         <TouchableScale
                             onPress={
@@ -440,7 +453,7 @@ const HomeContent = (props) => {
                                             : null
                                 }
                             }>
-                            <View style={[styles.block_season, styles.boxShadow]}>
+                            <View style={[styles.block_season_right, styles.boxShadow]}>
                                 <ImageCache
                                     source={{uri: optionData.currentSolarTermImage ? optionData.currentSolarTermImage : ''}}
                                     style={styles.image_season}
@@ -649,16 +662,23 @@ const styles = StyleSheet.create({
         alignSelf: "baseline",
         color: "#4942e1",
     },
-    block_event: {
-        width: (windowWidth - scale(50)) / 3 * 2,
+    block_season_left: {
+        width: (windowWidth - scale(50)) / 3,
         height: (windowWidth - scale(30)) / 2,
         marginTop: scale(15),
         marginLeft: 15,
-        marginRight: 10,
         borderRadius: 9,
         backgroundColor: 'white',
     },
-    block_season: {
+    block_season_center: {
+        width: (windowWidth - scale(50)) / 3,
+        height: (windowWidth - scale(30)) / 2,
+        marginTop: scale(15),
+        marginLeft: 10,
+        borderRadius: 9,
+        backgroundColor: 'white',
+    },
+    block_season_right: {
         width: (windowWidth - scale(50)) / 3,
         height: (windowWidth - scale(30)) / 2,
         marginTop: scale(15),
