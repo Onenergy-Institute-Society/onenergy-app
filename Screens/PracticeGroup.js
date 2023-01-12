@@ -81,7 +81,7 @@ const PracticeGroup = props => {
         JoinGroupPractice(groupPractice.id, gp_time).then();
         navigation.dispatch(
             NavigationActions.navigate({
-                routeName: "VideoPlayer",
+                routeName: "PracticePlayer",
                 params: {
                     group: groupPractice,
                     seek: seek,

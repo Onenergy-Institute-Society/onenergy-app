@@ -39,7 +39,7 @@ const LessonButton = (props) => {
                     type: 'ONENERGY_GUIDE_UPDATE',
                     payload: lesson.settings.guide,
                 });
-                if (lesson.settings.no_video) {
+                if (lesson.settings.no_popup) {
                     props.navigation.goBack();
                 } else {
                     setAlertTitle(optionData.titles.find(el => el.id === 'alert_guide_activated_title').title);
@@ -49,7 +49,7 @@ const LessonButton = (props) => {
                     setShowAlert(true);
                 }
             } else {
-                if (lesson.settings.no_video || lesson.settings.no_popup) {
+                if (lesson.settings.no_popup) {
                     if (lesson.settings.open_screen) {
                         switch (lesson.settings.open_screen) {
                             case "guided-practices":

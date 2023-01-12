@@ -9,7 +9,7 @@ import {
     Alert,
     BackHandler
 } from "react-native";
-import {connect, useSelector, useDispatch} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import Video from "react-native-video";
 import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
@@ -17,14 +17,13 @@ import {scale} from "../Utils/scale";
 import WaitingGroupPractice from "./WaitingGroupPractice";
 import analytics from '@react-native-firebase/analytics';
 
-const VideoPlayer = (props) => {
+const PracticePlayer = (props) => {
     const [paused, setPaused] = useState(false);
     const {navigation} = props;
     const seek = navigation.getParam('seek');
     const groupPractice = navigation.getParam('group');
     const gp_time = navigation.getParam('gp_time');
     const user = useSelector((state) => state.user.userObject);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const dispatch = useDispatch();
     analytics().logScreenView({
         screen_class: 'MainActivity',
@@ -133,9 +132,5 @@ const styles = StyleSheet.create({
         width: windowHeight,
     },
 });
-VideoPlayer.navigationOptions = { header: null };
-const mapStateToProps = (state) => ({
-    config: state.config,  // not needed if axios or fetch is used
-    accessToken: state.auth.token,
-});
-export default connect(mapStateToProps)(VideoPlayer)
+PracticePlayer.navigationOptions = { header: null };
+export default PracticePlayer;

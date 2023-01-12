@@ -5,7 +5,7 @@ import {
     Text,
     TouchableOpacity,
     SafeAreaView,
-    ScrollView, TouchableWithoutFeedback, FlatList, ActivityIndicator, Platform
+    ScrollView
 } from "react-native";
 import {useSelector, useDispatch} from "react-redux";
 import {windowWidth, windowHeight} from "../Utils/Dimensions";

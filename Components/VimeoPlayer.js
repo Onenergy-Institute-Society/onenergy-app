@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {useEffect, useState} from "react";
 import {
     View,
     StyleSheet,
@@ -9,7 +9,7 @@ import {
     PixelRatio,
     BackHandler
 } from "react-native";
-import {connect} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import Video from "react-native-video";
 import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
@@ -19,255 +19,250 @@ import * as Progress from 'react-native-progress';
 import InteractiveTranscripts from "./InteractiveTranscripts";
 
 const statusBarSize = 0;
-class VimeoPlayer extends Component {
-    constructor(props, context, ...args) {
-        super(props, context, ...args);
-        this.state = {
-            videoStyle: {
-                height: windowWidth + statusBarSize,
-                alignSelf: "stretch",
-            },
-            topViewStyle: {
-                flex: 1,
-                transform: [
-                    { rotateZ: '90deg'},
-                    { translateY: ((PixelRatio.getPixelSizeForLayoutSize(windowHeight)-
-                                PixelRatio.getPixelSizeForLayoutSize(windowWidth))/
-                            PixelRatio.get()) - statusBarSize },
-                ],
-                height: windowWidth,
-                width: windowHeight,
-            },
-            paused: false,
-            muted: false,
-            sourceFile: this.props.src,
-            resizeMode: "contain",
-            showControls: this.props.navigation.getParam('showControls')? this.props.navigation.getParam('showControls'):false,
-            video : this.props.navigation.getParam('video'),
-            seek : this.props.navigation.getParam('seek'),
-            textTracks : this.props.navigation.getParam('textTracks'),
-            selectedCCUrl: this.props.navigation.getParam('selectedCCUrl'),
-        }
-        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
-    }
+const VimeoPlayer = (props) => {
+    const {navigation} = props;
+    const [selectedCCUrl, setSelectedCCUrl] = useState(navigation.getParam('selectedCCUrl'));
+    const [paused, setPaused] = useState(false);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [seekableDuration, setSeekableDuration] = useState(0);
+    const video = navigation.getParam('video');
+    const videoId = navigation.getParam('videoId');
+    const textTracks = navigation.getParam('textTracks');
+    const no_skip_forward = navigation.getParam('no_skip_forward');
+    const lesson_video = navigation.getParam('lesson_video');
+    const videoReducer = useSelector((state) => state.videoReducer);
+    const dispatch = useDispatch();
 
-    componentWillUnmount() {
-        deactivateKeepAwake();
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-    }
-    componentDidMount() {
-        this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
-    }
-    componentWillMount() {
+    useEffect(() => {
         activateKeepAwake();
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+        return () => {
+            backHandler.remove();
+            deactivateKeepAwake();
+        };
+    },[]);
+
+    const completeVideo = () => {
+        dispatch({
+            type: 'ONENERGY_VIDEO_COMPLETED',
+            payload: videoId,
+        });
     }
 
-    onVideoEnd() {
-        this.setState({ key: new Date(), currentTime: 0, paused: true });
+    const exitVideo = () => {
+        dispatch({
+            type: 'ONENERGY_VIDEO_EXIT',
+            payload: {'videoId': videoId, 'duration': currentTime},
+        })
+    }
+
+    const onVideoEnd = () => {
+        setCurrentTime(0);
+        setPaused(true);
+
         deactivateKeepAwake();
-        if(this.props.navigation.getParam('lesson_video')) {
-            this.props.completeVideo();
+        if(lesson_video) {
+            completeVideo(videoId);
         }
-        this.props.navigation.goBack();
+        navigation.goBack();
     }
 
-    onVideoLoad(e) {
+    const onVideoLoad = (e) => {
+        if(videoReducer.videos.length) {
+            const videoIndex = videoReducer.videos.findIndex(item => item.videoId === videoId);
+            if (videoIndex !== -1 && videoReducer.videos[videoIndex].duration > 0) {
+                this.vimeoPlayer.seek(videoReducer.videos[videoIndex].duration);
+            }
+        }
     }
 
-    onProgress(e) {
-        this.setState({ currentTime: e.currentTime, seekableDuration: e.seekableDuration });
+    const onProgress = (e) => {
+        setCurrentTime(e.currentTime);
+        setSeekableDuration(e.seekableDuration);
     }
 
-    handleBackButtonClick() {
-        this.props.navigation.goBack();
+    const handleBackButtonClick = () => {
+        if(lesson_video) {
+            console.log(videoId, currentTime)
+            exitVideo(videoId, currentTime);
+        }
+        navigation.goBack();
         return true;
     }
 
-    setSelectedCCUrl=(selectedCCUrl)=> {
-        this.setState({ selectedCCUrl: selectedCCUrl});
-    }
-
-    // navigation options
-    static navigationOptions = { header: null }
-
-    render() {
-        const { onClosePressed, volume, navigation } = this.props;
-        const { currentTime, duration, paused } = this.state;
-
-        //const completedPercentage = this.getCurrentTimePercentage(currentTime, duration) * 100;
-
-        return (
-            <View
-                style={{flex: 1, backgroundColor: "black"}}>
-                <StatusBar hidden={true} />
-                <View style={this.state.topViewStyle}>
-                    <Video
-                        ref={vimeoPlayer => this.vimeoPlayer = vimeoPlayer}
-                        onEnd={this.onVideoEnd.bind(this)}
-                        onLoad={this.onVideoLoad.bind(this)}
-                        onProgress={this.onProgress.bind(this)}
-                        audioOnly={false}
-                        source={{uri: this.state.video}}   // Can be a URL or a local file.
-                        paused={this.state.paused}
-/*                        volume={Math.max(Math.min(1, volume), 0)}*/
-                        resizeMode={this.state.resizeMode}
-                        style={this.state.videoStyle} />
-                    <TouchableWithoutFeedback
-                        onPress={() => this.setState({
-                            paused: true
-                        })}
-                    >
-                        <View style={[styles.overlayView, {backgroundColor:this.state.paused?'rgba(0,0,0,0.5)':'rgba(0,0,0,0)'}]}>
-                            {this.state.paused?
-                                <>
-                                <View style={{width:"50%", flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
-                                    <TouchableWithoutFeedback
-                                        onPress={() =>{
-                                            if(this.state.currentTime >= 10){
-                                                this.vimeoPlayer.seek(this.state.currentTime-10);
-                                                this.setState({
-                                                    currentTime: this.state.currentTime-10
-                                                })
-                                            }else {
-                                                this.vimeoPlayer.seek(0);
-                                                this.setState({
-                                                    currentTime: 0
-                                                })
-                                            }
-                                        }}
-                                    >
-                                        <View style={styles.skipButtonView}>
-                                            <Image
-                                                tintColor={'#FFFFFF'}
-                                                style={{
-                                                    width:48,
-                                                    height:48,
-                                                    tintColor:'#FFFFFF',
-                                                    opacity: 0.5
-                                                }}
-                                                source={require('../assets/images/skipback10.png')}
-                                            />
-                                        </View>
-                                    </TouchableWithoutFeedback>
-                                    <TouchableWithoutFeedback
-                                        onPress={() => this.setState({
-                                            paused: false
-                                        })}
-                                    >
-                                        <View style={styles.playButtonView}>
-                                            <Image
-                                                tintColor={'#FFFFFF'}
-                                                style={{
-                                                    width:48,
-                                                    height:48,
-                                                    tintColor:'#FFFFFF',
-                                                    opacity: 0.5
-                                                }}
-                                                source={require('../assets/images/arrow_right-1.png')}
-                                            />
-                                        </View>
-                                    </TouchableWithoutFeedback>
-                                    {!this.props.navigation.getParam('no_skip_forward')?
-                                    <TouchableWithoutFeedback
-                                        onPress={() =>{
-                                            if(this.state.currentTime <= this.state.seekableDuration) {
-                                                this.vimeoPlayer.seek(this.state.currentTime + 10)
-                                                this.setState({
-                                                    currentTime: this.state.currentTime + 10
-                                                })
-                                            }else {
-                                                this.vimeoPlayer.seek(this.state.seekableDuration)
-                                                this.setState({
-                                                    currentTime: this.state.seekableDuration
-                                                })
-                                            }
-                                        }}
-                                        >
-                                        <View style={styles.skipButtonView}>
-                                            <Image
-                                                tintColor={'#FFFFFF'}
-                                                style={{
-                                                    width:48,
-                                                    height:48,
-                                                    tintColor:'#FFFFFF',
-                                                    opacity: 0.5
-                                                }}
-                                                source={require('../assets/images/skip10.png')}
-                                            />
-                                        </View>
-                                    </TouchableWithoutFeedback>
-                                    :
-                                        <View style={{width: 72, height: 72}}/>
-                                    }
-                                </View>
-                                <View style={styles.progressView}>
-                                    <Progress.Bar borderColor={"rgba(255,255,255,0.5)"} color={"rgba(255,255,255,0.5)"} progress={this.state.currentTime/this.state.seekableDuration} width={windowHeight/2} height={scale(10)} />
-                                </View>
-                                </>
-                            :null}
-                            {this.state.seekableDuration?
-                            <View style={styles.remainingView}><Text style={styles.remaining}>{new Date(Math.round(this.state.seekableDuration - this.state.currentTime) * 1000).toISOString().substring(14, 19)}</Text></View>
-                                :null}
-                            {(this.state.textTracks.length>0&&this.state.paused)?
-                                <ChooseSubtitle textTracks={this.state.textTracks} setSelectedCCUrl={this.setSelectedCCUrl} {...this.props} />
-                                :null}
-                            {this.state.selectedCCUrl?(
-                                <View style={styles.subTitle}>
-                                    <InteractiveTranscripts
-                                        key = {this.state.selectedCCUrl}
-                                        currentDuration={this.state.currentTime * 1000}
-                                        url={this.state.selectedCCUrl}
-                                        seekToTranscriptDuration={(time) => {
-                                            this.vimeoPlayer.seek(time);
-                                        }}
-                                        contentContainerStyle={
-                                            {
-                                                flexGrow: 1,
-                                                justifyContent:"center"
-                                            }
-                                        }
-                                        textStyle={
-                                            {
-                                                fontSize:scale(16),
-                                                textAlign:"center",
-                                                alignItems:"center",
-                                                justifyContent:"center",
-                                                textAlignVertical:"center",
-                                                height:scale(40),
-                                                fontFamily: 'Montserratlternates-Regular'
-                                            }
-                                        }
-                                        activeTranscriptColor={"white"}
-                                        inactiveTranscriptColor={"white"}
-                                    />
-                                </View>
-                            ):null}
-                            {this.state.paused?
+    return (
+        <View
+            style={{flex: 1, backgroundColor: "black"}}>
+            <StatusBar hidden={true} />
+            <View style={styles.topViewStyle}>
+                <Video
+                    ref={vimeoPlayer => this.vimeoPlayer = vimeoPlayer}
+                    onEnd={onVideoEnd.bind(this)}
+                    onLoad={onVideoLoad.bind(this)}
+                    onProgress={onProgress.bind(this)}
+                    audioOnly={false}
+                    source={{uri: video}}   // Can be a URL or a local file.
+                    paused={paused}
+                    resizeMode={'contain'}
+                    style={styles.videoStyle} />
+                <TouchableWithoutFeedback
+                    onPress={() => setPaused(true)}
+                >
+                    <View style={[styles.overlayView, {backgroundColor:paused?'rgba(0,0,0,0.5)':'rgba(0,0,0,0)'}]}>
+                        {paused?
+                            <>
+                            <View style={{width:"50%", flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
                                 <TouchableWithoutFeedback
-                                    onPress={() => this.handleBackButtonClick()}
+                                    onPress={() =>{
+                                        if(currentTime >= 10){
+                                            this.vimeoPlayer.seek(currentTime-10);
+                                            setCurrentTime(currentTime-10);
+                                        }else {
+                                            this.vimeoPlayer.seek(0);
+                                            setCurrentTime(0);
+                                        }
+                                    }}
                                 >
-                                    <View style={[styles.buttonView,{right:scale(20)}]}>
+                                    <View style={styles.skipButtonView}>
                                         <Image
                                             tintColor={'#FFFFFF'}
                                             style={{
-                                                width:scale(36),
-                                                height:scale(36),
+                                                width:48,
+                                                height:48,
                                                 tintColor:'#FFFFFF',
                                                 opacity: 0.5
                                             }}
-                                            source={require("@src/assets/img/close.png")}
+                                            source={require('../assets/images/skipback10.png')}
                                         />
                                     </View>
                                 </TouchableWithoutFeedback>
-                                :null}
-                        </View>
-                    </TouchableWithoutFeedback>
-                </View>
+                                <TouchableWithoutFeedback
+                                    onPress={() => setPaused(false)}
+                                >
+                                    <View style={styles.playButtonView}>
+                                        <Image
+                                            tintColor={'#FFFFFF'}
+                                            style={{
+                                                width:48,
+                                                height:48,
+                                                tintColor:'#FFFFFF',
+                                                opacity: 0.5
+                                            }}
+                                            source={require('../assets/images/arrow_right-1.png')}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                {!no_skip_forward?
+                                <TouchableWithoutFeedback
+                                    onPress={() =>{
+                                        if(currentTime <= seekableDuration) {
+                                            this.vimeoPlayer.seek(currentTime + 10)
+                                            setCurrentTime(currentTime+10);
+                                        }else {
+                                            this.vimeoPlayer.seek(seekableDuration)
+                                            setCurrentTime(seekableDuration);
+                                        }
+                                    }}
+                                    >
+                                    <View style={styles.skipButtonView}>
+                                        <Image
+                                            tintColor={'#FFFFFF'}
+                                            style={{
+                                                width:48,
+                                                height:48,
+                                                tintColor:'#FFFFFF',
+                                                opacity: 0.5
+                                            }}
+                                            source={require('../assets/images/skip10.png')}
+                                        />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                :
+                                    <View style={{width: 72, height: 72}}/>
+                                }
+                            </View>
+                            <View style={styles.progressView}>
+                                <Progress.Bar borderColor={"rgba(255,255,255,0.5)"} color={"rgba(255,255,255,0.5)"} progress={currentTime/seekableDuration} width={windowHeight/2} height={scale(10)} />
+                            </View>
+                            </>
+                        :null}
+                        {seekableDuration?
+                        <View style={styles.remainingView}><Text style={styles.remaining}>{new Date(Math.round(seekableDuration - currentTime) * 1000).toISOString().substring(14, 19)}</Text></View>
+                            :null}
+                        {(textTracks.length>0&&paused)?
+                            <ChooseSubtitle textTracks={textTracks} setSelectedCCUrl={setSelectedCCUrl} {...props} />
+                            :null}
+                        {selectedCCUrl?(
+                            <View style={styles.subTitle}>
+                                <InteractiveTranscripts
+                                    key = {selectedCCUrl}
+                                    currentDuration={currentTime * 1000}
+                                    url={selectedCCUrl}
+                                    seekToTranscriptDuration={(time) => {
+                                        this.vimeoPlayer.seek(time);
+                                    }}
+                                    contentContainerStyle={
+                                        {
+                                            flexGrow: 1,
+                                            justifyContent:"center"
+                                        }
+                                    }
+                                    textStyle={
+                                        {
+                                            fontSize:scale(16),
+                                            textAlign:"center",
+                                            alignItems:"center",
+                                            justifyContent:"center",
+                                            textAlignVertical:"center",
+                                            height:scale(40),
+                                            fontFamily: 'Montserratlternates-Regular'
+                                        }
+                                    }
+                                    activeTranscriptColor={"white"}
+                                    inactiveTranscriptColor={"white"}
+                                />
+                            </View>
+                        ):null}
+                        {paused?
+                            <TouchableWithoutFeedback
+                                onPress={() => handleBackButtonClick()}
+                            >
+                                <View style={[styles.buttonView,{right:scale(30)}]}>
+                                    <Image
+                                        tintColor={'#FFFFFF'}
+                                        style={{
+                                            width:scale(36),
+                                            height:scale(36),
+                                            tintColor:'#FFFFFF',
+                                            opacity: 0.5
+                                        }}
+                                        source={require("@src/assets/img/close.png")}
+                                    />
+                                </View>
+                            </TouchableWithoutFeedback>
+                            :null}
+                    </View>
+                </TouchableWithoutFeedback>
             </View>
-        );
-    }
+        </View>
+    );
 }
 const styles = StyleSheet.create({
+    videoStyle: {
+        height: windowWidth + statusBarSize,
+        alignSelf: "stretch",
+    },
+    topViewStyle: {
+        flex: 1,
+        transform: [
+            { rotateZ: '90deg'},
+            { translateY: ((PixelRatio.getPixelSizeForLayoutSize(windowHeight)-
+                        PixelRatio.getPixelSizeForLayoutSize(windowWidth))/
+                    PixelRatio.get()) - statusBarSize },
+        ],
+        height: windowWidth,
+        width: windowHeight,
+    },
     overlayView:{
         width:windowHeight,
         height:windowWidth,
@@ -336,17 +331,5 @@ const styles = StyleSheet.create({
         top:scale(20),
     }
 });
-function mapDispatchToProps(dispatch) {
-    return {
-        completeVideo: () => dispatch({
-            type: 'ONENERGY_VIDEO_COMPLETED'
-        })
-    }
-}
-function mapStateToProps(state) {
-    const {config} = state.config
-    const {accessToken} = state.auth.token
-    const {user} = state.user
-    return {config, accessToken, user}
-}
-export default connect(mapStateToProps, mapDispatchToProps)(VimeoPlayer)
+VimeoPlayer.navigationOptions = { header: null };
+export default VimeoPlayer;

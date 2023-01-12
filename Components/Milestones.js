@@ -47,15 +47,15 @@ const Milestones = (props) => {
             case 'course':
                 switch(item.showCourseOption){
                     case 'enrolled':
-                        show = progressReducer.enrolledCourses&&progressReducer.enrolledCourses.findIndex(course => course.id === parseInt(item.showCourse));
+                        show = progressReducer.enrolledCourses.length&&progressReducer.enrolledCourses.findIndex(course => course.id === parseInt(item.showCourse));
                         break;
                     case 'completed':
-                        show = progressReducer.completedCourses&&progressReducer.completedCourses.findIndex(course => course.id === parseInt(item.showCourse));
+                        show = progressReducer.completedCourses.length&&progressReducer.completedCourses.findIndex(course => course.id === parseInt(item.showCourse));
                         break;
                 }
                 break;
             case 'lesson':
-                show = progressReducer.completedLessons&&progressReducer.completedLessons.findIndex(lesson => lesson.id === parseInt(item.showLesson));
+                show = progressReducer.completedLessons.length&&progressReducer.completedLessons.findIndex(lesson => lesson.id === parseInt(item.showLesson));
                 break;
             case 'achievement':
                 show = achievementReducer&&achievementReducer.findIndex(achievement => (achievement.id === parseInt(item.showAchievement) && achievement.complete_date));

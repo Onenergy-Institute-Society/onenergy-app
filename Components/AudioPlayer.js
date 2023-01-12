@@ -155,7 +155,7 @@ const AudioPlayer = (props) => {
                 </View>
             </View>
             <View style={styles.progressBarSection}>
-                <TrackSlider />
+                <TrackSlider {...props} />
             </View>
         </View>
     );

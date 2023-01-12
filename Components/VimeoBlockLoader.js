@@ -31,6 +31,7 @@ const VimeoBlockLoader =(props) => {
                     'Referrer-Policy': 'strict-origin-when-cross-origin'
                 }
             });
+            console.log(result)
             setVimeoConfig(result.data);
         } catch (e) {
             console.error(e);
@@ -74,7 +75,7 @@ const VimeoBlockLoader =(props) => {
             </ImageBackground>
             :
             <View style={styles.container}>
-                <VimeoBlock video={video} duration={duration} thumbnail={thumbnail} textTracks={textTracks} lesson_video={lesson_video} no_skip_forward={no_skip_forward} selectedCCUrl={selectedCCUrl} />
+                <VimeoBlock videoId={block.result} video={video} duration={duration} thumbnail={thumbnail} textTracks={textTracks} lesson_video={lesson_video} no_skip_forward={no_skip_forward} selectedCCUrl={selectedCCUrl} />
             </View>
     )
 }

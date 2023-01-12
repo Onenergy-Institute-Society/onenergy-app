@@ -10,7 +10,7 @@ import {scale} from "../Utils/scale";
 
 const VimeoBlock = props => {
     const {
-        navigation, video, duration, thumbnail, textTracks, no_skip_forward, lesson_video, selectedCCUrl
+        navigation, video, videoId, duration, thumbnail, textTracks, no_skip_forward, lesson_video, selectedCCUrl
     } = props;
     const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
     const [visualGuide, setVisualGuide] = useState(false);
@@ -28,6 +28,7 @@ const VimeoBlock = props => {
                         NavigationActions.navigate({
                             routeName: "VimeoPlayer",
                             params: {
+                                videoId: videoId,
                                 video: video,
                                 textTracks: textTracks,
                                 no_skip_forward: no_skip_forward,

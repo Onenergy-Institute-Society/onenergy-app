@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         zIndex:999,
         position:"absolute",
         top:scale(20),
-        left:scale(20),
+        left:scale(30),
     }
 });
 export default ChooseSubtitle;

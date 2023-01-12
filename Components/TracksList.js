@@ -19,7 +19,7 @@ const TracksList = (props) => {
     const {tracks, setMessageBarDisplay, screenProps} = props;
     const {colors, global} = screenProps;
     const [selectedTrack, setSelectedTrack] = useState(null);
-console.log('tracks', tracks)
+
     const onTrackItemPress = async (track) => {
         if(!selectedTrack || track.id !== selectedTrack.id) {
             setSelectedTrack(track);

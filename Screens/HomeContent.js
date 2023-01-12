@@ -43,7 +43,7 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
     const dispatch = useDispatch();
-console.log(global, optionData)
+    console.log(progressReducer, optionData)
     const onFocusHandler=() =>
     {
         try
@@ -59,6 +59,11 @@ console.log(global, optionData)
 
     const _handleAppStateChange = async () => {
         if(user) {
+            if(AppState.currentState==='active'&&checkTodayDate()){
+                dispatch({
+                    type: 'ONENERGY_DAILY_UPDATE',
+                });
+            }
             if((Platform.OS === "android" && AppState.currentState==='background') || (Platform.OS === "ios" && AppState.currentState==='inactive')) {
                 console.log(AppState.currentState)
                 if (progressReducer.latestUpdate && progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
@@ -116,6 +121,15 @@ console.log(global, optionData)
         }
     };
 
+    const checkTodayDate = () => {
+        const today = new moment().format('YYYY-MM-DD');
+        if(today!==new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD')) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     useEffect(() => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
@@ -164,13 +178,6 @@ console.log(global, optionData)
             }
             if (load) {
                 props.navigation.navigate("InitData", { transition: 'fade' });
-            }
-            const today = new moment().format('YYYY-MM-DD');
-            if(today!==new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD'))
-            {
-                dispatch({
-                    type: 'ONENERGY_DAILY_UPDATE',
-                });
             }
             return () => {
                 navigation.removeListener('willFocus', onFocusHandler);
@@ -392,64 +399,63 @@ console.log(global, optionData)
                     <EventList location={'top'} {...props} />
                     <EventList location={'home'} {...props} />
                 </View>:null}
-                {optionData.show.includes('quotes') && optionData.quote && (
+                {optionData.quote && (
                     <View style={[styles.quoteRow, styles.boxShadow]}>
                         <DailyQuotes quote={optionData.quote} screenProps={screenProps} />
                     </View>
                 )}
-                {optionData.show.includes('events') && (
-                    <View style={styles.eventRow}>
-                        {optionData.events && (
-                            <TouchableScale
-                                onPress={() => {
-                                    OnPress(optionData.events, 'eventType').then();
-                                }}>
-                                <View style={[styles.block_event, styles.boxShadow]}>
-                                    <ImageCache
-                                        source={{uri: optionData.events.image ? optionData.events.image : ''}}
-                                        style={styles.image_event}
-                                    />
-                                </View>
-                            </TouchableScale>
-                        )}
-                        {optionData.currentSolarTermImage && (
-                            <TouchableScale
-                                onPress={
-                                    () => {
-                                        optionData.solarTerm.solarTermType === 'page' ?
-                                            navigation.dispatch(
-                                                NavigationActions.navigate({
-                                                    routeName: "AppPageScreen",
-                                                    params: {
-                                                        pageId: optionData.solarTerm.page,
-                                                        title: optionData.solarTerm.title
-                                                    }
-                                                })
-                                            )
-                                            :
-                                            optionData.solarTerm.solarTermType === 'screen' ?
-                                                NavigationActions.navigate({
-                                                    routeName: "SolarTermScreen"
-                                                })
-                                                : null
-                                    }
-                                }>
-                                <View style={[styles.block_season, styles.boxShadow]}>
-                                    <ImageCache
-                                        source={{uri: optionData.currentSolarTermImage ? optionData.currentSolarTermImage : ''}}
-                                        style={styles.image_season}
-                                    />
-                                    <View style={{position:"absolute", left:scale(12), bottom:scale(3), justifyContent:"center", alignItems:"center"}}>
-                                        <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(16), lineHeight: scale(16), color:'#FFF'}}>{new moment(optionData.currentSolarTermStart).format('MMM')}</Text>
-                                        <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(22), lineHeight: scale(22),color:'#FFF'}}>{new moment(optionData.currentSolarTermStart).format('DD')}</Text></View>
-                                    <View style={{position:"absolute", right:scale(10), bottom:scale(3), justifyContent:"center", alignItems:"center"}}>
-                                        <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(16), lineHeight: scale(16),color:'#FFF'}}>{new moment(optionData.currentSolarTermEnd).format('MMM')}</Text>
-                                        <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(22), lineHeight: scale(22),color:'#FFF'}}>{new moment(optionData.currentSolarTermEnd).format('DD')}</Text></View>
-                                </View>
-                            </TouchableScale>
-                        )}
-                    </View>
-                )}
+                <View style={styles.eventRow}>
+                    {optionData.events && (
+                        <TouchableScale
+                            onPress={() => {
+                                OnPress(optionData.events, 'eventType').then();
+                            }}>
+                            <View style={[styles.block_event, styles.boxShadow]}>
+                                <ImageCache
+                                    source={{uri: optionData.events.image ? optionData.events.image : ''}}
+                                    style={styles.image_event}
+                                />
+                            </View>
+                        </TouchableScale>
+                    )}
+                    {optionData.currentSolarTermImage && (
+                        <TouchableScale
+                            onPress={
+                                () => {
+                                    optionData.solarTerm.solarTermType === 'page' ?
+                                        navigation.dispatch(
+                                            NavigationActions.navigate({
+                                                routeName: "AppPageScreen",
+                                                params: {
+                                                    pageId: optionData.solarTerm.page,
+                                                    title: optionData.solarTerm.title
+                                                }
+                                            })
+                                        )
+                                        :
+                                        optionData.solarTerm.solarTermType === 'screen' ?
+                                            NavigationActions.navigate({
+                                                routeName: "SolarTermScreen"
+                                            })
+                                            : null
+                                }
+                            }>
+                            <View style={[styles.block_season, styles.boxShadow]}>
+                                <ImageCache
+                                    source={{uri: optionData.currentSolarTermImage ? optionData.currentSolarTermImage : ''}}
+                                    style={styles.image_season}
+                                />
+                                <View style={{position:"absolute", left:scale(12), bottom:scale(3), justifyContent:"center", alignItems:"center"}}>
+                                    <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(16), lineHeight: scale(16), color:'#FFF'}}>{new moment(optionData.currentSolarTermStart).format('MMM')}</Text>
+                                    <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(22), lineHeight: scale(22),color:'#FFF'}}>{new moment(optionData.currentSolarTermStart).format('DD')}</Text></View>
+                                <View style={{position:"absolute", right:scale(10), bottom:scale(3), justifyContent:"center", alignItems:"center"}}>
+                                    <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(16), lineHeight: scale(16),color:'#FFF'}}>{new moment(optionData.currentSolarTermEnd).format('MMM')}</Text>
+                                    <Text style={{fontFamily:"Montserrat", fontWeight:"bold", fontSize:scale(22), lineHeight: scale(22),color:'#FFF'}}>{new moment(optionData.currentSolarTermEnd).format('DD')}</Text></View>
+                            </View>
+                        </TouchableScale>
+                    )}
+                </View>
+
                 <View style={styles.programRow}>
                     <TouchableScale onPress={
                         () => {
@@ -467,37 +473,35 @@ console.log(global, optionData)
                     </TouchableScale>
                 </View>
                 <ForumsScreen {...props} headerHeight={0} hideFilters={true} hideNavigationHeader={true} hideTitle={true} showSearch={false} screenTitle="My Forums" />
-                {optionData.show.includes('blogs') && (
-                    <View style={styles.blogRow}>
-                        {optionData.blogs.map((blog) => (
-                            <>
-                                <TouchableScale onPress={
-                                    () => {
-                                        navigation.dispatch(
-                                            NavigationActions.navigate({
-                                                routeName: "CategoryScreen",
-                                                params: {
-                                                    category: blog.category,
-                                                    name: blog.name,
-                                                }
-                                            })
-                                        )
-                                    }
-                                }>
-                                    <View style={styles.view_blog_title}>
-                                        <Text style={global.widgetTitle}>{blog.name}</Text>
-                                        <Text style={global.link}>See All ></Text>
-                                    </View>
-                                </TouchableScale>
-                                <View style={styles.eventRow}>
-                                    <PostRow postType={'categories'} postCategory={blog.category}
-                                             postPerPage={blog.count} postOrder={blog.order} postOrderBy={blog.orderBy}
-                                             showAuthor={blog.showAuthor} {...props} />
+                <View style={styles.blogRow}>
+                    {optionData.blogs.map((blog) => (
+                        <>
+                            <TouchableScale onPress={
+                                () => {
+                                    navigation.dispatch(
+                                        NavigationActions.navigate({
+                                            routeName: "CategoryScreen",
+                                            params: {
+                                                category: blog.category,
+                                                name: blog.name,
+                                            }
+                                        })
+                                    )
+                                }
+                            }>
+                                <View style={styles.view_blog_title}>
+                                    <Text style={global.widgetTitle}>{blog.name}</Text>
+                                    <Text style={global.link}>See All ></Text>
                                 </View>
-                            </>
-                        ))}
-                    </View>
-                )}
+                            </TouchableScale>
+                            <View style={styles.eventRow}>
+                                <PostRow postType={'categories'} postCategory={blog.category}
+                                         postPerPage={blog.count} postOrder={blog.order} postOrderBy={blog.orderBy}
+                                         showAuthor={blog.showAuthor} {...props} />
+                            </View>
+                        </>
+                    ))}
+                </View>
                 <View style={styles.bottomRow}>
                 </View>
             </ScrollView>

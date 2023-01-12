@@ -27,7 +27,7 @@ import CategoryScreen from './Screens/CategoryScreen';
 import QuotesScreen from './Screens/QuotesScreen';
 import SolarTermScreen from './Screens/SolarTermScreen';
 import LessonButton from "./Components/LessonButton";
-import VideoPlayer from "./Components/VideoPlayer";
+import PracticePlayer from "./Components/PracticePlayer";
 import VimeoPlayer from "./Components/VimeoPlayer";
 import VimeoBlockLoader from "./Components/VimeoBlockLoader";
 import PracticePersonal from './Screens/PracticePersonal';
@@ -157,9 +157,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "VideoPlayer",
-        "VideoPlayer",
-        VideoPlayer,
+        "PracticePlayer",
+        "PracticePlayer",
+        PracticePlayer,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
@@ -720,9 +720,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     console.log('6')
                     if (loadProgress) {
                         console.log('data.progress', data.progress)
-                        if (data.progress) {
+                        if (data.progress.totalDuration) {
                             idProgressReducer = data.progress;
-                            if(!idProgressReducer.todayGoal) idProgressReducer.todayGoal = 10;
                         } else {
                             idProgressReducer.points = {'qi': 0};
                             idProgressReducer.totalDuration = 0;
@@ -1051,16 +1050,32 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         acpTempPracticeState.guides.map((section, acpSectionIndex) => {
                             let acpGuideIndex = section.data.findIndex(item => item.id === tempGuide.id);
                             if (acpGuideIndex >= 0) {
+                                console.log('44')
                                 acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].new = false;
                                 acpTempProgressState.totalDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
                                 acpTempProgressState.todayDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
                                 acpTempProgressState.weekDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
-
-                                acpTempIndex = acpTempProgressState.practicesStats.findIndex(item => item.id === acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].id)
-                                if (acpTempIndex >= 0) {
-                                    acpTempProgressState.practicesStats[acpTempIndex].count += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count;
-                                    acpTempProgressState.practicesStats[acpTempIndex].duration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
-                                } else {
+                                console.log('45', acpTempProgressState.practicesStats)
+                                if(acpTempProgressState.practicesStats&&acpTempProgressState.practicesStats.length) {
+                                    console.log('46')
+                                    acpTempIndex = acpTempProgressState.practicesStats.findIndex(item => item.id === acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].id)
+                                    console.log('47')
+                                    if (acpTempIndex >= 0) {
+                                        acpTempProgressState.practicesStats[acpTempIndex].count += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count;
+                                        acpTempProgressState.practicesStats[acpTempIndex].duration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
+                                    } else {
+                                        acpTempProgressState.practicesStats.push({
+                                            'id': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].id,
+                                            'title': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].title,
+                                            'type': 'PP_SINGLE',
+                                            'count': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count,
+                                            'duration': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count
+                                        })
+                                    }
+                                    console.log('48')
+                                }else{
+                                    console.log('49')
+                                    acpTempProgressState.practicesStats = [];
                                     acpTempProgressState.practicesStats.push({
                                         'id': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].id,
                                         'title': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].title,
@@ -1068,7 +1083,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                         'count': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count,
                                         'duration': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count
                                     })
+                                    console.log('48')
                                 }
+                                console.log('52')
                                 console.log(acpTempPracticeState.guides[acpSectionIndex])
                                 acpTempIndex = acpTempProgressState.practicesStats.findIndex(item => item.id === acpTempPracticeState.guides[acpSectionIndex].id)
                                 if (acpTempIndex >= 0) {
@@ -1384,12 +1401,39 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     // Add Video reducer for course completion
     externalCodeSetup.reduxApi.addReducer(
         "videoReducer",
-        (state = {videoComplete: false}, action) => {
+        (state = {videos:[], videoComplete: false}, action) => {
             switch (action.type) {
                 case "ONENERGY_VIDEO_COMPLETED":
+                    const ovcTempVideos = state.videos;
+                    const ovcVideoId = action.payload;
+                    if(ovcTempVideos.length) {
+                        const ovcVideoIndex = ovcTempVideos.findIndex(item => item.videoId === ovcVideoId);
+                        if (ovcVideoIndex) {
+                            ovcTempVideos.splice(ovcVideoIndex, 1);
+                        }
+                    }
                     return {
                         ...state,
+                        videos: ovcTempVideos,
                         videoComplete: true
+                    };
+                case "ONENERGY_VIDEO_EXIT":
+                    const ovxTempVideos = state.videos;
+                    const ovxVideoId = action.payload.videoId;
+                    const ovxDuration = action.payload.duration;
+                    if(ovxTempVideos.length) {
+                        const ovxVideoIndex = ovxTempVideos.findIndex(item => item.videoId === ovxVideoId);
+                        if (ovxVideoIndex) {
+                            ovxTempVideos[ovxVideoIndex].duration = ovxDuration;
+                        } else {
+                            ovxTempVideos.push({'videoId': ovxVideoId, 'duration': ovxDuration});
+                        }
+                    }else{
+                        ovxTempVideos.push({'videoId': ovxVideoId, 'duration': ovxDuration});
+                    }
+                    return {
+                        ...state,
+                        videos: ovxTempVideos,
                     };
                 case "ONENERGY_VIDEO_RESET":
                     return {
@@ -1441,7 +1485,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
 
     // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
-        let whiteList = [...props.whitelist, "languagesReducer", "postReducer", "onenergyReducer",];
+        let whiteList = [...props.whitelist, "languagesReducer", "postReducer", "onenergyReducer", "videoReducer"];
         console.log(whiteList);
         return {
             ...props,
@@ -1978,7 +2022,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     }
 
     externalCodeSetup.profileScreenHooksApi.setAfterDetailsComponent(AfterDetailsComponent);
-    externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "VideoPlayer", "VimeoPlayer", "MilestonesScreen", "QuestsScreen", "StatsScreen", "myVouchersScreen", "FeedbackScreen", "SettingsScreen", "CoursesSingleScreen", "LessonSingleScreen"])
+    externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "PracticePlayer", "VimeoPlayer", "MilestonesScreen", "QuestsScreen", "StatsScreen", "myVouchersScreen", "FeedbackScreen", "SettingsScreen", "CoursesSingleScreen", "LessonSingleScreen"])
     externalCodeSetup.settingsScreenApi.setLogoutComponent(({
                                                                 global,
                                                                 t,
