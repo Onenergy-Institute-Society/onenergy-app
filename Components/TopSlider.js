@@ -214,7 +214,6 @@ console.log(topSlides)
         const itemWidth = this.props.width;
         const separatorWidth = this.props.separatorWidth;
         const totalItemWidth = itemWidth + separatorWidth;
-        console.log(this.state.data)
         return (
             <View style={[styles.slideRow, styles.boxShadow]}>
                 <FlatList style={{maxHeight:Math.round((Dimensions.get('window').width-scale(30))/2.5-scale(10))}}

@@ -103,11 +103,6 @@ const PracticesContent = props => {
                         </View>
                         : null
                     }
-                    {
-                        user ?
-                            <PracticeTipsRow {...props} />
-                            : null
-                    }
                     <TouchableScale
                         onPress={personalPracticePressed}>
                         <ImageBackground
@@ -159,7 +154,7 @@ const PracticesContent = props => {
                     childrenStyle={{backgroundColor: colors.bodyBg}}
                     HeaderComponent={
                         <View style={{
-                            padding: scale(25),
+                            padding: scale(15),
                             flexDirection: "row",
                             justifyContent: "space-between",
                             borderTopLeftRadius: 9,
@@ -204,12 +199,13 @@ const PracticesContent = props => {
                     ref={(popupLoginDialog) => {
                         this.popupLoginDialog = popupLoginDialog;
                     }}
-                    modalHeight={windowHeight * 4 / 5}
+                    modalHeight={windowHeight * 5 / 6}
                     handlePosition="outside"
+                    handlePosition="inside"
                     childrenStyle={{backgroundColor: colors.bodyBg}}
                     HeaderComponent={
                         <View style={{
-                            padding: scale(25),
+                            padding: scale(15),
                             flexDirection: "row",
                             justifyContent: "space-between",
                             borderTopLeftRadius: 9,
@@ -258,7 +254,7 @@ const styles = StyleSheet.create({
         width: windowWidth-scale(30),
         height: (windowWidth-scale(30))*16/45,
         borderRadius: 9,
-        marginTop: scale(15),
+        marginTop: scale(25),
         marginHorizontal: scale(15),
         alignItems: 'flex-start',
         justifyContent: 'center',

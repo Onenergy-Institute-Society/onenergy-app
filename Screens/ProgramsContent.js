@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
         right: 0,
         width: windowWidth - scale(30),
         justifyContent: "space-between",
+        marginTop: scale(15),
     },
     heading: {
         fontSize: scale(18),

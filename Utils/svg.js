@@ -3,9 +3,8 @@ import Svg, {Circle, Path} from "react-native-svg";
 import {scale} from "./scale";
 
 export const SvgIconMoonPhase = (props) => {
-    console.log(props.moonPhase)
     switch(props.moonPhase) {
-        case "New":
+        case "New Moon":
             return (
                 <Svg width="64" height="64" viewBox="0 0 48 48">
                     <Path fill="#5E35B1" d="M24 4a20 20 0 1 0 0 40 20 20 0 1 0 0-40Z"/>
@@ -42,7 +41,7 @@ export const SvgIconMoonPhase = (props) => {
                     <Path fill="#E5B223" d="M24.5 18.5a3.5 3.5 0 1 1 0-7c.168 0 .328.026.49.049A3.96 3.96 0 0 0 23 11a4 4 0 0 0 0 8 3.96 3.96 0 0 0 1.99-.549c-.162.023-.322.049-.49.049zm11.5 13c0-1.023.618-1.902 1.5-2.289A2.495 2.495 0 0 0 34 31.5a2.5 2.5 0 0 0 3.5 2.289A2.502 2.502 0 0 1 36 31.5zm-14 1c0-1.583 1.058-2.904 2.5-3.338a3.443 3.443 0 0 0-1-.162 3.5 3.5 0 1 0 0 7c.35 0 .682-.066 1-.162-1.442-.434-2.5-1.755-2.5-3.338zm-9-6c0-1.023.618-1.902 1.5-2.289a2.5 2.5 0 1 0 0 4.578A2.502 2.502 0 0 1 13 26.5z"/>
                 </Svg>
             );
-        case "Full":
+        case "Full Moon":
             return (
                 <Svg width="64" height="64" viewBox="0 0 48 48">
                     <Path fill="#FFE082" d="M24 4a20 20 0 1 0 0 40 20 20 0 1 0 0-40Z"/>

@@ -276,7 +276,7 @@ const PracticeGroup = props => {
                 handlePosition="outside"
                 HeaderComponent={
                     <View style={{
-                        padding: scale(25),
+                        padding: scale(15),
                         flexDirection: "row",
                         justifyContent: "space-between",
                         borderTopLeftRadius: 9,
@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
         width: windowWidth - scale(30),
         height: scale(100),
         marginHorizontal: scale(15),
-        marginTop: scale(10),
+        marginTop: scale(20),
         marginBottom: scale(5),
         borderRadius: 9,
     },

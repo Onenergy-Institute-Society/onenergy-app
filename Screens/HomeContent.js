@@ -24,17 +24,17 @@ import EventList from "../Components/EventList";
 import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 import analytics from '@react-native-firebase/analytics';
 import ForumsScreen from "@src/containers/Custom/ForumsScreen";
-import Svg, {Circle, Path} from "react-native-svg";
+import Svg, {Circle, Path, Rect} from "react-native-svg";
 import {
     ProgressChart,
 } from "react-native-chart-kit";
 import { Modalize } from 'react-native-modalize';
 import RNRestart from 'react-native-restart';
 import moment from 'moment';
-import { Moon } from "lunarphase-js";
 import SunCalc from "suncalc";
 import GetLocation from 'react-native-get-location'
 import {SvgIconMoonPhase, SvgIconSunrise, SvgIconSunset} from "../Utils/svg";
+import messaging from '@react-native-firebase/messaging';
 
 this.todayGoalDialog = undefined;
 const HomeContent = (props) => {
@@ -51,6 +51,7 @@ const HomeContent = (props) => {
     const [sunrise, setSunrise] = useState('');
     const [phase, setPhase] = useState('');
     const [nextMoonPhase, setNextMoonPhase] = useState({});
+console.log(user)
 
     const onFocusHandler=() =>
     {
@@ -74,7 +75,10 @@ const HomeContent = (props) => {
             }
             if((Platform.OS === "android" && AppState.currentState==='background') || (Platform.OS === "ios" && AppState.currentState==='inactive')) {
                 console.log(AppState.currentState)
+
+                console.log(progressReducer)
                 if (progressReducer.latestUpdate && progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
+                    console.log(progressReducer.latestUpdate && progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload)
                     let achievements = {
                         'achievements': [],
                         'weekly': achievementReducer.weekly,
@@ -148,13 +152,34 @@ const HomeContent = (props) => {
         }).then(location => {
             setLocation(location);
         })
-        setPhase(Moon.lunarPhase());
-        const lunarAge = Math.floor(Moon.lunarAge());
+        const moonIllumination = SunCalc.getMoonIllumination(new Date());
+        const phaseNumber = Math.floor(moonIllumination.phase * 100)/100;
+        let phaseName = '';
+        console.log(phaseNumber)
+        if(phaseNumber===0){
+            phaseName = 'New Moon';
+        }else if(phaseNumber>0&&phaseNumber<0.25){
+            phaseName = 'Waxing Crescent';
+        }else if(phaseNumber===0.25) {
+            phaseName = 'First Quarter';
+        }else if(phaseNumber>0.25&&phaseNumber<0.5) {
+            phaseName = 'Waxing Gibbous';
+        }else if(phaseNumber===0.5) {
+            phaseName = 'Full Moon';
+        }else if(phaseNumber>0.5&&phaseNumber<0.75){
+            phaseName = 'Waning Gibbous';
+        }else if(phaseNumber===0.75) {
+            phaseName = 'Last Quarter';
+        }else if(phaseNumber>0.75&&phaseNumber<1) {
+            phaseName = 'Waning Crescent';
+        }
+        setPhase(phaseName)
+        const lunarAge = Math.floor(phaseNumber*30);
         let dateDiff;
         let moonPhase='';
         let moonPhaseDate='';
         const today = new moment().format('YYYY-MM-DD');
-        if(lunarAge < 15){
+        if(lunarAge <= 14){
             dateDiff = 15 - lunarAge;
             moonPhase = 'Full Moon';
         }else{
@@ -214,12 +239,18 @@ const HomeContent = (props) => {
             }
         }
     }, []);
+    useEffect(() => {
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+        });
+
+        return unsubscribe;
+    }, []);
     useEffect(()=>{
         if(location)
         {
             const sunTimes = SunCalc.getTimes(new Date(), location.latitude, location.longitude, 0);
             setSunrise(sunTimes);
-            console.log(sunTimes)
         }
     }, [location])
     const OnPress = async (item) => {
@@ -360,7 +391,7 @@ const HomeContent = (props) => {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <View style={{flexDirection:'row', justifyContent:"space-between"}}>
+                    <View style={{flexDirection:'row', justifyContent:"space-between", marginTop:scale(15)}}>
                         <TouchableScale
                             onPress={
                                 () => {
@@ -429,7 +460,87 @@ const HomeContent = (props) => {
                         </View>
                     </View>
                 </>
-                :null}
+                :
+                <View style={[styles.topRow, {marginTop:scale(15), justifyContent: 'space-evenly'}]}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        navigation.navigate("MySignupScreen");
+                    }}>
+                        <View style={{
+                            paddingHorizontal: scale(10),
+                            paddingVertical: scale(5),
+                            backgroundColor: colors.primaryButtonBg,
+                            borderRadius: 9,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-evenly'
+                        }}>
+                            <View style={{flexDirection: "row", alignItems: "center"}}>
+                                <Svg
+                                    width={scale(24)}
+                                    height={scale(24)}
+                                    viewBox="0 0 24 24"
+                                >
+                                    <Path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+                                          fill="none"
+                                          stroke={colors.primaryButtonColor}
+                                          strokeWidth="2"
+                                    />
+                                    <Circle cx="12" cy="7" r="4"
+                                            fill="none"
+                                            stroke={colors.primaryButtonColor}
+                                            strokeWidth="2"
+                                    />
+                                </Svg>
+                                <Text
+                                    style={[global.settingsItemTitle, {color: colors.primaryButtonColor, marginLeft:scale(5)}]}>
+                                    Create account
+                                </Text>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback onPress={() => {
+                        navigation.navigate("MyLoginScreen");
+                    }}>
+                        <View style={{
+                            paddingHorizontal: scale(10),
+                            paddingVertical: scale(5),
+                            backgroundColor: colors.secondaryButtonBg,
+                            borderRadius: 9,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-evenly'
+                        }}>
+                            <View style={{flexDirection: "row", alignItems: "center"}}>
+                                <Svg
+                                    width={scale(24)}
+                                    height={scale(24)}
+                                    viewBox="0 0 24 24"
+                                >
+                                    <Rect width="18"
+                                          height="11"
+                                          x="3" y="11"
+                                          rx="2"
+                                          ry="2"
+                                          fill="none"
+                                          stroke={colors.secondaryButtonColor}
+                                          strokeWidth="2"
+                                    />
+                                    <Path
+                                        d="M7 11V7a5 5 0 0 1 9.9-1"
+                                        fill="none"
+                                        stroke={colors.secondaryButtonColor}
+                                        strokeWidth="2"
+                                    />
+                                </Svg>
+                                <Text
+                                    style={[global.settingsItemTitle, {color: colors.secondaryButtonColor, marginLeft:scale(5)}]}>
+                                    Sign in
+                                </Text>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </View>
+                }
                 {optionData.goals&&optionData.goals.length?
                 <View style={styles.programRow}>
                     <EventList location={'top'} {...props} />
@@ -564,7 +675,7 @@ const HomeContent = (props) => {
                 withHandle = "false"
                 HeaderComponent={
                     <View style={{
-                        padding: scale(25),
+                        padding: scale(15),
                         flexDirection: "row",
                         justifyContent: "space-between",
                         borderTopLeftRadius: 9,
@@ -614,6 +725,7 @@ const styles = StyleSheet.create({
     },
     scroll_view: {
         flexGrow: 1,
+        paddingVertical: scale(15),
     },
     tapFinger: {
         position: "absolute",
@@ -651,7 +763,7 @@ const styles = StyleSheet.create({
     },
     quoteRow: {
         marginHorizontal: scale(15),
-        marginTop: scale(15),
+        marginTop: scale(25),
         alignItems: 'center',
         justifyContent: 'center',
         height: (windowWidth - scale(30)) / 3.25,
@@ -678,7 +790,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         justifyContent: "flex-start",
-        marginTop: scale(15),
+        marginTop: scale(25),
     },
     view_blog_title: {
         flexDirection: 'row',
@@ -686,7 +798,7 @@ const styles = StyleSheet.create({
         right: 0,
         width: windowWidth - scale(30),
         justifyContent: "space-between",
-        marginTop: scale(15),
+        marginTop: scale(25),
     },
     heading: {
         fontSize: scale(18),
@@ -703,7 +815,7 @@ const styles = StyleSheet.create({
     block_season_left: {
         width: (windowWidth - scale(50)) / 3,
         height: (windowWidth - scale(30)) / 2,
-        marginTop: scale(15),
+        marginTop: scale(25),
         marginLeft: 15,
         borderRadius: 9,
         backgroundColor: '#ffeee7',
@@ -713,7 +825,7 @@ const styles = StyleSheet.create({
     block_season_center: {
         width: (windowWidth - scale(50)) / 3,
         height: (windowWidth - scale(30)) / 2,
-        marginTop: scale(15),
+        marginTop: scale(25),
         marginLeft: 10,
         borderRadius: 9,
         backgroundColor: '#2e2e2e',
@@ -724,7 +836,7 @@ const styles = StyleSheet.create({
     block_season_right: {
         width: (windowWidth - scale(50)) / 3,
         height: (windowWidth - scale(30)) / 2,
-        marginTop: scale(15),
+        marginTop: scale(25),
         marginLeft: 10,
         marginRight: 15,
         borderRadius: 9,
@@ -735,7 +847,7 @@ const styles = StyleSheet.create({
     block_half_left: {
         width: (windowWidth - scale(50)) / 2,
         height: (windowWidth - scale(30)) / 2,
-        marginTop: scale(15),
+        marginTop: scale(25),
         marginLeft: 15,
         marginRight: 10,
         borderRadius: 9,
@@ -744,7 +856,7 @@ const styles = StyleSheet.create({
     block_half: {
         width: (windowWidth - scale(50)) / 2,
         height: (windowWidth - scale(30)) / 2,
-        marginTop: scale(15),
+        marginTop: scale(25),
         marginLeft: 10,
         marginRight: 15,
         borderRadius: 9,
@@ -755,7 +867,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     view_intro: {
-        marginTop: scale(15),
+        marginTop: scale(25),
         marginHorizontal: scale(15),
         width: windowWidth - scale(30),
         height: windowWidth - scale(30),

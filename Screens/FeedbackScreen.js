@@ -191,7 +191,7 @@ const FeedbackScreen = props => {
                 withHandle = "false"
                 HeaderComponent={
                     <View style={{
-                        padding: scale(25),
+                        padding: scale(15),
                         flexDirection: "row",
                         justifyContent: "space-between",
                         borderTopLeftRadius: 9,

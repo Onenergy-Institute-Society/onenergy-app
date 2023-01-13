@@ -421,7 +421,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 borderRadius: 9,
                 width: '100%',
                 height: scale(150),
-                marginTop: scale(15),
+                marginTop: scale(25),
                 justifyContent: "space-between",
             },
             boxShadow: {
@@ -708,28 +708,35 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     console.log('6')
                     if (loadProgress) {
                         console.log('data.progress', data.progress)
-                        if (data.progress.totalDuration) {
+                        if (data.progress) {
                             Object.keys(data.progress.points).map(key =>
                                 idProgressReducer.points[key] = parseInt(data.progress.points[key])
                             )
-                            idProgressReducer.totalDuration = parseInt(data.progress.totalDuration);
-                            idProgressReducer.todayDuration = parseInt(data.progress.todayDuration);
-                            idProgressReducer.todayGoal = parseInt(data.progress.todayGoal);
-                            idProgressReducer.weekDuration = parseInt(data.progress.weekDuration);
+                            idProgressReducer.totalDuration = data.progress.totalDuration?parseInt(data.progress.totalDuration):0;
+                            idProgressReducer.todayDuration = data.progress.todayDuration?parseInt(data.progress.todayDuration):0;
+                            idProgressReducer.todayGoal = data.progress.todayGoal?parseInt(data.progress.todayGoal):10;
+                            idProgressReducer.weekDuration = data.progress.weekDuration?parseInt(data.progress.weekDuration):0;
                             idProgressReducer.progress = [];
-                            data.progress.progress.map(progress =>{
-                                idProgressReducer.progress.push({'date':progress.date, 'duration':parseInt(progress.duration)});
-                            })
-                            idProgressReducer.totalDays = parseInt(data.progress.totalDays);
-                            idProgressReducer.lastPractice = data.progress.lastPractice;
-                            idProgressReducer.latestUpdate = parseInt(data.progress.lastPractice);
-                            idProgressReducer.lastUpload = parseInt(data.progress.lastUpload);
-                            idProgressReducer.practicesStats = data.progress.practicesStats;
-                            idProgressReducer.routinesStats = data.progress.routinesStats;
-                            idProgressReducer.groupStats = data.progress.groupStats;
-                            idProgressReducer.completedLessons = data.progress.completedLessons;
-                            idProgressReducer.enrolledCourses = data.progress.enrolledCourses;
-                            idProgressReducer.completedCourses = data.progress.completedCourses;
+                            if(data.progress.progress) {
+                                data.progress.progress.map(progress => {
+                                    idProgressReducer.progress.push({
+                                        'date': progress.date,
+                                        'duration': parseInt(progress.duration)
+                                    });
+                                })
+                            }else{
+                                idProgressReducer.progress = [];
+                            }
+                            idProgressReducer.totalDays = data.progress.totalDays?parseInt(data.progress.totalDays):0;
+                            idProgressReducer.lastPractice = data.progress.lastPractice?data.progress.lastPractice:'';
+                            idProgressReducer.latestUpdate = data.progress.lastPractice?parseInt(data.progress.lastPractice):0;
+                            idProgressReducer.lastUpload = data.progress.lastUpload?parseInt(data.progress.lastUpload):0;
+                            idProgressReducer.practicesStats = data.progress.practicesStats?data.progress.practicesStats:[];
+                            idProgressReducer.routinesStats = data.progress.routinesStats?data.progress.routinesStats:[];
+                            idProgressReducer.groupStats = data.progress.groupStats?data.progress.groupStats:[];
+                            idProgressReducer.completedLessons = data.progress.completedLessons?data.progress.completedLessons:[];
+                            idProgressReducer.enrolledCourses = data.progress.enrolledCourses?data.progress.enrolledCourses:[];
+                            idProgressReducer.completedCourses = data.progress.completedCourses?data.progress.completedCourses:[];
                             console.log(idProgressReducer)
                         } else {
                             idProgressReducer.points = {'qi': 0};
@@ -740,8 +747,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             idProgressReducer.progress = [];
                             idProgressReducer.totalDays = 0;
                             idProgressReducer.lastPractice = '';
-                            idProgressReducer.latestUpdate = '';
-                            idProgressReducer.lastUpload = '';
+                            idProgressReducer.latestUpdate = 0;
+                            idProgressReducer.lastUpload = 0;
                             idProgressReducer.practicesStats = [];
                             idProgressReducer.routinesStats = [];
                             idProgressReducer.groupStats = [];
@@ -828,13 +835,14 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     break;
                 case "ONENERGY_PROGRESS_UPLOADED":
                     console.log('upload_done')
+                    const newUpload = Math.floor(new Date().getTime() / 1000);
+                    console.log(newUpload)
+                    let opuTempProgressState = state.progressReducer;
+                    opuTempProgressState.actionList = [];
+                    opuTempProgressState.lastUpload = newUpload;
                     return {
                         ...state,
-                        progressReducer: {
-                            ...state.progressReducer,
-                            actionList: [],
-                            lastUpload: Math.floor(new Date().getTime() / 1000),
-                        }
+                        progressReducer: opuTempProgressState
                     };
                 case "ONENERGY_DAILY_UPDATE":
                     let oduTempProgressState = state.progressReducer;
@@ -962,7 +970,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 acpTempProgressState.routinesStats[acpTempIndex].count += 1;
                                 acpTempProgressState.routinesStats[acpTempIndex].duration += acpTempPracticeState.routines[routineIndex].duration;
                             } else {
-                                acpTempProgressState.groupStats.push({
+                                acpTempProgressState.routinesStats.push({
                                     'id': acpData,
                                     'title': state.practiceReducer.routines[routineIndex].title,
                                     'count': 1,
@@ -978,14 +986,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             state.practiceReducer.groups[groupIndex].guides.map(tempGuide => {
                                 tempArray.push({'id': tempGuide, 'count': 1});
                             });
-
                             tmpAchievements = state.achievementReducer.achievements.filter((item) =>
                                 (item.trigger === 'practice' &&
                                     (
                                         (item.triggerPracticeOption === 'group' && (parseInt(item.triggerGroupPractice) === acpData || !item.triggerGroupPractice))
                                     ) &&
                                     !item.complete_date));
-
                             tmpAchievements.map((item) => {
                                 let tempIndex = acpTempAchievementState.achievements.findIndex(achievement => achievement.id === item.id);
                                 acpTempAchievementState.achievements[tempIndex].step += 1;
@@ -1002,12 +1008,20 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                     });
                                 }
                             })
-
-                            acpTempIndex = acpTempProgressState.groupStats.findIndex(item => item.id === acpData);
-                            if (acpTempIndex >= 0) {
-                                acpTempProgressState.groupStats[acpTempIndex].count += 1;
-                                acpTempProgressState.groupStats[acpTempIndex].duration += acpTempPracticeState.groups[groupIndex].duration;
-                            } else {
+                            if(acpTempProgressState.groupStats) {
+                                acpTempIndex = acpTempProgressState.groupStats.findIndex(item => item.id === acpData);
+                                if (acpTempIndex >= 0) {
+                                    acpTempProgressState.groupStats[acpTempIndex].count += 1;
+                                    acpTempProgressState.groupStats[acpTempIndex].duration += acpTempPracticeState.groups[groupIndex].duration;
+                                } else {
+                                    acpTempProgressState.groupStats.push({
+                                        'id': acpData,
+                                        'title': state.practiceReducer.groups[groupIndex].name,
+                                        'count': 1,
+                                        'duration': state.practiceReducer.groups[groupIndex].duration,
+                                    })
+                                }
+                            }else{
                                 acpTempProgressState.groupStats.push({
                                     'id': acpData,
                                     'title': state.practiceReducer.groups[groupIndex].name,
@@ -1406,7 +1420,34 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         'blogCache',
         customBlogReducer
     );
-
+    const customUserReducer = reducer => (state = reducer(undefined, {}), action) => {
+        switch (action.type) {
+            case "USER_PROFILE_UPDATED":
+                const profile = {
+                    ...state,
+                    userObject: {
+                        ...state.userObject,
+                        profile_updated: true
+                    }
+                }
+                return reducer(profile, action);
+            case "USER_VIP_SURVEY_COMPLETED":
+                const survey = {
+                    ...state,
+                    userObject: {
+                        ...state.userObject,
+                        vip_survey_completed: true
+                    }
+                }
+                return reducer(survey, action);
+            default:
+                return reducer(state, action);
+        }
+    }
+    externalCodeSetup.reduxApi.wrapReducer(
+        'user',
+        customUserReducer
+    );
     // Add Video reducer for course completion
     externalCodeSetup.reduxApi.addReducer(
         "videoReducer",
