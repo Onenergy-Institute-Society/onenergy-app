@@ -2,7 +2,7 @@ import React from "react";
 import {
     StyleSheet, Image, View, TouchableWithoutFeedback, Text
 } from "react-native";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 import {scale} from "../Utils/scale";
 import {withNavigation, NavigationActions} from "react-navigation";
 import {windowWidth} from "../Utils/Dimensions";
@@ -29,14 +29,14 @@ const ImageBlock =(props) => {
         case 'user':
             if(user&&!(user.membership&&user.membership.length)){
                 showBlock=true;
-            }
+           }
             break;
         case 'member':
             if(user&&user.membership&&user.membership.length){
                 showBlock=true;
-            }
+           }
             break;
-    }
+   }
     const OnPress = async () => {
         if(block.data.data.link)
         {
@@ -49,8 +49,8 @@ const ImageBlock =(props) => {
                             params: {
                                 pageId: block.data.data.param,
                                 title: ''
-                            }
-                        })
+                           }
+                       })
                     )
                     break;
                 case 'blog':
@@ -60,8 +60,8 @@ const ImageBlock =(props) => {
                             params: {
                                 blogId: block.data.data.param,
                                 title: ''
-                            }
-                        })
+                           }
+                       })
                     )
                     break;
                 case 'course':
@@ -70,8 +70,8 @@ const ImageBlock =(props) => {
                             routeName: "CourseScreen",
                             params: {
                                 courseId: block.data.data.param,
-                            }
-                        })
+                           }
+                       })
                     )
                     break;
                 case 'link':
@@ -81,14 +81,14 @@ const ImageBlock =(props) => {
                     navigation.dispatch(
                         NavigationActions.navigate({
                             routeName: block.data.data.param
-                        })
+                       })
                     )
                     break;
                 default:
                     break;
-            }
-        }
-    }
+           }
+       }
+   }
     return (
         block.data.data.image&&showBlock?
             <TouchableWithoutFeedback
@@ -102,14 +102,14 @@ const ImageBlock =(props) => {
                             style={[styles.image, {
                                width: parseInt(block.data.data.width),
                                height: parseInt(block.data.data.height),
-                            }]}/>
+                           }]}/>
                         :
                         <ScalableImage
                             width={windowWidth-scale(30)}
                             source={{uri: block.data.data.image}}
                             resizeMode={block.data.data.resize}
                             style={styles.image}/>
-                    }
+                   }
                 </View>
             </TouchableWithoutFeedback>
         :null
@@ -124,16 +124,16 @@ const styles = StyleSheet.create({
         alignSelf:"center",
         borderRadius: 9,
         backgroundColor:"#fff",
-    },
+   },
     image:{
         borderRadius: 9,
-    },
+   },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
 });
 export default withDeeplinkClickHandler(withNavigation(ImageBlock));

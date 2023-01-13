@@ -21,10 +21,10 @@ import {scale} from "../Utils/scale";
 import TrackPlayer from 'react-native-track-player';
 import EventList from "../Components/EventList";
 import analytics from '@react-native-firebase/analytics';
-import Svg, {Path} from "react-native-svg";
+import {SvgIconBack} from "../Utils/svg";
 
 const PracticeMember = props => {
-    const { navigation, screenProps } = props;
+    const {navigation, screenProps} = props;
     const {global} = screenProps;
     const dispatch = useDispatch();
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
@@ -36,7 +36,7 @@ const PracticeMember = props => {
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Custom Routine Screen',
-    });
+   });
 
     const fetchTracks = async () => {
         try {
@@ -52,11 +52,11 @@ const PracticeMember = props => {
             dispatch({
                 type: "ONENERGY_ROUTINE_UPDATE",
                 payload: data
-            });
-        } catch (e) {
+           });
+       } catch (e) {
             console.error(e);
-        }
-    }
+       }
+   }
     const removeRoutine = async (item) => {
         try {
             const apiSlide = getApi(props.config);
@@ -68,10 +68,10 @@ const PracticeMember = props => {
                 {},
                 false
             ).then();
-        } catch (e) {
+       } catch (e) {
             console.error(e);
-        }
-    }
+       }
+   }
     const onAddPressed = async () => {
         await TrackPlayer.reset();
 
@@ -80,10 +80,10 @@ const PracticeMember = props => {
                 routeName: "EditRoutine",
                 params: {
                     routine: null,
-                }
-            })
+               }
+           })
         );
-    }
+   }
     const onEditRoutinePress = async (item, index) =>{
         await TrackPlayer.reset();
 
@@ -93,10 +93,10 @@ const PracticeMember = props => {
                 params: {
                     routine: item,
                     index: index,
-                }
-            })
+               }
+           })
         );
-    }
+   }
     const onRemoveRoutine = async (item) => {
         await TrackPlayer.reset();
 
@@ -107,30 +107,30 @@ const PracticeMember = props => {
             dispatch({
                 type: "ONENERGY_ROUTINE_UPDATE",
                 payload: array
-            });
-        }
+           });
+       }
         removeRoutine(item).then();
-    }
+   }
     useEffect(() => {
         if(!practiceReducer||!practiceReducer.routines||!practiceReducer.routines.length)
             fetchTracks().then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'practices_member').title,
             onAddPressed: onAddPressed,
-        });
-    },[]);
+       });
+   },[]);
     useEffect(()=>{
         if(messageBarDisplay)
         {
             Animated.timing(fadeAnim, {
                 toValue: 1,
                 duration: 2000,
-            }).start();
+           }).start();
             setTimeout(function () {
                 setMessageBarDisplay(false);
-            }, 3000)
-        }
-    },[messageBarDisplay])
+           }, 3000)
+       }
+   },[messageBarDisplay])
     return (
         <SafeAreaView style={[global.container, {justifyContent: "center", alignItems: "center"}]}>
             {practiceReducer&&practiceReducer.guides&&practiceReducer.guides.length?
@@ -138,11 +138,11 @@ const PracticeMember = props => {
                     <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                         {optionData.goals && optionData.goals.length?
                             <View>
-                                <EventList location={'practice_member'} {...props} />
+                                <EventList location={'practice_member'} {...props}/>
                             </View>
                             : null
-                        }
-                        <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine} setMessageBarDisplay={setMessageBarDisplay} {...props} />
+                       }
+                        <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine} setMessageBarDisplay={setMessageBarDisplay} {...props}/>
                     </ScrollView>
                     :
                     <ActivityIndicator size="large"/>
@@ -150,20 +150,20 @@ const PracticeMember = props => {
                 <View style={{
                     flex: 1,
                     width: windowWidth
-                }}>
+               }}>
                     <BlockScreen pageId={emptyData.id}
                                  contentInsetTop={0}
                                  contentOffsetY={0}
                                  hideTitle={true}
                                  hideNavigationHeader={true}
-                                 {...props} />
+                                 {...props}/>
                 </View>
-            }
+           }
             {(practiceReducer && practiceReducer.routines && practiceReducer.routines.length<5) || !practiceReducer.routines?
                 <IconButton
                     pressHandler={() => {onAddPressed().then()}}
                     icon={require("@src/assets/img/add.png")}
-                    style={{ height: 24, width: 24 }}
+                    style={{height: 24, width: 24}}
                     tintColor={'#FFFFFF'}
                     touchableStyle={{
                         position: "absolute",
@@ -179,8 +179,8 @@ const PracticeMember = props => {
                         shadowOpacity: 0.2,
                         shadowRadius: 3,
                         elevation: 4,
-                    }}
-                />
+                   }}
+               />
             :null}
             {messageBarDisplay?
                 <Animated.View style={[styles.messageBar, {opacity: fadeAnim}]}><Text style={styles.messageText}>Great! You earn more qi. Keep it up!</Text></Animated.View>
@@ -194,21 +194,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#f6f6f8',
-    },
+   },
     scroll_view: {
         flexGrow: 1,
-    },
+   },
     messageText:{
         fontSize:scale(18),
         color: "white",
-    },
+   },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
     messageBar:{
         position: "absolute",
         top:scale(15),
@@ -219,15 +219,15 @@ const styles = StyleSheet.create({
         borderRadius:9,
         paddingVertical:scale(10),
         paddingHorizontal:scale(15),
-    }
+   }
 });
-PracticeMember.navigationOptions = ({ navigation, screenProps }) => {
+PracticeMember.navigationOptions = ({navigation, screenProps}) => {
     const {colors, global} = screenProps;
     return({
         headerTitle: navigation.getParam('title'),
         headerStyle: {
             backgroundColor: colors.headerBg,
-        },
+       },
         headerTintColor: colors.headerColor,
         headerTitleStyle: global.appHeaderTitle,
         headerLeft:
@@ -235,22 +235,11 @@ PracticeMember.navigationOptions = ({ navigation, screenProps }) => {
                 onPress={async () => {
                     await TrackPlayer.reset();
                     navigation.goBack();
-                }}
+               }}
             >
-                <Svg
-                    width="32"
-                    height="32"
-                    viewBox="0 0 24 24"
-                    style={{marginLeft:scale(10)}}
-                >
-                    <Path d="m15 18-6-6 6-6"
-                          fill="none"
-                          stroke={screenProps.colors.headerIconColor}
-                          strokeWidth="2"
-                    />
-                </Svg>
+                <SvgIconBack color = {colors.headerIconColor}/>
             </TouchableOpacity>,
-    })
+   })
 }
 const mapStateToProps = (state) => ({
     config: state.config,

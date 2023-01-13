@@ -20,7 +20,7 @@ import {scale} from "../Utils/scale";
 import EventList from "../Components/EventList";
 import QiPointHeader from "../Components/QiPointHeader";
 import analytics from '@react-native-firebase/analytics';
-import Svg, {Path} from "react-native-svg";
+import {SvgIconBack} from "../Utils/svg";
 
 const PracticePersonal = props => {
     const {screenProps} = props;
@@ -35,13 +35,13 @@ console.log('guideReducer', guideReducer)
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Personal Practice Screen',
-    });
+   });
 
     useEffect(() => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'practices_basic').title,
-        });
-    }, []);
+       });
+   }, []);
     useEffect(()=>{
         if(messageBarDisplay)
         {
@@ -49,37 +49,37 @@ console.log('guideReducer', guideReducer)
                 toValue: 1,
                 duration: 2000,
                 easing: Easing.bounce
-            }).start();
+           }).start();
             setTimeout(function () {
                 setMessageBarDisplay(false);
-            }, 3000)
-        }
-    },[messageBarDisplay])
+           }, 3000)
+       }
+   },[messageBarDisplay])
     return (
         <SafeAreaView style={global.container}>
             {progressReducer.completedLessons&&progressReducer.completedLessons.length?
                 <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                     {(optionData.goals && optionData.goals.length) ?
                         <View>
-                            <EventList location={'practice_guided'} {...props} />
+                            <EventList location={'practice_guided'} {...props}/>
                         </View>
                         : null
-                    }
-                    <TracksList tracks={guideReducer} setMessageBarDisplay={setMessageBarDisplay} {...props} />
+                   }
+                    <TracksList tracks={guideReducer} setMessageBarDisplay={setMessageBarDisplay} {...props}/>
                 </ScrollView>
             :
                 <View style={{
                     flex: 1,
                     width: windowWidth
-                }}>
+               }}>
                     <BlockScreen pageId={helpPageData.id}
                                  contentInsetTop={0}
                                  contentOffsetY={0}
                                  hideTitle={true}
                                  hideNavigationHeader={true}
-                                 {...props} />
+                                 {...props}/>
                 </View>
-            }
+           }
             {messageBarDisplay?
                 <Animated.View style={[styles.messageBar, styles.boxShadow, {opacity: fadeAnim,}]}><Text style={styles.messageText}>Great! You earn more qi. Keep it up!</Text></Animated.View>
             :null}
@@ -93,21 +93,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#f6f6f8',
-    },
+   },
     scroll_view: {
         flexGrow: 1,
-    },
+   },
     messageText:{
       fontSize:scale(18),
         color: "white",
-    },
+   },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
     messageBar:{
         position: "absolute",
         top:scale(15),
@@ -118,15 +118,15 @@ const styles = StyleSheet.create({
         borderRadius:9,
         paddingVertical:scale(10),
         paddingHorizontal:scale(15),
-    }
+   }
 });
-PracticePersonal.navigationOptions = ({ navigation, screenProps }) => {
+PracticePersonal.navigationOptions = ({navigation, screenProps}) => {
     const {colors, global} = screenProps;
     return {
         headerTitle: navigation.getParam('title'),
         headerStyle: {
             backgroundColor: colors.headerBg,
-        },
+       },
         headerTintColor: colors.headerColor,
         headerTitleStyle: global.appHeaderTitle,
         headerLeft:
@@ -135,25 +135,14 @@ PracticePersonal.navigationOptions = ({ navigation, screenProps }) => {
                     onPress={() => {
                         TrackPlayer.reset();
                         navigation.goBack();
-                    }}
+                   }}
                 >
-                    <Svg
-                        width="32"
-                        height="32"
-                        viewBox="0 0 24 24"
-                        style={{marginLeft:scale(10)}}
-                    >
-                        <Path d="m15 18-6-6 6-6"
-                              fill="none"
-                              stroke={screenProps.colors.headerIconColor}
-                              strokeWidth="2"
-                        />
-                    </Svg>
+                    <SvgIconBack color = {colors.headerIconColor}/>
                 </TouchableOpacity>
             </View>,
         headerRight:
-            <QiPointHeader {...screenProps} />
-    }
+            <QiPointHeader {...screenProps}/>
+   }
 }
 const mapStateToProps = (state) => ({
     config: state.config,

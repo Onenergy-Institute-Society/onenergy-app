@@ -20,13 +20,13 @@ public class BuddybossCustomCodeModule extends ReactContextBaseJavaModule {
 
     public BuddybossCustomCodeModule(ReactApplicationContext reactContext) {
         super(reactContext);
-    }
+   }
 
     @Override
     @NonNull
     public String getName() {
         return NAME;
-    }
+   }
 
     // Lifecycle methods (DO NOT DELETE)
     // These methods will be called in the BuddyBoss app's MainApplication.java and MainActivity.java
@@ -49,7 +49,7 @@ public class BuddybossCustomCodeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void multiply(int a, int b, Promise promise) {
         promise.resolve(a * b);
-    }
+   }
 
     public static native int nativeMultiply(int a, int b);
 }

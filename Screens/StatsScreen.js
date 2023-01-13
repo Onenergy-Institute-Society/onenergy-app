@@ -11,9 +11,10 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import LinearGradient from 'react-native-linear-gradient';
 import analytics from '@react-native-firebase/analytics';
-import Svg, {Circle, Path} from "react-native-svg";
+import Svg, {Circle} from "react-native-svg";
 import {LineChart, PieChart, ContributionGraph} from "react-native-chart-kit";
 import moment from 'moment';
+import {SvgIconBack} from "../Utils/svg";
 
 const StatsScreen = (props) => {
     const {screenProps} = props;
@@ -26,7 +27,7 @@ const StatsScreen = (props) => {
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Progress Screen',
-    });
+   });
 
     let tmpWeek=[];
     let today = new Date();
@@ -35,18 +36,18 @@ const StatsScreen = (props) => {
     Array.from({length: 6}, (_, i) => {
         today.setDate(today.getDate() - 1);
         tmpWeek.push({day:today.getDay(),date:new moment().add(-(i+1), 'days').format('YYYY-MM-DD')});
-    });
+   });
 
     let weekProgress = [];
     tmpWeek.sort((a,b)=>a.date.localeCompare(b.date)).map((day)=>{
         let weekIndex = progressReducer.progress.findIndex(item=>item.date===day.date);
-        if (weekIndex !== -1)
+        if (weekIndex >= 0)
         {
             weekProgress.push(progressReducer.progress[weekIndex].duration/60);
-        }else{
+       }else{
             weekProgress.push(0);
-        }
-    })
+       }
+   })
 
     const weekDay = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const dataWeekly = {
@@ -56,9 +57,9 @@ const StatsScreen = (props) => {
                 data: weekProgress,
                 color: (opacity = 1) => `rgba(236, 87, 24, ${opacity})`,
                 strokeWidth: 2
-            }
+           }
         ],
-    };
+   };
 
     let pieData=[];
     let pieLegend=['#093423', '#157d54', '#1eb478', '#22cc89', '#2edc97', '#65e5b2', '#95eecb', '#b4f3da', '#ccf7e6', '#fdfffe', '#ffffff'];
@@ -71,10 +72,10 @@ const StatsScreen = (props) => {
                     color: pieLegend[index],
                     legendFontColor: "#262626",
                     legendFontSize: scale(10)
-                }
+               }
             )
-        })
-    }
+       })
+   }
     const chartConfig = {
         backgroundGradientFrom: "#FFEEE7",
         backgroundGradientFromOpacity: 1,
@@ -84,7 +85,7 @@ const StatsScreen = (props) => {
         strokeWidth: 3, // optional, default 3
         barPercentage: 1,
         useShadowColorFromDataset: false, // optional
-    };
+   };
     const heatMapChartConfig = {
         backgroundGradientFrom: "#f2f0fd",
         backgroundGradientFromOpacity: 1,
@@ -94,7 +95,7 @@ const StatsScreen = (props) => {
         strokeWidth: 3, // optional, default 3
         barPercentage: 1,
         useShadowColorFromDataset: false, // optional
-    };
+   };
     const date100 = new moment().add(-100, 'days').format('YYYY-MM-DD');
     let commitsData = [];
     progressReducer.progress.filter(item=>date100.localeCompare(item.date)).map((item, index) => {
@@ -102,14 +103,14 @@ const StatsScreen = (props) => {
             {
                 date: item.date,
                 count: item.duration,
-            }
+           }
         )
-    });
+   });
     useEffect(() => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'progress_title').title,
-        });
-    }, []);
+       });
+   }, []);
     return(
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollContainer}
@@ -129,14 +130,14 @@ const StatsScreen = (props) => {
                         alignItems: "center",
                         backgroundColor: "#fceee8",
                         paddingVertical: scale(15)
-                    }]}>
+                   }]}>
                         <LineChart
                             data={dataWeekly}
                             width={windowWidth-scale(40)}
                             height={scale(150)}
                             verticalLabelRotation={0}
                             chartConfig={chartConfig}
-                        />
+                       />
                     </View>
                 </View>
                 <View style={[styles.card, styles.boxShadow]}>
@@ -153,7 +154,7 @@ const StatsScreen = (props) => {
                         alignItems: "center",
                         backgroundColor: "#f2f0fd",
                         paddingVertical: scale(15)
-                    }]}>
+                   }]}>
                         <ContributionGraph
                             values={commitsData}
                             endDate={new Date()}
@@ -164,7 +165,7 @@ const StatsScreen = (props) => {
                             width={windowWidth-scale(40)}
                             height={220}
                             chartConfig={heatMapChartConfig}
-                        />
+                       />
                     </View>
                 </View>
                 <View style={[styles.boxShadow, styles.card]}>
@@ -179,7 +180,7 @@ const StatsScreen = (props) => {
                                 flexDirection:"column",
                                 borderBottomRightRadius: 9,
                                 borderBottomLeftRadius:9,
-                            }]}
+                           }]}
                             colors={['#a5f3fc', '#cffafe']}>
                             <View style={styles.row}>
                                 <Text style={[global.title, styles.title]}>Course Enrolled:</Text>
@@ -232,7 +233,7 @@ const StatsScreen = (props) => {
                                     flexDirection:"column",
                                     borderBottomRightRadius: 9,
                                     borderBottomLeftRadius:9,
-                                }]}
+                               }]}
                                 colors={['#fed7aa', '#ffedd5']}>
                                 <View style={styles.row}>
                                     <Text style={[global.title, styles.title]}>Membership:</Text>
@@ -263,7 +264,7 @@ const StatsScreen = (props) => {
                                     flexDirection:"column",
                                     borderBottomRightRadius: 9,
                                     borderBottomLeftRadius:9,
-                                }]}
+                               }]}
                                 colors={['#fbcfe8', '#fce7f3']}>
                                 {progressReducer.routinesStats&&progressReducer.routinesStats.length ?
                                     progressReducer.routinesStats.map((item, index) => {
@@ -276,13 +277,13 @@ const StatsScreen = (props) => {
                                                         alignSelf: "flex-end",
                                                         textAlign: "right",
                                                         alignItems: "flex-end"
-                                                    }]}>{item.count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
+                                                   }]}>{item.count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
                                                     <Text style={[global.textAlt, {
                                                         flex: 0.2,
                                                         alignSelf: "flex-end",
                                                         textAlign: "right",
                                                         alignItems: "flex-end"
-                                                    }]}>{Math.round(item.duration / 60) > 60 ? Math.round(item.duration / 60 / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : Math.round(item.duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                                   }]}>{Math.round(item.duration / 60) > 60 ? Math.round(item.duration / 60 / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : Math.round(item.duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                                 </View>
                                                 {index < progressReducer.routinesStats.length - 1 ?
                                                     <View style={[styles.rowHr, {backgroundColor: "#f9a8d4"}]}/>
@@ -290,11 +291,11 @@ const StatsScreen = (props) => {
                                                     <View style={{marginBottom: scale(10)}}/>}
                                             </>
                                         )
-                                    }) :
+                                   }) :
                                     <View style={[styles.row, styles.lastRow]}>
                                         <Text style={[global.title, styles.title]}>No routine found, create one first.</Text>
                                     </View>
-                                }
+                               }
                             </LinearGradient>
                         </View>
                     </View>
@@ -313,7 +314,7 @@ const StatsScreen = (props) => {
                                 flexDirection:"column",
                                 borderBottomRightRadius: 9,
                                 borderBottomLeftRadius:9,
-                            }]}
+                           }]}
                             colors={['#ddd6fe', '#ede9fe']}>
                             {progressReducer.groupStats.map((item, index)=> {
                                 return (
@@ -326,10 +327,10 @@ const StatsScreen = (props) => {
                                         {index<progressReducer.groupStats.length-1?
                                             <View style={[styles.rowHr, {backgroundColor: "#c4b5fd"}]}/>
                                             :
-                                            <View style={{marginBottom:scale(10)}} />}
+                                            <View style={{marginBottom:scale(10)}}/>}
                                     </>
                                 )
-                            })}
+                           })}
                         </LinearGradient>
                     </View>
                 </View>
@@ -346,7 +347,7 @@ const StatsScreen = (props) => {
                                 flexDirection:"column",
                                 borderBottomRightRadius: 9,
                                 borderBottomLeftRadius:9,
-                            }]}
+                           }]}
                             colors={['#d1fae5', '#a7f3d0']}>
                             {progressReducer.practicesStats&&progressReducer.practicesStats.length?
                                 <>
@@ -365,16 +366,16 @@ const StatsScreen = (props) => {
                                                 >
                                                     <Circle cx="12" cy="12" r="8"
                                                             fill={pieLegend[index]}
-                                                    />
+                                                   />
                                                 </Svg>
                                             </View>
                                             {index<progressReducer.practicesStats.filter(item=> item.type==='PP_SECTION').length-1?
                                             <View style={[styles.rowHr, {backgroundColor: "#6ee7b7"}]}/>
                                                 :
-                                            <View style={{marginBottom:scale(10)}} />}
+                                            <View style={{marginBottom:scale(10)}}/>}
                                         </>
                                     )
-                                })}
+                               })}
                                     <PieChart
                                         data={pieData}
                                         accessor={"duration"}
@@ -384,13 +385,13 @@ const StatsScreen = (props) => {
                                         verticalLabelRotation={0}
                                         chartConfig={chartConfig}
                                         hasLegend={false}
-                                    />
+                                   />
                                 </>
                                 :
                                 <View style={[styles.row, styles.lastRow]}>
                                     <Text style={[global.title, styles.title]}>No guided practice found, complete one lesson to start.</Text>
                                 </View>
-                            }
+                           }
                         </LinearGradient>
                     </View>
                 </View>
@@ -403,47 +404,47 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-    },
+   },
     scrollContainer:{
         flex:1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-    },
+   },
     card: {
         width: windowWidth-scale(30),
         marginHorizontal: scale(15),
         borderRadius:9,
         marginTop:scale(15),
-    },
+   },
     header:{
         height: scale(40),
         paddingTop: 15,
         paddingHorizontal:15,
         borderTopRightRadius: 9,
         borderTopLeftRadius:9,
-    },
+   },
     headerText:{
         fontFamily: "MontserratAlternates-SemiBold",
         color: "#ffffff",
         fontSize: 18,
         fontWeight: "bold",
-    },
+   },
     title:{
         fontSize: scale(14),
-    },
+   },
     text:{
         fontFamily: "MontserratAlternates-Regular",
         fontWeight: "normal",
         fontSize: scale(14),
         color: "#27272a",
-    },
+   },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
     row: {
         flex:1, 
         width: "100%", 
@@ -453,20 +454,20 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center", 
         marginTop:scale(10)
-    },
+   },
     lastRow:{
         marginBottom:scale(10)
-    },
+   },
     bottom: {
         height:scale(15),
         borderBottomRightRadius: 9,
         borderBottomLeftRadius:9,
-    },
+   },
     rowHr:{
         height:1,
         width:windowWidth-60,
         marginVertical: 2,
-    }
+   }
 });
 StatsScreen.navigationOptions = ({navigation, screenProps}) => {
     const {colors, global} = screenProps;
@@ -474,26 +475,15 @@ StatsScreen.navigationOptions = ({navigation, screenProps}) => {
         title: navigation.getParam('title'),
         headerStyle: {
             backgroundColor: colors.headerBg,
-        },
+       },
         headerTintColor: colors.headerColor,
         headerTitleStyle: global.appHeaderTitle,
         headerLeft:
             <TouchableOpacity
                 onPress={() => {navigation.goBack()}}
             >
-                <Svg
-                    width="32"
-                    height="32"
-                    viewBox="0 0 24 24"
-                    style={{marginLeft:scale(10)}}
-                >
-                    <Path d="m15 18-6-6 6-6"
-                          fill="none"
-                          stroke={screenProps.colors.headerIconColor}
-                          strokeWidth="2"
-                    />
-                </Svg>
+                <SvgIconBack color = {colors.headerIconColor}/>
             </TouchableOpacity>,
-        }
+       }
 }
 export default StatsScreen;

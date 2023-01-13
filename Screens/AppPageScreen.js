@@ -6,9 +6,8 @@ import {
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {windowWidth} from "../Utils/Dimensions";
-import {scale} from "../Utils/scale";
 import analytics from '@react-native-firebase/analytics';
-import Svg, {Path} from "react-native-svg";
+import {SvgIconBack} from "../Utils/svg";
 
 const AppPageScreen = (props) => {
     if (!props.isFocused)
@@ -17,7 +16,7 @@ const AppPageScreen = (props) => {
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'App Page: '+ navigation.getParam('title'),
-    });
+   });
 
     return (
         <View style={{
@@ -28,12 +27,12 @@ const AppPageScreen = (props) => {
                          contentOffsetY={0}
                          hideTitle={true}
                          hideNavigationHeader={true}
-                         {...props} />
+                         {...props}/>
         </View>
     )
 }
 
-AppPageScreen.navigationOptions = ({ navigation, screenProps }) => {
+AppPageScreen.navigationOptions = ({navigation, screenProps}) => {
     const {global, colors} = screenProps;
     let headerLeft = null;
     let navRoutes = navigation.dangerouslyGetParent().state.routes;
@@ -42,31 +41,20 @@ AppPageScreen.navigationOptions = ({ navigation, screenProps }) => {
         <TouchableOpacity
             onPress={() => {
                 navigation.goBack()
-            }}
+           }}
         >
-            <Svg
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                style={{marginLeft:scale(10)}}
-            >
-                <Path d="m15 18-6-6 6-6"
-                      fill="none"
-                      stroke={colors.headerIconColor}
-                      strokeWidth="2"
-                />
-            </Svg>
+            <SvgIconBack color = {colors.headerIconColor}/>
         </TouchableOpacity>
-    }
+   }
     return {
         title: navigation.getParam('title')?navigation.getParam('title'):'',
         headerStyle: {
             backgroundColor: colors.headerBg,
-        },
+       },
         headerTintColor: colors.headerColor,
         headerTitleStyle: global.appHeaderTitle,
         headerLeft: headerLeft,
-    }
+   }
 };
 
 export default AppPageScreen;

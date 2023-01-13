@@ -7,7 +7,7 @@ import {useSelector} from "react-redux";
 import {NavigationActions, withNavigation} from "react-navigation";
 import ScalableImage from "../Components/ScalableImage";
 import TouchableScale from './TouchableScale';
-import { windowWidth, scale } from '../Utils/scale';
+import {windowWidth, scale} from '../Utils/scale';
 import AwesomeAlert from "../Components/AwesomeAlert";
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
@@ -29,8 +29,8 @@ const EventList = props => {
     useEffect(()=>{
         setTimeout(function () {
             setVisualGuide(true);
-        }, 10000);
-    },[])
+       }, 10000);
+   },[])
     const renderItem = () => {
         return optionData.goals.map((item) => {
             let showDate = null;
@@ -55,7 +55,7 @@ const EventList = props => {
                     break;
                 default:
                     break;
-            }
+           }
             if(show && item.location.includes(location)) {
                 show = false;
                 switch (item.show) {
@@ -64,7 +64,7 @@ const EventList = props => {
                         if (current_time >= date2) {
                             showDate = item.showDate;
                             show = true
-                        }
+                       }
                         break;
                     case 'course':
                         if (item.showCourseOption === 'enrolled') {
@@ -73,34 +73,34 @@ const EventList = props => {
                                 showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
                                 if (current_time > showDate) {
                                     show = true;
-                                }
-                            }
-                        } else if (item.showCourseOption === 'completed') {
+                               }
+                           }
+                       } else if (item.showCourseOption === 'completed') {
                             let showCourse = progressReducer.completedCourses&&progressReducer.completedCourses.find(course => course.id === parseInt(item.showCourse));
                             if (showCourse) {
                                 showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
                                 if (current_time > showDate) {
                                     show = true;
-                                }
-                            }
-                        }
+                               }
+                           }
+                       }
                         break;
                     case 'lesson':
                         let showLesson = progressReducer.completedLessons&&progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.showLesson));
                         if (showLesson) {
                             show = true;
-                        }
+                       }
                         break;
                     case 'achievement':
                         let showAchievement = user&&achievementReducer&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.showAchievement));
                         if (showAchievement) {
                             show = true;
-                        }
+                       }
                         break;
                     default:
                         show = true;
                         break;
-                }
+               }
                 if (show) {
                     switch (item.hide) {
                         case 'date':
@@ -109,59 +109,59 @@ const EventList = props => {
                                     let date2 = new moment.utc(item.hideDateOption.date);
                                     if (current_time >= date2) {
                                         show = false
-                                    }
+                                   }
                                     break;
                                 case 'days':
                                     let diffDays = current_time.diff(showDate, 'days');
                                     if (diffDays >= parseInt(item.hideDateOption.days)) {
                                         show = false
-                                    }
+                                   }
                                     break;
-                            }
+                           }
                             break;
                         case 'course':
                             if (item.hideCourseOption === 'enrolled') {
                                 if (progressReducer.enrolledCourses&&progressReducer.enrolledCourses.find(course => course.id === parseInt(item.hideCourse))) {
                                     show = false;
-                                }
-                            } else if (item.hideCourseOption === 'completed') {
+                               }
+                           } else if (item.hideCourseOption === 'completed') {
                                 if (progressReducer.completedCourses&&progressReducer.completedCourses.find(course => course.id === parseInt(item.hideCourse))) {
                                     show = false;
-                                }
-                            }
+                               }
+                           }
                             break;
                         case 'lesson':
                             if (progressReducer.completedLessons&&progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.hideLesson))) {
                                 show = false;
-                            }
+                           }
                             break;
                         case 'achievement':
                             if (achievementReducer&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.hideAchievement))) {
                                 show = false;
-                            }
+                           }
                             break;
                         case 'user':
                             if(user[item.attribute]){
                                 show = false;
-                            }
+                           }
                             break;
                         default:
                             show = true;
                             break;
-                    }
-                }
+                   }
+               }
                 if(show) {
                     if (item.group) {
                         if (displayGroup.includes(item.group)) {
                             show = false;
-                        } else {
+                       } else {
                             displayGroup = [...displayGroup, item.group];
-                        }
-                    }
-                }
-            }else{
+                       }
+                   }
+               }
+           }else{
                 show = false;
-            }
+           }
             return (
                 show?
                     <View style={styles.container}>
@@ -184,8 +184,8 @@ const EventList = props => {
                                                     params: {
                                                         pageId: item.param,
                                                         title: ''
-                                                    }
-                                                })
+                                                   }
+                                               })
                                             )
                                             break;
                                         case 'blog':
@@ -195,8 +195,8 @@ const EventList = props => {
                                                     params: {
                                                         blogId: item.param,
                                                         title: ''
-                                                    }
-                                                })
+                                                   }
+                                               })
                                             )
                                             break;
                                         case 'course':
@@ -205,8 +205,8 @@ const EventList = props => {
                                                     routeName: "CourseScreen",
                                                     params: {
                                                         courseId: parseInt(item.param),
-                                                    }
-                                                })
+                                                   }
+                                               })
                                             )
                                             break;
                                         case 'link':
@@ -216,24 +216,24 @@ const EventList = props => {
                                             navigation.dispatch(
                                                 NavigationActions.navigate({
                                                     routeName: item.param
-                                                })
+                                               })
                                             )
                                             break;
                                         default:
                                             break;
-                                    }
-                                }
-                            } catch (err) {
+                                   }
+                               }
+                           } catch (err) {
                                 console.log(`${err}`);
-                            }
-                        }
-                        }>
+                           }
+                       }
+                       }>
                         <View style={[styles.containerStyle, shadow?styles.boxShadow:null]}>
                             <ScalableImage
                                 width={windowWidth - scale(30)}
                                 source={{uri: item.image ? item.image : null}}
                                 style={styles.image}
-                            />
+                          />
                         </View>
                         {visualGuide&&item.showGuide==="1"?
                             <FastImage style={{
@@ -247,9 +247,9 @@ const EventList = props => {
                                 shadowOpacity: 0.2,
                                 shadowRadius: 3,
                                 elevation: 4,
-                            }} source={require('../assets/images/tapFinger.gif')} />
+                           }} source={require('../assets/images/tapFinger.gif')}/>
                             :null
-                        }
+                       }
                     </TouchableScale>
                     <AwesomeAlert
                         show={showAlert}
@@ -264,13 +264,13 @@ const EventList = props => {
                         confirmButtonColor="#4942E1"
                         onConfirmPressed={() => {
                             setShowAlert(false);
-                        }}
-                    />
+                       }}
+                  />
                 </View>
                 :null
             );
-        })
-    }
+       })
+   }
     return (
         renderItem()
     );
@@ -281,19 +281,19 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-    },
+   },
     containerStyle: {
         backgroundColor:"white",
         borderRadius: 9,
         marginTop: scale(25),
         marginHorizontal: scale(15),
         width: windowWidth - scale(30),
-    },
+   },
     rowStyle: {
         overflow: 'hidden',
         flexDirection: "row",
         justifyContent: "space-between",
-    },
+   },
     image: {
         width:200,
         borderRadius: 9,
@@ -301,14 +301,14 @@ const styles = StyleSheet.create({
         marginTop: 0,
         overflow: 'hidden',
         resizeMode: "contain",
-    },
+   },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {windowWidth: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
 });
 
 EventList.navigationOptions = {header: null};

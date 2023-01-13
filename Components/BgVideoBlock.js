@@ -20,10 +20,10 @@ const BgVideoBlock =(props) => {
             width = windowWidth-scale(30);
             height = (windowWidth-scale(30))/parseInt(block.data.data.width)*parseInt(block.data.data.height);
             break
-    }
+   }
     const onEnd = () => {
         BGVideoPlayer.current.seek(0);
-    }
+   }
     return (
         block.data.data.url?
             <View style={[styles.container, block.data.data.shadow?styles.boxShadow:null]}>
@@ -34,13 +34,13 @@ const BgVideoBlock =(props) => {
                     style={[styles.backgroundVideo,{
                         width:width,
                         height:height,
-                    }]}
+                   }]}
                     muted={true}
                     repeat={true}
                     resizeMode={"contain"}
                     rate={1.0}
                     ignoreSilentSwitch={"obey"}
-                />
+              />
             </View>
         :null
     )
@@ -52,19 +52,19 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         alignSelf:"center",
-    },
+   },
     backgroundVideo: {
         justifyContent: "center",
         width: windowWidth-scale(30),
         height: "auto",
         alignItems: "stretch",
-    },
+   },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
 });
 export default BgVideoBlock;

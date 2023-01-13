@@ -4,7 +4,7 @@ import SignupScreen from "@src/containers/Custom/SignupScreen";
 
 const MySignupScreen = (props) => {
     return (
-        <SignupScreen {...props} />
+        <SignupScreen {...props}/>
     )
 }
 

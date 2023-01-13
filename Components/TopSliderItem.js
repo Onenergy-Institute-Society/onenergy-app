@@ -13,7 +13,7 @@ const FlatListSliderItem = ({
                                  imageKey,
                                  local,
                                  height
-                             }) => {
+                            }) => {
     return (
         <TouchableScale
             onPress={() => onPress(item)}>
@@ -21,7 +21,7 @@ const FlatListSliderItem = ({
                 <ImageCache
                     style={styles.image}
                     source={{uri: item.image?item.image:''}}
-                />
+              />
             </View>
         </TouchableScale>
     );
@@ -35,14 +35,14 @@ const styles = StyleSheet.create({
         height: (windowWidth - scale(30)) / 2.5 - 10,
         borderRadius: 9,
         backgroundColor: "white",
-    },
+   },
     image: {
         width: windowWidth - scale(30),
         height: (windowWidth - scale(30)) / 2.5 - 10,
         flex: 1,
         borderRadius: 9,
         overflow: 'hidden',
-    },
+   },
 });
 
 export default FlatListSliderItem;

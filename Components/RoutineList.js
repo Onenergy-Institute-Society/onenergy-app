@@ -6,7 +6,7 @@ const RoutineList = ({list}) => {
     const [showListVisible, setShowListVisible] = useState(false);
     const toggleListModal = () => {
         setShowListVisible(!showListVisible);
-    }
+   }
     return (
         <View style={[styles.listContainer, {backgroundColor: list.color}]}>
             <Modal
@@ -14,7 +14,7 @@ const RoutineList = ({list}) => {
                 visible={showListVisible}
                 onRequestClose={() => toggleListModal}
                 >
-                <EditRoutine list={list} closeModal={()=>toggleListModal} />
+                <EditRoutine list={list} closeModal={()=>toggleListModal}/>
             </Modal>
             <TouchableOpacity
                 style={[styles.listContainer,{backgroundColor: list.color}]}
@@ -37,12 +37,12 @@ const styles = StyleSheet.create({
         marginHorizontal: 12,
         alignItems: "center",
         width: 200
-    },
+   },
     listTitle: {
         fontSize: 24,
         fontWeight: "700",
         color: "white",
         marginBottom: 18,
-    }
+   }
 })
 export default RoutineList;

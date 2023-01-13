@@ -2,7 +2,7 @@ import React from "react";
 import {
     StyleSheet, Image, Text, View, TouchableWithoutFeedback
 } from "react-native";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 import {scale} from "../Utils/scale";
 import {withNavigation, NavigationActions} from "react-navigation";
 import LinearGradient from 'react-native-linear-gradient';
@@ -30,14 +30,14 @@ const TextBlock =(props) => {
         case 'user':
             if(user&&!(user.membership&&user.membership.length)){
                 showBlock=true;
-            }
+           }
             break;
         case 'member':
             if(user&&user.membership&&user.membership.length){
                 showBlock=true;
-            }
+           }
             break;
-    }
+   }
     const ImageComponent = () => {
         return (
             <View style={{flex:block.data.data.position==="left"||block.data.data.position==="right"?0.5:1, justifyContent: "center", alignItems: "center"}}>
@@ -45,19 +45,19 @@ const TextBlock =(props) => {
                     width:block.data.data.width?parseInt(block.data.data.width):150,
                     height:block.data.data.height?parseInt(block.data.data.height):150,
                     alignSelf: "center",
-                }]} />
+               }]}/>
             </View>
         )
-    }
+   }
     const htmlStyle = {
         a: {
             fontSize: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize):scale(14),
             fontFamily: "Montserrat-Regular",
             fontWeight: "normal",
-        },
+       },
 /*        ul:{
             width:"100%",
-        },*/
+       },*/
         li: {
             lineHeight: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize*1.47):scale(14*1.47),
             fontSize: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize):scale(14),
@@ -65,7 +65,7 @@ const TextBlock =(props) => {
             textAlign: block.data.data.bodyAlign?block.data.data.bodyAlign:"left",
             fontFamily: "Montserrat-Regular",
             fontWeight: "normal",
-        },
+       },
         p: {
             lineHeight: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize*1.47):scale(14*1.47),
             fontSize: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize):scale(14),
@@ -73,7 +73,7 @@ const TextBlock =(props) => {
             textAlign: block.data.data.bodyAlign?block.data.data.bodyAlign:"left",
             fontFamily: "Montserrat-Regular",
             fontWeight: "normal",
-        },
+       },
         rawtext: {
             lineHeight: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize*1.47):scale(14*1.47),
             fontSize: block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize):scale(14),
@@ -81,8 +81,8 @@ const TextBlock =(props) => {
             textAlign: block.data.data.bodyAlign?block.data.data.bodyAlign:"left",
             fontFamily: "Montserrat-Regular",
             fontWeight: "normal",
-        }
-    };
+       }
+   };
     const TextComponent = () => {
         return (
             <View style={{flex:block.data.data.position==="left"||block.data.data.position==="right"?0.5:1, marginHorizontal: 0, justifyContent: "center", alignItems: block.data.data.titleAlign==='center'?"center":(block.data.data.titleAlign==='left'?"flex-start":"flex-end")}}>
@@ -93,7 +93,7 @@ const TextBlock =(props) => {
                     fontSize:block.data.data.titleFontSize?scale(block.data.data.titleFontSize):scale(22),
                     color:block.data.data.titleColor?block.data.data.titleColor:"#000",
                     textAlign:block.data.data.titleAlign?block.data.data.titleAlign:"left",
-                }]}>{block.data.data.title}</Text>
+               }]}>{block.data.data.title}</Text>
                 :null}
             {block.data.data.body?
                 <HTML html={block.data.data.body}
@@ -103,8 +103,8 @@ const TextBlock =(props) => {
                       style={{flex:1}}
                       onLinkPress={async (evt, href) => {
                           await props.attemptDeepLink(false)(null, href);
-                      }}
-                />
+                     }}
+              />
 /*                <Text style={[styles.body, {
                     flex:1,
                     marginHorizontal: 0,
@@ -112,11 +112,11 @@ const TextBlock =(props) => {
                     lineHeight:block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize*1.47):scale(14*1.47),
                     color:block.data.data.bodyColor?block.data.data.bodyColor:"#000",
                     textAlign:block.data.data.bodyAlign?block.data.data.bodyAlign:"left"
-                }]}>{block.data.data.body}</Text>*/
+               }]}>{block.data.data.body}</Text>*/
                 :null}
             </View>
         )
-    }
+   }
     const OnPress = async () => {
         if(block.data.data.link)
         {
@@ -129,8 +129,8 @@ const TextBlock =(props) => {
                             params: {
                                 pageId: block.data.data.param,
                                 title: ''
-                            }
-                        })
+                           }
+                       })
                     )
                     break;
                 case 'blog':
@@ -140,8 +140,8 @@ const TextBlock =(props) => {
                             params: {
                                 blogId: block.data.data.param,
                                 title: ''
-                            }
-                        })
+                           }
+                       })
                     )
                     break;
                 case 'course':
@@ -150,8 +150,8 @@ const TextBlock =(props) => {
                             routeName: "CourseScreen",
                             params: {
                                 courseId: block.data.data.param,
-                            }
-                        })
+                           }
+                       })
                     )
                     break;
                 case 'link':
@@ -161,14 +161,14 @@ const TextBlock =(props) => {
                     navigation.dispatch(
                         NavigationActions.navigate({
                             routeName: block.data.data.param
-                        })
+                       })
                     )
                     break;
                 default:
                     break;
-            }
-        }
-    }
+           }
+       }
+   }
     return (
         showBlock?
             <TouchableWithoutFeedback
@@ -178,17 +178,17 @@ const TextBlock =(props) => {
                     <LinearGradient
                         style={[block.data.data.shadow?styles.boxShadow:null, styles.container,{
                             flexDirection:block.data.data.position==="left"||block.data.data.position==="right"?"row":"column"
-                        }]}
+                       }]}
                         colors={[block.data.data.backgroundColor1?block.data.data.backgroundColor1:'#ffffff', block.data.data.backgroundColor2?block.data.data.backgroundColor2:'#ffffff']}>
                         {block.data.data.position==='left'||block.data.data.position==='top'?
                             block.data.data.image&&block.data.data.width&&block.data.data.height?
-                                <ImageComponent />
+                                <ImageComponent/>
                                 :null
                         :null}
-                        <TextComponent />
+                        <TextComponent/>
                         {block.data.data.position==='right'||block.data.data.position==='bottom'?
                             block.data.data.image&&block.data.data.width&&block.data.data.height?
-                                <ImageComponent />
+                                <ImageComponent/>
                                 :null
                             :null}
                     </LinearGradient>
@@ -205,23 +205,23 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignSelf:"center",
         borderRadius: 9,
-    },
+   },
     title:{
         marginBottom:scale(20),
         fontFamily: "MontserratAlternates-SemiBold",
         fontWeight: "bold",
-    },
+   },
     image:{
         borderRadius: 9,
-    },
+   },
     body:{
-    },
+   },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
 });
 export default withDeeplinkClickHandler(withNavigation(TextBlock));

@@ -36,12 +36,12 @@ const Milestones = (props) => {
                 payload: {
                     'mode': mode,
                     'id': item.id
-                }
-            });
-        }
-    }
+               }
+           });
+       }
+   }
 
-    const renderItem = ({ item }) => {
+    const renderItem = ({item}) => {
         let show = -1;
         switch(item.show){
             case 'course':
@@ -52,7 +52,7 @@ const Milestones = (props) => {
                     case 'completed':
                         show = progressReducer.completedCourses.length&&progressReducer.completedCourses.findIndex(course => course.id === parseInt(item.showCourse));
                         break;
-                }
+               }
                 break;
             case 'lesson':
                 show = progressReducer.completedLessons.length&&progressReducer.completedLessons.findIndex(lesson => lesson.id === parseInt(item.showLesson));
@@ -63,38 +63,38 @@ const Milestones = (props) => {
             default:
                 show = 1;
                 break;
-        }
+       }
         return (
             show >= 0?
                 Array.isArray(item.step)?
-                    <MilestonesAccordian item={item} handleOnPress={handleOnPress} optionData={optionData} {...props} />
+                    <MilestonesAccordian item={item} handleOnPress={handleOnPress} optionData={optionData} {...props}/>
                     :
-                    <AchievementItem mode={type} item={item} handleOnPress={handleOnPress} {...props} />
+                    <AchievementItem mode={type} item={item} handleOnPress={handleOnPress} {...props}/>
             :null
         );
-    };
+   };
     return(
         <SafeAreaView style={global.container}>
             {achievementReducer&&achievementReducer.length?
                 <FlatList
-                    contentContainerStyle={{ paddingBottom: scale(20) }}
+                    contentContainerStyle={{paddingBottom: scale(20)}}
                     data={achievementReducer.sort((a,b)=>{
                         if(a.claim_date===''&&b.claim_date==='')
                         {
                             if(a.complete_date < b.complete_date){return 1}else{return -1}
-                        }else{
+                       }else{
                             if(a.claim_date > b.claim_date){return 1}else{return -1}
-                        }
-                    })}
+                       }
+                   })}
                     renderItem={renderItem}
                     keyExtractor={item => item.id}
                     showsVerticalScrollIndicator={false}
-                />
+              />
                 :
                 <View style={{
                     flex: 1,
                     width: windowWidth
-                }}>
+               }}>
                     <View style={[styles.boxShadow, {padding:15,justifyContent: "center",alignSelf:"center",borderRadius: 9,backgroundColor:"#fff", margin:15}]}>
                         <View style={{marginHorizontal: 0, justifyContent: "center", alignItems: "center"}}>
                             <Text style={[styles.body, {
@@ -102,11 +102,11 @@ const Milestones = (props) => {
                                 fontSize:scale(14),
                                 lineHeight:scale(14*1.47),
                                 textAlign:"left"
-                            }]}>{emptyText}</Text>
+                           }]}>{emptyText}</Text>
                         </View>
                     </View>
                 </View>
-            }
+           }
         </SafeAreaView>
     )
 }
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: "#ffffff",
-    },
+   },
     row: {
         borderRadius: 9,
         alignItems: 'center',
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f2f2f2',
         marginTop: scale(10),
         marginHorizontal: scale(15),
-    },
+   },
     rowLeft: {
         marginVertical: 0,
         paddingHorizontal: scale(10),
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
         width: (windowWidth - scale(30))*2/3,
         height: scale(70),
         backgroundColor: '#f2f2f2',
-    },
+   },
     rowRight: {
         marginVertical: 0,
         borderTopRightRadius: 9,
@@ -148,17 +148,17 @@ const styles = StyleSheet.create({
         width: (windowWidth - scale(30))/3,
         height: scale(70),
         backgroundColor: '#7de7fa',
-    },
+   },
     pointText: {
         fontSize:scale(14),
-    },
+   },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
 });
 const mapStateToProps = (state) => ({
     config: state.config,  // not needed if axios or fetch is used

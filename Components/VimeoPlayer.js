@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import {useSelector, useDispatch} from "react-redux";
 import Video from "react-native-video";
-import { activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
+import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
 import ChooseSubtitle from "./ChooseSubtitle";
@@ -39,22 +39,22 @@ const VimeoPlayer = (props) => {
         return () => {
             backHandler.remove();
             deactivateKeepAwake();
-        };
-    },[]);
+       };
+   },[]);
 
     const completeVideo = () => {
         dispatch({
             type: 'ONENERGY_VIDEO_COMPLETED',
             payload: videoId,
-        });
-    }
+       });
+   }
 
     const exitVideo = () => {
         dispatch({
             type: 'ONENERGY_VIDEO_EXIT',
             payload: {'videoId': videoId, 'duration': currentTime},
-        })
-    }
+       })
+   }
 
     const onVideoEnd = () => {
         setCurrentTime(0);
@@ -63,37 +63,38 @@ const VimeoPlayer = (props) => {
         deactivateKeepAwake();
         if(lesson_video) {
             completeVideo(videoId);
-        }
+       }
         navigation.goBack();
-    }
+   }
 
     const onVideoLoad = (e) => {
+        console.log(videoReducer)
         if(videoReducer.videos.length) {
             const videoIndex = videoReducer.videos.findIndex(item => item.videoId === videoId);
-            if (videoIndex !== -1 && videoReducer.videos[videoIndex].duration > 0) {
+            if (videoIndex >= 0 && videoReducer.videos[videoIndex].duration > 0) {
                 this.vimeoPlayer.seek(videoReducer.videos[videoIndex].duration);
-            }
-        }
-    }
+           }
+       }
+   }
 
     const onProgress = (e) => {
         setCurrentTime(e.currentTime);
         setSeekableDuration(e.seekableDuration);
-    }
+   }
 
     const handleBackButtonClick = () => {
         if(lesson_video) {
             console.log(videoId, currentTime)
             exitVideo(videoId, currentTime);
-        }
+       }
         navigation.goBack();
         return true;
-    }
+   }
 
     return (
         <View
             style={{flex: 1, backgroundColor: "black"}}>
-            <StatusBar hidden={true} />
+            <StatusBar hidden={true}/>
             <View style={styles.topViewStyle}>
                 <Video
                     ref={vimeoPlayer => this.vimeoPlayer = vimeoPlayer}
@@ -104,7 +105,7 @@ const VimeoPlayer = (props) => {
                     source={{uri: video}}   // Can be a URL or a local file.
                     paused={paused}
                     resizeMode={'contain'}
-                    style={styles.videoStyle} />
+                    style={styles.videoStyle}/>
                 <TouchableWithoutFeedback
                     onPress={() => setPaused(true)}
                 >
@@ -117,11 +118,11 @@ const VimeoPlayer = (props) => {
                                         if(currentTime >= 10){
                                             this.vimeoPlayer.seek(currentTime-10);
                                             setCurrentTime(currentTime-10);
-                                        }else {
+                                       }else {
                                             this.vimeoPlayer.seek(0);
                                             setCurrentTime(0);
-                                        }
-                                    }}
+                                       }
+                                   }}
                                 >
                                     <View style={styles.skipButtonView}>
                                         <Image
@@ -131,9 +132,9 @@ const VimeoPlayer = (props) => {
                                                 height:48,
                                                 tintColor:'#FFFFFF',
                                                 opacity: 0.5
-                                            }}
+                                           }}
                                             source={require('../assets/images/skipback10.png')}
-                                        />
+                                      />
                                     </View>
                                 </TouchableWithoutFeedback>
                                 <TouchableWithoutFeedback
@@ -147,9 +148,9 @@ const VimeoPlayer = (props) => {
                                                 height:48,
                                                 tintColor:'#FFFFFF',
                                                 opacity: 0.5
-                                            }}
+                                           }}
                                             source={require('../assets/images/arrow_right-1.png')}
-                                        />
+                                      />
                                     </View>
                                 </TouchableWithoutFeedback>
                                 {!no_skip_forward?
@@ -158,11 +159,11 @@ const VimeoPlayer = (props) => {
                                         if(currentTime <= seekableDuration) {
                                             this.vimeoPlayer.seek(currentTime + 10)
                                             setCurrentTime(currentTime+10);
-                                        }else {
+                                       }else {
                                             this.vimeoPlayer.seek(seekableDuration)
                                             setCurrentTime(seekableDuration);
-                                        }
-                                    }}
+                                       }
+                                   }}
                                     >
                                     <View style={styles.skipButtonView}>
                                         <Image
@@ -172,17 +173,17 @@ const VimeoPlayer = (props) => {
                                                 height:48,
                                                 tintColor:'#FFFFFF',
                                                 opacity: 0.5
-                                            }}
+                                           }}
                                             source={require('../assets/images/skip10.png')}
-                                        />
+                                      />
                                     </View>
                                 </TouchableWithoutFeedback>
                                 :
                                     <View style={{width: 72, height: 72}}/>
-                                }
+                               }
                             </View>
                             <View style={styles.progressView}>
-                                <Progress.Bar borderColor={"rgba(255,255,255,0.5)"} color={"rgba(255,255,255,0.5)"} progress={currentTime/seekableDuration} width={windowHeight/2} height={scale(10)} />
+                                <Progress.Bar borderColor={"rgba(255,255,255,0.5)"} color={"rgba(255,255,255,0.5)"} progress={currentTime/seekableDuration} width={windowHeight/2} height={scale(10)}/>
                             </View>
                             </>
                         :null}
@@ -190,7 +191,7 @@ const VimeoPlayer = (props) => {
                         <View style={styles.remainingView}><Text style={styles.remaining}>{new Date(Math.round(seekableDuration - currentTime) * 1000).toISOString().substring(14, 19)}</Text></View>
                             :null}
                         {(textTracks.length>0&&paused)?
-                            <ChooseSubtitle textTracks={textTracks} setSelectedCCUrl={setSelectedCCUrl} {...props} />
+                            <ChooseSubtitle textTracks={textTracks} setSelectedCCUrl={setSelectedCCUrl} {...props}/>
                             :null}
                         {selectedCCUrl?(
                             <View style={styles.subTitle}>
@@ -200,13 +201,15 @@ const VimeoPlayer = (props) => {
                                     url={selectedCCUrl}
                                     seekToTranscriptDuration={(time) => {
                                         this.vimeoPlayer.seek(time);
-                                    }}
+                                   }}
                                     contentContainerStyle={
                                         {
                                             flexGrow: 1,
-                                            justifyContent:"center"
-                                        }
-                                    }
+                                            justifyContent:"center",
+                                            alignItems:"center",
+                                            paddingTop: scale(10),
+                                       }
+                                   }
                                     textStyle={
                                         {
                                             fontSize:scale(16),
@@ -215,12 +218,12 @@ const VimeoPlayer = (props) => {
                                             justifyContent:"center",
                                             textAlignVertical:"center",
                                             height:scale(40),
-                                            fontFamily: 'Montserratlternates-Regular'
-                                        }
-                                    }
+                                            fontFamily: 'Montserrat-Regular',
+                                       }
+                                   }
                                     activeTranscriptColor={"white"}
                                     inactiveTranscriptColor={"white"}
-                                />
+                              />
                             </View>
                         ):null}
                         {paused?
@@ -235,9 +238,9 @@ const VimeoPlayer = (props) => {
                                             height:scale(36),
                                             tintColor:'#FFFFFF',
                                             opacity: 0.5
-                                        }}
+                                       }}
                                         source={require("@src/assets/img/close.png")}
-                                    />
+                                  />
                                 </View>
                             </TouchableWithoutFeedback>
                             :null}
@@ -251,18 +254,18 @@ const styles = StyleSheet.create({
     videoStyle: {
         height: windowWidth + statusBarSize,
         alignSelf: "stretch",
-    },
+   },
     topViewStyle: {
         flex: 1,
         transform: [
-            { rotateZ: '90deg'},
-            { translateY: ((PixelRatio.getPixelSizeForLayoutSize(windowHeight)-
+            {rotateZ: '90deg'},
+            {translateY: ((PixelRatio.getPixelSizeForLayoutSize(windowHeight)-
                         PixelRatio.getPixelSizeForLayoutSize(windowWidth))/
-                    PixelRatio.get()) - statusBarSize },
+                    PixelRatio.get()) - statusBarSize},
         ],
         height: windowWidth,
         width: windowHeight,
-    },
+   },
     overlayView:{
         width:windowHeight,
         height:windowWidth,
@@ -273,7 +276,7 @@ const styles = StyleSheet.create({
         right: 0,
         justifyContent: "center",
         alignItems: "center",
-    },
+   },
     subTitle:{
         height:scale(40),
         width:windowHeight,
@@ -282,7 +285,7 @@ const styles = StyleSheet.create({
         position:"absolute",
         backgroundColor: 'rgba(0,0,0,0.5)',
         top: windowWidth-scale(40),
-    },
+   },
     remainingView:{
         position:"absolute",
         top: scale(10),
@@ -290,17 +293,26 @@ const styles = StyleSheet.create({
         left: 0,
         justifyContent: 'center',
         alignItems: 'center'
-    },
+   },
     remaining:{
         color: "white",
-    },
+        fontFamily: "MontserratAlternates-SemiBold",
+        fontWeight: "bold",
+        fontSize: scale(12),
+        textShadowColor: 'grey',
+        textShadowRadius: 1,
+        textShadowOffset: {
+            width: -1,
+            height: 1
+        }
+   },
     progressView: {
         marginTop:20,
         alignSelf:"center",
         justifyContent:"center",
         alignItems:"center",
         zIndex:999,
-    },
+   },
     skipButtonView: {
         width:72,
         height:72,
@@ -309,7 +321,7 @@ const styles = StyleSheet.create({
         backgroundColor:'rgba(0,0,0,0.5)',
         borderRadius:72,
         zIndex:999,
-    },
+   },
     playButtonView: {
         width:96,
         height:96,
@@ -318,7 +330,7 @@ const styles = StyleSheet.create({
         backgroundColor:'rgba(0,0,0,0.5)',
         borderRadius:96,
         zIndex:999,
-    },
+   },
     buttonView: {
         width:36,
         height:36,
@@ -329,7 +341,7 @@ const styles = StyleSheet.create({
         zIndex:999,
         position:"absolute",
         top:scale(20),
-    }
+   }
 });
-VimeoPlayer.navigationOptions = { header: null };
+VimeoPlayer.navigationOptions = {header: null};
 export default VimeoPlayer;

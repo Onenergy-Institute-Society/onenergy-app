@@ -21,67 +21,67 @@ const AudioPlayer = (props) => {
                 payload: {
                     mode: 'PP',
                     data: track.id
-                }
-            });
+               }
+           });
             setMessageBarDisplay(true);
-        } catch (e) {
+       } catch (e) {
             console.error(e);
-        }
-    }
+       }
+   }
     useEffect(() => {
         const appStateListener = AppState.addEventListener(
             'change',
             nextAppState => {
                 if ((nextAppState === 'background') && (!user.membership || !user.membership.length)) {
                     TrackPlayer.pause();
-                }
-            },
+               }
+           },
         );
         return () => {
             appStateListener?.remove();
-        };
-    }, [])
+       };
+   }, [])
     useEffect(() => {
         addTrack(track).then(() => {
             TrackPlayer.play();
             setPlaying(true);
             setStopped(false);
-        });
-    }, [track]);
+       });
+   }, [track]);
 
     async function addTrack(track) {
         await TrackPlayer.reset();
         return await TrackPlayer.add(track, -1);
-    }
+   }
 
     useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.RemoteStop, Event.PlaybackQueueEnded], (event) => {
         if (event.state === State.Playing) {
             activateKeepAwake();
-        }
+       }
         if (event.state === State.Paused) {
             deactivateKeepAwake();
-        }
+       }
         if ((event.state === State.Stopped) || (event.state === State.None)) {
             deactivateKeepAwake();
-        }
+       }
         if (event.type === Event.RemotePlay) {
             TrackPlayer.play();
             setPlaying(true);
             setStopped(false);
             deactivateKeepAwake();
-        }
+       }
         if (event.type === Event.RemotePause) {
             TrackPlayer.pause();
             setPlaying(false);
             setStopped(false);
             deactivateKeepAwake();
-        }
+       }
         if (event.type === Event.RemoteStop) {
             TrackPlayer.reset();
             setPlaying(false);
             setStopped(true);
             deactivateKeepAwake();
-        }
+       }
         if (event.type === 'playback-queue-ended') {
             console.log(event.type)
             TrackPlayer.reset();
@@ -92,8 +92,8 @@ const AudioPlayer = (props) => {
             console.log('after step')
             updateProgress();
             console.log('after update')
-        }
-    });
+       }
+   });
 
     const onPlayPausePress = async () => {
         const state = await TrackPlayer.getState();
@@ -101,19 +101,19 @@ const AudioPlayer = (props) => {
             await TrackPlayer.pause();
             setPlaying(false);
             setStopped(false);
-        }
+       }
         if ((state === State.Paused)) {
             await TrackPlayer.play();
             setPlaying(true);
             setStopped(false);
-        }
+       }
         if ((state === State.Stopped) || (state === State.None)) {
             await addTrack(track);
             await TrackPlayer.play();
             setPlaying(true);
             setStopped(false);
-        }
-    };
+       }
+   };
 
     const onStopPress = async () => {
         const state = await TrackPlayer.getState();
@@ -121,8 +121,8 @@ const AudioPlayer = (props) => {
             await TrackPlayer.reset();
             setPlaying(false);
             setStopped(true);
-        }
-    };
+       }
+   };
 
     return (
         <View style={styles.playerMaxView}>
@@ -136,8 +136,8 @@ const AudioPlayer = (props) => {
                             style={{
                                 height: 24,
                                 width: 24,
-                            }}
-                        />
+                           }}
+                      />
                     </TouchableOpacity>
                     {!stopped ? (
                         <TouchableOpacity onPress={onStopPress} style={styles.stopButton}
@@ -148,14 +148,14 @@ const AudioPlayer = (props) => {
                                 style={{
                                     height: 24,
                                     width: 24,
-                                }}
-                            />
+                               }}
+                          />
                         </TouchableOpacity>
                     ) : null}
                 </View>
             </View>
             <View style={styles.progressBarSection}>
-                <TrackSlider {...props} />
+                <TrackSlider {...props}/>
             </View>
         </View>
     );
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,
         height: scale(50),
         flexDirection: "row",
-    },
+   },
     progressBarSection: {
         ...flexStyles,
         flex: 3,
@@ -184,44 +184,44 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         paddingHorizontal: scale(10),
-    },
+   },
     buttonsSection: {
         ...flexStyles,
         flex: 1,
         flexDirection: 'row',
         justifyContent: "space-between"
-    },
+   },
     buttonsCol: {
         flex: 1,
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'flex-start',
         width: scale(150),
-    },
+   },
     stopButton: {
         marginHorizontal: scale(5),
-    },
+   },
     playPauseButton: {
         marginLeft: scale(5),
-    },
+   },
     playPauseIcon: {
         color: '#000',
-    },
+   },
     trackDesc: {
         ...flexStyles,
         alignItems: 'center',
         justifyContent: 'center',
-    },
+   },
     trackTitle: {
         fontSize: scale(20),
         fontWeight: 'bold',
         color: '#3d3d5c',
-    },
+   },
     trackSubtitle: {
         fontSize: scale(16),
         fontWeight: 'bold',
         color: '#3d3d5c',
-    },
+   },
 });
 const mapStateToProps = (state) => ({
     config: state.config,

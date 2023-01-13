@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 
 const FetchPosts = (callback) => {
     const [isFetching, setIsFetching] = useState(false);
-    const { postType, postCategory, postPerPage, postOrder, postOrderBy } = callback;
+    const {postType, postCategory, postPerPage, postOrder, postOrderBy} = callback;
     const [ postPage, setPage] = useState(1);
     const fetchPostsData = async () => {
         try {
@@ -18,27 +18,27 @@ const FetchPosts = (callback) => {
                 ...dataPosts,
                 [postType]: response.data})));
             setDataPostsLoading(false);
-        } catch (e) {
+       } catch (e) {
             console.error(e);
-        }
-    }
+       }
+   }
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+   }, []);
 
     useEffect(() => {
         if (!isFetching) return;
         callback(() => {
             fetchPostsData().then();
-        });
-    }, [isFetching]);
+       });
+   }, [isFetching]);
 
     function handleScroll() {
         if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || isFetching) return;
         setPage(postPage+1);
         setIsFetching(true);
-    }
+   }
 
     return [isFetching, setIsFetching];
 };

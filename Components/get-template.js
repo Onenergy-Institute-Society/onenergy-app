@@ -58,39 +58,39 @@ const getTemplate = (params, enterprise) => {
             const onClose = () => {
                 window.ReactNativeWebView.postMessage(JSON.stringify({
                     close: [],
-                }));
-            }
+               }));
+           }
     
             const onLoad = () => {
                 window.ReactNativeWebView.postMessage(JSON.stringify({
                     load: [],
-                }));
-            }
+               }));
+           }
     
             const onExpire = () => {
                 window.ReactNativeWebView.postMessage(JSON.stringify({
                     expire: [],
-                }));
-            }
+               }));
+           }
     
             const onError = (error) => {
                 window.ReactNativeWebView.postMessage(JSON.stringify({
                     error: [error],
-                }));
-            }
+               }));
+           }
     
             const onVerify = (token) => {
                 window.ReactNativeWebView.postMessage(JSON.stringify({
                     verify: [token],
-                }));
-            }
+               }));
+           }
     
             const isReady = () => Boolean(typeof window === 'object' && window.grecaptcha && ${grecaptcha}.render);
     
             const registerOnCloseListener = () => {
                 if (onCloseObserver) {
                     onCloseObserver.disconnect();
-                }
+               }
     
                 const iframes = document.getElementsByTagName('iframe');
     
@@ -105,18 +105,18 @@ const getTemplate = (params, enterprise) => {
                     if (lastOpacity !== recaptchaElement.style.opacity
                         && recaptchaElement.style.opacity == 0) {
                         onClose();
-                    }
+                   }
                     lastOpacity = recaptchaElement.style.opacity;
-                });
+               });
                 onCloseObserver.observe(recaptchaElement, {
                     attributes: true,
                     attributeFilter: ['style'],
-                });
-            }
+               });
+           }
     
             const isRendered = () => {
                 return typeof widget === 'number';
-            }
+           }
     
             const renderRecaptcha = () => {
                 widget = ${grecaptcha}.render('recaptcha-container', {
@@ -126,34 +126,34 @@ const getTemplate = (params, enterprise) => {
                     callback: onVerify,
                     'expired-callback': onExpire,
                     'error-callback': onError,
-                });
+               });
                 if (onLoad) {
                     onLoad();
-                }
+               }
                 onCloseInterval = setInterval(registerOnCloseListener, 1000);
-            }
+           }
     
             const updateReadyState = () => {
                 if (isReady()) {
                     clearInterval(readyInterval);
                     renderRecaptcha()
-                }
-            }
+               }
+           }
     
             if (isReady()) {
                 renderRecaptcha();
-            } else {
+           } else {
                 readyInterval = setInterval(updateReadyState, 1000);
-            }
+           }
     
             window.rnRecaptcha = {
                 execute: () => {
                     ${grecaptcha}.execute(widget);
-                },
+               },
                 reset: () => {
                     ${grecaptcha}.reset(widget);
-                },
-            }
+               },
+           }
         </script>
     
         <style>
@@ -165,13 +165,13 @@ const getTemplate = (params, enterprise) => {
                 margin: 0;
                 padding: 0;
                 background-color: transparent;
-            }
+           }
     
             .container {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-            }
+           }
         </style>
     </head>
     
@@ -186,7 +186,7 @@ const getTemplate = (params, enterprise) => {
     Object.entries(params)
         .forEach(([key, value]) => {
             template = template.replace(new RegExp(`{{${key}}}`, 'img'), value);
-        });
+       });
 
     return template;
 };

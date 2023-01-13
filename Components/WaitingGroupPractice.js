@@ -7,7 +7,7 @@ import {getApi} from "@src/services";
 import FastImage from "react-native-fast-image";
 
 const WaitingGroupPractice = props => {
-    const { gp_id, gp_time, waitingStyle, waitingIconStyle, waitingTextStyle, waitingIconColor } = props;
+    const {gp_id, gp_time, waitingStyle, waitingIconStyle, waitingTextStyle, waitingIconColor} = props;
     const [waitingNumber, setWaitingNumber] = useState(0);
     const fetchGroupPracticeNumber = async () => {
         try {
@@ -20,19 +20,19 @@ const WaitingGroupPractice = props => {
                 {},               // request headers object
                 false   // true - if full url is given, false if you use the suffix for the url. False is default.
             ).then(response => setWaitingNumber(response.data));
-        } catch (e) {
+       } catch (e) {
             console.error(e);
-        }
-    }
+       }
+   }
     useEffect(() =>{
         fetchGroupPracticeNumber().then();
         let secTimer = setInterval( () => {
             fetchGroupPracticeNumber().then();
-        },60000)
+       },60000)
         return () => clearInterval(secTimer)
-    },[]);
+   },[]);
     return (
-        <View style={waitingStyle}><FastImage tintColor={waitingIconColor} source={require("@src/assets/img/group_invite.png")} style={waitingIconStyle} /><Text style={waitingTextStyle}>{waitingNumber}</Text></View>
+        <View style={waitingStyle}><FastImage tintColor={waitingIconColor} source={require("@src/assets/img/group_invite.png")} style={waitingIconStyle}/><Text style={waitingTextStyle}>{waitingNumber}</Text></View>
     );
 };
 const mapStateToProps = (state) => ({

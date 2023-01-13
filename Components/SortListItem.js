@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {StyleSheet, PanResponder, Animated, TouchableOpacity, Text} from 'react-native';
 
 export default class SortListItem extends Component
@@ -16,9 +16,9 @@ export default class SortListItem extends Component
                     this.props.setCancelContentTouches(false);
                     let offset = props.horizontal === true ? {x:position.__getValue().x, y:0} : {x:0, y:position.__getValue().y};
                     position.setOffset(offset);
-                    this.setState({ ...this.state, offset:offset, isMoving: true });
+                    this.setState({...this.state, offset:offset, isMoving: true});
                     position.setValue({x:0,y:0});
-                },
+               },
 
                 onPanResponderMove: (event, gesture) =>
                 {
@@ -35,7 +35,7 @@ export default class SortListItem extends Component
                     let pos = props.horizontal === true ? {x:movement, y:0} : {x:0, y:movement};
                     position.setValue(pos);
                     props.onMove(props.id, finalPos, this.state.itemSize, this.isEdging(finalPos), this.props.scrollPosition);
-                },
+               },
 
                 onPanResponderRelease: (evt, gesture) =>
                 {
@@ -43,14 +43,14 @@ export default class SortListItem extends Component
                     const lastPos = (this.state.index - props.initIndex) * this.state.itemSize;
                     position.setOffset(props.horizontal === true ? {x:lastPos, y:0} : {x:0, y:lastPos});
                     position.setValue({x:0,y:0});
-                    this.setState({ ...this.state, isMoving: false });
+                    this.setState({...this.state, isMoving: false});
                     this.props.save(props.id, this.state.itemSize);
-                },
+               },
 
-                onPanResponderTerminate: (evt, gesture) => { // When user's touch/gesture is moved outside of direct parent container
+                onPanResponderTerminate: (evt, gesture) => {// When user's touch/gesture is moved outside of direct parent container
                     this.props.setCancelContentTouches(true);
-                }
-            });
+               }
+           });
 
         this.state =
             {
@@ -61,8 +61,8 @@ export default class SortListItem extends Component
                 index: props.index,
                 isMoving: false,
                 lastEdgingTime: new Date(),
-            };
-    }
+           };
+   }
 
     isEdging(position)
     {
@@ -75,7 +75,7 @@ export default class SortListItem extends Component
         {
             this.setState({...this.state, lastEdgingTime: now});
             return -1;
-        }
+       }
         else if(
             (now - this.state.lastEdgingTime) > this.props.edgingDelay &&
             position > ((this.props.scrollPosition + this.props.containerSize) - (this.props.containerSize * this.props.edgeZonePercent / 50))
@@ -83,9 +83,9 @@ export default class SortListItem extends Component
         {
             this.setState({...this.state, lastEdgingTime: now});
             return 1;
-        }
+       }
         return 0;
-    }
+   }
 
     snapToIndex(index, highlight)
     {
@@ -99,30 +99,30 @@ export default class SortListItem extends Component
             {x:0, y:((this.state.itemSize * index) - (this.state.itemSize * this.props.initIndex))};
         this.state.position.setOffset(nullPos);
         this.state.position.setValue(currentPos);
-        Animated.timing(this.state.position, { toValue:newPos, duration: 300, }).start(() =>
+        Animated.timing(this.state.position, {toValue:newPos, duration: 300,}).start(() =>
         {
             this.state.position.setOffset(newPos);
             this.state.position.setValue(nullPos);
             if(highlight === true)
             {
-                Animated.timing(this.state.position, { toValue:(this.props.horizontal === true ? {x:0,y:25} : {x:25,y:0}), duration: 150, }).start(() =>
+                Animated.timing(this.state.position, {toValue:(this.props.horizontal === true ? {x:0,y:25} : {x:25,y:0}), duration: 150,}).start(() =>
                 {
-                    Animated.timing(this.state.position, { toValue:nullPos, duration: 150, }).start();
-                });
-            }
-        });
-    }
+                    Animated.timing(this.state.position, {toValue:nullPos, duration: 150,}).start();
+               });
+           }
+       });
+   }
 
     componentDidMount()
     {
         this.snapToIndex(this.props.index, this.props.id === this.props.lastShiftingItemIndex);
-    }
+   }
 
     componentDidUpdate(prevProps, prevState)
     {
         if (this.state.isMoving === false && (prevProps.index !== this.props.index || prevState.isMoving !== this.state.isMoving))
             this.snapToIndex(this.props.index);
-    }
+   }
 
     render()
     {
@@ -140,7 +140,7 @@ export default class SortListItem extends Component
                 {this.props.renderItem(this.state.panResponder.panHandlers, this.props.id, this.props.itemData)}
             </Animated.View>
         );
-    }
+   }
 }
 
 const s = StyleSheet.create({
@@ -149,11 +149,11 @@ const s = StyleSheet.create({
             justifyContent:'center',
             alignItems:'center',
             overflow:'visible'
-        },
+       },
     sphere:
         {
             ...StyleSheet.absoluteFill,
             borderRadius:100,
             overflow:'visible'
-        },
+       },
 });

@@ -11,14 +11,14 @@ import {scale} from "../Utils/scale";
 const VimeoBlock = props => {
     const {
         navigation, video, videoId, duration, thumbnail, textTracks, no_skip_forward, lesson_video, selectedCCUrl
-    } = props;
+   } = props;
     const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
     const [visualGuide, setVisualGuide] = useState(false);
     useEffect(()=>{
         setTimeout(function () {
             setVisualGuide(true);
-        }, 5000);
-    },[])
+       }, 5000);
+   },[])
     return (
         <View
             style={{flex: 1}}>
@@ -34,23 +34,23 @@ const VimeoBlock = props => {
                                 no_skip_forward: no_skip_forward,
                                 lesson_video: lesson_video,
                                 selectedCCUrl: selectedCCUrl
-                            }
-                        })
+                           }
+                       })
                     )
-                }}>
-                <View style = {styles.overlay_button}><Image style={styles.play} source={require('../assets/images/arrow_right-1.png')} /></View>
+               }}>
+                <View style = {styles.overlay_button}><Image style={styles.play} source={require('../assets/images/arrow_right-1.png')}/></View>
                 <Image
                     style={styles.BackGroundImage}
                     source={{uri: thumbnail}}
                     resizeMode={'cover'}
-                />
+              />
                 {duration?
                     <Text style={styles.duration}>{duration}</Text>
                 :null}
                 {!videoComplete&&visualGuide?
-                    <ImageCache style={[styles.tapFinger,{alignSelf:"center", marginTop:scale(60)}]} source={require('../assets/images/tapFinger.gif')} />
+                    <ImageCache style={[styles.tapFinger,{alignSelf:"center", marginTop:scale(60)}]} source={require('../assets/images/tapFinger.gif')}/>
                     :null
-                }
+               }
             </TouchableOpacity>
         </View>
     )
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         alignItems: 'center',
         justifyContent: 'center',
-    },
+   },
     tapFinger:{
         position: "absolute",
         width:scale(100),
@@ -82,28 +82,28 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
     play:{
         opacity: 0.6,
         width: 32,
         height: 32
-    },
+   },
     BackGroundImage: {
         width: windowWidth-scale(30),
         height: (windowWidth-scale(30)) * (9 / 16),
         justifyContent: 'center',
         borderRadius: 9,
-    },
+   },
     container: {
         flex: 1,
         backgroundColor: '#ebebeb',
-    },
+   },
     duration: {
       position: "absolute",
       top: scale(10),
       left: scale(10),
       color: "white",
-    },
+   },
     video: {
         position: 'relative',
         height: (windowWidth-scale(30)) * (9 / 16),
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
         justifyContent:"center",
         alignItems: "center"
-    },
+   },
     fullscreenVideo: {
         position: 'absolute',
         top:0,
@@ -121,22 +121,22 @@ const styles = StyleSheet.create({
         height: windowWidth,
         width: windowHeight,
         backgroundColor: 'black',
-    },
+   },
     text: {
         marginTop: 30,
         marginHorizontal: 20,
         fontSize: 15,
         textAlign: 'justify',
-    },
+   },
     normalViewStyle: {
         alignItems:"center",
         justifyContent:"center",
         borderRadius: 9,
-    },
+   },
     fullscreenButtonImage:{
         width:32,
         height:32,
-    },
+   },
     fullscreenButton: {
         position: 'absolute',
         top:10,
@@ -146,6 +146,6 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         alignItems: 'center',
         paddingRight: 10,
-    },
+   },
 });
 export default withNavigation(VimeoBlock);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Animated, useWindowDimensions } from "react-native";
+import {View, StyleSheet, Animated, useWindowDimensions} from "react-native";
 
 const Paginator = ({data, scrollX}) => {
     try {
@@ -12,12 +12,12 @@ const Paginator = ({data, scrollX}) => {
                         inputRange,
                         outputRange: [10,20,10],
                         extrapolate: "clamp",
-                    });
+                   });
                     const opacity = scrollX.interpolate({
                         inputRange,
                         outputRange: [0.3,1,0.3],
                         extrapolate: "clamp",
-                    })
+                   })
                     return (
                         <Animated.View
                             style={[
@@ -25,17 +25,17 @@ const Paginator = ({data, scrollX}) => {
                                 {
                                     width:dotWidth,
                                     opacity,
-                                }
+                               }
                                 ]}
                             key={i.toString()}
-                        />
+                      />
                     );
-                })}
+               })}
             </View>
         );
-    }catch (e) {
+   }catch (e) {
         console.log(e)
-    }
+   }
 };
 
 const styles = StyleSheet.create({
@@ -44,6 +44,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: "#493d8a",
         marginHorizontal: 8,
-    }
+   }
 })
 export default Paginator;

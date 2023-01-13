@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, {PureComponent} from "react";
 import {
     FlatList,
     I18nManager,
@@ -37,18 +37,18 @@ export default class Timeline extends PureComponent {
             data: this.props.data,
             x: 0,
             width: 0,
-        };
-    }
+       };
+   }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (prevState.data !== nextProps.data) {
             return {
                 data: nextProps.data,
-            };
-        }
+           };
+       }
 
         return null;
-    }
+   }
 
     render() {
         return (
@@ -64,22 +64,22 @@ export default class Timeline extends PureComponent {
                         keyExtractor={(item, index) => index + ""}
                         onContentSizeChange={() => {
                             if (this.flatList && this.flatList.scrollToIndex && this.state.data && this.state.data.length) {
-                                this.flatList.scrollToIndex({  index: this.state.data.length - 1 });
-                            }
-                        }}
+                                this.flatList.scrollToIndex({ index: this.state.data.length - 1});
+                           }
+                       }}
                         onScrollToIndexFailed={() => {}}
                         {...this.props.options}
-                    />
+                  />
                 ) : (
                     this.state.data.map((item, index) => (
-                        <View key={index + ""}>{this._renderItem({ item, index })}</View>
+                        <View key={index + ""}>{this._renderItem({item, index})}</View>
                     ))
                 )}
             </View>
         );
-    }
+   }
 
-    _renderItem({ item, index }) {
+    _renderItem({item, index}) {
         let content = null;
         switch (this.props.columnFormat) {
             case "single-column-left":
@@ -117,25 +117,25 @@ export default class Timeline extends PureComponent {
                         </View>
                     );
                 break;
-        }
+       }
         return <View key={index}>{content}</View>;
-    }
+   }
 
     _renderTime(rowData, rowID) {
         if (!this.props.showTime) {
             return null;
-        }
+       }
         let timeWrapper = null;
         switch (this.props.columnFormat) {
             case "single-column-left":
                 timeWrapper = {
                     alignItems: "flex-end",
-                };
+               };
                 break;
             case "single-column-right":
                 timeWrapper = {
                     alignItems: "flex-start",
-                };
+               };
                 break;
             case "two-column":
                 timeWrapper = {
@@ -145,10 +145,10 @@ export default class Timeline extends PureComponent {
                         (!rowData.position && rowID % 2 === 0)
                             ? "flex-end"
                             : "flex-start",
-                };
+               };
                 break;
-        }
-        const { isAllowFontScaling } = this.props;
+       }
+        const {isAllowFontScaling} = this.props;
         return (
             <View style={timeWrapper}>
                 <View style={[styles.timeContainer, this.props.timeContainerStyle]}>
@@ -161,7 +161,7 @@ export default class Timeline extends PureComponent {
                 </View>
             </View>
         );
-    }
+   }
 
     _renderEvent(rowData, rowID) {
         const lineWidth = rowData.lineWidth
@@ -185,7 +185,7 @@ export default class Timeline extends PureComponent {
                     borderRightWidth: 0,
                     marginLeft: 20,
                     paddingLeft: 20,
-                };
+               };
                 break;
             case "single-column-right":
                 opStyle = {
@@ -194,7 +194,7 @@ export default class Timeline extends PureComponent {
                     borderRightWidth: lineWidth,
                     marginRight: 20,
                     paddingRight: 20,
-                };
+               };
                 break;
             case "two-column":
                 opStyle =
@@ -206,16 +206,16 @@ export default class Timeline extends PureComponent {
                             borderRightWidth: 0,
                             marginLeft: 20,
                             paddingLeft: 20,
-                        }
+                       }
                         : {
                             borderColor: lineColor,
                             borderLeftWidth: 0,
                             borderRightWidth: lineWidth,
                             marginRight: 20,
                             paddingRight: 20,
-                        };
+                       };
                 break;
-        }
+       }
 
         return (
             <View
@@ -227,31 +227,31 @@ export default class Timeline extends PureComponent {
                 ]}
                 onLayout={(evt) => {
                     if (!this.state.x && !this.state.width) {
-                        const { x, width } = evt.nativeEvent.layout;
-                        this.setState({ x, width });
-                    }
-                }}
+                        const {x, width} = evt.nativeEvent.layout;
+                        this.setState({x, width});
+                   }
+               }}
             >
                 <TouchableOpacity
                     disabled={this.props.onEventPress == null}
                     style={[this.props.detailContainerStyle]}
                     onPress={() =>
                         this.props.onEventPress ? this.props.onEventPress(rowData) : null
-                    }
+                   }
                 >
                     <View style={[styles.detail, this.props.eventDetailStyle]}>
                         {rowData.event.map((item)=>{
                             return this._renderDetail(item);
-                        })}
+                       })}
                     </View>
                     {this._renderSeparator()}
                 </TouchableOpacity>
             </View>
         );
-    }
+   }
 
     _renderDetail(rowData) {
-        const { isAllowFontScaling } = this.props;
+        const {isAllowFontScaling} = this.props;
         let description;
         if (typeof rowData.description === "string") {
             description = (
@@ -266,9 +266,9 @@ export default class Timeline extends PureComponent {
                     {rowData.description}
                 </Text>
             );
-        } else if (typeof rowData.description === "object") {
+       } else if (typeof rowData.description === "object") {
             description = rowData.description;
-        }
+       }
 
         return (
             <View style={styles.container}>
@@ -287,7 +287,7 @@ export default class Timeline extends PureComponent {
                 {description}
             </View>
         );
-    }
+   }
 
     _renderCircle(rowData, rowID) {
         let circleSize = rowData.circleSize
@@ -317,14 +317,14 @@ export default class Timeline extends PureComponent {
                         borderRadius: circleSize / 2,
                         backgroundColor: circleColor,
                         right: this.state.width - circleSize / 2 - (lineWidth - 1) / 2,
-                    }
+                   }
                     : {
                         width: this.state.x ? circleSize : 0,
                         height: this.state.x ? circleSize : 0,
                         borderRadius: circleSize / 2,
                         backgroundColor: circleColor,
                         left: this.state.x - circleSize / 2 + (lineWidth - 1) / 2,
-                    };
+                   };
                 break;
             case "single-column-right":
                 circleStyle = {
@@ -333,7 +333,7 @@ export default class Timeline extends PureComponent {
                     borderRadius: circleSize / 2,
                     backgroundColor: circleColor,
                     left: this.state.width - circleSize / 2 - (lineWidth - 1) / 2,
-                };
+               };
                 break;
             case "two-column":
                 circleStyle = {
@@ -342,9 +342,9 @@ export default class Timeline extends PureComponent {
                     borderRadius: circleSize / 2,
                     backgroundColor: circleColor,
                     left: this.state.width - circleSize / 2 - (lineWidth - 1) / 2,
-                };
+               };
                 break;
-        }
+       }
 
         let innerCircle = null;
         switch (this.props.innerCircle) {
@@ -356,22 +356,22 @@ export default class Timeline extends PureComponent {
                 if (React.isValidElement(iconSource)) {
                     innerCircle = iconSource;
                     break;
-                }
+               }
                 if (rowData.icon)
                     iconSource =
                         rowData.icon.constructor === String
-                            ? { uri: rowData.icon }
+                            ? {uri: rowData.icon}
                             : rowData.icon;
                 let iconStyle = {
                     height: circleSize,
                     width: circleSize,
-                };
+               };
                 innerCircle = (
                     <Image
                         source={iconSource}
                         defaultSource={typeof iconDefault === "number" && iconDefault}
                         style={[iconStyle, this.props.iconStyle]}
-                    />
+                  />
                 );
                 break;
             case "dot":
@@ -387,26 +387,26 @@ export default class Timeline extends PureComponent {
                         : this.props.dotColor
                             ? this.props.dotColor
                             : defaultDotColor,
-                };
-                innerCircle = <View style={[styles.dot, dotStyle]} />;
+               };
+                innerCircle = <View style={[styles.dot, dotStyle]}/>;
                 break;
             case "element":
                 innerCircle = rowData.icon;
                 break;
-        }
+       }
         return (
             <View style={[styles.circle, circleStyle, this.props.circleStyle]}>
                 {innerCircle}
             </View>
         );
-    }
+   }
 
     _renderSeparator() {
         if (!this.props.separator) {
             return null;
-        }
-        return <View style={[styles.separator, this.props.separatorStyle]} />;
-    }
+       }
+        return <View style={[styles.separator, this.props.separatorStyle]}/>;
+   }
 }
 
 Timeline.defaultProps = {
@@ -426,35 +426,35 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingHorizontal:15,
-    },
+   },
     listview: {
         flex: 1,
-    },
+   },
     sectionHeader: {
         marginBottom: 15,
         backgroundColor: "#007AFF",
         height: 30,
         justifyContent: "center",
-    },
+   },
     sectionHeaderText: {
         color: "#FFF",
         fontSize: 18,
         alignSelf: "center",
-    },
+   },
     rowContainer: {
         flexDirection: "row",
         flex: 1,
         justifyContent: "center",
-    },
+   },
     timeContainer: {
         minWidth: 45,
-    },
+   },
     time: {
         marginTop:10,
         textAlign: "right",
         color: defaultTimeTextColor,
         overflow: "hidden",
-    },
+   },
     circle: {
         width: 16,
         height: 16,
@@ -463,31 +463,31 @@ const styles = StyleSheet.create({
         position: "absolute",
         alignItems: "center",
         justifyContent: "center",
-    },
+   },
     dot: {
         width: 8,
         height: 8,
         borderRadius: 4,
         backgroundColor: defaultDotColor,
-    },
+   },
     title: {
         fontSize: 16,
         fontWeight: "bold",
-    },
+   },
     details: {
         borderLeftWidth: defaultLineWidth,
         flexDirection: "column",
         flex: 1,
-    },
-    detail: { paddingTop: 10, paddingBottom: 10 },
+   },
+    detail: {paddingTop: 10, paddingBottom: 10},
     description: {
         marginTop: 10,
         marginBottom: 20,
-    },
+   },
     separator: {
         height: 1,
         backgroundColor: "#aaa",
         marginTop: 10,
         marginBottom: 10,
-    },
+   },
 });

@@ -24,16 +24,23 @@ import EventList from "../Components/EventList";
 import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 import analytics from '@react-native-firebase/analytics';
 import ForumsScreen from "@src/containers/Custom/ForumsScreen";
-import Svg, {Circle, Path, Rect} from "react-native-svg";
 import {
     ProgressChart,
 } from "react-native-chart-kit";
-import { Modalize } from 'react-native-modalize';
+import {Modalize} from 'react-native-modalize';
 import RNRestart from 'react-native-restart';
 import moment from 'moment';
 import SunCalc from "suncalc";
 import GetLocation from 'react-native-get-location'
-import {SvgIconMoonPhase, SvgIconSunrise, SvgIconSunset} from "../Utils/svg";
+import {
+    SvgIconCheck,
+    SvgIconCross,
+    SvgIconLogin, SvgIconMenu, SvgIconMilestone,
+    SvgIconMoonPhase, SvgIconProgress, SvgIconQuest,
+    SvgIconSignup,
+    SvgIconSunrise,
+    SvgIconSunset
+} from "../Utils/svg";
 import messaging from '@react-native-firebase/messaging';
 
 this.todayGoalDialog = undefined;
@@ -58,21 +65,21 @@ console.log(user)
         try
         {
             navigation.closeDrawer();
-        }catch (e) {
-        }
-    }
+       }catch (e) {
+       }
+   }
     analytics().logScreenView({
        screen_class: 'MainActivity',
        screen_name: 'Home Screen',
-     });
+    });
 
     const _handleAppStateChange = async () => {
         if(user) {
             if(AppState.currentState==='active'&&checkTodayDate()){
                 dispatch({
                     type: 'ONENERGY_DAILY_UPDATE',
-                });
-            }
+               });
+           }
             if((Platform.OS === "android" && AppState.currentState==='background') || (Platform.OS === "ios" && AppState.currentState==='inactive')) {
                 console.log(AppState.currentState)
 
@@ -83,7 +90,7 @@ console.log(user)
                         'achievements': [],
                         'weekly': achievementReducer.weekly,
                         'monthly': achievementReducer.monthly
-                    }
+                   }
                     achievementReducer.achievements.map((achievement) => {
                         achievements.achievements.push({
                             'id': achievement.id,
@@ -91,8 +98,8 @@ console.log(user)
                             'complete_date': achievement.complete_date,
                             'claim_date': achievement.claim_date,
                             'list': achievement.list
-                        });
-                    });
+                       });
+                   });
                     const apiRequest = getApi(props.config);
                     await apiRequest.customRequest(
                         "wp-json/onenergy/v1/statsUpdate",
@@ -100,7 +107,7 @@ console.log(user)
                         {
                             "progress": progressReducer,
                             "achievements": achievements
-                        },
+                       },
                         null,
                         {},
                         false
@@ -108,71 +115,71 @@ console.log(user)
                         if (response.data) {
                             dispatch({
                                 type: 'ONENERGY_PROGRESS_UPLOADED'
-                            });
-                        }else{
+                           });
+                       }else{
                             dispatch({
                                 type: 'ONENERGY_POSTS_RESET',
-                            });
+                           });
                             dispatch({
                                 type: 'ONENERGY_PRACTICE_RESET',
-                            });
+                           });
                             dispatch({
                                 type: 'ONENERGY_ACHIEVEMENT_RESET',
-                            });
+                           });
                             dispatch({
                                 type: 'ONENERGY_ACHIEVEMENT_RESET',
-                            });
+                           });
                             dispatch({
                                 type: 'ONENERGY_PROGRESS_RESET',
-                            });
+                           });
                             RNRestart.Restart()
-                        }
-                    });
-                }
-            }
-        }
-    };
+                       }
+                   });
+               }
+           }
+       }
+   };
 
     const checkTodayDate = () => {
         const today = new moment().format('YYYY-MM-DD');
         if(today!==new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD')) {
             return true;
-        }else{
+       }else{
             return false;
-        }
-    }
+       }
+   }
 
     useEffect(() => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
-        });
+       });
         GetLocation.getCurrentPosition({
             enableHighAccuracy: true,
             timeout: 15000,
-        }).then(location => {
+       }).then(location => {
             setLocation(location);
-        })
+       })
         const moonIllumination = SunCalc.getMoonIllumination(new Date());
         const phaseNumber = Math.floor(moonIllumination.phase * 100)/100;
         let phaseName = '';
         console.log(phaseNumber)
         if(phaseNumber===0){
             phaseName = 'New Moon';
-        }else if(phaseNumber>0&&phaseNumber<0.25){
+       }else if(phaseNumber>0&&phaseNumber<0.25){
             phaseName = 'Waxing Crescent';
-        }else if(phaseNumber===0.25) {
+       }else if(phaseNumber===0.25) {
             phaseName = 'First Quarter';
-        }else if(phaseNumber>0.25&&phaseNumber<0.5) {
+       }else if(phaseNumber>0.25&&phaseNumber<0.5) {
             phaseName = 'Waxing Gibbous';
-        }else if(phaseNumber===0.5) {
+       }else if(phaseNumber===0.5) {
             phaseName = 'Full Moon';
-        }else if(phaseNumber>0.5&&phaseNumber<0.75){
+       }else if(phaseNumber>0.5&&phaseNumber<0.75){
             phaseName = 'Waning Gibbous';
-        }else if(phaseNumber===0.75) {
+       }else if(phaseNumber===0.75) {
             phaseName = 'Last Quarter';
-        }else if(phaseNumber>0.75&&phaseNumber<1) {
+       }else if(phaseNumber>0.75&&phaseNumber<1) {
             phaseName = 'Waning Crescent';
-        }
+       }
         setPhase(phaseName)
         const lunarAge = Math.floor(phaseNumber*30);
         let dateDiff;
@@ -182,10 +189,10 @@ console.log(user)
         if(lunarAge <= 14){
             dateDiff = 15 - lunarAge;
             moonPhase = 'Full Moon';
-        }else{
+       }else{
             dateDiff = 29 - lunarAge;
             moonPhase = 'New Moon';
-        }
+       }
         moonPhaseDate = moment(today).add(dateDiff, 'days').format('MMM DD');
         setNextMoonPhase({'date':moonPhaseDate, 'phase':moonPhase});
         if(user) {
@@ -195,7 +202,7 @@ console.log(user)
             TrackPlayer.updateOptions({
 /*                android: {
                     appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
-                },*/
+               },*/
                 stoppingAppPausesPlayback: true,
                 alwaysPauseOnInterruption: false,
                 // Media controls capabilities
@@ -210,49 +217,57 @@ console.log(user)
                     Capability.Pause,
                     Capability.Stop,
                 ],
-            });
+           });
             TrackPlayer.setRepeatMode(RepeatMode.Off);
             let load = false;
             if (optionData.cache.guide && practiceReducer.guideUpdate && optionData.cache.guide > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
                 load = true;
-            }
+           }
             if (optionData.cache.group && practiceReducer.groupUpdate && optionData.cache.group > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
                 load = true;
-            }
+           }
             if (optionData.cache.post && postReducer.postUpdate && optionData.cache.post > postReducer.postUpdate || !postReducer.postUpdate) {
                 dispatch({
                     type: 'ONENERGY_POSTS_RESET',
-                });
-            }
+               });
+           }
             if (optionData.cache.achievement && achievementReducer.achievementUpdate && optionData.cache.achievement > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
                 load = true;
-            }
+           }
             if (optionData.cache.progress && progressReducer.progressUpdate && optionData.cache.progress > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
                 load = true;
-            }
+           }
             if (load) {
-                props.navigation.navigate("InitData", { transition: 'fade' });
-            }
+                props.navigation.navigate("InitData", {transition: 'fade'});
+           }
             return () => {
                 navigation.removeListener('willFocus', onFocusHandler);
                 subscription.remove();
-            }
-        }
-    }, []);
+           }
+       }
+   }, []);
     useEffect(() => {
         const unsubscribe = messaging().onMessage(async remoteMessage => {
-            console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
-        });
+            const data = remoteMessage.data;
+            if(data.notification_type&&data.notification_type==='pn_functions'){
+                switch(data.function_type){
+                    case "survey_vip":
+                        dispatch({
+                            type: 'USER_VIP_SURVEY_COMPLETED',
+                       });
+               }
+           }
+       });
 
         return unsubscribe;
-    }, []);
+   }, []);
     useEffect(()=>{
         if(location)
         {
             const sunTimes = SunCalc.getTimes(new Date(), location.latitude, location.longitude, 0);
             setSunrise(sunTimes);
-        }
-    }, [location])
+       }
+   }, [location])
     const OnPress = async (item) => {
         if (item) {
             switch(item.link)
@@ -264,8 +279,8 @@ console.log(user)
                             params: {
                                 pageId: item.param,
                                 title: item.title
-                            }
-                        })
+                           }
+                       })
                     )
                     break;
                 case 'blog':
@@ -275,8 +290,8 @@ console.log(user)
                             params: {
                                 blogId: item.param,
                                 title: item.title
-                            }
-                        })
+                           }
+                       })
                     )
                     break;
                 case 'course':
@@ -285,28 +300,28 @@ console.log(user)
                             routeName: "CourseScreen",
                             params: {
                                 courseId: parseInt(item.param),
-                            }
-                        })
+                           }
+                       })
                     )
                     break;
                 case 'link':
                     let secTimer = setInterval(() => {
                         clearInterval(secTimer);
-                    }, 1000)
+                   }, 1000)
                     await props.attemptDeepLink(false)(null, item.param);
                     break;
                 case 'screen':
                     navigation.dispatch(
                         NavigationActions.navigate({
                             routeName: item.param
-                        })
+                       })
                     )
                     break;
                 default:
                     break;
-            }
-        }
-    }
+           }
+       }
+   }
     const minutes = [5,10,15,20,25,30,35,40,45,50,55,60];
     const renderGoalSelector = (item) => {
         let cornerStyle = {};
@@ -323,7 +338,7 @@ console.log(user)
             default:
                 bottomStyle = {borderBottomWidth:1, borderBottomColor:'#E6E6E8'};
                 break;
-        }
+       }
         return (
             <TouchableWithoutFeedback onPress={() => {
                 dispatch({
@@ -331,10 +346,10 @@ console.log(user)
                     payload: {
                         'mode': 'todayGoal',
                         'data': item.item
-                    }
-                });
+                   }
+               });
                 this.todayGoalDialog.close();
-            }}>
+           }}>
                 <View style={[cornerStyle, bottomStyle, {width: windowWidth-50, marginHorizontal:25, paddingHorizontal:25, backgroundColor:colors.bodyBg, paddingVertical:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
                     <Text
                         style={global.text}>
@@ -342,28 +357,12 @@ console.log(user)
                     </Text>
                     {progressReducer.todayGoal&&
                         parseInt(progressReducer.todayGoal) === parseInt(item.item)?(
-                            <Svg
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                style={{marginLeft:scale(10)}}
-                            >
-                                <Path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
-                                      fill="none"
-                                      stroke={colors.primaryColor}
-                                      strokeWidth="2"
-                                />
-                                <Path d="M22 4 12 14.01l-3-3"
-                                      fill="none"
-                                      stroke={colors.primaryColor}
-                                      strokeWidth="2"
-                                />
-                            </Svg>
+                        <SvgIconCheck size={24} color={colors.primaryColor}/>
                     ):null}
                 </View>
             </TouchableWithoutFeedback>
         )
-    }
+   }
 
     return (
         <SafeAreaView style={global.container}>
@@ -386,8 +385,8 @@ console.log(user)
                                         width: scale(50),
                                         borderRadius: 100,
                                         margin: scale(10)
-                                    }}
-                                />
+                                   }}
+                               />
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -398,7 +397,7 @@ console.log(user)
                                     navigation.dispatch(
                                         NavigationActions.navigate({
                                             routeName: "StatsScreen"
-                                        })
+                                       })
                                     )}}>
                             <View style={[styles.progressLeftRow, styles.boxShadow, {height: windowWidth*3/5}]}>
                                 <View style={{width:"100%", paddingTop:scale(10), paddingLeft:scale(10), alignItems:"flex-start"}}>
@@ -424,12 +423,12 @@ console.log(user)
                                         strokeWidth: 3, // optional, default 3
                                         barPercentage: 1,
                                         useShadowColorFromDataset: false, // optional
-                                    }}
+                                   }}
                                     hideLegend={true}
                                     style={{
                                         borderRadius: 9
-                                    }}
-                                />
+                                   }}
+                               />
                                 <View>
                                     <TouchableScale
                                         style={{alignItems:"center", justifyContent:"center", marginBottom:scale(10)}}
@@ -464,7 +463,7 @@ console.log(user)
                 <View style={[styles.topRow, {marginTop:scale(15), justifyContent: 'space-evenly'}]}>
                     <TouchableWithoutFeedback onPress={() => {
                         navigation.navigate("MySignupScreen");
-                    }}>
+                   }}>
                         <View style={{
                             paddingHorizontal: scale(10),
                             paddingVertical: scale(5),
@@ -473,24 +472,9 @@ console.log(user)
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'space-evenly'
-                        }}>
+                       }}>
                             <View style={{flexDirection: "row", alignItems: "center"}}>
-                                <Svg
-                                    width={scale(24)}
-                                    height={scale(24)}
-                                    viewBox="0 0 24 24"
-                                >
-                                    <Path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
-                                          fill="none"
-                                          stroke={colors.primaryButtonColor}
-                                          strokeWidth="2"
-                                    />
-                                    <Circle cx="12" cy="7" r="4"
-                                            fill="none"
-                                            stroke={colors.primaryButtonColor}
-                                            strokeWidth="2"
-                                    />
-                                </Svg>
+                                <SvgIconSignup color={colors.primaryButtonColor}/>
                                 <Text
                                     style={[global.settingsItemTitle, {color: colors.primaryButtonColor, marginLeft:scale(5)}]}>
                                     Create account
@@ -500,7 +484,7 @@ console.log(user)
                     </TouchableWithoutFeedback>
                     <TouchableWithoutFeedback onPress={() => {
                         navigation.navigate("MyLoginScreen");
-                    }}>
+                   }}>
                         <View style={{
                             paddingHorizontal: scale(10),
                             paddingVertical: scale(5),
@@ -509,29 +493,9 @@ console.log(user)
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'space-evenly'
-                        }}>
+                       }}>
                             <View style={{flexDirection: "row", alignItems: "center"}}>
-                                <Svg
-                                    width={scale(24)}
-                                    height={scale(24)}
-                                    viewBox="0 0 24 24"
-                                >
-                                    <Rect width="18"
-                                          height="11"
-                                          x="3" y="11"
-                                          rx="2"
-                                          ry="2"
-                                          fill="none"
-                                          stroke={colors.secondaryButtonColor}
-                                          strokeWidth="2"
-                                    />
-                                    <Path
-                                        d="M7 11V7a5 5 0 0 1 9.9-1"
-                                        fill="none"
-                                        stroke={colors.secondaryButtonColor}
-                                        strokeWidth="2"
-                                    />
-                                </Svg>
+                                <SvgIconLogin color={colors.secondaryButtonColor}/>
                                 <Text
                                     style={[global.settingsItemTitle, {color: colors.secondaryButtonColor, marginLeft:scale(5)}]}>
                                     Sign in
@@ -540,15 +504,15 @@ console.log(user)
                         </View>
                     </TouchableWithoutFeedback>
                 </View>
-                }
+               }
                 {optionData.goals&&optionData.goals.length?
                 <View style={styles.programRow}>
-                    <EventList location={'top'} {...props} />
-                    <EventList location={'home'} {...props} />
+                    <EventList location={'top'} {...props}/>
+                    <EventList location={'home'} {...props}/>
                 </View>:null}
                 {optionData.quote && (
                     <View style={[styles.quoteRow, styles.boxShadow]}>
-                        <DailyQuotes quote={optionData.quote} screenProps={screenProps} />
+                        <DailyQuotes quote={optionData.quote} screenProps={screenProps}/>
                     </View>
                 )}
                 <View style={styles.eventRow}>
@@ -557,23 +521,23 @@ console.log(user)
                         <>
                             <View style={{justifyContent:"center", alignItems:"center"}}>
                                 <Text style={{fontFamily:"MontserratAlternates-SemiBold", fontWeight:"bold", fontSize:scale(16)}}>{moment.utc(sunrise.sunrise).local().format('HH:mm')}</Text>
-                                <SvgIconSunrise />
+                                <SvgIconSunrise/>
                             </View>
                             <View style={{justifyContent:"center", alignItems:"center"}}>
                                 <Text style={{fontFamily:"MontserratAlternates-SemiBold", fontWeight:"bold", fontSize:scale(16)}}>{moment.utc(sunrise.sunset).local().format('HH:mm')}</Text>
-                                <SvgIconSunset />
+                                <SvgIconSunset/>
                             </View>
                         </>
                         :
                             <View style={{justifyContent:"center", alignItems:"center", padding:scale(15)}}>
                                 <Text style={{fontFamily:"MontserratAlternates-Regular", fontWeight:"normal", fontSize:scale(14)}}>allow location access to see local sunrise / sunset time</Text>
                             </View>
-                        }
+                       }
                     </View>
                     <View style={[styles.block_season_center, styles.boxShadow]}>
                         <View style={{justifyContent:"center", alignItems:"center"}}>
                             <Text style={{fontFamily:"MontserratAlternates-Regular", fontWeight:"normal", fontSize:scale(12), color:"white"}}>{phase}</Text>
-                            <SvgIconMoonPhase moonPhase={phase} />
+                            <SvgIconMoonPhase moonPhase={phase}/>
                         </View>
                         <View style={{justifyContent:"center", alignItems:"center"}}>
                             <Text style={{fontFamily:"MontserratAlternates-SemiBold", fontWeight:"bold", fontSize:scale(14), color:"white"}}>{nextMoonPhase.phase}</Text>
@@ -591,22 +555,22 @@ console.log(user)
                                                 params: {
                                                     pageId: optionData.solarTerm.page,
                                                     title: optionData.solarTerm.title
-                                                }
-                                            })
+                                               }
+                                           })
                                         )
                                         :
                                         optionData.solarTerm.solarTermType === 'screen' ?
                                             NavigationActions.navigate({
                                                 routeName: "SolarTermScreen"
-                                            })
+                                           })
                                             : null
-                                }
-                            }>
+                               }
+                           }>
                             <View style={[styles.block_season_right, styles.boxShadow]}>
                                 <ImageCache
                                     source={{uri: optionData.currentSolarTermImage ? optionData.currentSolarTermImage : ''}}
                                     style={styles.image_season}
-                                />
+                               />
                                 <View style={{position:"absolute", left:scale(12), bottom:scale(3), justifyContent:"center", alignItems:"center"}}>
                                     <Text style={{fontFamily:"Montserrat-SemiBold", fontWeight:"bold", fontSize:scale(16), lineHeight: scale(16), color:'#FFF'}}>{new moment(optionData.currentSolarTermStart).format('MMM')}</Text>
                                     <Text style={{fontFamily:"Montserrat-SemiBold", fontWeight:"bold", fontSize:scale(22), lineHeight: scale(22),color:'#FFF'}}>{new moment(optionData.currentSolarTermStart).format('DD')}</Text></View>
@@ -624,17 +588,17 @@ console.log(user)
                             navigation.dispatch(
                                 NavigationActions.navigate({
                                     routeName: "HomeForumsScreen",
-                                })
+                               })
                             )
-                        }
-                    }>
+                       }
+                   }>
                         <View style={styles.view_blog_title}>
                             <Text style={global.widgetTitle}>Q & A</Text>
                             <Text style={global.link}>See All ></Text>
                         </View>
                     </TouchableScale>
                 </View>
-                <ForumsScreen {...props} headerHeight={0} hideFilters={true} hideNavigationHeader={true} hideTitle={true} showSearch={false} screenTitle="My Forums" />
+                <ForumsScreen {...props} headerHeight={0} hideFilters={true} hideNavigationHeader={true} hideTitle={true} showSearch={false} screenTitle="My Forums"/>
                 <View style={styles.blogRow}>
                     {optionData.blogs.map((blog) => (
                         <>
@@ -646,11 +610,11 @@ console.log(user)
                                             params: {
                                                 category: blog.category,
                                                 name: blog.name,
-                                            }
-                                        })
+                                           }
+                                       })
                                     )
-                                }
-                            }>
+                               }
+                           }>
                                 <View style={styles.view_blog_title}>
                                     <Text style={global.widgetTitle}>{blog.name}</Text>
                                     <Text style={global.link}>See All ></Text>
@@ -659,7 +623,7 @@ console.log(user)
                             <View style={styles.eventRow}>
                                 <PostRow postType={'categories'} postCategory={blog.category}
                                          postPerPage={blog.count} postOrder={blog.order} postOrderBy={blog.orderBy}
-                                         showAuthor={blog.showAuthor} {...props} />
+                                         showAuthor={blog.showAuthor} {...props}/>
                             </View>
                         </>
                     ))}
@@ -668,7 +632,7 @@ console.log(user)
                 </View>
             </ScrollView>
             <Modalize
-                ref={(todayGoalDialog) => { this.todayGoalDialog = todayGoalDialog; }}
+                ref={(todayGoalDialog) => {this.todayGoalDialog = todayGoalDialog;}}
                 modalStyle={{backgroundColor:colors.bodyFrontBg}}
                 modalHeight={windowHeight/2}
                 childrenStyle={{padding: 25}}
@@ -683,36 +647,24 @@ console.log(user)
                         borderBottomWidth: StyleSheet.hairlineWidth,
                         backgroundColor: colors.bodyBg,
                         borderBottomColor: colors.borderColor
-                    }}>
+                   }}>
                         <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Daily Goal</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 this.todayGoalDialog.close();
-                            }}
+                           }}
                         >
-                            <Svg
-                                width="32"
-                                height="32"
-                                viewBox="0 0 24 24"
-                                style={{marginLeft:scale(10)}}
-                            >
-                                <Circle cx="12" cy="12" r="10" fill="#d3d3d3"
-                                        stroke="#d3d3d3"
-                                        strokeWidth="1"/>
-                                <Path d="m15 9-6 6M9 9l6 6" fill="#262626"
-                                      stroke="#262626"
-                                      strokeWidth="1"/>
-                            </Svg>
+                            <SvgIconCross/>
                         </TouchableOpacity>
                     </View>
-                }
+               }
                 flatListProps = {{
                     data: minutes,
                     renderItem: renderGoalSelector,
                     keyExtractor: (item, index) => `${item.title}-${index}`,
                     showsVerticalScrollIndicator: false
-                }}
-            />
+               }}
+           />
         </SafeAreaView>
     );
 };
@@ -722,11 +674,11 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-    },
+   },
     scroll_view: {
         flexGrow: 1,
         paddingVertical: scale(15),
-    },
+   },
     tapFinger: {
         position: "absolute",
         width: scale(200),
@@ -736,13 +688,13 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
     topRow: {
         flexDirection: "row",
         marginHorizontal: scale(15),
         alignItems: 'center',
         justifyContent: 'space-between',
-    },
+   },
     progressLeftRow: {
         width: (windowWidth - scale(45))*5 / 8,
         marginLeft: scale(15),
@@ -750,7 +702,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 9,
         backgroundColor: "#FFF",
-    },
+   },
     progressRightRow: {
         width: (windowWidth - scale(45))*3 / 8,
         paddingVertical: scale(5),
@@ -760,38 +712,38 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 9,
         backgroundColor: "#FFF",
-    },
+   },
     quoteRow: {
         marginHorizontal: scale(15),
         marginTop: scale(25),
         alignItems: 'center',
         justifyContent: 'center',
         height: (windowWidth - scale(30)) / 3.25,
-    },
+   },
     eventRow: {
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
-    },
+   },
     programRow: {
         flex:1,
         alignItems: 'center',
         justifyContent: 'center',
-    },
+   },
     blogRow: {
         alignItems: 'center',
         justifyContent: 'center',
         flex: 1,
-    },
+   },
     bottomRow: {
         minHeight: 50,
-    },
+   },
     view_title: {
         flex: 1,
         flexDirection: "row",
         justifyContent: "flex-start",
         marginTop: scale(25),
-    },
+   },
     view_blog_title: {
         flexDirection: 'row',
         left: 0,
@@ -799,19 +751,19 @@ const styles = StyleSheet.create({
         width: windowWidth - scale(30),
         justifyContent: "space-between",
         marginTop: scale(25),
-    },
+   },
     heading: {
         fontSize: scale(18),
         fontStyle: "italic",
         fontWeight: "normal",
         alignSelf: "baseline",
-    },
+   },
     heading_more: {
         fontSize: scale(13),
         fontWeight: "normal",
         alignSelf: "baseline",
         color: "#4942e1",
-    },
+   },
     block_season_left: {
         width: (windowWidth - scale(50)) / 3,
         height: (windowWidth - scale(30)) / 2,
@@ -821,7 +773,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffeee7',
         alignItems:"center",
         justifyContent:"space-evenly"
-    },
+   },
     block_season_center: {
         width: (windowWidth - scale(50)) / 3,
         height: (windowWidth - scale(30)) / 2,
@@ -832,7 +784,7 @@ const styles = StyleSheet.create({
         paddingTop:scale(10),
         justifyContent:"space-evenly",
         alignItems: "center"
-    },
+   },
     block_season_right: {
         width: (windowWidth - scale(50)) / 3,
         height: (windowWidth - scale(30)) / 2,
@@ -843,7 +795,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         justifyContent:"center",
         alignItems:"center"
-    },
+   },
     block_half_left: {
         width: (windowWidth - scale(50)) / 2,
         height: (windowWidth - scale(30)) / 2,
@@ -852,7 +804,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
         borderRadius: 9,
         backgroundColor: 'white',
-    },
+   },
     block_half: {
         width: (windowWidth - scale(50)) / 2,
         height: (windowWidth - scale(30)) / 2,
@@ -861,51 +813,51 @@ const styles = StyleSheet.create({
         marginRight: 15,
         borderRadius: 9,
         backgroundColor: 'white',
-    },
+   },
     row_intro: {
         alignItems: 'center',
         justifyContent: 'center',
-    },
+   },
     view_intro: {
         marginTop: scale(25),
         marginHorizontal: scale(15),
         width: windowWidth - scale(30),
         height: windowWidth - scale(30),
         borderRadius: 9,
-    },
+   },
     image_intro: {
         width: windowWidth - scale(30),
         height: windowWidth - scale(30),
         borderRadius: 9,
-    },
+   },
     image_event: {
         width: (windowWidth - scale(50)) / 3 * 2,
         height: (windowWidth - scale(30)) / 2,
         flex: 1,
         borderRadius: 9,
         overflow: 'hidden',
-    },
+   },
     image_season: {
         width: (windowWidth - scale(50)) / 3,
         height: (windowWidth - scale(30)) / 2,
         flex: 1,
         borderRadius: 9,
         overflow: 'hidden',
-    },
+   },
     image_half: {
         width: (windowWidth - scale(50)) / 2,
         height: (windowWidth - scale(30)) / 2,
         flex: 1,
         borderRadius: 9,
         overflow: 'hidden',
-    },
+   },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
     loading: {
         position: 'absolute',
         left: 0,
@@ -914,7 +866,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         alignItems: 'center',
         justifyContent: 'center',
-    },
+   },
 });
 
 HomeContent.navigationOptions = ({navigation, screenProps}) => {
@@ -923,28 +875,17 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
         title: navigation.getParam('title'),
         headerStyle: {
             backgroundColor: colors.headerBg,
-        },
+       },
         headerTintColor: colors.headerColor,
         headerTitleStyle: global.appHeaderTitle,
         headerLeft:
             <TouchableScale
                 onPress={() => {navigation.openDrawer()
-                }}
+               }}
             >
-                <Svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    style={{marginLeft:scale(10)}}
-                >
-                    <Path d="M3 12h18M3 6h13M3 18h09"
-                          fill="none"
-                          stroke={colors.headerIconColor}
-                          strokeWidth="2"
-                    />
-                </Svg>
+                <SvgIconMenu color={colors.headerIconColor}/>
                 <AuthWrapper actionOnGuestLogin={'hide'}>
-                    <NotificationTabBarIcon notificationID={'left_menu'} top={-5} right={-5} size={scale(10)} showNumber={false} />
+                    <NotificationTabBarIcon notificationID={'left_menu'} top={-5} right={-5} size={scale(10)} showNumber={false}/>
                 </AuthWrapper>
             </TouchableScale>,
         headerRight:
@@ -953,58 +894,29 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
                     <TouchableScale
                         onPress={() => {
                             navigation.navigate("QuestsScreen")
-                        }}
+                       }}
                     >
-                        <Svg
-                            width="24"
-                            height="24"
-                            viewBox="0 0 32 32"
-                            style={{marginRight:scale(10)}}
-                        >
-                            <Path d="M16 1a15 15 0 1 0 15 15A15 15 0 0 0 16 1Zm0 28a13 13 0 1 1 13-13 13 13 0 0 1-13 13Z" fill={colors.headerIconColor} />
-                            <Path d="M16 5a11 11 0 1 0 11 11A11 11 0 0 0 16 5Zm0 20a9 9 0 1 1 9-9 9 9 0 0 1-9 9Z" fill={colors.headerIconColor} />
-                            <Path d="M22.9 14.26a2 2 0 0 0-1.9-1.39h-2.36l-.72-2.22a2 2 0 0 0-3.84 0l-.73 2.23H11a2 2 0 0 0-1.19 3.64l1.89 1.38-.7 2.21a2 2 0 0 0 .73 2.25 2 2 0 0 0 1.19.39 2 2 0 0 0 1.18-.39L16 21l1.89 1.37A2 2 0 0 0 21 20.11l-.72-2.23 1.89-1.37a2 2 0 0 0 .73-2.25Zm-3.79 2a2 2 0 0 0-.74 2.25l.7 2.23-1.89-1.37a2 2 0 0 0-2.36 0l-1.91 1.36.72-2.22a2 2 0 0 0-.74-2.25L11 14.87h2.33a2 2 0 0 0 1.92-1.39l.75-2.24.72 2.22a2 2 0 0 0 1.92 1.39h2.34Z" fill={colors.headerIconColor} />
-                        </Svg>
-                        <NotificationTabBarIcon notificationID={'quest'} top={-5} right={5} size={scale(10)} showNumber={false} />
+                        <SvgIconQuest color={colors.headerIconColor}/>
+                        <NotificationTabBarIcon notificationID={'quest'} top={-5} right={5} size={scale(10)} showNumber={false}/>
                     </TouchableScale>
                     <TouchableScale
                         onPress={() => {
                             navigation.navigate("MilestonesScreen")
-                        }}
+                       }}
                     >
-                        <Svg
-                            width="24"
-                            height="24"
-                            viewBox="0 0 32 32"
-                            style={{marginRight:scale(10)}}
-                        >
-                            <Path d="m30.77 24.21-3.36-4a13 13 0 1 0-22.82 0l-3.36 4a1 1 0 0 0-.18 1 1 1 0 0 0 .72.66l3.86.92 1.58 3.61A1 1 0 0 0 8 31h.15a1 1 0 0 0 .76-.36l3.5-4.16a12.79 12.79 0 0 0 7.22 0l3.5 4.16a1 1 0 0 0 .76.36H24a1 1 0 0 0 .77-.59l1.58-3.65 3.86-.92a1 1 0 0 0 .72-.66 1 1 0 0 0-.16-.97ZM8.4 28.12 7.27 25.5a1 1 0 0 0-.69-.58l-2.77-.66L5.74 22a13.07 13.07 0 0 0 4.67 3.77ZM5 14a11 11 0 1 1 11 11A11 11 0 0 1 5 14Zm20.42 10.92a1 1 0 0 0-.69.58l-1.13 2.62-2-2.4A13.07 13.07 0 0 0 26.26 22l1.93 2.31Z" fill={colors.headerIconColor} />
-                            <Path d="M23.89 12a2.15 2.15 0 0 0-2.07-1.51h-2.73a.17.17 0 0 1-.17-.12l-.84-2.57a2.19 2.19 0 0 0-4.16 0l-.84 2.59a.17.17 0 0 1-.17.12h-2.73a2.19 2.19 0 0 0-1.28 4l2.2 1.6a.16.16 0 0 1 .07.2l-.84 2.59a2.15 2.15 0 0 0 .79 2.44 2.18 2.18 0 0 0 2.57 0l2.2-1.6a.18.18 0 0 1 .22 0l2.2 1.6a2.18 2.18 0 0 0 2.57 0 2.15 2.15 0 0 0 .79-2.44l-.84-2.59a.17.17 0 0 1 .06-.2l2.21-1.6a2.14 2.14 0 0 0 .79-2.51Zm-2 .82-2.2 1.6a2.16 2.16 0 0 0-.79 2.44l.84 2.59a.16.16 0 0 1-.07.2.16.16 0 0 1-.21 0l-2.21-1.6a2.16 2.16 0 0 0-2.56 0l-2.21 1.6a.16.16 0 0 1-.21 0 .16.16 0 0 1-.07-.2l.84-2.59a2.16 2.16 0 0 0-.79-2.44l-2.2-1.6a.16.16 0 0 1-.07-.2.16.16 0 0 1 .17-.13h2.73A2.16 2.16 0 0 0 15 11l.85-2.59a.18.18 0 0 1 .34 0L17 11a2.16 2.16 0 0 0 2.07 1.5h2.73a.16.16 0 0 1 .17.13.16.16 0 0 1-.05.21Z" fill={colors.headerIconColor} />
-                        </Svg>
-                        <NotificationTabBarIcon notificationID={'milestone'} top={-5} right={5} size={scale(10)} showNumber={false} />
+                        <SvgIconMilestone color={colors.headerIconColor}/>
+                        <NotificationTabBarIcon notificationID={'milestone'} top={-5} right={5} size={scale(10)} showNumber={false}/>
                     </TouchableScale>
                     <TouchableScale
                         onPress={() => {
                             navigation.navigate("StatsScreen")
-                        }}
+                       }}
                     >
-                        <Svg
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            style={{marginRight:scale(5)}}
-                        >
-                            <Path
-                                d="M12 20V10M18 20V4M6 20v-4"
-                                fill="none"
-                                stroke={colors.headerIconColor}
-                                strokeWidth="2"
-                            />
-                        </Svg>
+                        <SvgIconProgress color={colors.headerIconColor}/>
                     </TouchableScale>
                 </View>
             </AuthWrapper>
-    }
+   }
 }
 const mapStateToProps = (state) => ({
     config: state.config?state.config:null,

@@ -37,40 +37,40 @@ const InitData = (props) => {
                         'loadGuide': loadGuide,
                         'loadAchievement': loadAchievement,
                         'loadProgress': loadProgress
-                    }
-            });
-        } catch (e) {
+                   }
+           });
+       } catch (e) {
             console.error(e);
-        }
-    }
+       }
+   }
 
     useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
         let loadGroup = false, loadGuide = false, loadAchievement = false, loadProgress = false;
         if (optionData.cache.guide && practiceReducer.guideUpdate && optionData.cache.guide > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
             loadGuide = true;
-        }
+       }
         if (optionData.cache.group && practiceReducer.groupUpdate && optionData.cache.group > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
             loadGroup = true;
-        }
+       }
         if (optionData.cache.achievement && achievementReducer.achievementUpdate && optionData.cache.achievement > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
             loadAchievement = true;
-        }
+       }
         if (optionData.cache.progress && progressReducer.progressUpdate && optionData.cache.progress > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
             loadProgress = true;
-        }
+       }
         if (loadGuide || loadGroup || loadAchievement || loadProgress) {
             fetchInitDate(loadGroup, loadGuide, loadAchievement, loadProgress).then();
-        }
+       }
         if (optionData.cache.post && postReducer.postUpdate && optionData.cache.post > postReducer.postUpdate || !postReducer.postUpdate) {
             dispatch({
                 type: 'ONENERGY_POSTS_RESET',
-            });
-        }
+           });
+       }
         return () => {
             backHandler.remove();
-        }
-    }, []);
+       }
+   }, []);
 
     useEffect(()=>
     {
@@ -78,23 +78,23 @@ const InitData = (props) => {
         console.log(achievementReducer.achievementUpdate, optionData.cache.achievement)
         if (achievementReducer.achievementUpdate < optionData.cache.achievement) {
             loaded = false;
-        }
+       }
         console.log(achievementReducer.progressUpdate, optionData.cache.progress)
         if (progressReducer.progressUpdate < optionData.cache.progress) {
             loaded = false;
-        }
+       }
         console.log(achievementReducer.guideUpdate, optionData.cache.guide)
         if (practiceReducer.guideUpdate < optionData.cache.guide) {
             loaded = false;
-        }
+       }
         console.log(achievementReducer.groupUpdate, optionData.cache.group)
         if (practiceReducer.groupUpdate < optionData.cache.group) {
             loaded = false;
-        }
+       }
         if (loaded) {
             navigation.goBack();
-        }
-    },[achievementReducer.achievementUpdate, progressReducer.progressUpdate, practiceReducer.groupUpdate, practiceReducer.guideUpdate])
+       }
+   },[achievementReducer.achievementUpdate, progressReducer.progressUpdate, practiceReducer.groupUpdate, practiceReducer.guideUpdate])
 
     return (
         <SafeAreaView style={global.container}>
@@ -104,7 +104,7 @@ const InitData = (props) => {
         </SafeAreaView>
     );
 };
-InitData.navigationOptions = {header: null,initialRouteParams: { transition: 'fade' },};
+InitData.navigationOptions = {header: null,initialRouteParams: {transition: 'fade'},};
 const mapStateToProps = (state) => ({
     config: state.config?state.config:null,
     accessToken: state.auth.token?state.auth.token:null,

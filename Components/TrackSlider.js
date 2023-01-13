@@ -21,17 +21,17 @@ const TrackSlider = (props) => {
         const mins = m > 0 ? (m < 10 ? `0${m}:` : `${m}:`) : '00:';
         const scnds = s > 0 ? (s < 10 ? `0${s}` : s) : '00';
         return `${hrs}${mins}${scnds}`;
-    };
+   };
     useEffect(()=>{
         if(type)
         setPastDuration(pastDuration+pastPosition);
-    },[duration])
+   },[duration])
     useEffect(()=>{
         if(type) {
             if (pastPosition === 0)
                 setPastDuration(0);
-        }
-    },[pastPosition])
+       }
+   },[pastPosition])
 
     return (
         <>
@@ -51,21 +51,21 @@ const TrackSlider = (props) => {
                         minimumTrackTintColor={'#4942E1'}
                         maximumTrackTintColor={'#7DE7FA'}
                         disabled={!user.test_mode}
-                        onValueChange={ val => {
+                        onValueChange={val => {
                              TrackPlayer.pause();
-                        }}
+                       }}
                         onSlidingComplete={val => {
                             try {
                                 TrackPlayer.seekTo(val);
                                 TrackPlayer.play();
-                            } catch (e) {
+                           } catch (e) {
                                 console.log(e);
-                            }
-                        }}
-                    />
+                           }
+                       }}
+                  />
                     <Text style={{marginLeft: 5, fontSize: scale(12),}}>{secondsToHHMMSS(duration || 0)}</Text>
                 </>
-            }
+           }
         </>
     );
 }

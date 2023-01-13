@@ -9,7 +9,7 @@ export default (Indicator = ({
                                  indicatorActiveColor,
                                  indicatorInActiveColor,
                                  indicatorActiveWidth = 6,
-                             }) => {
+                            }) => {
     return (
         <View style={[styles.container, indicatorContainerStyle]}>
             {renderIndicator(
@@ -47,17 +47,17 @@ export const renderIndicator = (
                                 ...{
                                     backgroundColor: indicatorActiveColor,
                                     width: indicatorActiveWidth,
-                                },
-                            }
+                               },
+                           }
                             : styles.active
                         : {
                             ...styles.inactive,
                             ...{backgroundColor: indicatorInActiveColor},
-                        },
+                       },
                 ]}
-            />,
+          />,
         );
-    }
+   }
     return indicators;
 };
 
@@ -66,15 +66,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         alignSelf: 'center',
-    },
+   },
     indicator: {
         width: 6,
         height: 6,
         borderRadius: 3,
         marginRight: 5,
-    },
+   },
   active: {
-  },
+ },
   inactive: {
-  },
+ },
 });

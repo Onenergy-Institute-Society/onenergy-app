@@ -20,11 +20,11 @@ import ScalableImage from "../Components/ScalableImage";
 import RNFetchBlob from 'rn-fetch-blob';
 import analytics from '@react-native-firebase/analytics';
 import TouchableScale from "../Components/TouchableScale";
-import Svg, {Path} from "react-native-svg";
+import {SvgIconBack} from "../Utils/svg";
 
 const QuotesScreen = props => {
     const {screenProps} = props;
-    const {colors, global} = screenProps;
+    const {global} = screenProps;
     const [loading, setLoading] = useState(false);
     const [ page, setPage] = useState(1);
     const [onEndReachedCalledDuringMomentum, setOnEndReachedCalledDuringMomentum] = useState(true);
@@ -34,7 +34,7 @@ const QuotesScreen = props => {
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Quotes Screen',
-    });
+   });
 
     const fetchQuote = async () => {
         const api = getApi(props.config);
@@ -60,25 +60,25 @@ const QuotesScreen = props => {
                         author: item._embedded['author'][0].name,
                         avatar: item._embedded['author'][0].avatar_urls['24'],
                         image: item._embedded['wp:featuredmedia'][0].source_url,
-                    })
-                }
-            })
+                   })
+               }
+           })
             if (quotes && quotes.length > 0) {
                 dispatch({
                     type: 'ONENERGY_QUOTES_ADD',
                     payload: quotes,
-                });
-            }
+               });
+           }
             setLoading(false);
-        }
-    }
+       }
+   }
     const checkPermission = async (image_URL) => {
         // Function to check the platform
         // If iOS then start downloading
         // If Android then ask for permission
         if (Platform.OS === 'ios') {
             downloadImage(image_URL);
-        } else {
+       } else {
             try {
                 const granted = await PermissionsAndroid.request(
                     PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
@@ -86,22 +86,22 @@ const QuotesScreen = props => {
                         title: 'Storage Permission Required',
                         message:
                             'App needs access to your storage to download Photos',
-                    }
+                   }
                 );
                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                     // Once user grant the permission start downloading
                     console.log('Storage Permission Granted.');
                     downloadImage(image_URL);
-                } else {
+               } else {
                     // If permission denied then show alert
                     Alert.alert('Image Download Notice','Storage Permission Not Granted');
-                }
-            } catch (err) {
+               }
+           } catch (err) {
                 // To handle permission related exception
                 console.warn(err);
-            }
-        }
-    };
+           }
+       }
+   };
     const downloadImage = (image_URL) => {
         // Main function to download the image
         // To add the time suffix in filename
@@ -113,7 +113,7 @@ const QuotesScreen = props => {
         // Get config and fs from RNFetchBlob
         // config: To pass the downloading related options'
         // fs: Directory path where we want our image to download
-        const { config, fs } = RNFetchBlob;
+        const {config, fs} = RNFetchBlob;
         let PictureDir = Platform.OS === 'ios' ? fs.dirs.DocumentDir : fs.dirs.PictureDir;
         let options = {
             fileCache: true,
@@ -127,35 +127,35 @@ const QuotesScreen = props => {
                     '/image_' +
                     Math.floor(date.getTime() + date.getSeconds() / 2) +
                     ext,
-            },
-        };
+           },
+       };
         config(options)
             .fetch('GET', image_URL)
             .then(res => {
                 if (Platform.OS === "ios") {
                     RNFetchBlob.ios.openDocument(res.data);
-                }else {
+               }else {
                     // Showing alert after successful downloading
                     console.log('res -> ', JSON.stringify(res));
                     Alert.alert('Thank you', 'Quote Image Downloaded Successfully.');
-                }
-            });
-    };
+               }
+           });
+   };
     const getExtention = filename => {
         // To get the file extension
         return /[.]/.exec(filename) ?
             /[^.]+$/.exec(filename) : undefined;
-    };
+   };
     const downloadCurrentQuote = (inViewPort) => {
         if(inViewPort)
         inViewPort.item.image?checkPermission(inViewPort.item.image):null;
-    };
+   };
     useEffect(()=>{
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'quote_title').title,
             downloadCurrentQuote: downloadCurrentQuote,
-        });
-    },[]);
+       });
+   },[]);
     useEffect(()=>{
         let loadQuotes = false;
         let quoteCount = quoteReducer.length
@@ -163,34 +163,34 @@ const QuotesScreen = props => {
         if(quoteCount < 5*page)
         {
             loadQuotes = true
-        }
+       }
         if(loadQuotes) {
             setLoading(true);
             fetchQuote().then();
-        }
-    }, [page]);
+       }
+   }, [page]);
 
-    const onViewableItemsChanged = React.useRef(({ viewableItems, changed }) => {
+    const onViewableItemsChanged = React.useRef(({viewableItems, changed}) => {
         props.navigation.setParams({inViewPort: changed[0]});
-    })
+   })
     const visibilityConfig = useRef({
         itemVisiblePercentThreshold: 80,
         waitForInteraction: false,
-    })
-    const renderItem = ({ item }) => (
+   })
+    const renderItem = ({item}) => (
         <View style={styles.container}>
-            <ScalableImage width={windowWidth} source={{uri: item.image?item.image:''}} />
+            <ScalableImage width={windowWidth} source={{uri: item.image?item.image:''}}/>
             {item.share_url?
             <TouchableScale
                 onPress={() => {
                     Share.open({
                         url: item.share_url,
-                    })
-                }}
+                   })
+               }}
             >
                 <View style={[styles.buttonShare, styles.boxShadow]}>
                     <Text
-                        style={{ fontSize: scale(20), color: '#FFF'}}
+                        style={{fontSize: scale(20), color: '#FFF'}}
                     >
                         SHARE
                     </Text>
@@ -221,16 +221,16 @@ const QuotesScreen = props => {
                                 if (distanceFromEnd < 0) return;
                                 setPage(page + 1);
                                 setOnEndReachedCalledDuringMomentum(true);
-                            }
-                        }}
+                           }
+                       }}
                         onViewableItemsChanged={onViewableItemsChanged.current}
                         viewabilityConfig={visibilityConfig.current}
                         onEndReachedThreshold={0.5}
-                        onMomentumScrollBegin={() => { setOnEndReachedCalledDuringMomentum(false) }}
+                        onMomentumScrollBegin={() => {setOnEndReachedCalledDuringMomentum(false)}}
                         horizontal
-                    />
+                   />
                     {loading?
-                    <ActivityIndicator size={'large'} />
+                    <ActivityIndicator size={'large'}/>
                         :null}
                     <Text
                         style={styles.title}>
@@ -239,7 +239,7 @@ const QuotesScreen = props => {
                 </View>
             ):(
                 <View style={{flex:1,width:windowWidth, height:windowHeight,justifyContent:"center",alignItems:"center"}}>
-                    <ActivityIndicator size={'large'} />
+                    <ActivityIndicator size={'large'}/>
                 </View>
             )}
         </SafeAreaView>
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         backgroundColor: '#f6f6f8',
-    },
+   },
     buttonShare: {
         marginVertical: 15,
         borderRadius: 9,
@@ -263,23 +263,23 @@ const styles = StyleSheet.create({
         width: scale(200),
         height: scale(50),
         backgroundColor: '#8c79ea',
-    },
+   },
     view: {
         padding: 0,
         flex: 1,
         justifyContent:"flex-start",
         alignItems: "center"
-    },
+   },
     image: {
         width: windowWidth,
-    },
+   },
     title: {
         marginBottom:scale(25),
         fontSize: scale(14),
         textAlign: 'center',
         color: '#000',
         fontFamily: 'MontserratAlternates-SemiBold',
-    },
+   },
     roundButton: {
         width: 24,
         height: 24,
@@ -290,14 +290,14 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         fontSize:30,
 
-    },
+   },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
     loading: {
         position: 'absolute',
         left: 0,
@@ -306,40 +306,29 @@ const styles = StyleSheet.create({
         bottom: 0,
         alignItems: 'center',
         justifyContent: 'center',
-    },
+   },
 });
 const mapStateToProps = (state) => ({
     config: state.config,  // not needed if axios or fetch is used
     accessToken: state.auth.token,
 });
-QuotesScreen.navigationOptions = ({ navigation, screenProps }) => {
+QuotesScreen.navigationOptions = ({navigation, screenProps}) => {
     const {colors, global} = screenProps;
     return {
         headerTitle: navigation.getParam('title'),
         headerStyle: {
             backgroundColor: colors.headerBg,
-        },
+       },
         headerTintColor: colors.headerColor,
         headerTitleStyle: global.appHeaderTitle,
         headerLeft:
             <TouchableOpacity
                 onPress={() => {
                     navigation.goBack()
-                }}
+               }}
             >
-                <Svg
-                    width="32"
-                    height="32"
-                    viewBox="0 0 24 24"
-                    style={{marginLeft:scale(10)}}
-                >
-                    <Path d="m15 18-6-6 6-6"
-                          fill="none"
-                          stroke={screenProps.colors.headerIconColor}
-                          strokeWidth="2"
-                    />
-                </Svg>
+                <SvgIconBack color={colors.headerIconColor}/>
             </TouchableOpacity>,
-    }
+   }
 }
 export default connect(mapStateToProps)(QuotesScreen);

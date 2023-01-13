@@ -29,17 +29,17 @@ const VimeoBlockLoader =(props) => {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36',
                     'Referer': 'https://app.onenergy.institute/',
                     'Referrer-Policy': 'strict-origin-when-cross-origin'
-                }
-            });
+               }
+           });
             console.log(result)
             setVimeoConfig(result.data);
-        } catch (e) {
+       } catch (e) {
             console.error(e);
-        }
-    }
+       }
+   }
     useEffect(() => {
         fetchVimeoConfig().then();
-    }, [])
+   }, [])
     useEffect(() => {
         if(vimeoConfig) {
             try {
@@ -49,33 +49,33 @@ const VimeoBlockLoader =(props) => {
                     setTextTracks(vimeoConfig["request"]["text_tracks"].map((item) => {
                         if(item.lang===language.subtitle){
                             setSelectedCCUrl("https://vimeo.com" + item.url);
-                        }
+                       }
                         return {
                             title: item.label,
                             language: item.lang,
                             uri: "https://vimeo.com" + item.url,
                             type: 'text/vtt'
-                        }
-                    }));
+                       }
+                   }));
                     setTextTracks((previousState) => [
                         ...previousState,
                         {title: "No Subtitle", language: "", uri: "", type: ""}
                     ]);
-                }
+               }
                 setVideoLoading(false);
-            } catch (e) {
+           } catch (e) {
                 console.error(e);
-            }
-        }
-    }, [vimeoConfig])
+           }
+       }
+   }, [vimeoConfig])
     return (
         videoLoading?
             <ImageBackground style={styles.video}>
-                <ActivityIndicator size="large" />
+                <ActivityIndicator size="large"/>
             </ImageBackground>
             :
             <View style={styles.container}>
-                <VimeoBlock videoId={block.result} video={video} duration={duration} thumbnail={thumbnail} textTracks={textTracks} lesson_video={lesson_video} no_skip_forward={no_skip_forward} selectedCCUrl={selectedCCUrl} />
+                <VimeoBlock videoId={block.result} video={video} duration={duration} thumbnail={thumbnail} textTracks={textTracks} lesson_video={lesson_video} no_skip_forward={no_skip_forward} selectedCCUrl={selectedCCUrl}/>
             </View>
     )
 }
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         width: windowWidth-scale(30),
         height: (windowWidth-scale(30))*9/16,
         alignSelf:"center"
-    },
+   },
     video: {
         position: 'relative',
         height: (windowWidth-scale(30)) * (9 / 16),
@@ -94,6 +94,6 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         justifyContent:"center",
         alignItems: "center"
-    },
+   },
 });
 export default VimeoBlockLoader;

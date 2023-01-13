@@ -27,10 +27,10 @@ export default function SortList(props)
                 index: index,
                 isShifting: false,
                 data: {...d}
-            };
-        });
-    };
-    React.useEffect(() => { setItems(null); }, [props.data]);
+           };
+       });
+   };
+    React.useEffect(() => {setItems(null);}, [props.data]);
     React.useEffect(() =>
     {
         if(items === null)
@@ -42,8 +42,8 @@ export default function SortList(props)
             setItems(initItems(props.data));
             if(typeof(scrollList.current) !== 'undefined' && scrollList.current !== null)
                 scrollList.current.scrollTo(props.horizontal === true ? {x:lastScrollPosition, y:0, animated:true} : {x:0, y:lastScrollPosition, animated:true});
-        }
-    }, [items]);
+       }
+   }, [items]);
 
     const getItem = (item, index) =>
     {
@@ -66,9 +66,9 @@ export default function SortList(props)
                 onMove={onMove}
                 save={onSave}
                 setCancelContentTouches={props.setCancelContentTouches}
-            />
+          />
         );
-    };
+   };
 
     const onSave = (id, itemSize) =>
     {
@@ -76,7 +76,7 @@ export default function SortList(props)
             setIsMoving(false);
         const itemsWithoutCorrectIndexes = items.sort((x, y) => x.index - y.index);
         const shiftingItem = itemsWithoutCorrectIndexes.filter(x => x.id === id)[0];
-        itemsWithoutCorrectIndexes.forEach((r,i) => { r.index = i; });
+        itemsWithoutCorrectIndexes.forEach((r,i) => {r.index = i;});
         const shiftingItemIndex = shiftingItem.index;
         const newItems = JSON.parse(JSON.stringify(itemsWithoutCorrectIndexes));
         const posToScrollTo = Math.max(0, (newItems.filter(x => x.id === id)[0].index * itemSize) - (containerSize / 2));
@@ -84,7 +84,7 @@ export default function SortList(props)
         setLastShiftingItemIndex(shiftingItemIndex);
         setAlreadyHighlighted(false);
         props.save(newItems.map(x => x.data));
-    };
+   };
 
     const onMove = (id, draggablePosition, itemSize, isEdging, scrollPos) =>
     {
@@ -107,7 +107,7 @@ export default function SortList(props)
                 newItems.forEach(r => r.index++);
             else if(isEdging > 0 && maxIndex >= maxShiftPrev)
                 newItems.forEach(r => r.index--);
-        }
+       }
         // Index changed
         if(shiftingItemIndex !== shiftingItem.index)
         {
@@ -115,31 +115,31 @@ export default function SortList(props)
             if(shiftingItemIndex < shiftingItem.index)
             {
                 toSnap = newItems.filter(x => x.id !== id && x.index < shiftingItem.index && shiftingItemIndex <= x.index);
-                toSnap.forEach(x => { x.index = x.index + 1; });
-            }
+                toSnap.forEach(x => {x.index = x.index + 1;});
+           }
             else if(shiftingItemIndex > shiftingItem.index)
             {
                 toSnap = newItems.filter(x => x.id !== id && x.index > shiftingItem.index && shiftingItemIndex >= x.index);
-                toSnap.forEach(x => { x.index = x.index - 1; });
-            }
-        }
+                toSnap.forEach(x => {x.index = x.index - 1;});
+           }
+       }
         // Apply changes
         shiftingItem.index = shiftingItemIndex;
         setItems(newItems);
         return newItems;
-    };
+   };
 
     const getContent = () =>
     {
         return (
             items === null ?
-                <View />
+                <View/>
                 :
                 <View style={props.horizontal === true ? {height:"100%", flexDirection:'row'} : {width:"100%"}}>
                     {items.map((item, index) => getItem(item, index))}
                 </View>
         );
-    };
+   };
 
     const onScroll = (e) =>
     {
@@ -150,14 +150,14 @@ export default function SortList(props)
             setLastScrollPosition(0);
             scrollList.current.scrollTo(
                 props.horizontal === true ? {x:scrollPos, y:0, animated:true} : {x:0, y:scrollPos, animated:true});
-        }
+       }
         else if(scrollPos !== 0 && lastScrollPosition !== 0)
         {
             setLastScrollPosition(0);
-        }
+       }
         setLastScrollPosition(scrollPos);
         setScrollPosition(scrollPos);
-    };
+   };
 
     return (
         <View
@@ -175,7 +175,7 @@ export default function SortList(props)
                                 start={[0, 0]}
                                 end={props.horizontal === true ? [1, 0] : [0, 1]}
                                 colors={[props.edgeColor, props.edgeColor, "transparent"]}
-                />
+              />
 */}
             </View>
             {containerSize === 0 ? <View/> :
@@ -190,7 +190,7 @@ export default function SortList(props)
                 >
                     {getContent()}
                 </ScrollView>
-            }
+           }
             <View style={[
                 {position:'absolute', zIndex:2},
                 props.horizontal === true ?
@@ -201,7 +201,7 @@ export default function SortList(props)
                                 start={{x:0, y:0}}
                                 end={props.horizontal === true ? {x:1, y:0} : {x:0, y:1}}
                                 colors={["transparent", props.edgeColor, props.edgeColor]}
-                />*/}
+              />*/}
             </View>
         </View>
     );

@@ -37,12 +37,12 @@ const QuestsMonthly = (props) => {
                                     <Image source={require("@src/assets/img/check2.png")}/>
                                     :
                                     <Image source={require("@src/assets/img/radio_unchecked_icon.png")}/>
-                                }
+                               }
                             </View>
                             <Text numberOfLines={1} style={[global.text, {fontWeight: "bold", fontSize: scale(10), color:index===30?colors.secondaryButtonColor:achievementReducer&&achievementReducer.days&&achievementReducer.days.length&&achievementReducer.days[index]!==undefined&&achievementReducer.days[index]!==null&&achievementReducer.days[index]?'white':colors.primaryButtonBg}]}>Day {day}</Text>
                         </View>
                     )
-                })}
+               })}
                 </View>
                 <View style={{marginBottom: scale(20)}}>
                 {achievementReducer.complete_date?
@@ -82,9 +82,9 @@ const QuestsMonthly = (props) => {
                                         payload: {
                                             mode: "monthly",
                                             date: achievementReducer.complete_date,
-                                        },
-                                    });
-                                }}
+                                       },
+                                   });
+                               }}
                             >
                                 <View style={[styles.rowRight, {backgroundColor:colors.secondaryButtonColor}]}>
                                     <Text
@@ -97,7 +97,7 @@ const QuestsMonthly = (props) => {
                                             fontSize: 24,
                                             fontWeight: "700",
                                             color: '#FFF',
-                                        }]}
+                                       }]}
                                     >
                                         +100 Qi
                                     </Text>
@@ -105,7 +105,7 @@ const QuestsMonthly = (props) => {
                             </TouchableWithoutFeedback>
                         </View>
                     :null
-                }
+               }
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -116,14 +116,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-    },
+   },
     daysContainer:{
         marginTop: scale(10),
         marginHorizontal: scale(15),
         flexDirection:'row',
         flexWrap: "wrap",
         justifyContent: "space-between",
-    },
+   },
     row:{
         paddingHorizontal:scale(10),
         paddingVertical:scale(10),
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
         width: (windowWidth-60)/5,
         backgroundColor: '#e6e6e8',
         marginVertical: scale(5),
-    },
+   },
     rowReward: {
         borderRadius: 9,
         alignItems: 'center',
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginVertical: scale(15),
         marginHorizontal: scale(15),
-    },
+   },
     rowLeft: {
         marginVertical: 0,
         paddingHorizontal: scale(10),
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: (windowWidth - scale(30))*2/3,
         height: scale(70),
-    },
+   },
     rowRight: {
         marginVertical: 0,
         borderTopRightRadius: 9,
@@ -163,22 +163,22 @@ const styles = StyleSheet.create({
         width: (windowWidth - scale(30))/3,
         height: scale(70),
         backgroundColor: '#8c79ea',
-    },
+   },
     textSticker: {
         width:"100%",
         flexDirection: "row",
         justifyContent:"flex-end",
         marginRight:25,
-    },
+   },
     pointText: {
         fontSize:scale(14),
-    },
+   },
     checklistItems: {
         marginTop:scale(12),
         paddingRight:scale(12),
         maxHeight:scale(80),
         flexDirection:"row",
-    },
+   },
     calendarItems:{
         flexDirection: "column",
         justifyContent: "center",
@@ -189,14 +189,14 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         height:scale(45),
         width:scale(45),
-    },
+   },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
     titleText:{
         width: windowWidth-scale(60),
         marginHorizontal:scale(15),
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
         fontSize: scale(14),
         fontWeight:'bold',
         color: "#5E5E5E",
-    },
+   },
 });
 const mapStateToProps = (state) => ({
     config: state.config,  // not needed if axios or fetch is used

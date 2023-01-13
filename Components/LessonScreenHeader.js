@@ -2,8 +2,7 @@ import React from "react";
 import {View, TouchableOpacity} from "react-native";
 import Animated from "react-native-reanimated";
 import {DEVICE_WIDTH} from "@src/styles/global";
-import {scale} from "../Utils/scale";
-import Svg, {Path} from "react-native-svg";
+import {SvgIconBack} from "../Utils/svg";
 
 const LessonScreenHeader = (props) => {
     const {
@@ -15,7 +14,7 @@ const LessonScreenHeader = (props) => {
         headerRightAuthWrapperProps,
         prevNext,
         navigation,
-    } = props;
+   } = props;
     return (
         <Animated.View
             style={[
@@ -25,10 +24,10 @@ const LessonScreenHeader = (props) => {
                     backgroundColor: "transparent",
                     paddingHorizontal: 10,
                     overflow: "hidden"
-                },
+               },
                 {
                     width: DEVICE_WIDTH
-                },
+               },
                 style
             ]}
         >
@@ -40,25 +39,14 @@ const LessonScreenHeader = (props) => {
                         flexDirection: "row",
                         flex: 1,
                         height: "100%"
-                    }
+                   }
                 ]}
             >
                 <View style={[global.headerButtonLeft, headerLeftStyle]}>
                     <TouchableOpacity
                         onPress={() => {navigation.goBack()}}
                     >
-                        <Svg
-                            width="32"
-                            height="32"
-                            viewBox="0 0 24 24"
-                            style={{marginLeft:scale(10)}}
-                        >
-                            <Path d="m15 18-6-6 6-6"
-                                  fill="none"
-                                  stroke="#8c79ea"
-                                  strokeWidth="2"
-                            />
-                        </Svg>
+                        <SvgIconBack color = "#8c79ea"/>
                     </TouchableOpacity>
                 </View>
             </View>

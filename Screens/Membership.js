@@ -13,7 +13,7 @@ import moment from 'moment';
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import analytics from '@react-native-firebase/analytics';
-import Svg, {Path} from "react-native-svg";
+import {SvgIconBack} from "../Utils/svg";
 
 const Membership = (props) => {
     const {navigation} = props;
@@ -21,16 +21,16 @@ const Membership = (props) => {
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Membership Screen',
-    });
+   });
     let start_date;
     let expiry_date;
     if(user.membership.length > 0){
         if(user.membership[0].plan.slug.includes('-m')){
             start_date = moment(user.membership[0].post.post_date).format('YYYY-MM-DD');
             expiry_date = moment(start_date).add(30, 'day').format('YYYY-MM-DD');
-        }
-    }
-    const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
+       }
+   }
+    const LeftContent = props => <Avatar.Icon {...props} icon="folder"/>
     return(
         <SafeAreaView style={styles.container}>
             {user.membership.length > 0 ?
@@ -84,7 +84,7 @@ const Membership = (props) => {
                         <Text style={{color: "white", fontSize:scale(18), paddingHorizontal:15, fontWeight: "700"}}>UPGRADE NOW</Text>
                     </TouchableOpacity>
                 </>
-            }
+           }
         </SafeAreaView>
     )
 }
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
         width:windowWidth,
         justifyContent: 'flex-start',
         alignItems: 'center',
-    },
+   },
     cardContainer: {
         backgroundColor: '#fff',
         paddingVertical: 16,
@@ -103,41 +103,41 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: windowWidth-scale(30),
         marginTop:scale(15),
-    },
+   },
     title: {
         color: '#000',
         fontSize: scale(14),
-    },
+   },
     metaContainer: {
         justifyContent: 'space-between'
-    },
+   },
     topContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between'
-    },
+   },
     avatar: {
         height: 100,
         width: 100,
         borderRadius: 100
-    },
+   },
     description: {
         color: '#000',
         marginTop: 5,
         fontSize: scale(20)
-    },
+   },
     button: {
         backgroundColor: '#22d3ee',
         alignSelf: 'flex-start',
         paddingHorizontal: 12,
         paddingVertical: 4,
         borderRadius: 2
-    },
+   },
     buttonText: {
         fontWeight: 'bold',
         color: 'white',
         textTransform: 'uppercase',
         fontSize: 14
-    },
+   },
     btnUpgrade: {
         marginTop:15,
         fontSize: scale(20),
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
         backgroundColor:"#4942e1",
         padding:10,
         marginBottom:scale(10),
-    }
+   }
 });
 Membership.navigationOptions = ({navigation, screenProps}) => {
     const {global, colors} = screenProps;
@@ -154,26 +154,15 @@ Membership.navigationOptions = ({navigation, screenProps}) => {
     title: "My Membership",
     headerStyle: {
         backgroundColor: colors.headerBg,
-    },
+   },
     headerTintColor: colors.headerColor,
     headerTitleStyle: global.appHeaderTitle,
     headerLeft:
         <TouchableOpacity
             onPress={() => {navigation.goBack()}}
         >
-            <Svg
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                style={{marginLeft:scale(10)}}
-            >
-                <Path d="m15 18-6-6 6-6"
-                      fill="none"
-                      stroke={screenProps.colors.headerIconColor}
-                      strokeWidth="2"
-                />
-            </Svg>
+            <SvgIconBack color = {colors.headerIconColor}/>
         </TouchableOpacity>,
-    }
+   }
 }
 export default withDeeplinkClickHandler(Membership);

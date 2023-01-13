@@ -12,7 +12,7 @@ import {
 import {windowWidth} from "../Utils/Dimensions";
 import {scale} from "../Utils/scale";
 import * as Progress from 'react-native-progress';
-import Svg, {Path} from "react-native-svg";
+import {SvgIconCheck} from "../Utils/svg";
 
 class MilestonesAccordian extends Component {
     constructor(props) {
@@ -22,8 +22,8 @@ class MilestonesAccordian extends Component {
             complete_date: props.item.complete_date,
             claim_date: props.item.claim_date,
             expanded: false,
-        }
-    }
+       }
+   }
 
     render() {
         let completed_steps = this.props.item.step.filter(lesson => lesson.completed === 1).length;
@@ -38,7 +38,7 @@ class MilestonesAccordian extends Component {
                     borderBottomRightRadius: this.state.expanded ? 0 : 9,
                     borderBottomLeftRadius: this.state.expanded ? 0 : 9,
                     backgroundColor: this.props.screenProps.colors.bodyBg
-                }]}>
+               }]}>
                     <TouchableOpacity onPress={() => this.toggleExpand()}>
                         <View style={[styles.rowLeft,{backgroundColor:this.props.screenProps.colors.bodyBg}]}>
                             <Text style={[this.props.screenProps.global.title,{fontSize:scale(12)}]}>{this.props.item.title}</Text>
@@ -56,13 +56,13 @@ class MilestonesAccordian extends Component {
                             <Image source={require("@src/assets/img/arrow-down.png")} style={{
                                 tintColor: this.props.screenProps.colors.primaryButtonBg,
                                 transform: [{rotate: this.state.expanded ? '180deg' : '0deg'}],
-                            }}/>
+                           }}/>
                         </View>
                     </TouchableOpacity>
                     <TouchableWithoutFeedback
                         onPress={() => {
                             this.props.handleOnPress(this.props.item);
-                        }}
+                       }}
                     >
                         <View style={[styles.rowRight, {backgroundColor:!complete_date?this.props.screenProps.colors.primaryButtonBg:!claim_date?this.props.screenProps.colors.primaryColor:'grey',
                             borderBottomRightRadius: this.state.expanded ? 0 : 9,}]}>
@@ -96,10 +96,10 @@ class MilestonesAccordian extends Component {
                                             this.props.item.awards.map(point => {return (
                                                 '+'+point.point+' '+this.props.optionData.points.find(pt => pt.pointName === point.name).pointTitle
                                             )})
-                                        }
+                                       }
                                     </Text>
                                 </>
-                            }
+                           }
                         </View>
                     </TouchableWithoutFeedback>
                 </View>
@@ -113,7 +113,7 @@ class MilestonesAccordian extends Component {
                         width: windowWidth - scale(30),
                         alignItems: "center",
                         justifyContent: "flex-start"
-                    }}>
+                   }}>
                         <FlatList
                             data={this.state.data}
                             numColumns={1}
@@ -123,46 +123,30 @@ class MilestonesAccordian extends Component {
                                     <View style={[styles.childRow, {backgroundColor:this.props.screenProps.colors.bodyBg}]}>
                                         <Text style={styles.itemActive}>{item.title}</Text>
                                         {item.completed ?
-                                            <Svg
-                                                width="18"
-                                                height="18"
-                                                viewBox="0 0 24 24"
-                                                style={{marginLeft:scale(10)}}
-                                            >
-                                                <Path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
-                                                      fill="none"
-                                                      stroke={this.props.screenProps.colors.primaryColor}
-                                                      strokeWidth="2"
-                                                />
-                                                <Path d="M22 4 12 14.01l-3-3"
-                                                      fill="none"
-                                                      stroke={this.props.screenProps.colors.primaryColor}
-                                                      strokeWidth="2"
-                                                />
-                                            </Svg>
+                                            <SvgIconCheck size={18} color={this.props.screenProps.colors.primaryColor}/>
                                             : null}
                                     </View>
                                     {index < this.state.data.length - 1 ?
                                         <View style={[styles.childHr, {backgroundColor: this.props.screenProps.colors.borderColor}]}/>
                                         : null}
                                 </View>
-                            }/>
+                           }/>
                     </View>
-                }
+               }
             </View>
         )
-    }
+   }
 
     onClick = (index) => {
         const temp = this.state.data.slice()
         temp[index].value = !temp[index].value
         this.setState({data: temp})
-    }
+   }
 
     toggleExpand = () => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         this.setState({expanded: !this.state.expanded})
-    }
+   }
 
 }
 const Colors = {
@@ -180,13 +164,13 @@ const styles = StyleSheet.create({
         fontFamily: "MontserratAlternates-Regular",
         fontWeight: "normal",
         fontSize: scale(12),
-    },
+   },
     btnActive: {
         borderColor: Colors.GREEN,
-    },
+   },
     btnInActive: {
         borderColor: Colors.DARKGRAY,
-    },
+   },
     column: {
         borderRadius: 9,
         alignItems: 'center',
@@ -194,7 +178,7 @@ const styles = StyleSheet.create({
         width: windowWidth - scale(30),
         marginTop: scale(15),
         marginHorizontal: scale(15),
-    },
+   },
     row: {
         borderRadius: 9,
         alignItems: 'center',
@@ -202,7 +186,7 @@ const styles = StyleSheet.create({
         width: windowWidth - scale(30),
         height: scale(70),
         flexDirection: 'row',
-    },
+   },
     rowLeft: {
         marginHorizontal: 0,
         paddingHorizontal:5,
@@ -212,7 +196,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: (windowWidth - scale(30))*2/3,
         height: scale(70),
-    },
+   },
     rowRight: {
         marginVertical: 0,
         borderTopRightRadius: 9,
@@ -220,7 +204,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: (windowWidth - scale(30))/3,
         height: scale(70),
-    },
+   },
     childRow: {
         flexDirection: 'row',
         width: windowWidth - scale(30),
@@ -230,18 +214,18 @@ const styles = StyleSheet.create({
         paddingRight: 15,
         fontSize: scale(12),
         justifyContent: 'space-between',
-    },
+   },
     childHr: {
         height: 1,
         width: windowWidth - scale(50),
-    },
+   },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
 });
 
 export default MilestonesAccordian

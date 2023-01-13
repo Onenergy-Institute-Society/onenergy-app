@@ -1,24 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import {getApi} from "@src/services";
 import {SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {connect } from "react-redux";
+import {connect} from "react-redux";
 import ImageCache from '../Components/ImageCache';
 import {windowWidth} from "../Utils/Dimensions";
 import PostRow from "../Components/PostRow";
 import {scale} from "../Utils/scale";
 import analytics from '@react-native-firebase/analytics';
-import Svg, {Path} from "react-native-svg";
+import {SvgIconBack} from "../Utils/svg";
 
 const SolarTermScreen = props => {
-    const { navigation, screenProps } = props;
-    const { global } = screenProps;
+    const {navigation, screenProps} = props;
+    const {global} = screenProps;
     const [postData, setPostData] = useState([]);
     const [currentTermBanner, setCurrentTermBanner] = useState('');
     const [nextTermBanner, setNextTermBanner] = useState('');
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Solar Term Screen',
-    });
+   });
     const fetchPostData = async () => {
         try {
             const apiPage = getApi(props.config);
@@ -30,38 +30,38 @@ const SolarTermScreen = props => {
                 {},
                 false
             ).then(response => setPostData(response.data));
-        } catch (e) {
+       } catch (e) {
             console.error(e);
-        }
-    }
+       }
+   }
     useEffect(()=>{
         fetchPostData().then();
-    }, []);
+   }, []);
     useEffect(()=>{
         try {
             setCurrentTermBanner(postData.metadata.currentTermBanner[0]);
             setNextTermBanner(postData.metadata.nextTermBanner[0]);
-        } catch (e) {
+       } catch (e) {
             console.error(e);
-        }
-    }, [postData]);
+       }
+   }, [postData]);
     return (
         <SafeAreaView style={global.container}>
             {currentTermBanner.length>0 && (
             <ScrollView>
-                <ImageCache style={styles.image} source={{uri: currentTermBanner?currentTermBanner:''}} />
-                <ImageCache style={styles.image} source={{uri: nextTermBanner?nextTermBanner:''}} />
+                <ImageCache style={styles.image} source={{uri: currentTermBanner?currentTermBanner:''}}/>
+                <ImageCache style={styles.image} source={{uri: nextTermBanner?nextTermBanner:''}}/>
                 <View style={styles.view_title}>
                     <Text style={styles.heading}>{postData.metadata.tagHealthName[0]}</Text>
                 </View>
                 <View style={styles.view}>
-                    <PostRow termType={'tag'} postTerm={postData.metadata.tagHealthId[0]} postPerPage={'4'} postOrder={'desc'} postOrderBy={'date'} showAuthor={true} {...props} />
+                    <PostRow termType={'tag'} postTerm={postData.metadata.tagHealthId[0]} postPerPage={'4'} postOrder={'desc'} postOrderBy={'date'} showAuthor={true} {...props}/>
                 </View>
                 <View style={styles.view_title}>
                     <Text style={styles.heading}>{postData.metadata.tagFoodName[0]}</Text>
                 </View>
                 <View style={styles.view}>
-                    <PostRow termType={'tag'} postTerm={postData.metadata.tagFoodId[0]} postPerPage={'4'} postOrder={'desc'} postOrderBy={'date'} showAuthor={true} {...props} />
+                    <PostRow termType={'tag'} postTerm={postData.metadata.tagFoodId[0]} postPerPage={'4'} postOrder={'desc'} postOrderBy={'date'} showAuthor={true} {...props}/>
                 </View>
             </ScrollView>
             )}
@@ -75,38 +75,27 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         overflow: 'hidden',
         margin:15,
-    },
+   },
 });
 const mapStateToProps = (state) => ({
     config: state.config,  // not needed if axios or fetch is used
     accessToken: state.auth.token,
 });
-SolarTermScreen.navigationOptions = ({ navigation, screenProps }) => {
+SolarTermScreen.navigationOptions = ({navigation, screenProps}) => {
     const {colors, global} = screenProps;
     return {
         headerTitle: "Solar Terms",
         headerStyle: {
             backgroundColor: colors.headerBg,
-        },
+       },
         headerTintColor: colors.headerColor,
         headerTitleStyle: global.appHeaderTitle,
         headerLeft:
             <TouchableOpacity
                 onPress={() => {navigation.goBack()}}
             >
-                <Svg
-                    width="32"
-                    height="32"
-                    viewBox="0 0 24 24"
-                    style={{marginLeft:scale(10)}}
-                >
-                    <Path d="m15 18-6-6 6-6"
-                          fill="none"
-                          stroke={screenProps.colors.headerIconColor}
-                          strokeWidth="2"
-                    />
-                </Svg>
+                <SvgIconBack color = {colors.headerIconColor}/>
             </TouchableOpacity>
-        }
+       }
 }
 export default connect(mapStateToProps)(SolarTermScreen);

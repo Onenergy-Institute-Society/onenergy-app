@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     StyleSheet,
     View,
@@ -15,7 +15,7 @@ const {width} = Dimensions.get('window')
 import Skeleton from './Loaders/PostsSkeletonLoading';
 import ImageCache from './ImageCache';
 import TouchableScale from './TouchableScale';
-import { scale } from '../Utils/scale';
+import {scale} from '../Utils/scale';
 
 const PostList = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
@@ -24,7 +24,7 @@ const PostList = props => {
     const {postReducer} = useSelector(postSelector);
     const [ loadMore, setLoadMore] = useState(false);
     const [ page, setPage] = useState(1);
-    const { navigation, postCategory, postPerPage, postOrder, postOrderBy, useLoadMore, screenProps } = props;
+    const {navigation, postCategory, postPerPage, postOrder, postOrderBy, useLoadMore, screenProps} = props;
     const {global} = screenProps;
     const dispatch = useDispatch();
     const categoryIndex = postReducer.lastView&&postReducer.lastView.length?postReducer.lastView.findIndex(lv => lv.category === parseInt(postCategory)):null;
@@ -45,14 +45,14 @@ const PostList = props => {
 /*            dispatch({
                 type: 'ONENERGY_BLOG_UPDATE',
                 payload: data,
-            });*/
+           });*/
             data.map((item) => {
                 if (!postReducer.posts.length || !postReducer.posts.find(post => post.id === item.id)) {
                     if(categoryIndex&&categoryIndex>=0){
                         if(new Date(item.date) > new Date(postReducer.lastView[categoryIndex].date)){
                             notify = true;
-                        }
-                    }
+                       }
+                   }
                     if(item._embedded['wp:featuredmedia'])
                     posts.push({
                         id: item.id,
@@ -66,20 +66,20 @@ const PostList = props => {
                         image: item._embedded['wp:featuredmedia']?item._embedded['wp:featuredmedia'][0].source_url:null,
                         meta_box: item.meta_box,
                         notify: notify
-                    })
-                }
-            })
+                   })
+               }
+           })
             if (posts && posts.length > 0) {
                 dispatch({
                     type: 'ONENERGY_POSTS_ADD',
                     payload: posts,
                     category: postCategory
-                });
-            }
-        } catch (e) {
+               });
+           }
+       } catch (e) {
             console.error(e);
-        }
-    }
+       }
+   }
 
     useEffect(() => {
         let loadPosts = false;
@@ -89,41 +89,41 @@ const PostList = props => {
             if(postCount < parseInt(postPerPage)*page)
             {
                 loadPosts = true
-            }else {
+           }else {
                 setPostsData((current) => [...current, ...postReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice((page-1)*postPerPage, page*postPerPage)]);
                 if (new Date(postReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[postCategory])) {
                     loadPosts = true;
-                }
-            }
-        }else{
+               }
+           }
+       }else{
             loadPosts = true;
-        }
+       }
         if(loadPosts)
             fetchPostsData().then();
-    }, [page]);
+   }, [page]);
     useEffect(() => {
         setPostsData(postReducer.posts.filter((post)=>post.categories.includes(parseInt(postCategory))).slice(0, postPerPage*page));
-    },[postReducer.posts])
+   },[postReducer.posts])
     const handleLoadMore = () => {
         if(useLoadMore) {
             setPage(page + 1);
             setLoadMore(true);
             setTimeout(function () {
                 setLoadMore(false);
-            }, 2000);
-        }
-    };
+           }, 2000);
+       }
+   };
     const regex = /(<([^>]+)>)/ig;
 
     const renderOverlayImage = (categories) => {
         if(categories.includes(103)) //Video
-                return <View style = {styles.overlay_button}><Image style = {styles.play} source = {require('../assets/images/arrow_right-1.png')} /></View>;
+                return <View style = {styles.overlay_button}><Image style = {styles.play} source = {require('../assets/images/arrow_right-1.png')}/></View>;
         if(categories.includes(104)) //Audio
-                return <View style = {styles.overlay_button}><Image style = {styles.play} source = {require('../assets/images/arrow_right-1.png')} /></View>;
+                return <View style = {styles.overlay_button}><Image style = {styles.play} source = {require('../assets/images/arrow_right-1.png')}/></View>;
         return null;
-    }
+   }
 
-    const renderItem = ({ item }) => {
+    const renderItem = ({item}) => {
         return (
             <TouchableScale
                 key={item.id + 'img'}
@@ -133,23 +133,23 @@ const PostList = props => {
                             dispatch({
                                 type: 'ONENERGY_POSTS_REMOVE_NOTIFY',
                                 payload: item.id,
-                            });
-                        }
+                           });
+                       }
                         navigation.dispatch(
                             NavigationActions.navigate({
                                 routeName: "BlogScreen",
                                 params: {
                                     blogId: item.id,
                                     title: item.title.rendered
-                                },
+                               },
                                 key: 'BlogScreen-' + item.id
-                            })
+                           })
                         );
-                    } catch (err) {
+                   } catch (err) {
                         console.log(`${err}`);
-                    }
-                }
-            }>
+                   }
+               }
+           }>
                 <View style={[styles.containerStyle, styles.boxShadow]} key={'post-' + item.id}>
                     <View style={styles.rowStyle}>
                         <View style={styles.imageView}>
@@ -187,34 +187,34 @@ const PostList = props => {
                                 backgroundColor: '#FF0000',
                                 textAlign: "center",
                                 zIndex: 999
-                            }}
+                           }}
                         >
                         </View>
                         :null}
                 </View>
             </TouchableScale>
         );
-    }
+   }
     return (
         <SafeAreaView style={global.container}>
             {postsData&&postsData.length?(
                 <FlatList
-                    contentContainerStyle={{ paddingBottom: scale(20) }}
+                    contentContainerStyle={{paddingBottom: scale(20)}}
                     style={styles.scrollView}
                     data={postsData}
                     onEndReached={(d) =>{
                         if (d.distanceFromEnd > 0) {
                             handleLoadMore();
-                        }
-                    }}
+                       }
+                   }}
                     onEndReachedThreshold={0.7}
                     renderItem={renderItem}
                     extraData={this.props}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={item => item.id}
-                />
+              />
             ):(
-                <Skeleton />
+                <Skeleton/>
             )}
             {loadMore ? (
                 <ActivityIndicator style={styles.loading} size="large"/>
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-    },
+   },
     containerStyle: {
         backgroundColor:"#FFFFFF",
         borderRadius: 9,
@@ -236,30 +236,30 @@ const styles = StyleSheet.create({
         marginTop: scale(25),
         width: width - scale(30),
         height: scale(120),
-    },
+   },
     rowStyle: {
         overflow: 'hidden',
         flexDirection: "row",
         justifyContent: "space-between",
-    },
+   },
     scrollView: {
         justifyContent: 'flex-start',
         flexWrap: 'wrap',
         paddingBottom: scale(60),
-    },
+   },
     image: {
         marginTop:scale(15),
         width: scale(120),
         height: scale(60),
         borderRadius: 9,
         overflow: 'hidden',
-    },
+   },
     imageView: {
         width: scale(150),
         height:scale(120),
         justifyContent:"space-between",
         alignItems:"center"
-    },
+   },
     overlay: {
         alignItems: 'flex-start',
         justifyContent: 'space-between',
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
         paddingVertical:scale(15),
         paddingRight: scale(15),
         marginRight:scale(20),
-    },
+   },
     title: {
         top:0,
         fontSize: scale(14),
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         color: '#4A4D34',
         fontFamily: 'Montserrat-SemiBold',
-    },
+   },
     metaRow: {
         marginLeft:scale(30),
         marginBottom:scale(15),
@@ -284,13 +284,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: "flex-start",
         alignItems: "center",
-    },
+   },
     avatar: {
         width: scale(24),
         height: scale(24),
         borderRadius:scale(24),
         marginRight:5,
-    },
+   },
     author: {
         fontSize: scale(10),
         textAlign: 'left',
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
         color: 'black',
         fontWeight: "normal",
         fontFamily: 'Montserrat-Regular',
-    },
+   },
     description: {
         fontSize: scale(12),
         color: '#3c3c3c',
@@ -306,12 +306,12 @@ const styles = StyleSheet.create({
         marginBottom: scale(15),
         backgroundColor: 'transparent',
         fontFamily: 'Montserrat-Regular',
-    },
+   },
     loading:{
         textAlign: 'center',
         height:scale(70),
         marginBottom:scale(35),
-    },
+   },
     overlay_button:{
         flex: 1,
         backgroundColor: 'rgba(0,0,0,0.2)',
@@ -324,19 +324,19 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         alignItems: 'center',
         justifyContent: 'center',
-    },
+   },
     play:{
         opacity: 0.6,
         width: 32,
         height: 32
-    },
+   },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
 });
 
 const mapStateToProps = (state) => ({

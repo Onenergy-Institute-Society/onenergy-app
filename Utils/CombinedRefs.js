@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import {useRef, useEffect} from 'react';
 
 export const useCombinedRefs = (...refs) => {
     const targetRef = useRef();
@@ -7,15 +7,15 @@ export const useCombinedRefs = (...refs) => {
         refs.forEach(ref => {
             if (!ref) {
                 return;
-            }
+           }
 
             if (typeof ref === 'function') {
                 ref(targetRef.current);
-            } else {
+           } else {
                 ref.current = targetRef.current;
-            }
-        });
-    }, [refs]);
+           }
+       });
+   }, [refs]);
 
     return targetRef;
 };

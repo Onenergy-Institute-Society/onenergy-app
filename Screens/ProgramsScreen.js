@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { withNavigation } from "react-navigation";
+import {withNavigation} from "react-navigation";
 import {createDrawerNavigator} from 'react-navigation-drawer';
-import { createStackNavigator } from 'react-navigation-stack';
+import {createStackNavigator} from 'react-navigation-stack';
 import ProgramsContent from './ProgramsContent';
 import MyLoginScreen from "../Components/MyLoginScreen";
 import MySignupScreen from "../Components/MySignupScreen";
@@ -12,28 +12,28 @@ const Home = createStackNavigator(
         Home: {screen:ProgramsContent},
         MyLoginScreen: {screen: MyLoginScreen},
         MySignupScreen: {screen: MySignupScreen}
-    }
+   }
 )
 const Drawer = createDrawerNavigator(
     {
         Home: Home,
-    },
+   },
     {
         edgeWidth: 140,
         minSwipeDistance: 3,
         contentOptions: {
             activeTintColor: '#4942e1',
-        },
+       },
         drawerType: 'slide',
-        contentComponent: props => <DrawerContentComponent {...props} />,
+        contentComponent: props => <DrawerContentComponent {...props}/>,
         navigationOptions : {header:null},
-    }
+   }
 );
 
 const ProgramsScreen = createStackNavigator({
     Drawer: {
         screen: Drawer,
-    },
+   },
 
 })
 

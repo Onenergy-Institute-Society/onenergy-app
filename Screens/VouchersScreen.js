@@ -15,10 +15,10 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import moment from 'moment';
 import RNRestart from 'react-native-restart';
-import { BlurView } from "@react-native-community/blur";
+import {BlurView} from "@react-native-community/blur";
 import ScalableImage from "../Components/ScalableImage";
 import analytics from '@react-native-firebase/analytics';
-import Svg, {Path} from "react-native-svg";
+import {SvgIconBack} from "../Utils/svg";
 
 const VouchersScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
@@ -30,7 +30,7 @@ const VouchersScreen = (props) => {
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Voucher Screen',
-    });
+   });
     const fetchVoucherData = async () => {
         try {
             const apiVoucher = getApi(props.config);
@@ -44,18 +44,18 @@ const VouchersScreen = (props) => {
             ).then(response => {
                 setVouchers(response.data);
                 setVouchersLoading(false);
-            });
-        } catch (e) {
+           });
+       } catch (e) {
             console.error(e);
-        }
-    }
+       }
+   }
     useEffect(()=>{
         fetchVoucherData().then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'voucher_title').title,
-        });
-    },[])
-    const renderItem = ({ item }) => {
+       });
+   },[])
+    const renderItem = ({item}) => {
         return (
             <TouchableOpacity
                 onPress={() => {
@@ -63,9 +63,9 @@ const VouchersScreen = (props) => {
                         Alert.alert('Notice', "You have already redeemed this voucher.", [
                             {
                                 text: 'OK'
-                            }
+                           }
                         ])
-                    }else {
+                   }else {
                         Alert.alert('Notice', "Redeem voucher now?", [
                             {
                                 text: 'OK', onPress:
@@ -96,30 +96,30 @@ const VouchersScreen = (props) => {
                                                                     {
                                                                         text: 'OK',
                                                                         onPress: () => props.navigation.goBack()
-                                                                    },
+                                                                   },
                                                                 ]);
-                                                        }
-                                                    }
-                                                }
-                                            });
-                                        } catch (e) {
+                                                       }
+                                                   }
+                                               }
+                                           });
+                                       } catch (e) {
                                             console.error(e);
-                                        }
-                                    }
-                            },
+                                       }
+                                   }
+                           },
                             {
                                 text: 'Cancel'
-                            }
+                           }
                         ])}
-                    }
-                }
+                   }
+               }
             >
                 <View style={[styles.voucherItem,styles.boxShadow]}>
                     <ScalableImage
                         background={true}
                         width={windowWidth-scale(30)}
                         style={styles.list} source={{uri: item.image ? item.image : ''}}>
-                        <Text style={[styles.subTitle,{color:item.color, left:item.left?scale(item.left):null, top:item.top?scale(item.top):null, right:item.right?scale(item.right):null, bottom:item.bottom?scale(item.bottom):null, }]}>{moment(item.expireDate).format("MMMM Do, YYYY")}</Text>
+                        <Text style={[styles.subTitle,{color:item.color, left:item.left?scale(item.left):null, top:item.top?scale(item.top):null, right:item.right?scale(item.right):null, bottom:item.bottom?scale(item.bottom):null,}]}>{moment(item.expireDate).format("MMMM Do, YYYY")}</Text>
                         {item.redeemDate?
                             <Text style={styles.redeemedText}>REDEEMED</Text>
                         :null}
@@ -127,7 +127,7 @@ const VouchersScreen = (props) => {
                 </View>
             </TouchableOpacity>
         )
-    };
+   };
     return(
         <SafeAreaView style={styles.container}>
             {vouchersLoading ?
@@ -135,14 +135,14 @@ const VouchersScreen = (props) => {
                 :
                 vouchers.length?
                     <FlatList
-                        contentContainerStyle={{ paddingBottom: scale(20) }}
+                        contentContainerStyle={{paddingBottom: scale(20)}}
                         data={vouchers} renderItem={renderItem} keyExtractor={item => item.id}
-                    />
+                   />
                     :
                     <View style={{
                         flex: 1,
                         width: windowWidth
-                    }}>
+                   }}>
                         <View style={[styles.boxShadow, {padding:15,justifyContent: "center",alignSelf:"center",borderRadius: 9,backgroundColor:"#fff", margin:15}]}>
                             <View style={{marginHorizontal: 0, justifyContent: "center", alignItems: "center"}}>
                                 <Text style={[styles.body, {
@@ -150,11 +150,11 @@ const VouchersScreen = (props) => {
                                     fontSize:scale(14),
                                     lineHeight:scale(14*1.47),
                                     textAlign:"left"
-                                }]}>{emptyText}</Text>
+                               }]}>{emptyText}</Text>
                             </View>
                         </View>
                     </View>
-            }
+           }
             {loading &&
             <BlurView style={styles.loading}
                 blurType="light"
@@ -162,10 +162,10 @@ const VouchersScreen = (props) => {
                 reducedTransparencyFallbackColor="white"
             >
                 <View>
-                    <ActivityIndicator size='large' />
+                    <ActivityIndicator size='large'/>
                 </View>
             </BlurView>
-            }
+           }
         </SafeAreaView>
     )
 }
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
         width:windowWidth,
         justifyContent: 'center',
         alignItems: 'center',
-    },
+   },
     list: {
         backgroundColor: 'white',
         paddingVertical: 0,
@@ -184,11 +184,11 @@ const styles = StyleSheet.create({
         justifyContent:"center",
         alignItems:"center",
         overflow: "hidden"
-    },
+   },
     subTitle:{
         position: "absolute",
         fontSize:scale(14),
-    },
+   },
     redeemedText:{
         position: "absolute",
         fontSize:scale(44),
@@ -196,12 +196,12 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "green",
         color: "green",
-        transform: [{ rotate: '-30deg'}]
-    },
+        transform: [{rotate: '-30deg'}]
+   },
     redeem:{
         color:"white",
         fontSize:scale(24),
-    },
+   },
     voucherItem:{
         marginTop:scale(20),
         marginHorizontal:scale(15),
@@ -209,14 +209,14 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         paddingVertical: 0,
         paddingHorizontal: 0,
-    },
+   },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-    },
+   },
     loading: {
         position: 'absolute',
         left: 0,
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         alignItems: 'center',
         justifyContent: 'center',
-    },
+   },
 });
 const mapStateToProps = (state) => ({
     config: state.config,  // not needed if axios or fetch is used
@@ -237,28 +237,17 @@ VouchersScreen.navigationOptions = ({navigation, screenProps}) => {
         title: navigation.getParam('title'),
         headerStyle: {
             backgroundColor: colors.headerBg,
-        },
+       },
         headerTintColor: colors.headerColor,
         headerTitleStyle: global.appHeaderTitle,
         headerLeft:
             <TouchableOpacity
                 onPress={() => {
                     navigation.goBack()
-                }}
+               }}
             >
-                <Svg
-                    width="32"
-                    height="32"
-                    viewBox="0 0 24 24"
-                    style={{marginLeft: scale(10)}}
-                >
-                    <Path d="m15 18-6-6 6-6"
-                          fill="none"
-                          stroke={screenProps.colors.headerIconColor}
-                          strokeWidth="2"
-                    />
-                </Svg>
+                <SvgIconBack color = {colors.headerIconColor}/>
             </TouchableOpacity>,
-    }
+   }
 }
 export default connect(mapStateToProps)(VouchersScreen);

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TextInput, TextInputProps } from 'react-native';
+import {TextInput, TextInputProps} from 'react-native';
 
 
 interface AnimatedNumberProps
@@ -20,7 +20,7 @@ export default function AnimatedNumber({
                                            time = 17,
                                            value,
                                            ...restProps
-                                       }: AnimatedNumberProps) {
+                                      }: AnimatedNumberProps) {
     const viewValue = React.useRef(value);
     const textInputRef = React.useRef(null);
     const timerRef = React.useRef();
@@ -29,12 +29,12 @@ export default function AnimatedNumber({
         if (undefined !== timerRef.current) {
             clearInterval(timerRef.current);
             timerRef.current = undefined;
-        }
-    };
+       }
+   };
 
     React.useEffect(() => {
         return () => maybeClearInterval();
-    }, []);
+   }, []);
 
     // Start updating current value whenever `value` changes
     React.useEffect(() => {
@@ -61,18 +61,18 @@ export default function AnimatedNumber({
 
             textInputRef.current?.setNativeProps({
                 text: formatter(viewValue.current),
-            });
+           });
 
             if (
                 (minimumStep === 1 && viewValue.current >= value) ||
                 (minimumStep === -1 && viewValue.current <= value)
             ) {
                 maybeClearInterval();
-            }
-        }, time);
+           }
+       }, time);
 
         return () => maybeClearInterval();
-    }, [value]);
+   }, [value]);
 
     return (
         <TextInput
@@ -81,6 +81,6 @@ export default function AnimatedNumber({
             ref={textInputRef}
             editable={false}
             value={formatter(viewValue.current)}
-        />
+      />
     );
 }
