@@ -44,7 +44,7 @@ export default class AwesomeAlert extends Component {
         Animated.spring(this.springValue, {
             toValue: 1,
             bounciness: 10,
-            useNativeDriver,
+            useNativeDriver: true,
        }).start();
    };
 

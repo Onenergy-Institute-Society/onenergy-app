@@ -53,6 +53,7 @@ import AppPageScreen from "./Screens/AppPageScreen";
 import AppAvatar from "@src/components/AppAvatar";
 import LessonScreenHeader from "./Components/LessonScreenHeader";
 import TopicScreenHeader from "./Components/TopicScreenHeader";
+import QuizScreenHeader from "./Components/QuizScreenHeader";
 import {FontWeights} from "@src/styles/global";
 import TextBlock from "./Components/TextBlock";
 import ImageBlock from "./Components/ImageBlock";
@@ -65,6 +66,7 @@ import HomeScreen from './Screens/HomeScreen';
 import ForumItem from "./Components/ForumItem";
 import CourseIcons from "./Components/CourseIcons";
 import TopicItem from "./Components/TopicItem";
+import Immutable from "immutable";
 import {
     SvgIconHomeFocused,
     SvgIconHomeUnfocused,
@@ -282,7 +284,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
    });
     //Program screen course list
     const NewWidgetItemCourseComponent = (props) => {
-        const {viewModel, colors, global} = props;
+        const {viewModel, colors} = props;
 
         let featuredUrl = viewModel.featuredUrl.replace('-300x200', '-1024x683');
         let statusText;
@@ -905,7 +907,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                    });
                                }
                            }
-                       })
+                        })
 
                         //weekly
                         if (acpTempAchievementState.weekly.days && acpTempAchievementState.weekly.days.length) {
@@ -1399,21 +1401,25 @@ export const applyCustomCode = (externalCodeSetup: any) => {
        }
     );
 
-    const customBlogReducer = reducer => (state = reducer(undefined, {}), action) => {
+/*    const customBlogReducer = reducer => (state = reducer(undefined, {}), action) => {
         switch (action.type) {
             case "ONENERGY_BLOG_UPDATE":
-                let blogCache = state.blogCache;
-/*                console.log('action.payload',action.payload)
-                action.payload.map((item) => {
-                    blogCache = blogCache.set(item.id, item);
-               });*/
+                let blogCache = state.byId;
+                if(blogCache) {
+                    action.payload.map((item) => {
+                        blogCache = blogCache.set(-1, item);
+                    });
+                    console.log('blogCache', blogCache)
+                }else{
+                    blogCache = Immutable.fromJS(action.payload);
+                }
+/!*                action.payload.map((item) => {
+                    newBlogCache = blogCache.splice(0, 0, item);
+               });*!/
                 console.log('blogCache', blogCache)
                 const newBlogs = {
                     ...state,
-                    blogCache: {
-                        ...state.blogCache,
-                        byId: blogCache
-                   }
+                    blogCache: blogCache
                }
                 return reducer(newBlogs, action);
             default:
@@ -1423,7 +1429,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     externalCodeSetup.reduxApi.wrapReducer(
         'blogCache',
         customBlogReducer
-    );
+    );*/
     const customUserReducer = reducer => (state = reducer(undefined, {}), action) => {
         switch (action.type) {
             case "USER_VIP_SURVEY_COMPLETED":
@@ -1729,6 +1735,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
 
     //Custom back button in Single Topic Screen
     externalCodeSetup.learnTopicSingleScreenApi.setLearnTopicScreenHeader(props => <TopicScreenHeader {...props}/>)
+
+    //Custom back button in Single Quiz Screen
+    externalCodeSetup.quizApi.setQuizScreenHeader(props => <QuizScreenHeader {...props} />)
 
     //Custom complete button in Single Lesson Screen
     externalCodeSetup.lessonSingleScreenApi.setTransformLessonActionButtons((

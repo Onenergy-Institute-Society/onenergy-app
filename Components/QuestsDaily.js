@@ -13,12 +13,7 @@ import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import AchievementItem from "./AchievementItem";
 import moment from 'moment';
-/*Sound.setCategory('Playback');
-const ding = new Sound('https://cdn.onenergy.institute/audios/bonus_bell.mp3', null,error => {
-    if (error) {
-        console.log('failed to load the sound', error);
-   }
-});*/
+
 if (Platform.OS === "android"){
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 }

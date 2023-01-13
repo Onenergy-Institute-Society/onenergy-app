@@ -64,28 +64,7 @@ const CustomDrawerContentComponent = (props) => {
                                    }}>
                                     {user.name}
                                 </Text>
-                                <View style={{
-                                    flexDirection: "row",
-                                    justifyContent: "flex-end",
-                                    alignItems: "center"
-                               }}>
-                                    <FastImage source={{uri: optionData.ranks[parseInt(user.rank)].rankImage}}
-                                               style={{width: 24, height: 24, alignSelf: "center"}}/>
-                                    <Text style={{
-                                            color: '#fff',
-                                            fontSize: scale(14),
-                                            marginLeft: 5,
-                                            textShadowColor: 'grey',
-                                            textShadowRadius: 1,
-                                            textShadowOffset: {
-                                                width: -1,
-                                                height: 1
-                                           }
-                                       }}>
-                                        {optionData.ranks[parseInt(user.rank)].rankName}
-                                    </Text>
-                                </View>
-                                {progressReducer && progressReducer.points && progressReducer.points.length ? Object.entries(progressReducer.points).map(([key, value]) => (
+                                {progressReducer && progressReducer.points && Object.keys(progressReducer.points).length ? Object.entries(progressReducer.points).map(([key, value]) => (
                                     <View>
                                         <View style={{
                                             flexDirection: "row",
@@ -110,6 +89,27 @@ const CustomDrawerContentComponent = (props) => {
                                         </View>
                                     </View>
                                 )) : null}
+                                <View style={{
+                                    flexDirection: "row",
+                                    justifyContent: "flex-end",
+                                    alignItems: "center"
+                                }}>
+                                    <FastImage source={{uri: optionData.ranks[parseInt(user.rank)].rankImage}}
+                                               style={{width: 24, height: 24, alignSelf: "center"}}/>
+                                    <Text style={{
+                                        color: '#fff',
+                                        fontSize: scale(14),
+                                        marginLeft: 5,
+                                        textShadowColor: 'grey',
+                                        textShadowRadius: 1,
+                                        textShadowOffset: {
+                                            width: -1,
+                                            height: 1
+                                        }
+                                    }}>
+                                        {optionData.ranks[parseInt(user.rank)].rankName}
+                                    </Text>
+                                </View>
                             </View>
                         </View>
                         {user.membership.length > 0 ?
