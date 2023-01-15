@@ -78,7 +78,7 @@ const QuestsMonthly = (props) => {
                             <TouchableWithoutFeedback
                                 onPress={() => {
                                     dispatch({
-                                        type: "ONENERGY_ACHIEVEMENT_CLAIM_WEEKLY_MONTHLY",
+                                        type: "ONENERGY_WEEKLY_MONTHLY_CLAIM",
                                         payload: {
                                             mode: "monthly",
                                             date: achievementReducer.complete_date,

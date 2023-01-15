@@ -63,12 +63,12 @@ const StatsScreen = (props) => {
 
     let pieData=[];
     let pieLegend=['#093423', '#157d54', '#1eb478', '#22cc89', '#2edc97', '#65e5b2', '#95eecb', '#b4f3da', '#ccf7e6', '#fdfffe', '#ffffff'];
-    if(progressReducer.practicesStats&&progressReducer.practicesStats.length) {
-        progressReducer.practicesStats.filter(item => item.type === 'PP_SECTION').map((item, index) => {
+    if(progressReducer.sectionStats&&progressReducer.sectionStats.length) {
+        progressReducer.sectionStats.map((item, index) => {
             pieData.push(
                 {
-                    name: item.title,
-                    duration: item.duration,
+                    name: practiceReducer.guides[item.section_id].title,
+                    duration: item.section_duration,
                     color: pieLegend[index],
                     legendFontColor: "#262626",
                     legendFontSize: scale(10)
@@ -266,26 +266,26 @@ const StatsScreen = (props) => {
                                     borderBottomLeftRadius:9,
                                }]}
                                 colors={['#fbcfe8', '#fce7f3']}>
-                                {progressReducer.routinesStats&&progressReducer.routinesStats.length ?
-                                    progressReducer.routinesStats.map((item, index) => {
+                                {progressReducer.routineStats&&progressReducer.routineStats.length ?
+                                    progressReducer.routineStats.map((item, index) => {
                                         return (
                                             <>
                                                 <View style={styles.row}>
-                                                    <Text style={[global.title, styles.title, {fontSize:scale(14), flex: 0.6}]}>{item.title}</Text>
+                                                    <Text style={[global.title, styles.title, {fontSize:scale(14), flex: 0.6}]}>{practiceReducer.routines.find(routine => routine.id === item.routine_id).title}</Text>
                                                     <Text style={[global.textAlt, {
                                                         flex: 0.2,
                                                         alignSelf: "flex-end",
                                                         textAlign: "right",
                                                         alignItems: "flex-end"
-                                                   }]}>{item.count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
+                                                   }]}>{item.routine_count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
                                                     <Text style={[global.textAlt, {
                                                         flex: 0.2,
                                                         alignSelf: "flex-end",
                                                         textAlign: "right",
                                                         alignItems: "flex-end"
-                                                   }]}>{Math.round(item.duration / 60) > 60 ? Math.round(item.duration / 60 / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : Math.round(item.duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                                   }]}>{Math.round(item.routine_duration / 60) > 60 ? Math.round(item.routine_duration / 60 / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : Math.round(item.routine_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                                 </View>
-                                                {index < progressReducer.routinesStats.length - 1 ?
+                                                {index < progressReducer.routineStats.length - 1 ?
                                                     <View style={[styles.rowHr, {backgroundColor: "#f9a8d4"}]}/>
                                                     :
                                                     <View style={{marginBottom: scale(10)}}/>}
@@ -317,12 +317,13 @@ const StatsScreen = (props) => {
                            }]}
                             colors={['#ddd6fe', '#ede9fe']}>
                             {progressReducer.groupStats.map((item, index)=> {
+                                let groupName = practiceReducer.groups.find(group => group.id = item.group_id).name;
                                 return (
                                     <>
                                         <View style={styles.row}>
-                                            <Text style={[global.title, styles.title,{flex:0.6}]}>{item.title}</Text>
-                                            <Text style={[global.textAlt,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
-                                            <Text style={[global.textAlt,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                            <Text style={[global.title, styles.title,{flex:0.6}]}>{groupName}</Text>
+                                            <Text style={[global.textAlt,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.group_count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
+                                            <Text style={[global.textAlt,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.group_duration / 60 )>60?Math.round(item.group_duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.group_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                         </View>
                                         {index<progressReducer.groupStats.length-1?
                                             <View style={[styles.rowHr, {backgroundColor: "#c4b5fd"}]}/>
@@ -349,15 +350,15 @@ const StatsScreen = (props) => {
                                 borderBottomLeftRadius:9,
                            }]}
                             colors={['#d1fae5', '#a7f3d0']}>
-                            {progressReducer.practicesStats&&progressReducer.practicesStats.length?
+                            {progressReducer.sectionStats&&progressReducer.sectionStats.length?
                                 <>
-                                {progressReducer.practicesStats.filter(item=> item.type==='PP_SECTION').map((item, index)=> {
+                                {progressReducer.sectionStats.map((item, index)=> {
                                     return (
                                         <>
                                             <View style={styles.row}>
-                                                <Text style={[global.title,styles.title,{flex:0.5}]}>{item.title}</Text>
-                                                <Text style={[global.textAlt,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
-                                                <Text style={[global.textAlt,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.duration / 60 )>60?Math.round(item.duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                                <Text style={[global.title,styles.title,{flex:0.5}]}>{practiceReducer.guides[item.section_id].title}</Text>
+                                                <Text style={[global.textAlt,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.section_count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
+                                                <Text style={[global.textAlt,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.section_duration / 60 )>60?Math.round(item.section_duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.section_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                                 <Svg
                                                     width="24"
                                                     height="24"
@@ -369,7 +370,7 @@ const StatsScreen = (props) => {
                                                    />
                                                 </Svg>
                                             </View>
-                                            {index<progressReducer.practicesStats.filter(item=> item.type==='PP_SECTION').length-1?
+                                            {index<progressReducer.sectionStats.length-1?
                                             <View style={[styles.rowHr, {backgroundColor: "#6ee7b7"}]}/>
                                                 :
                                             <View style={{marginBottom:scale(10)}}/>}

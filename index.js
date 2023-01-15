@@ -84,7 +84,7 @@ import {
 export const applyCustomCode = (externalCodeSetup: any) => {
     externalCodeSetup.topicsApi.setTopicItemComponent(props => {
         return <TopicItem {...props}/>;
-   })
+    })
     externalCodeSetup.navigationApi.addNavigationRoute(
         "homePage",
         "Home",
@@ -274,14 +274,14 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         return {
             ...props,
             enrolledMembers: null
-       }
-   });
+        }
+    });
     externalCodeSetup.coursesHooksApi.setSubFiltersFilter((filters) => {
         return ["my_progress"]; //available filters include "title", "recent", "my_progress"
-   });
+    });
     externalCodeSetup.coursesHooksApi.setFetchParamsFilter(props => {
         return {...props, order: "desc", categories: [93]}
-   });
+    });
     //Program screen course list
     const NewWidgetItemCourseComponent = (props) => {
         const {viewModel, colors} = props;
@@ -297,28 +297,28 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         let diffTime;
         if (diffMinutes < 60) {
             diffTime = 'in ' + diffMinutes + ' Minutes';
-       } else {
+        } else {
             if (diffHours < 24) {
                 diffTime = 'tomorrow';
-           } else {
+            } else {
                 diffTime = 'in ' + diffDays + ' Days';
-           }
-       }
+            }
+        }
         let lessonNote = '';
         if (viewModel.progression === 100) {
             statusBarColor = colors.coursesLabelCompleted;
             statusText = "Completed";
             lessonNote = 'Congratulations on completion';
-       } else if (viewModel.price && viewModel.price.expired) {
+        } else if (viewModel.price && viewModel.price.expired) {
             statusBarColor = "black";
             statusText = "Expired";
             lessonNote = 'Course is expired, no more access';
-       } else if (viewModel.hasAccess) {
+        } else if (viewModel.hasAccess) {
             if (lesson_time > current_time) {
                 lessonNote = 'Next lesson will be available ' + diffTime;
-           } else {
+            } else {
                 lessonNote = 'Next lesson is available now';
-           }
+            }
             const expiringTime = new moment.utc(viewModel.price.expires_on);
             const diffExpiringDays = expiringTime.diff(current_time, 'days');
             let diffExpiringTime;
@@ -327,25 +327,25 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 statusBarColor = "grey";
                 statusText = diffExpiringTime;
                 lessonNote = 'Course is expiring soon';
-           } else {
+            } else {
                 if (viewModel.progression > 0) {
                     statusBarColor = colors.coursesLabelProgress;
                     statusText = "In Progress";
-               } else {
+                } else {
                     statusBarColor = colors.coursesLabelFree;
                     statusText = "Enrolled";
                     lessonNote = 'Please start your first lesson';
-               }
-           }
-       } else {
+                }
+            }
+        } else {
             statusBarColor = colors.coursesLabelStart;
             statusText = "Start Course";
-       }
+        }
         const styles = StyleSheet.create({
             containerStyle: {
                 marginHorizontal: scale(15),
                 backgroundColor: 'transparent',
-           },
+            },
             statusBar: {
                 height: scale(25),
                 position: 'absolute',
@@ -361,33 +361,33 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 borderBottomRightRadius: 15,
                 zIndex: 3, // works on ios
                 elevation: 3,
-           },
+            },
             statusText: {
                 color: 'white',
                 fontSize: scale(13),
                 backgroundColor: 'transparent',
                 fontFamily: "MontserratAlternates-Regular"
-           },
+            },
             progressBar: {
                 height: 3,
                 position: 'absolute',
                 top: scale(20),
-                right:scale(20),
+                right: scale(20),
                 flexDirection: "row",
-                width: (windowWidth -scale(30))/2,
+                width: (windowWidth - scale(30)) / 2,
                 backgroundColor: 'white',
                 borderColor: '#000',
                 borderWidth: 0,
                 borderRadius: 5,
-           },
+            },
             image: {
                 width: windowWidth - scale(30),
                 height: (windowWidth - scale(30)) / 9 * 4,
                 borderRadius: 9,
-                marginLeft: (windowWidth -scale(30))/9,
+                marginLeft: (windowWidth - scale(30)) / 9,
                 overflow: 'hidden',
                 resizeMode: "cover",
-           },
+            },
             metaOverlay: {
                 position: "absolute",
                 left: 0,
@@ -396,7 +396,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 bottom: 0,
                 justifyContent: "flex-start",
                 alignItems: "flex-end",
-           },
+            },
             meta: {
                 width: windowWidth - scale(30),
                 height: (windowWidth - scale(30)) / 9 * 4,
@@ -405,14 +405,14 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 alignItems: "center",
                 paddingRight: 10,
                 paddingTop: 10,
-           },
+            },
             icon: {
-                width:( windowWidth - scale(30))/2,
-                height: (windowWidth - scale(30))/2,
+                width: (windowWidth - scale(30)) / 2,
+                height: (windowWidth - scale(30)) / 2,
                 position: "absolute",
                 left: (windowWidth - scale(30)) / 9,
                 top: (windowWidth - scale(30)) / 9 + scale(10),
-           },
+            },
             title: {
                 fontSize: scale(20),
                 textAlign: 'center',
@@ -427,7 +427,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 bottom: scale(10),
                 left: 0,
                 right: 0,
-           },
+            },
             card: {
                 backgroundColor: 'white',
                 borderRadius: 9,
@@ -435,15 +435,15 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 height: scale(150),
                 marginTop: scale(25),
                 justifyContent: "space-between",
-           },
+            },
             boxShadow: {
                 shadowColor: "#000",
                 shadowOffset: {width: -2, height: 4},
                 shadowOpacity: 0.2,
                 shadowRadius: 3,
                 elevation: 4,
-           },
-       });
+            },
+        });
         return (
             <View style={styles.containerStyle} key={'course-' + viewModel.id}>
                 <TouchableWithoutFeedback
@@ -456,8 +456,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             <View style={{position: "absolute", top: 10, right: 5}}>
                                 <SvgIconMedal/>
                             </View>
-                            :null
-                       }
+                            : null
+                        }
                         <ImageCache style={styles.image} source={{uri: featuredUrl ? featuredUrl : ''}}/>
                         <Text style={styles.title}>{viewModel.title}</Text>
                         <View style={styles.metaOverlay}>
@@ -465,22 +465,22 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 <View style={styles.progressBar}><View style={{
                                     backgroundColor: colors.primaryColor,
                                     width: viewModel.progression + '%'
-                               }}/></View>
+                                }}/></View>
                                 : null}
                             <View style={styles.meta}>
                             </View>
                         </View>
                         <View style={styles.icon}>
-                            {viewModel.price.icon?
+                            {viewModel.price.icon ?
                                 <CourseIcons icon={viewModel.price.icon}/>
-                                :null
-                           }
+                                : null
+                            }
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
             </View>
         )
-   }
+    }
     externalCodeSetup.coursesHooksApi.setWidgetItemCourseComponent(NewWidgetItemCourseComponent)
 
     //Change author name to nickname in single blog screen
@@ -492,7 +492,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         size={35}
                         source={{uri: blog.avatar}}
                         style={{marginRight: 10}}
-                   />
+                    />
                     : null}
                 <View>
                     <Text
@@ -502,7 +502,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 </View>
             </View>
         );
-   }
+    }
     externalCodeSetup.blogSingleApi.setBlogHeaderAvatar(BlogHeaderAvatar);
 
     //Add Blog reducer
@@ -518,22 +518,22 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         postsState = {
                             ...state,
                             posts: [...state.posts, ...posts],
-                       };
-                   } else {
+                        };
+                    } else {
                         postsState = {
                             ...state,
                             posts: posts,
-                       };
-                   }
+                        };
+                    }
                     posts = postsState.posts.sort((a, b) => {
                         if (a.date < b.date) {
                             return 1
-                       } else if (a.date > b.date) {
+                        } else if (a.date > b.date) {
                             return -1
-                       } else {
+                        } else {
                             return 0
-                       }
-                   })
+                        }
+                    })
                     let categoryIndex = state.lastView.findIndex(lv => lv.category === action.category);
 
                     if (categoryIndex && categoryIndex >= 0) {
@@ -545,12 +545,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 {
                                     category: action.category,
                                     date: currentDate
-                               },
+                                },
                                 ...state.lastView.slice(categoryIndex + 1)
                             ],
                             postUpdate: currentDate
-                       };
-                   } else {
+                        };
+                    } else {
                         return {
                             ...state,
                             posts: posts,
@@ -559,11 +559,11 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 {
                                     category: parseInt(action.category),
                                     date: currentDate
-                               }
+                                }
                             ],
                             postUpdate: currentDate
-                       };
-                   }
+                        };
+                    }
                 case "ONENERGY_POSTS_REMOVE_NOTIFY":
                     let postIndex = state.posts.findIndex(post => post.id === action.payload);
                     return {
@@ -573,21 +573,21 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             {
                                 ...state.posts[postIndex],
                                 notify: false
-                           },
+                            },
                             ...state.posts.slice(postIndex + 1)
                         ]
-                   }
+                    }
                 case "ONENERGY_POSTS_RESET":
                     return {
                         ...state,
                         posts: [],
                         lastView: [],
                         postUpdate: '',
-                   };
+                    };
                 default:
                     return state;
-           }
-       }
+            }
+        }
     );
 
     //Add Quote Reducer
@@ -602,30 +602,30 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         quotesState = {
                             ...state,
                             quotes: [...state.quotes, ...quotes],
-                       };
-                   } else {
+                        };
+                    } else {
                         quotesState = {
                             ...state,
                             quotes: quotes,
-                       };
-                   }
+                        };
+                    }
                     quotes = quotesState.quotes.sort((a, b) => {
                         if (a.date < b.date) {
                             return 1
-                       } else if (a.date > b.date) {
+                        } else if (a.date > b.date) {
                             return -1
-                       } else {
+                        } else {
                             return 0
-                       }
-                   })
+                        }
+                    })
                     return {
                         ...state,
                         quotes: quotes,
-                   };
+                    };
                 default:
                     return state;
-           }
-       }
+            }
+        }
     );
 
     //Add Progress reducer
@@ -639,34 +639,36 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 routineUpdate: '',
                 guideUpdate: '',
                 groupUpdate: '',
-           },
+            },
             progressReducer: {
                 points: {},
                 totalDuration: 0,
                 todayDuration: 0,
-                todayGoal:10,
+                todayGoal: 10,
                 weekDuration: 0,
                 totalDays: 0,
                 lastPractice: '',
                 latestUpdate: '',
                 lastUpload: '',
                 actionList: [],
-                practicesStats: [],
-                routinesStats: [],
+                guideStats: [],
+                sectionStats: [],
+                routineStats: [],
                 groupStats: [],
                 progressUpdate: '',
                 completedLessons: [],
                 enrolledCourses: [],
                 completedCourses: [],
-                progress:[],
-           },
+                progress: [],
+            },
             achievementReducer: {
                 weekly: {days: [], complete_date: '', claim_date: ''},
                 monthly: {days: [], complete_date: '', claim_date: ''},
-                achievements: [],
+                daily: [],
+                milestones: [],
                 achievementUpdate: ''
-           }
-       }, action) => {
+            }
+        }, action) => {
             switch (action.type) {
                 case "ONENERGY_INIT_DATA":
                     console.log('1')
@@ -678,39 +680,39 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     console.log('2')
                     let idPracticeReducer = state.practiceReducer;
                     let idAchievementReducer = state.achievementReducer;
-                    console.log(data.achievements)
                     let idProgressReducer = state.progressReducer;
                     console.log('3')
                     if (loadGroup) {
                         if (data.groups) {
                             idPracticeReducer.groups = data.groups;
-                       }
+                        }
                         idPracticeReducer.groupUpdate = new Date().toISOString();
-                   }
+                    }
                     console.log('4')
                     if (loadGuide) {
                         if (data.guides) {
                             idPracticeReducer.guides = data.guides;
-                       }
+                        }
                         idPracticeReducer.guideUpdate = new Date().toISOString();
-                   }
+                    }
                     console.log('5')
                     if (loadAchievement) {
                         if (data.achievements) {
-                            idAchievementReducer.achievements = data.achievements.achievements;
+                            idAchievementReducer.milestones = data.achievements.milestones;
+                            idAchievementReducer.daily = data.achievements.daily;
                             idAchievementReducer.weekly = data.achievements.weekly ? data.achievements.weekly : {
                                 days: [],
                                 complete_date: '',
                                 claim_date: ''
-                           };
+                            };
                             idAchievementReducer.monthly = data.achievements.monthly ? data.achievements.monthly : {
                                 days: [],
                                 complete_date: '',
                                 claim_date: ''
-                           };
-                       }
+                            };
+                        }
                         idAchievementReducer.achievementUpdate = new Date().toISOString();
-                   }
+                    }
                     console.log('6')
                     if (loadProgress) {
                         console.log('data.progress', data.progress)
@@ -718,33 +720,34 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             Object.keys(data.progress.points).map(key =>
                                 idProgressReducer.points[key] = parseInt(data.progress.points[key])
                             )
-                            idProgressReducer.totalDuration = data.progress.totalDuration?parseInt(data.progress.totalDuration):0;
-                            idProgressReducer.todayDuration = data.progress.todayDuration?parseInt(data.progress.todayDuration):0;
-                            idProgressReducer.todayGoal = data.progress.todayGoal?parseInt(data.progress.todayGoal):10;
-                            idProgressReducer.weekDuration = data.progress.weekDuration?parseInt(data.progress.weekDuration):0;
+                            idProgressReducer.totalDuration = data.progress.totalDuration ? parseInt(data.progress.totalDuration) : 0;
+                            idProgressReducer.todayDuration = data.progress.todayDuration ? parseInt(data.progress.todayDuration) : 0;
+                            idProgressReducer.todayGoal = data.progress.todayGoal ? parseInt(data.progress.todayGoal) : 10;
+                            idProgressReducer.weekDuration = data.progress.weekDuration ? parseInt(data.progress.weekDuration) : 0;
                             idProgressReducer.progress = [];
-                            if(data.progress.progress) {
+                            if (data.progress.progress) {
                                 data.progress.progress.map(progress => {
                                     idProgressReducer.progress.push({
                                         'date': progress.date,
                                         'duration': parseInt(progress.duration)
-                                   });
-                               })
-                           }else{
+                                    });
+                                })
+                            } else {
                                 idProgressReducer.progress = [];
-                           }
-                            idProgressReducer.totalDays = data.progress.totalDays?parseInt(data.progress.totalDays):0;
-                            idProgressReducer.lastPractice = data.progress.lastPractice?data.progress.lastPractice:'';
-                            idProgressReducer.latestUpdate = data.progress.lastPractice?parseInt(data.progress.lastPractice):0;
-                            idProgressReducer.lastUpload = data.progress.lastUpload?parseInt(data.progress.lastUpload):0;
-                            idProgressReducer.practicesStats = data.progress.practicesStats?data.progress.practicesStats:[];
-                            idProgressReducer.routinesStats = data.progress.routinesStats?data.progress.routinesStats:[];
-                            idProgressReducer.groupStats = data.progress.groupStats?data.progress.groupStats:[];
-                            idProgressReducer.completedLessons = data.progress.completedLessons?data.progress.completedLessons:[];
-                            idProgressReducer.enrolledCourses = data.progress.enrolledCourses?data.progress.enrolledCourses:[];
-                            idProgressReducer.completedCourses = data.progress.completedCourses?data.progress.completedCourses:[];
+                            }
+                            idProgressReducer.totalDays = data.progress.totalDays ? parseInt(data.progress.totalDays) : 0;
+                            idProgressReducer.lastPractice = '';
+                            idProgressReducer.latestUpdate = 0;
+                            idProgressReducer.lastUpload = 0;
+                            idProgressReducer.guideStats = data.progress.guideStats ? data.progress.guideStats : [];
+                            idProgressReducer.sectionStats = data.progress.sectionStats ? data.progress.sectionStats : [];
+                            idProgressReducer.routineStats = data.progress.routineStats ? data.progress.routineStats : [];
+                            idProgressReducer.groupStats = data.progress.groupStats ? data.progress.groupStats : [];
+                            idProgressReducer.completedLessons = data.progress.completedLessons ? data.progress.completedLessons : [];
+                            idProgressReducer.enrolledCourses = data.progress.enrolledCourses ? data.progress.enrolledCourses : [];
+                            idProgressReducer.completedCourses = data.progress.completedCourses ? data.progress.completedCourses : [];
                             console.log(idProgressReducer)
-                       } else {
+                        } else {
                             idProgressReducer.points = {'qi': 0};
                             idProgressReducer.totalDuration = 0;
                             idProgressReducer.todayDuration = 0;
@@ -755,23 +758,24 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             idProgressReducer.lastPractice = '';
                             idProgressReducer.latestUpdate = 0;
                             idProgressReducer.lastUpload = 0;
-                            idProgressReducer.practicesStats = [];
-                            idProgressReducer.routinesStats = [];
+                            idProgressReducer.guideStats = [];
+                            idProgressReducer.sectionStats = [];
+                            idProgressReducer.routineStats = [];
                             idProgressReducer.groupStats = [];
                             idProgressReducer.completedLessons = [];
                             idProgressReducer.enrolledCourses = [];
                             idProgressReducer.completedCourses = [];
-                       }
+                        }
                         idProgressReducer.actionList = [];
                         idProgressReducer.progressUpdate = new Date().toISOString();
-                   }
+                    }
                     console.log('7', idPracticeReducer, idAchievementReducer, idProgressReducer)
                     return {
                         ...state,
                         practiceReducer: idPracticeReducer,
                         achievementReducer: idAchievementReducer,
                         progressReducer: idProgressReducer,
-                   };
+                    };
                 case "ONENERGY_ROUTINE_UPDATE":
                     return {
                         ...state,
@@ -779,8 +783,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             ...state.practiceReducer,
                             routines: action.payload,
                             routineUpdate: new Date().toISOString()
-                       }
-                   };
+                        }
+                    };
                 case "ONENERGY_ROUTINE_SAVE":
                     let routine = action.payload;
                     let ors_tempState = state.practiceReducer.routines;
@@ -793,9 +797,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 ...state.practiceReducer,
                                 routines: ors_tempState,
                                 routineUpdate: new Date().toISOString()
-                           }
-                       };
-                   } else {
+                            }
+                        };
+                    } else {
                         return {
                             ...state,
                             practiceReducer: {
@@ -806,9 +810,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                         routine
                                     ],
                                 routineUpdate: new Date().toISOString()
-                           }
-                       };
-                   }
+                            }
+                        };
+                    }
                 case "ONENERGY_GUIDE_UPDATE":
                     let lessonGuides = action.payload;
                     let tempGuides = state.practiceReducer.guides;
@@ -817,17 +821,17 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         if (tempIndex >= 0) {
                             tempGuides[index].data[tempIndex].show = true;
                             tempGuides[index].data[tempIndex].new = true;
-                       }
-                   });
+                        }
+                    });
                     return {
                         ...state,
                         practiceReducer: {
                             ...state.practiceReducer,
                             guides: tempGuides
-                       }
-                   };
+                        }
+                    };
                 case "ONENERGY_PROGRESS_GOAL":
-                    switch(action.payload.mode){
+                    switch (action.payload.mode) {
                         case 'todayGoal':
                             let goal = action.payload.data;
                             return {
@@ -835,9 +839,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 progressReducer: {
                                     ...state.progressReducer,
                                     todayGoal: goal,
-                               }
-                           };
-                   }
+                                }
+                            };
+                    }
                     break;
                 case "ONENERGY_PROGRESS_UPLOADED":
                     console.log('upload_done')
@@ -849,7 +853,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     return {
                         ...state,
                         progressReducer: opuTempProgressState
-                   };
+                    };
                 case "ONENERGY_DAILY_UPDATE":
                     let oduTempProgressState = state.progressReducer;
                     let oduTempAchievementState = state.achievementReducer;
@@ -857,25 +861,23 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     oduTempProgressState.todayDuration = 0;
                     if (new Date().getDay() === 1) {
                         oduTempProgressState.weekDuration = 0;
-                   }
+                    }
                     oduTempProgressState.totalDays += 1;
 
-                    oduTempAchievementState.achievements.map((item, tempIndex) => {
-                        if (item.type === 'daily') {
-                            oduTempAchievementState.achievements[tempIndex].complete_date = '';
-                            oduTempAchievementState.achievements[tempIndex].claim_date = '';
-                       }
-                   })
+                    oduTempAchievementState.daily.map((item, tempIndex) => {
+                        oduTempAchievementState.daily[tempIndex].complete_date = '';
+                        oduTempAchievementState.daily[tempIndex].claim_date = '';
+                    })
                     oduTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
 
                     return {
                         ...state,
                         achievementReducer: {
                             ...state.achievementReducer,
-                            achievements: oduTempAchievementState.achievements,
-                       },
+                            daily: oduTempAchievementState.daily,
+                        },
                         progressReducer: oduTempProgressState,
-                   };
+                    };
                 case "ONENERGY_PRACTICE_COMPLETED":
                     let acpTempPracticeState = state.practiceReducer;
                     let acpTempProgressState = state.progressReducer;
@@ -891,24 +893,19 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     updateDaily = today !== state.progressReducer.lastPractice;
 
                     if (updateDaily) {
-                        acpTempAchievementState.achievements.map((item, tempIndex) => {
+                        acpTempAchievementState.milestones.map((item, tempIndex) => {
                             if (item.trigger === 'progress' && item.triggerField === 'totalDays' && item.complete_date !== today) {
-                                acpTempAchievementState.achievements[tempIndex].step += 1;
+                                acpTempAchievementState.milestones[tempIndex].step += 1;
                                 if (parseInt(item.total) <= acpTempProgressState.totalDays) {
-                                    acpTempAchievementState.achievements[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
-                                    if (acpTempAchievementState.achievements[tempIndex].type === 'daily') {
-                                        acpTempAchievementState.achievements[tempIndex].step = 0;
-                                        acpTempAchievementState.achievements[tempIndex].list.push(today);
-                                   }
+                                    acpTempAchievementState.milestones[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
                                     acpTempProgressState.actionList.push({
                                         'mode': 'CA',
                                         'data': {'id': item.id, 'points': item.awards},
                                         'time': Math.floor(new Date().getTime() / 1000)
-                                   });
-                               }
-                           }
+                                    });
+                                }
+                            }
                         })
-
                         //weekly
                         if (acpTempAchievementState.weekly.days && acpTempAchievementState.weekly.days.length) {
                             console.log('w1')
@@ -917,23 +914,23 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 console.log('w2')
                                 acpTempAchievementState.weekly.days = [];
                                 acpTempAchievementState.weekly.days.push(today);
-                           } else if (acpTempAchievementState.weekly.days.length > 7) {
+                            } else if (acpTempAchievementState.weekly.days.length > 7) {
                                 console.log('w3')
                                 acpTempAchievementState.weekly.days = [];
                                 acpTempAchievementState.weekly.days.push(today);
-                           } else {
+                            } else {
                                 console.log('w4')
                                 acpTempAchievementState.weekly.days.push(today);
                                 if (acpTempAchievementState.weekly.days.length === 7) {
                                     acpTempAchievementState.weekly.complete_date = today;
                                     acpTempAchievementState.weekly.claim_date = '';
-                               }
-                           }
-                       } else {
+                                }
+                            }
+                        } else {
                             console.log('w5')
                             acpTempAchievementState.weekly.days = [];
                             acpTempAchievementState.weekly.days.push(today);
-                       }
+                        }
 
                         //monthly
                         if (acpTempAchievementState.monthly.days && acpTempAchievementState.monthly.days.length) {
@@ -941,22 +938,22 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             if (moment(today).diff(moment(lastDay), 'days') > 1) {
                                 acpTempAchievementState.monthly.days = [];
                                 acpTempAchievementState.monthly.days.push(today);
-                           } else if (acpTempAchievementState.monthly.days.length > 30) {
+                            } else if (acpTempAchievementState.monthly.days.length > 30) {
                                 acpTempAchievementState.monthly.days = [];
                                 acpTempAchievementState.monthly.days.push(today);
-                           } else {
+                            } else {
                                 acpTempAchievementState.monthly.days.push(today);
                                 if (acpTempAchievementState.monthly.days.length === 30) {
                                     acpTempAchievementState.monthly.complete_date = today;
                                     acpTempAchievementState.monthly.claim_date = '';
-                               }
-                           }
-                       } else {
+                                }
+                            }
+                        } else {
                             acpTempAchievementState.monthly.days = [];
                             acpTempAchievementState.monthly.days.push(today)
-                       }
+                        }
                         acpTempProgressState.lastPractice = new moment().format('YYYY-MM-DD');
-                   }
+                    }
 
                     let tempArray = [];
                     switch (acpMode) {
@@ -971,18 +968,17 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             routineIndex = state.practiceReducer.routines.findIndex((temp) => temp.id === acpData);
                             tempArray = state.practiceReducer.routines[routineIndex].routine;
 
-                            acpTempIndex = acpTempProgressState.routinesStats.findIndex(item => item.id === acpData)
+                            acpTempIndex = acpTempProgressState.routineStats.findIndex(item => item.routine_id === acpData)
                             if (acpTempIndex >= 0) {
-                                acpTempProgressState.routinesStats[acpTempIndex].count += 1;
-                                acpTempProgressState.routinesStats[acpTempIndex].duration += acpTempPracticeState.routines[routineIndex].duration;
-                           } else {
-                                acpTempProgressState.routinesStats.push({
-                                    'id': acpData,
-                                    'title': state.practiceReducer.routines[routineIndex].title,
-                                    'count': 1,
-                                    'duration': state.practiceReducer.routines[routineIndex].duration,
-                               })
-                           }
+                                acpTempProgressState.routineStats[acpTempIndex].routine_count += 1;
+                                acpTempProgressState.routineStats[acpTempIndex].routine_duration += acpTempPracticeState.routines[routineIndex].duration;
+                            } else {
+                                acpTempProgressState.routineStats.push({
+                                    'routine_id': acpData,
+                                    'routine_count': 1,
+                                    'routine_duration': state.practiceReducer.routines[routineIndex].duration,
+                                })
+                            }
                             break;
                         case 'PG':
                             console.log('33')
@@ -991,62 +987,78 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             groupIndex = state.practiceReducer.groups.findIndex((temp) => temp.id === acpData);
                             state.practiceReducer.groups[groupIndex].guides.map(tempGuide => {
                                 tempArray.push({'id': tempGuide, 'count': 1});
-                           });
-                            tmpAchievements = state.achievementReducer.achievements.filter((item) =>
+                            });
+                            tmpAchievements = state.achievementReducer.milestones.filter((item) =>
                                 (item.trigger === 'practice' &&
                                     (
                                         (item.triggerPracticeOption === 'group' && (parseInt(item.triggerGroupPractice) === acpData || !item.triggerGroupPractice))
                                     ) &&
                                     !item.complete_date));
                             tmpAchievements.map((item) => {
-                                let tempIndex = acpTempAchievementState.achievements.findIndex(achievement => achievement.id === item.id);
-                                acpTempAchievementState.achievements[tempIndex].step += 1;
-                                if (acpTempAchievementState.achievements[tempIndex].total <= acpTempAchievementState.achievements[tempIndex].step) {
-                                    acpTempAchievementState.achievements[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
-                                    acpTempAchievementState.achievements[tempIndex].claim_date = '';
-                                    if (acpTempAchievementState.achievements[tempIndex].type === 'daily') {
-                                        acpTempAchievementState.achievements[tempIndex].list.push(acpTempAchievementState.achievements[tempIndex].complete_date);
-                                   }
+                                let tempIndex = acpTempAchievementState.milestones.findIndex(achievement => achievement.id === item.id);
+                                acpTempAchievementState.milestones[tempIndex].step += 1;
+                                if (acpTempAchievementState.milestones[tempIndex].total <= acpTempAchievementState.milestones[tempIndex].step) {
+                                    acpTempAchievementState.milestones[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
+                                    acpTempAchievementState.milestones[tempIndex].claim_date = '';
                                     acpTempProgressState.actionList.push({
                                         'mode': 'CA',
                                         'data': {'id': item.id, 'points': item.awards},
                                         'time': Math.floor(new Date().getTime() / 1000)
-                                   });
-                               }
-                           })
-                            if(acpTempProgressState.groupStats) {
-                                acpTempIndex = acpTempProgressState.groupStats.findIndex(item => item.id === acpData);
+                                    });
+                                }
+                            })
+                            tmpAchievements = state.achievementReducer.daily.filter((item) =>
+                                (item.trigger === 'practice' &&
+                                    (
+                                        (item.triggerPracticeOption === 'group' && (parseInt(item.triggerGroupPractice) === acpData || !item.triggerGroupPractice))
+                                    ) &&
+                                    !item.complete_date));
+                            tmpAchievements.map((item) => {
+                                let tempIndex = acpTempAchievementState.daily.findIndex(achievement => achievement.id === item.id);
+                                acpTempAchievementState.daily[tempIndex].step += 1;
+                                if (acpTempAchievementState.daily[tempIndex].total <= acpTempAchievementState.daily[tempIndex].step) {
+                                    acpTempAchievementState.daily[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
+                                    acpTempAchievementState.daily[tempIndex].claim_date = '';
+                                    acpTempAchievementState.daily[tempIndex].list.push(acpTempAchievementState.daily[tempIndex].complete_date);
+                                    acpTempProgressState.actionList.push({
+                                        'mode': 'CA',
+                                        'data': {'id': item.id, 'points': item.awards},
+                                        'time': Math.floor(new Date().getTime() / 1000)
+                                    });
+                                }
+                            })
+                            if (acpTempProgressState.groupStats) {
+                                acpTempIndex = acpTempProgressState.groupStats.findIndex(item => item.group_id === acpData);
                                 if (acpTempIndex >= 0) {
-                                    acpTempProgressState.groupStats[acpTempIndex].count += 1;
-                                    acpTempProgressState.groupStats[acpTempIndex].duration += acpTempPracticeState.groups[groupIndex].duration;
-                               } else {
+                                    acpTempProgressState.groupStats[acpTempIndex].group_count += 1;
+                                    acpTempProgressState.groupStats[acpTempIndex].group_duration += acpTempPracticeState.groups[groupIndex].duration;
+                                } else {
                                     acpTempProgressState.groupStats.push({
-                                        'id': acpData,
-                                        'title': state.practiceReducer.groups[groupIndex].name,
-                                        'count': 1,
-                                        'duration': state.practiceReducer.groups[groupIndex].duration,
-                                   })
-                               }
-                           }else{
+                                        'group_id': acpData,
+                                        'group_count': 1,
+                                        'group_duration': state.practiceReducer.groups[groupIndex].duration,
+                                    })
+                                }
+                            } else {
                                 acpTempProgressState.groupStats.push({
-                                    'id': acpData,
-                                    'title': state.practiceReducer.groups[groupIndex].name,
-                                    'count': 1,
-                                    'duration': state.practiceReducer.groups[groupIndex].duration,
-                               })
-                           }
+                                    'group_id': acpData,
+                                    'group_count': 1,
+                                    'group_duration': state.practiceReducer.groups[groupIndex].duration,
+                                })
+                            }
                             break;
-                   }
+                    }
 
                     tempArray.map(tempGuide => {
                         //Get the section ID from the guide ID
                         tempSection = state.practiceReducer.guides.find((section) => {
                             if (section.data.find(guide => guide.id === tempGuide.id))
                                 return true
-                       });
+                        });
                         console.log('41', tempSection)
 
-                        tmpAchievements = state.achievementReducer.achievements.filter((item) => {
+                        //milestones
+                        tmpAchievements = state.achievementReducer.milestones.filter((item) => {
                             if (item.trigger === 'practice' &&
                                 (
                                     (item.triggerPracticeOption === 'single' && (parseInt(item.triggerSinglePractice) === tempGuide.id || !item.triggerSinglePractice)) ||
@@ -1054,26 +1066,50 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 ) &&
                                 !item.complete_date) {
                                 return true;
-                           }
-                       });
-                        console.log('42', state.achievementReducer.achievements, tmpAchievements)
+                            }
+                        });
+                        console.log('42', state.achievementReducer.milestones, tmpAchievements)
 
                         tmpAchievements.map((item) => {
-                            let tempIndex = acpTempAchievementState.achievements.findIndex(achievement => achievement.id === item.id);
-                            acpTempAchievementState.achievements[tempIndex].step += 1;
-                            if (acpTempAchievementState.achievements[tempIndex].total <= acpTempAchievementState.achievements[tempIndex].step) {
-                                acpTempAchievementState.achievements[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
-                                acpTempAchievementState.achievements[tempIndex].claim_date = '';
-                                if (acpTempAchievementState.achievements[tempIndex].type === 'daily') {
-                                    acpTempAchievementState.achievements[tempIndex].list.push(acpTempAchievementState.achievements[tempIndex].complete_date);
-                               }
+                            let tempIndex = acpTempAchievementState.milestones.findIndex(achievement => achievement.id === item.id);
+                            acpTempAchievementState.milestones[tempIndex].step += 1;
+                            if (acpTempAchievementState.milestones[tempIndex].total <= acpTempAchievementState.milestones[tempIndex].step) {
+                                acpTempAchievementState.milestones[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
+                                acpTempAchievementState.milestones[tempIndex].claim_date = '';
                                 acpTempProgressState.actionList.push({
                                     'mode': 'CA',
                                     'data': {'id': item.id, 'points': item.awards},
                                     'time': Math.floor(new Date().getTime() / 1000)
-                               });
-                           }
-                       })
+                                });
+                            }
+                        })
+
+                        tmpAchievements = state.achievementReducer.daily.filter((item) => {
+                            if (item.trigger === 'practice' &&
+                                (
+                                    (item.triggerPracticeOption === 'single' && (parseInt(item.triggerSinglePractice) === tempGuide.id || !item.triggerSinglePractice)) ||
+                                    (item.triggerPracticeOption === 'section' && (parseInt(item.triggerSectionPractice) === tempSection.id))
+                                ) &&
+                                !item.complete_date) {
+                                return true;
+                            }
+                        });
+                        console.log('42', state.achievementReducer.daily, tmpAchievements)
+
+                        tmpAchievements.map((item) => {
+                            let tempIndex = acpTempAchievementState.daily.findIndex(achievement => achievement.id === item.id);
+                            acpTempAchievementState.daily[tempIndex].step += 1;
+                            if (acpTempAchievementState.daily[tempIndex].total <= acpTempAchievementState.daily[tempIndex].step) {
+                                acpTempAchievementState.daily[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
+                                acpTempAchievementState.daily[tempIndex].claim_date = '';
+                                acpTempAchievementState.daily[tempIndex].list.push(acpTempAchievementState.daily[tempIndex].complete_date);
+                                acpTempProgressState.actionList.push({
+                                    'mode': 'CA',
+                                    'data': {'id': item.id, 'points': item.awards},
+                                    'time': Math.floor(new Date().getTime() / 1000)
+                                });
+                            }
+                        })
                         console.log('43')
 
                         acpTempPracticeState.guides.map((section, acpSectionIndex) => {
@@ -1084,79 +1120,73 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 acpTempProgressState.totalDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
                                 acpTempProgressState.todayDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
                                 acpTempProgressState.weekDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
-                                console.log('45', acpTempProgressState.practicesStats)
-                                if(acpTempProgressState.practicesStats&&acpTempProgressState.practicesStats.length) {
+                                console.log('45', acpTempProgressState.guideStats)
+                                if (acpTempProgressState.guideStats && acpTempProgressState.guideStats.length) {
                                     console.log('46')
-                                    acpTempIndex = acpTempProgressState.practicesStats.findIndex(item => item.id === acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].id)
+                                    acpTempIndex = acpTempProgressState.guideStats.findIndex(item => item.guide_id === acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].id)
                                     console.log('47')
                                     if (acpTempIndex >= 0) {
-                                        acpTempProgressState.practicesStats[acpTempIndex].count += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count;
-                                        acpTempProgressState.practicesStats[acpTempIndex].duration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
-                                   } else {
-                                        acpTempProgressState.practicesStats.push({
-                                            'id': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].id,
-                                            'title': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].title,
-                                            'type': 'PP_SINGLE',
-                                            'count': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count,
-                                            'duration': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count
-                                       })
-                                   }
+                                        acpTempProgressState.guideStats[acpTempIndex].guide_count += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count;
+                                        acpTempProgressState.guideStats[acpTempIndex].guide_duration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
+                                    } else {
+                                        acpTempProgressState.guideStats.push({
+                                            'guide_id': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].id,
+                                            'guide_count': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count,
+                                            'guide_duration': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count
+                                        })
+                                    }
                                     console.log('48')
-                               }else{
+                                } else {
                                     console.log('49')
-                                    acpTempProgressState.practicesStats = [];
-                                    acpTempProgressState.practicesStats.push({
-                                        'id': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].id,
-                                        'title': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].title,
-                                        'type': 'PP_SINGLE',
-                                        'count': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count,
-                                        'duration': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count
-                                   })
+                                    acpTempProgressState.guideStats = [];
+                                    acpTempProgressState.guideStats.push({
+                                        'guide_id': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].id,
+                                        'guide_count': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count,
+                                        'guide_duration': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count
+                                    })
                                     console.log('48')
-                               }
+                                }
                                 console.log('52')
                                 console.log(acpTempPracticeState.guides[acpSectionIndex])
-                                acpTempIndex = acpTempProgressState.practicesStats.findIndex(item => item.id === acpTempPracticeState.guides[acpSectionIndex].id)
+                                acpTempIndex = acpTempProgressState.sectionStats.findIndex(item => item.section_id === acpTempPracticeState.guides[acpSectionIndex].id)
                                 if (acpTempIndex >= 0) {
-                                    acpTempProgressState.practicesStats[acpTempIndex].count += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count;
-                                    acpTempProgressState.practicesStats[acpTempIndex].duration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
-                               } else {
-                                    acpTempProgressState.practicesStats.push({
-                                        'id': acpTempPracticeState.guides[acpSectionIndex].id,
-                                        'title': acpTempPracticeState.guides[acpSectionIndex].title,
-                                        'type': 'PP_SECTION',
-                                        'count': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count,
-                                        'duration': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count
-                                   })
-                               }
+                                    acpTempProgressState.sectionStats[acpTempIndex].section_count += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count;
+                                    acpTempProgressState.sectionStats[acpTempIndex].section_duration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
+                                } else {
+                                    acpTempProgressState.sectionStats.push({
+                                        'section_id': acpTempPracticeState.guides[acpSectionIndex].id,
+                                        'section_count': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count,
+                                        'section_duration': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count
+                                    })
+                                }
 
-                           }
-                       });
-                   })
+                            }
+                        });
+                    })
                     console.log('5', acpTempProgressState)
 
-                    let todayProgressIndex = acpTempProgressState.progress&&acpTempProgressState.progress.findIndex(item=> item.date === today);
-                    if(acpTempProgressState.progress&&todayProgressIndex >= 0){
+                    let todayProgressIndex = acpTempProgressState.progress && acpTempProgressState.progress.findIndex(item => item.date === today);
+                    if (acpTempProgressState.progress && todayProgressIndex >= 0) {
                         acpTempProgressState.progress[todayProgressIndex].duration = acpTempProgressState.todayDuration;
-                   }else{
-                        if(acpTempProgressState.progress) {
+                    } else {
+                        if (acpTempProgressState.progress) {
                             acpTempProgressState.progress.push({
                                 date: today,
                                 duration: acpTempProgressState.todayDuration
-                           })
-                       }else{
+                            })
+                        } else {
                             acpTempProgressState.progress = [{
                                 date: today,
                                 duration: acpTempProgressState.todayDuration
-                           }]
-                       }
-                   }
+                            }]
+                        }
+                    }
 
                     acpTempProgressState.actionList.push({
                         'mode': acpMode,
                         'data': acpData,
                         'time': Math.floor(new Date().getTime() / 1000)
-                   });
+                    });
                     console.log('6')
                     acpTempProgressState.lastPractice = new moment().format('YYYY-MM-DD');
                     acpTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
@@ -1165,51 +1195,77 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         ...state,
                         achievementReducer: {
                             ...state.achievementReducer,
-                            achievements:
-                                acpTempAchievementState.achievements,
+                            milestones: acpTempAchievementState.milestones,
+                            daily: acpTempAchievementState.daily,
                             weekly: acpTempAchievementState.weekly,
                             monthly: acpTempAchievementState.monthly
-                       },
+                        },
                         progressReducer: acpTempProgressState,
                         practiceReducer: acpTempPracticeState
-                   };
-                case "ONENERGY_ACHIEVEMENT_CLAIM":
-                    let acTempAchievementState = state.achievementReducer.achievements;
-                    let acTempProgressState = state.progressReducer;
-                    let acAchievementIndex = acTempAchievementState.findIndex(achievement => achievement.id === action.payload.id);
-                    acTempAchievementState[acAchievementIndex].claim_date = new moment().format('YYYY-MM-DD');
-                    console.log('claim');
-                    if (action.payload.mode === 'daily') {
-                        let dailyListItemIndex = acTempAchievementState[acAchievementIndex].list.findIndex(item => item === action.payload.date)
-                        if (dailyListItemIndex >= 0) {
-                            acTempAchievementState[acAchievementIndex].list.splice(dailyListItemIndex, 1);
-                       }
-                   }
-                    acTempAchievementState[acAchievementIndex].awards.map(award => {
-                        if (acTempProgressState.points[award.name]) {
-                            acTempProgressState.points[award.name] += parseInt(award.point);
-                       } else {
-                            acTempProgressState.points[award.name] = parseInt(award.point);
-                       }
-                   })
-                    acTempProgressState.actionList.push({
-                        'mode': 'CM',
-                        'data': {'id': action.payload.id, 'points': acTempAchievementState[acAchievementIndex].awards},
+                    };
+                case "ONENERGY_MILESTONE_CLAIM":
+                    let mcTempMilestoneState = state.achievementReducer.milestones;
+                    let mcTempProgressState = state.progressReducer;
+                    let mcMilestoneIndex = mcTempMilestoneState.findIndex(achievement => achievement.id === action.payload.id);
+
+                    mcTempMilestoneState[mcMilestoneIndex].claim_date = new moment().format('YYYY-MM-DD');
+                    mcTempMilestoneState[mcMilestoneIndex].awards.map(award => {
+                        if (mcTempProgressState.points[award.name]) {
+                            mcTempProgressState.points[award.name] += parseInt(award.point);
+                        } else {
+                            mcTempProgressState.points[award.name] = parseInt(award.point);
+                        }
+                    })
+                    mcTempProgressState.actionList.push({
+                        'mode': 'CM', //Milestone Claim
+                        'data': {'id': action.payload.id, 'points': mcTempMilestoneState[mcMilestoneIndex].awards},
                         'time': Math.floor(new Date().getTime() / 1000)
-                   });
-                    acTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
+                    });
+                    mcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
 
                     return {
                         ...state,
                         achievementReducer: {
                             ...state.achievementReducer,
-                            achievements: acTempAchievementState,
-                       },
-                        progressReducer: acTempProgressState
-                   };
-                case "ONENERGY_ACHIEVEMENT_CLAIM_DAILY":
-                    console.log('claim daily')
-                    let awcTempQuestState = state.achievementReducer.achievements;
+                            milestones: mcTempMilestoneState,
+                        },
+                        progressReducer: mcTempProgressState
+                    };
+                case "ONENERGY_DAILY_CLAIM":
+                    let dcTempDailyState = state.achievementReducer.daily;
+                    let dcTempProgressState = state.progressReducer;
+                    let dcDailyIndex = dcTempDailyState.findIndex(achievement => achievement.id === action.payload.id);
+                    const odcToday = new moment().format('YYYY-MM-DD');
+
+                    dcTempDailyState[dcDailyIndex].claim_date = odcToday;
+                    let dailyListItemIndex = dcTempDailyState[dcDailyIndex].list.findIndex(item => item === odcToday)
+                    if (dailyListItemIndex >= 0) {
+                        dcTempDailyState[dcDailyIndex].list.splice(dailyListItemIndex, 1);
+                    }
+                    dcTempDailyState[dcDailyIndex].awards.map(award => {
+                        if (dcTempProgressState.points[award.name]) {
+                            dcTempProgressState.points[award.name] += parseInt(award.point);
+                        } else {
+                            dcTempProgressState.points[award.name] = parseInt(award.point);
+                        }
+                    })
+                    dcTempProgressState.actionList.push({
+                        'mode': 'CM',
+                        'data': {'id': action.payload.id, 'points': dcTempDailyState[dcDailyIndex].awards},
+                        'time': Math.floor(new Date().getTime() / 1000)
+                    });
+                    dcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
+
+                    return {
+                        ...state,
+                        achievementReducer: {
+                            ...state.achievementReducer,
+                            daily: dcTempDailyState,
+                        },
+                        progressReducer: dcTempProgressState
+                    };
+                case "ONENERGY_PAST_CLAIM":
+                    let awcTempQuestState = state.achievementReducer.daily;
                     let awcAchievementIndex = awcTempQuestState.findIndex(achievement => achievement.id === action.payload.id);
                     let awcTempProgressState = state.progressReducer;
                     let awcWaitItemIndex = awcTempQuestState[awcAchievementIndex].list.findIndex(waitItem => waitItem === action.payload.date);
@@ -1220,25 +1276,25 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         awcTempQuestState[awcAchievementIndex].awards.map(award => {
                             if (awcTempProgressState.points[award.name]) {
                                 awcTempProgressState.points[award.name] += parseInt(award.point);
-                           } else {
+                            } else {
                                 awcTempProgressState.points[award.name] = parseInt(award.point);
-                           }
-                       })
+                            }
+                        })
                         awcTempProgressState.actionList.push({
                             'mode': 'CM',
                             'data': {'id': action.payload.id, 'points': awcTempQuestState[awcAchievementIndex].awards},
                             'time': Math.floor(new Date().getTime() / 1000)
-                       });
+                        });
                         awcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
-                   }
+                    }
                     return {
                         ...state,
                         achievementReducer: {
                             ...state.achievementReducer,
-                            achievements: awcTempQuestState,
-                       }
-                   };
-                case "ONENERGY_ACHIEVEMENT_CLAIM_WEEKLY_MONTHLY":
+                            daily: awcTempQuestState,
+                        }
+                    };
+                case "ONENERGY_WEEKLY_MONTHLY_CLAIM":
                     let acwTempAchievementState = state.achievementReducer;
                     let acwTempProgressState = state.progressReducer;
                     switch (action.payload.mode) {
@@ -1249,7 +1305,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 'mode': 'CM',
                                 'data': {'id': action.payload.id, 'points': {'qi': 20}},
                                 'time': Math.floor(new Date().getTime() / 1000)
-                           });
+                            });
                             break;
                         case 'monthly':
                             acwTempAchievementState.monthly.claim_date = new moment().format('YYYY-MM-DD');
@@ -1258,9 +1314,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 'mode': 'CM',
                                 'data': {'id': action.payload.id, 'points': {'qi': 100}},
                                 'time': Math.floor(new Date().getTime() / 1000)
-                           });
+                            });
                             break;
-                   }
+                    }
                     acwTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     return {
                         ...state,
@@ -1268,100 +1324,95 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             ...state.achievementReducer,
                             weekly: acwTempAchievementState.weekly,
                             monthly: acwTempAchievementState.monthly
-                       },
+                        },
                         progressReducer: acwTempProgressState
-                   };
+                    };
                 case "ONENERGY_LESSON_COMPLETED":
                     let olcTempProgressState = state.progressReducer;
-                    let olcTempAchievementState = state.achievementReducer.achievements;
+                    let olcTempMilestoneState = state.achievementReducer.milestones;
                     let lesson = action.payload;
-                    let olcTempAchievements = state.achievementReducer.achievements.filter(item =>
+                    let olcTempMilestone = olcTempMilestoneState.filter(item =>
                         (item.trigger === 'course' &&
                             (
                                 parseInt(item.triggerCourse) === lesson.parent.id || !item.triggerCourse
                             ) &&
                             !item.complete_date)
                     );
-                    console.log('2', lesson);
-
-                    olcTempAchievements.map((item) => {
-                        let tempIndex = olcTempAchievementState.findIndex(achievement => achievement.id === item.id);
-                        let tempLessonIndex = olcTempAchievementState[tempIndex].step.findIndex(item => item.id === lesson.id);
-                        olcTempAchievementState[tempIndex].step[tempLessonIndex].completed = 1;
+                    olcTempMilestone.map((item) => {
+                        let tempIndex = olcTempMilestone.findIndex(achievement => achievement.id === item.id);
+                        let tempLessonIndex = olcTempMilestone[tempIndex].step.findIndex(item => item.id === lesson.id);
+                        olcTempMilestone[tempIndex].step[tempLessonIndex].completed = 1;
                         console.log('3', lesson.settings.next_lesson);
 
                         if (!lesson.settings.next_lesson) {
-                            olcTempAchievementState[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
-                            olcTempAchievementState[tempIndex].claim_date = '';
-                            if (olcTempAchievementState[tempIndex].type === 'daily') {
-                                olcTempAchievementState[tempIndex].list.push(olcTempAchievementState[tempIndex].complete_date);
-                           }
-
+                            olcTempMilestone[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
+                            olcTempMilestone[tempIndex].claim_date = '';
                             olcTempProgressState.actionList.push({
                                 'mode': 'CA',
                                 'data': {'id': item.id, 'points': item.awards},
                                 'time': Math.floor(new Date().getTime() / 1000)
-                           });
-                       }
-                   })
+                            });
+                        }
+                    })
                     console.log('5')
                     olcTempProgressState.completedLessons.push({
                         "id": lesson.id,
                         "date": Math.floor(new Date().getTime() / 1000)
-                   });
+                    });
                     olcTempProgressState.actionList.push({
                         'mode': 'LC',
                         'data': lesson.id,
                         'time': Math.floor(new Date().getTime() / 1000)
-                   });
+                    });
                     console.log('6')
                     if (!lesson.settings.next_lesson) {
                         olcTempProgressState.completedCourses.push({
                             "id": lesson.parent.id,
                             "date": Math.floor(new Date().getTime() / 1000)
-                       });
+                        });
                         olcTempProgressState.actionList.push({
                             'mode': 'CC',
                             'data': lesson.parent.id,
                             'time': Math.floor(new Date().getTime() / 1000)
-                       });
-                   }
+                        });
+                    }
                     olcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     return {
                         ...state,
                         achievementReducer: {
                             ...state.achievementReducer,
-                            achievements:
-                                olcTempAchievementState,
-                       },
+                            milestones:
+                            olcTempMilestoneState,
+                        },
                         progressReducer: olcTempProgressState
-                   };
+                    };
                 case 'ONENERGY_COURSE_ENROLLED':
                     let oceTempProgressState = state.progressReducer;
                     oceTempProgressState.enrolledCourses.push({
                         "id": action.payload,
                         "date": Math.floor(new Date().getTime() / 1000)
-                   });
+                    });
                     oceTempProgressState.actionList.push({
                         'mode': 'CE',
                         'data': action.payload,
                         'time': Math.floor(new Date().getTime() / 1000)
-                   });
+                    });
                     oceTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     return {
                         ...state,
                         progressReducer: oceTempProgressState
-                   }
+                    }
                 case 'ONENERGY_ACHIEVEMENT_RESET':
                     return {
                         ...state,
                         achievementReducer: {
-                            achievements: [],
+                            milestones: [],
+                            daily: [],
                             weekly: {days: [], complete_date: '', claim_date: ''},
                             monthly: {days: [], complete_date: '', claim_date: ''},
                             achievementUpdate: ''
-                       }
-                   }
+                        }
+                    }
                 case "ONENERGY_PRACTICE_RESET":
                     return {
                         ...state,
@@ -1372,8 +1423,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             routineUpdate: '',
                             guideUpdate: '',
                             groupUpdate: ''
-                       }
-                   };
+                        }
+                    };
                 case "ONENERGY_PROGRESS_RESET":
                     return {
                         ...state,
@@ -1386,114 +1437,138 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             latestUpdate: '',
                             lastUpload: '',
                             actionList: [],
-                            practicesStats: [],
-                            routinesStats: [],
+                            guideStats: [],
+                            routineStats: [],
                             groupStats: [],
                             completedLessons: [],
                             enrolledCourses: [],
                             completedCourses: [],
                             progressUpdate: '',
-                       }
-                   }
+                        }
+                    }
                 default:
                     return state;
-           }
-       }
+            }
+        }
     );
 
-/*    const customBlogReducer = reducer => (state = reducer(undefined, {}), action) => {
-        switch (action.type) {
-            case "ONENERGY_BLOG_UPDATE":
-                let blogCache = state.byId;
-                if(blogCache) {
-                    action.payload.map((item) => {
-                        blogCache = blogCache.set(-1, item);
-                    });
+    /*    const customBlogReducer = reducer => (state = reducer(undefined, {}), action) => {
+            switch (action.type) {
+                case "ONENERGY_BLOG_UPDATE":
+                    let blogCache = state.byId;
+                    if(blogCache) {
+                        action.payload.map((item) => {
+                            blogCache = blogCache.set(-1, item);
+                        });
+                        console.log('blogCache', blogCache)
+                    }else{
+                        blogCache = Immutable.fromJS(action.payload);
+                    }
+    /!*                action.payload.map((item) => {
+                        newBlogCache = blogCache.splice(0, 0, item);
+                   });*!/
                     console.log('blogCache', blogCache)
-                }else{
-                    blogCache = Immutable.fromJS(action.payload);
-                }
-/!*                action.payload.map((item) => {
-                    newBlogCache = blogCache.splice(0, 0, item);
-               });*!/
-                console.log('blogCache', blogCache)
-                const newBlogs = {
-                    ...state,
-                    blogCache: blogCache
-               }
-                return reducer(newBlogs, action);
-            default:
-                return reducer(state, action);
+                    const newBlogs = {
+                        ...state,
+                        blogCache: blogCache
+                   }
+                    return reducer(newBlogs, action);
+                default:
+                    return reducer(state, action);
+           }
        }
-   }
-    externalCodeSetup.reduxApi.wrapReducer(
-        'blogCache',
-        customBlogReducer
-    );*/
+        externalCodeSetup.reduxApi.wrapReducer(
+            'blogCache',
+            customBlogReducer
+        );*/
     const customUserReducer = reducer => (state = reducer(undefined, {}), action) => {
         switch (action.type) {
             case "USER_VIP_SURVEY_COMPLETED":
-                let tempUser = state.userObject;
-                tempUser.vip_survey_completed = true;
-                const newState = {
+                let uvscTempUser = state.userObject;
+                uvscTempUser.vip_survey_completed = true;
+                const uvscNewState = {
                     ...state,
-                    userObject: tempUser
-               }
-                return reducer(newState, action);
+                    userObject: uvscTempUser
+                }
+                return reducer(uvscNewState, action);
+            case "USER_PROFILE_UPDATED":
+                let upuTempUser = state.userObject;
+                upuTempUser.profile_updated = true;
+                const upuNewState = {
+                    ...state,
+                    userObject: upuTempUser
+                }
+                return reducer(upuNewState, action);
             default:
                 return reducer(state, action);
-       }
-   }
+        }
+    }
     externalCodeSetup.reduxApi.wrapReducer(
         'user',
         customUserReducer
     );
+    const customSettingsReducer = reducer => (state = reducer(undefined, {}), action) => {
+        switch (action.type) {
+            case "SETTINGS_ALLOW_LOCATION":
+                const salNewState = {
+                    ...state,
+                    allowLocation: action.payload
+                }
+                return reducer(salNewState, action);
+            default:
+                return reducer(state, action);
+        }
+    }
+    externalCodeSetup.reduxApi.wrapReducer(
+        'settings',
+        customSettingsReducer
+    );
     // Add Video reducer for course completion
     externalCodeSetup.reduxApi.addReducer(
         "videoReducer",
-        (state = {videos:[], videoComplete: false}, action) => {
+        (state = {videos: [], videoComplete: false}, action) => {
             switch (action.type) {
                 case "ONENERGY_VIDEO_COMPLETED":
                     const ovcTempVideos = state.videos;
                     const ovcVideoId = action.payload;
-                    if(ovcTempVideos.length) {
+                    if (ovcTempVideos.length) {
                         const ovcVideoIndex = ovcTempVideos.findIndex(item => item.videoId === ovcVideoId);
                         if (ovcVideoIndex >= 0) {
                             ovcTempVideos.splice(ovcVideoIndex, 1);
-                       }
-                   }
+                        }
+                    }
                     return {
                         ...state,
                         videos: ovcTempVideos,
                         videoComplete: true
-                   };
+                    };
                 case "ONENERGY_VIDEO_EXIT":
                     const ovxTempVideos = state.videos;
                     const ovxVideoId = action.payload.videoId;
                     const ovxDuration = action.payload.duration;
-                    if(ovxTempVideos.length) {
+                    if (ovxTempVideos.length) {
                         const ovxVideoIndex = ovxTempVideos.findIndex(item => item.videoId === ovxVideoId);
                         if (ovxVideoIndex >= 0) {
                             ovxTempVideos[ovxVideoIndex].duration = ovxDuration;
-                       } else {
+                        } else {
                             ovxTempVideos.push({'videoId': ovxVideoId, 'duration': ovxDuration});
-                       }
-                   }else{
+                        }
+                    } else {
                         ovxTempVideos.push({'videoId': ovxVideoId, 'duration': ovxDuration});
-                   }
+                    }
                     return {
                         ...state,
                         videos: ovxTempVideos,
-                   };
+                    };
                 case "ONENERGY_VIDEO_RESET":
                     return {
                         ...state,
                         videoComplete: false
-                   };
+                    };
                 default:
                     return state;
-           }
-       }
+            }
+        }
     );
 
     // Add Language reducer
@@ -1502,7 +1577,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         name: 'English',
         subtitle: 'en',
         initial: '1', //Skip Language Choosing Screen
-   }
+    }
     externalCodeSetup.reduxApi.addReducer(
         "languagesReducer",
         (state = {languages: defaultLanguage}, action) => {
@@ -1515,22 +1590,22 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             name: action.payload.name,
                             subtitle: action.payload.subtitle,
                             initial: '1'
-                       }
-                   };
-               }
+                        }
+                    };
+                }
                 case "ONENERGY_CHANGE_SUBTITLE": {
                     return {
                         ...state,
                         languages: {
                             ...state.languages,
                             subtitle: action.payload
-                       }
-                   };
-               }
+                        }
+                    };
+                }
                 default:
                     return state;
-           }
-       }
+            }
+        }
     );
 
     // Make Language and Notification reducer persistent, and remove blog and post from persistent
@@ -1540,13 +1615,13 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         return {
             ...props,
             whitelist: whiteList
-       }
-   })
+        }
+    })
 
     // Hide categories and tags in Single Course screen
     externalCodeSetup.courseSingleApi.setIsCategoryTagsHidden((course) => {
         return true;
-   })
+    })
 
     // Course Action Button
     externalCodeSetup.courseSingleApi.setTransformCourseActionButtons((
@@ -1574,13 +1649,13 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         let diffTime;
         if (diffMinutes < 60) {
             diffTime = 'in ' + diffMinutes + ' minutes';
-       } else {
+        } else {
             if (diffHours < 24) {
                 diffTime = 'tomorrow';
-           } else {
+            } else {
                 diffTime = 'in ' + diffDays + ' days';
-           }
-       }
+            }
+        }
         const [buttonEnroll, setButtonEnroll] = useState('Start Now');
 
         const buttonText = "Next lesson will be available " + diffTime;
@@ -1593,13 +1668,13 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-               }}>
+                }}>
                     <CourseActionButton
                         title={"Completed"}
                         style={{backgroundColor: colors.coursesLabelCompleted}}
-                   />
+                    />
                 </View>];
-       } else if (courseVM.price && courseVM.price.expired) {
+        } else if (courseVM.price && courseVM.price.expired) {
             let Info = null;
             return [Info,
                 <View style={{
@@ -1608,13 +1683,13 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-               }}>
+                }}>
                     <CourseActionButton
                         title={"Expired"}
                         style={{backgroundColor: "black"}}
-                   />
+                    />
                 </View>];
-       } else if (courseVM.hasAccess) {
+        } else if (courseVM.hasAccess) {
             let Info = null;
             if (courseVM.price.expires_on) {
                 let diffExpiringTime = '';
@@ -1627,7 +1702,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             <Text style={{color: "red", fontSize: scale(14)}}>{diffExpiringTime}</Text>
                         </View>
                         : null
-           }
+            }
             return [Info,
                 <View style={{
                     paddingHorizontal: 20,
@@ -1635,22 +1710,22 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-               }}>
+                }}>
                     {lesson_time > current_time && courseVM.progression > 0 ?
                         <CourseActionButton
                             onPress={() => continueCourse()}
                             title={buttonText}
                             style={{backgroundColor: colors.coursesLabelProgress}}
-                       />
+                        />
                         :
                         <CourseActionButton
                             onPress={() => continueCourse()}
                             title={"Continue"}
-                       />
-                   }
+                        />
+                    }
                 </View>
             ]
-       } else {
+        } else {
             if (user && courseVM.price.required_points > 0 && progressReducer && progressReducer.points && progressReducer.points.length ? progressReducer.points.qi : 0 < courseVM.price.required_points && courseVM.error.message) {
                 const Info =
                     <View style={{paddingHorizontal: 20, paddingVertical: 10}}>
@@ -1663,19 +1738,19 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "space-between",
-                   }}>
+                    }}>
                         <CourseActionButton
                             title={"Practice to Gather More Qi"}
                             onPress={() => navigation.dispatch(
                                 NavigationActions.navigate({
                                     routeName: "PracticesScreen",
-                               })
+                                })
                             )}
                             style={{backgroundColor: colors.coursesLabelNotEnrolled}}
-                       />
+                        />
                     </View>
                 return [Info, Redirect];
-           } else {
+            } else {
                 return [
                     <View style={{
                         paddingHorizontal: 20,
@@ -1683,7 +1758,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "space-between",
-                   }}>
+                    }}>
                         <CourseActionButton
                             onPress={() => {
                                 setVisualGuide(false);
@@ -1692,10 +1767,10 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 dispatch({
                                     type: 'ONENERGY_COURSE_ENROLLED',
                                     payload: courseVM.id
-                               });
-                           }}
+                                });
+                            }}
                             title={buttonEnroll}
-                       />
+                        />
                         {visualGuide ?
                             <TouchableWithoutFeedback
                                 onPress={() => {
@@ -1705,8 +1780,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                     dispatch({
                                         type: 'ONENERGY_COURSE_ENROLLED',
                                         payload: courseVM.id
-                                   });
-                               }}>
+                                    });
+                                }}>
                                 <FastImage style={{
                                     bottom: scale(-80),
                                     right: scale(80),
@@ -1719,16 +1794,16 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                     shadowOpacity: 0.2,
                                     shadowRadius: 3,
                                     elevation: 4,
-                               }} source={require('./assets/images/tapFinger.gif')}/>
+                                }} source={require('./assets/images/tapFinger.gif')}/>
                             </TouchableWithoutFeedback>
                             : null
-                       }
+                        }
                     </View>
                 ]
-           }
+            }
             //            return [CourseButton];
-       }
-   })
+        }
+    })
 
     //Custom back button in Single Lesson Screen
     externalCodeSetup.lessonSingleScreenApi.setLessonScreenHeader(props => <LessonScreenHeader {...props}/>)
@@ -1754,10 +1829,10 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             </View>
         if (lesson.completed) {
             return lessonButton
-       } else {
+        } else {
             return Buttons;
-       }
-   })
+        }
+    })
     externalCodeSetup.blogSingleApi.setTransformBlogHeaderButtons((buttons, blog) => {
         const hasCover = !!blog.featuredImage;
         const iconBackgroundColor = hasCover ? "#FFFFEF" : "#4A4D34";
@@ -1773,8 +1848,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         title: blog.title,
                         subject: blog.title,
                         social: Share.Social.FACEBOOK
-                   })
-               }
+                    })
+                }
                 icon={require("@src/assets/img/facebook-new.png")}
                 touchableStyle={{
                     backgroundColor: iconBackgroundColor,
@@ -1782,11 +1857,11 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     borderRadius: 18,
                     padding: 0,
                     marginRight: 8
-               }}
+                }}
                 tintColor={iconTintColor}
                 style={{height: 28, width: 28}}
                 rtlStyleFix={"handled"}
-           />
+            />
 
             const twitter = <IconButton
                 pressHandler={() =>
@@ -1796,8 +1871,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         title: blog.title,
                         subject: blog.title,
                         social: Share.Social.TWITTER
-                   })
-               }
+                    })
+                }
                 icon={require("@src/assets/img/twitter-new.png")}
                 touchableStyle={{
                     backgroundColor: iconBackgroundColor,
@@ -1805,18 +1880,18 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     borderRadius: 18,
                     padding: 0,
                     marginRight: 8
-               }}
+                }}
                 tintColor={iconTintColor}
                 style={{height: 28, width: 28}}
                 rtlStyleFix={"handled"}
-           />
+            />
 
             return [facebook, twitter];
-       } else {
+        } else {
             return [];
-       }
+        }
 
-   })
+    })
 
     externalCodeSetup.navigationApi.setBottomTabBarIcon((icon, iconProps) => {
         const routeLabel = iconProps.route.routes[0].params.item?.label;
@@ -1829,12 +1904,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         borderRadius: 58,
                         justifyContent: 'center',
                         alignItems: 'center',
-                   }}>
+                    }}>
                     {iconProps.focused ?
                         <SvgIconHomeFocused color={iconProps.tintColor}/>
                         :
                         <SvgIconHomeUnfocused color={iconProps.tintColor}/>
-                   }
+                    }
                 </View>
             case "Programs":
                 return <View
@@ -1844,12 +1919,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         borderRadius: 58,
                         justifyContent: 'center',
                         alignItems: 'center',
-                   }}>
+                    }}>
                     {iconProps.focused ?
                         <SvgIconProgramFocused color={iconProps.tintColor}/>
                         :
                         <SvgIconProgramUnfocused color={iconProps.tintColor}/>
-                   }
+                    }
                     <AuthWrapper actionOnGuestLogin={'hide'}>
                         <NotificationTabBarIcon notificationID={'blog'} top={-3} right={-3} size={scale(10)}
                                                 showNumber={false}/>
@@ -1863,12 +1938,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         borderRadius: 58,
                         justifyContent: 'center',
                         alignItems: 'center',
-                   }}>
+                    }}>
                     {iconProps.focused ?
                         <SvgIconQiGongFocused color={iconProps.tintColor}/>
                         :
                         <SvgIconQiGongUnfocused color={iconProps.tintColor}/>
-                   }
+                    }
                     <AuthWrapper actionOnGuestLogin={'hide'}>
                         <NotificationTabBarIcon notificationID={'guide_page'} top={-3} right={-3} size={scale(10)}
                                                 showNumber={false}/>
@@ -1882,12 +1957,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         borderRadius: 58,
                         justifyContent: 'center',
                         alignItems: 'center',
-                   }}>
+                    }}>
                     {iconProps.focused ?
                         <SvgIconWisdomFocused color={iconProps.tintColor}/>
                         :
                         <SvgIconWisdomUnfocused color={iconProps.tintColor}/>
-                   }
+                    }
                     <AuthWrapper actionOnGuestLogin={'hide'}>
                         <NotificationTabBarIcon notificationID={'blog'} top={-3} right={-3} size={scale(10)}
                                                 showNumber={false}/>
@@ -1901,17 +1976,17 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         borderRadius: 58,
                         justifyContent: 'center',
                         alignItems: 'center',
-                   }}>
+                    }}>
                     {iconProps.focused ?
                         <SvgIconMoreFocused color={iconProps.tintColor}/>
                         :
                         <SvgIconMoreUnfocused color={iconProps.tintColor}/>
-                   }
+                    }
                 </View>
             default:
                 return icon;
-       }
-   });
+        }
+    });
 
     externalCodeSetup.profileScreenHooksApi.setIgnoreTabsFilter((
         list,
@@ -1925,17 +2000,17 @@ export const applyCustomCode = (externalCodeSetup: any) => {
 
     externalCodeSetup.indexJsApi.addIndexJsFunction(() => {
         TrackPlayer.registerPlaybackService(() => require('./Components/TrackPlayerService'));
-   })
+    })
     externalCodeSetup.blogSingleApi.setAfterBlogSingleBody((props) => {
         const {blog} = props;
         if (blog.meta_box.related_posts && blog.meta_box.related_posts.length) {
             return (
                 <RelatedPostsRow posts={blog.meta_box.related_posts}/>
             )
-       } else {
+        } else {
             return null;
-       }
-   })
+        }
+    })
     externalCodeSetup.deeplinksApi.setDeeplinksWithoutEmbeddedReturnValueFilter((defaultValue, linkObject, navigationService) => {
 
         if (linkObject.action === "open_screen") {
@@ -1943,53 +2018,53 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 case 'programs':
                     navigationService.navigate({
                         routeName: "ProgramsScreen",
-                   })
+                    })
                     return true;
                 case 'practices':
                     navigationService.navigate({
                         routeName: "PracticesScreen",
-                   })
+                    })
                     return true;
                 case 'wisdom':
                     navigationService.navigate({
                         routeName: "BlogsScreen",
-                   })
+                    })
                     return true;
                 case 'QuotesScreen':
                     navigationService.navigate({
                         routeName: "QuotesScreen",
-                   })
+                    })
                     return true;
-           }
-       }
+            }
+        }
         if (linkObject.action === "inapp") {
             if (linkObject.url.includes('QuotesScreen')) {
                 navigationService.navigate({
                     routeName: "QuotesScreen",
-               })
+                })
                 return true;
-           }
+            }
             if (linkObject.url.includes('wisdom')) {
                 navigationService.navigate({
                     routeName: "BlogsScreen",
-               })
+                })
                 return true;
-           }
+            }
             if (linkObject.url.includes('practices')) {
                 navigationService.navigate({
                     routeName: "PracticesScreen",
-               })
+                })
                 return true;
-           }
+            }
             if (linkObject.url.includes('programs')) {
                 navigationService.navigate({
                     routeName: "ProgramsScreen",
-               })
+                })
                 return true;
-           }
-       }
+            }
+        }
         return defaultValue;
-   });
+    });
     const AfterDetailsComponent = ({user}) => {
         const userInfo = useSelector((state) => state.user.userObject);
         return (
@@ -1997,7 +2072,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 <Text> {userInfo.membership[0].plan.name} </Text>
                 : null
         )
-   }
+    }
 
     externalCodeSetup.profileScreenHooksApi.setAfterDetailsComponent(AfterDetailsComponent);
     externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "PracticePlayer", "VimeoPlayer", "MilestonesScreen", "QuestsScreen", "StatsScreen", "myVouchersScreen", "FeedbackScreen", "SettingsScreen", "CoursesSingleScreen", "LessonSingleScreen"])
@@ -2006,7 +2081,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                                                 t,
                                                                 isLoggingOut,
                                                                 logout
-                                                           }) => {
+                                                            }) => {
         const dispatch = useDispatch();
 
         const config = useSelector((state) => state.config ? state.config : null);
@@ -2014,96 +2089,105 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
         const user = useSelector((state) => state.user.userObject);
         return (
-        user?
-        <View style={global.tabLinksContainer}>
-            <AppTouchableOpacity
-                style={global.logout}
-                onPress={() => {
-                    if (!isLoggingOut) {
-                        Alert.alert('Logout', 'Are you sure you want to logout?',
-                            [
-                                {
-                                    text: "Cancel",
-                                    style: "cancel"
-                               },
-                                {
-                                    text: "OK", onPress: () => {
-                                        if (progressReducer.latestUpdate && progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
-                                            let achievements = {
-                                                'achievements': [],
-                                                'weekly': achievementReducer.weekly,
-                                                'monthly': achievementReducer.monthly
-                                           }
-                                            achievementReducer.achievements.map((achievement) => {
-                                                achievements.achievements.push({
-                                                    'id': achievement.id,
-                                                    'step': achievement.step,
-                                                    'complete_date': achievement.complete_date,
-                                                    'claim_date': achievement.claim_date,
-                                                    'list': achievement.list
-                                               });
-                                           });
-                                            const apiRequest = getApi(config);
-                                            apiRequest.customRequest(
-                                                "wp-json/onenergy/v1/statsUpdate",
-                                                "post",
-                                                {
-                                                    "progress": progressReducer,
-                                                    "achievements": achievements
-                                               },
-                                                null,
-                                                {},
-                                                false
-                                            ).then();
-                                       }
-                                        dispatch({
-                                            type: 'ONENERGY_POSTS_RESET',
-                                       });
-                                        dispatch({
-                                            type: 'ONENERGY_PRACTICE_RESET',
-                                       });
-                                        dispatch({
-                                            type: 'ONENERGY_ACHIEVEMENT_RESET',
-                                       });
-                                        dispatch({
-                                            type: 'ONENERGY_ACHIEVEMENT_RESET',
-                                       });
-                                        dispatch({
-                                            type: 'ONENERGY_PROGRESS_RESET',
-                                       });
-                                        logout();
-                                   }
-                               }
-                            ]
-                        )
-                   }
-               }}
-            >
-                {isLoggingOut ? (
-                    <ActivityIndicator animating={true} size="small"/>
-                ) : (
-                    <View style={[global.row]}>
-                        <Icon
-                            webIcon={"IconFeedSettings"}
-                            icon={require("@src/assets/img/logout.png")}
-                            styles={[global.settingsItemIcon]}
-                       />
-                        <Text
-                            style={[
-                                global.settingsItemTitle,
-                                global.logoutInner,
-                                {marginLeft: 5}
-                            ]}
-                        >
-                            {t("settings:logout")}
-                        </Text>
-                    </View>
-                )}
-            </AppTouchableOpacity>
-        </View>
-            :null
+            user ?
+                <View style={global.tabLinksContainer}>
+                    <AppTouchableOpacity
+                        style={global.logout}
+                        onPress={() => {
+                            if (!isLoggingOut) {
+                                Alert.alert('Logout', 'Are you sure you want to logout?',
+                                    [
+                                        {
+                                            text: "Cancel",
+                                            style: "cancel"
+                                        },
+                                        {
+                                            text: "OK", onPress: () => {
+                                                if (progressReducer.latestUpdate && progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
+                                                    let achievements = {
+                                                        'milestones': [],
+                                                        'daily': [],
+                                                        'weekly': achievementReducer.weekly,
+                                                        'monthly': achievementReducer.monthly
+                                                    }
+                                                    achievementReducer.milestones.map((milestone) => {
+                                                        achievements.milestones.push({
+                                                            'id': milestone.id,
+                                                            'step': milestone.step,
+                                                            'complete_date': milestone.complete_date,
+                                                            'claim_date': milestone.claim_date,
+                                                        });
+                                                    });
+                                                    achievementReducer.daily.map((quest) => {
+                                                        achievements.daily.push({
+                                                            'id': quest.id,
+                                                            'step': quest.step,
+                                                            'complete_date': quest.complete_date,
+                                                            'claim_date': quest.claim_date,
+                                                            'list': quest.list
+                                                        });
+                                                    });
+                                                    const apiRequest = getApi(config);
+                                                    apiRequest.customRequest(
+                                                        "wp-json/onenergy/v1/statsUpdate",
+                                                        "post",
+                                                        {
+                                                            "progress": progressReducer,
+                                                            "achievements": achievements
+                                                        },
+                                                        null,
+                                                        {},
+                                                        false
+                                                    ).then();
+                                                }
+                                                dispatch({
+                                                    type: 'ONENERGY_POSTS_RESET',
+                                                });
+                                                dispatch({
+                                                    type: 'ONENERGY_PRACTICE_RESET',
+                                                });
+                                                dispatch({
+                                                    type: 'ONENERGY_ACHIEVEMENT_RESET',
+                                                });
+                                                dispatch({
+                                                    type: 'ONENERGY_ACHIEVEMENT_RESET',
+                                                });
+                                                dispatch({
+                                                    type: 'ONENERGY_PROGRESS_RESET',
+                                                });
+                                                logout();
+                                            }
+                                        }
+                                    ]
+                                )
+                            }
+                        }}
+                    >
+                        {isLoggingOut ? (
+                            <ActivityIndicator animating={true} size="small"/>
+                        ) : (
+                            <View style={[global.row]}>
+                                <Icon
+                                    webIcon={"IconFeedSettings"}
+                                    icon={require("@src/assets/img/logout.png")}
+                                    styles={[global.settingsItemIcon]}
+                                />
+                                <Text
+                                    style={[
+                                        global.settingsItemTitle,
+                                        global.logoutInner,
+                                        {marginLeft: 5}
+                                    ]}
+                                >
+                                    {t("settings:logout")}
+                                </Text>
+                            </View>
+                        )}
+                    </AppTouchableOpacity>
+                </View>
+                : null
         )
-   })
+    })
 
     externalCodeSetup.forumsHooksApi.setForumItemComponent(props => <ForumItem {...props}/>)
     externalCodeSetup.navigationApi.setAnimatedSwitchNavigator((routes, options, routeProps) => {
@@ -2111,7 +2195,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         const hasMultiSite = Platform.select({
             ios: feature.is_enabled_ios,
             android: feature.is_enabled_android
-       })
+        })
 
         // Get the initial switch route based on state data.
         // getInitialSwitchRoute() is based on BB App's AppNavigator.js
@@ -2125,46 +2209,46 @@ export const applyCustomCode = (externalCodeSetup: any) => {
 
             if (!routeProps.hasValidSigning) {
                 return "InvalidSigningScreen";
-           }
+            }
 
             if (routeProps.shouldEnforceVersionControl) {
                 return "VersionControlScreen";
-           } else if (routeProps.isLoggedIn) {
+            } else if (routeProps.isLoggedIn) {
                 if (
                     routeProps.isFeatureEnabled(hasMultiSite) &&
                     routeProps.sites.selectedSite === null
                 ) {
                     return "AuthSiteSelectionScreen";
-               } else {
+                } else {
                     return routeProps.shouldLockApp ? "AppLockScreen" : "noAuth";
-               }
-           } else {
+                }
+            } else {
                 return myCustomRoute; //Use my own custom route instead of the default "Auth" route
                 //return defaultInitialRoute;
-           }
+            }
 
-       };
+        };
 
         const newRoutes = {
             ...routes,
             ChooseLanguage: {
                 screen: ChooseLanguage
-           },
+            },
             OnBoarding: {
                 screen: OnBoarding
-           }
-       }
+            }
+        }
 
         const newOptions = {
             ...options,
             initialRouteName: getInitialSwitchRoute()
-       }
+        }
 
         return {
             routes: newRoutes,
             options: newOptions,
-       }
-   })
+        }
+    })
     externalCodeSetup.forumSingleHooksApi.setHeaderRightComponent(({
                                                                        t,
                                                                        forum,
@@ -2173,10 +2257,10 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                                                        headerColor,
                                                                        actionButtons,
                                                                        ...rest
-                                                                  }) => {
+                                                                   }) => {
         //Pass the necessary props to the custom component
         return null;
-   })
+    })
     externalCodeSetup.cssApi.addGlobalStyle("boxTitle", {"fontWeight": "bold"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("appHeaderTitle", {"fontWeight": "bold"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("forumListTitle", {"fontWeight": "bold"}, false);
@@ -2218,7 +2302,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             qCount,
             navigation,
             learndashCourseParticipants
-       } = props;
+        } = props;
 
         const size = 26;
 
@@ -2237,8 +2321,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 ...(!shouldShowParticipants && {
                     borderBottomLeftRadius: 10,
                     borderBottomRightRadius: 10
-               })
-           },
+                })
+            },
 
             avatar: {
                 width: size + 4,
@@ -2246,19 +2330,19 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 borderRadius: size + 4 / 2,
                 borderColor: colors.bodyFrontBg,
                 borderWidth: 2
-           },
+            },
             enrolledText: {
                 ...global.textAlt,
                 left: -8,
                 fontSize: 13
-           },
+            },
             courseDetailsText: {
                 ...global.itemText,
                 marginBottom: 10,
                 marginLeft: 14
-           }
+            }
 
-       });
+        });
 
         return (
             <>
@@ -2273,7 +2357,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 global={global}
                                 colors={colors}
                                 navigation={navigation}
-                           />
+                            />
                         )}
                 </View>
 
@@ -2281,7 +2365,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     style={{
                         paddingHorizontal: 16,
                         ...(shouldShowParticipants && {paddingVertical: 12})
-                   }}
+                    }}
                 >
                     {showIncludesTitle && (
                         <Text
@@ -2290,7 +2374,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 {
                                     marginBottom: 15,
                                     marginTop: courseVM?.members?.length > 0 ? 20 : 0
-                               }
+                                }
                             ]}
                         >
                             {t("course:includesTitle", {label: labels.course})}
@@ -2302,7 +2386,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 webIcon={"IconAndroidGroup"}
                                 tintColor={colors.descLightTextColor}
                                 icon={require("@src/assets/img/book.png")}
-                           />
+                            />
                             <Text
                                 style={styles.courseDetailsText}
                             >
@@ -2312,7 +2396,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                         count: lCount,
                                         slabel: labels.lesson,
                                         plabel: labels.lessons
-                                   })}
+                                    })}
                             </Text>
                         </View>
                     )}
@@ -2322,7 +2406,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 webIcon={"IconAndroidGroup"}
                                 tintColor={colors.descLightTextColor}
                                 icon={require("@src/assets/img/topic.png")}
-                           />
+                            />
                             <Text
                                 style={styles.courseDetailsText}
                             >
@@ -2332,7 +2416,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                         count: tCount,
                                         slabel: labels.topic,
                                         plabel: labels.topics
-                                   })}
+                                    })}
                             </Text>
                         </View>
                     )}
@@ -2342,7 +2426,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 webIcon={"IconAndroidGroup"}
                                 tintColor={colors.descLightTextColor}
                                 icon={require("@src/assets/img/quiz.png")}
-                           />
+                            />
                             <Text
                                 style={styles.courseDetailsText}
                             >
@@ -2352,7 +2436,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                         count: qCount,
                                         slabel: labels.quiz,
                                         plabel: labels.quizzes
-                                   })}
+                                    })}
                             </Text>
                         </View>
                     )}
@@ -2362,7 +2446,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 webIcon={"IconAndroidGroup"}
                                 tintColor={colors.descLightTextColor}
                                 icon={require("@src/assets/img/small-certificate.png")}
-                           />
+                            />
                             <Text
                                 style={styles.courseDetailsText}
                             >
@@ -2373,7 +2457,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 </View>
             </>
         );
-   })
+    })
 
     externalCodeSetup.pageScreenHooksApi.setOnShouldStartLoadWithRequest(props => {
         const {
@@ -2389,36 +2473,36 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             shouldOpenInExternalBrowser,
             isSameSite,
             attemptDeepLink
-       } = props;
+        } = props;
 
         // If webview was not tapped, handle loading in the active webview
         if (req.navigationType !== "click") {
             return true;
-       }
+        }
         // If webview is loading, handle redirection in the same webview
         if (isLoading) {
             return true;
-       }
+        }
 
         if (!req.url) {
             return true;
-       }
+        }
 
         if (nextUrl.pathname === null) {
             return true;
-       }
+        }
 
         if (
             currentUrl.pathname === nextUrl.pathname &&
             currentUrl.host === nextUrl.host
         ) {
             return true;
-       }
+        }
 
-        if (! isFocused) {
+        if (!isFocused) {
             return false;
-       }
-   })
+        }
+    })
 }
 
 

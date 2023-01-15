@@ -57,7 +57,7 @@ class TopSlider extends Component {
     componentWillMount() {
         const user = this.props.user;
         const progressReducer = this.props.progressReducer;
-        const achievementReducer = this.props.achievementReducer;
+        const milestoneReducer = this.props.milestoneReducer;
         const optionData = this.props.optionData;
         let topSlides;
         if(optionData&&optionData.goals)
@@ -120,7 +120,7 @@ class TopSlider extends Component {
                        }
                         break;
                     case 'achievement':
-                        let showAchievement = user&&achievementReducer&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.showAchievement));
+                        let showAchievement = user&&milestoneReducer&&milestoneReducer.find(milestone => milestone.complete_date && milestone.id === parseInt(item.showAchievement));
                         if (showAchievement) {
                             show = true;
                        }
@@ -164,7 +164,7 @@ class TopSlider extends Component {
                            }
                             break;
                         case 'achievement':
-                            if (achievementReducer&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.hideAchievement))) {
+                            if (milestoneReducer&&milestoneReducer.find(milestone => milestone.complete_date && milestone.id === parseInt(item.hideAchievement))) {
                                 show = false;
                            }
                             break;
@@ -370,7 +370,7 @@ const mapStateToProps = state => ({
     optionData: state.settings.settings.onenergy_option,
     user: state.user.userObject,
     progressReducer: state.onenergyReducer?state.onenergyReducer.progressReducer:null,
-    achievementReducer: state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements:null,
+    milestoneReducer: state.onenergyReducer?state.onenergyReducer.achievementReducer.milestones:null,
 
 });
 export default connect(mapStateToProps)(TopSlider);

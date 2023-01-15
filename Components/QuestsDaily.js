@@ -23,7 +23,8 @@ const QuestsDaily = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyText = optionData.titles.find(el => el.id === 'achievement_quest_empty').title
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
-    const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === 'daily'):null);
+    const questReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.daily:null);
+    const milestoneReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.milestones:null);
     const dispatch = useDispatch();
 
     const handleOnPress = (item, date, mode) => {
@@ -35,11 +36,10 @@ const QuestsDaily = (props) => {
                         LayoutAnimation.Presets.spring
                     );
                     dispatch({
-                        type: "ONENERGY_ACHIEVEMENT_CLAIM_DAILY",
+                        type: "ONENERGY_PAST_CLAIM",
                         payload: {
                             'id': item.id,
                             'date': date,
-                            'mode': 'daily'
                        },
                    });
                }
@@ -50,9 +50,8 @@ const QuestsDaily = (props) => {
                         LayoutAnimation.Presets.spring
                    );
                     dispatch({
-                        type: "ONENERGY_ACHIEVEMENT_CLAIM",
+                        type: "ONENERGY_DAILY_CLAIM",
                         payload: {
-                            'mode': mode,
                             'id': item.id
                        },
                    });
@@ -64,7 +63,7 @@ const QuestsDaily = (props) => {
     const renderItem = ({item}) => {
         let show = -1;
         let today = new moment().format('YYYY-MM-DD');
-        console.log(item.title, item)
+        console.log(item.title, item.type, item)
 
         switch(item.show){
             case 'course':
@@ -81,7 +80,7 @@ const QuestsDaily = (props) => {
                 show = progressReducer.completedLessons&&progressReducer.completedLessons.findIndex(lesson => lesson.id === parseInt(item.showLesson));
                 break;
             case 'achievement':
-                show = achievementReducer&&achievementReducer.findIndex(achievement => (achievement.id === parseInt(item.showAchievement) && achievement.complete_date));
+                show = milestoneReducer&&milestoneReducer.findIndex(milestone => milestone.id === parseInt(item.showAchievement) && milestone.complete_date !== '');
                 break;
             default:
                 show = 1;
@@ -107,10 +106,10 @@ const QuestsDaily = (props) => {
     return (
         <SafeAreaView style={global.container}>
             {
-                achievementReducer && achievementReducer.length ?
+                questReducer && questReducer.length ?
                     <FlatList
                         contentContainerStyle={{paddingBottom: scale(20)}}
-                        data={achievementReducer.sort((a,b)=>{
+                        data={questReducer.sort((a,b)=>{
                             if(a.claim_date===''&&b.claim_date==='')
                             {
                                 if(a.complete_date < b.complete_date){return 1}else{return -1}

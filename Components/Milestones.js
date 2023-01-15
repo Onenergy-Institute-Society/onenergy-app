@@ -23,18 +23,17 @@ const Milestones = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyText = optionData.titles.find(el => el.id === 'achievement_milestone_empty').title
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
-    const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements.filter(achievement => achievement.type === type):null);
+    const milestoneReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.milestones:null);
     const dispatch = useDispatch();
 
-    const handleOnPress = (item, mode) => {
+    const handleOnPress = (item) => {
         if(item.complete_date&&!item.claim_date) {
             LayoutAnimation.configureNext(
                 LayoutAnimation.Presets.spring
             );
             dispatch({
-                type: "ONENERGY_ACHIEVEMENT_CLAIM",
+                type: "ONENERGY_MILESTONE_CLAIM",
                 payload: {
-                    'mode': mode,
                     'id': item.id
                }
            });
@@ -43,6 +42,7 @@ const Milestones = (props) => {
 
     const renderItem = ({item}) => {
         let show = -1;
+        console.log(item.title, item.type, item)
         switch(item.show){
             case 'course':
                 switch(item.showCourseOption){
@@ -58,7 +58,7 @@ const Milestones = (props) => {
                 show = progressReducer.completedLessons.length&&progressReducer.completedLessons.findIndex(lesson => lesson.id === parseInt(item.showLesson));
                 break;
             case 'achievement':
-                show = achievementReducer&&achievementReducer.findIndex(achievement => (achievement.id === parseInt(item.showAchievement) && achievement.complete_date));
+                show = milestoneReducer&&milestoneReducer.findIndex(milestone => (milestone.id === parseInt(item.showAchievement) && milestone.complete_date));
                 break;
             default:
                 show = 1;
@@ -75,10 +75,10 @@ const Milestones = (props) => {
    };
     return(
         <SafeAreaView style={global.container}>
-            {achievementReducer&&achievementReducer.length?
+            {milestoneReducer&&milestoneReducer.length?
                 <FlatList
                     contentContainerStyle={{paddingBottom: scale(20)}}
-                    data={achievementReducer.sort((a,b)=>{
+                    data={milestoneReducer.sort((a,b)=>{
                         if(a.claim_date===''&&b.claim_date==='')
                         {
                             if(a.complete_date < b.complete_date){return 1}else{return -1}

@@ -91,7 +91,7 @@ const NotificationTabBarIcon = props => {
                 break;
             case 'quest_daily':
                 if (user&&achievementReducer)
-                    notificationCount = achievementReducer.achievements.filter(item => item.type==='daily'&&item.complete_date&&!item.claim_date).length;
+                    notificationCount = achievementReducer.daily?achievementReducer.daily.filter(item => item.complete_date&&!item.claim_date).length:0;
                 break;
             case 'quest_weekly':
                 if (user&&achievementReducer)
@@ -103,7 +103,7 @@ const NotificationTabBarIcon = props => {
                 break;
             case 'quest':
                 if (user&&achievementReducer){
-                    let dailyCount = achievementReducer.achievements.filter(item => item.type==='daily' && item.complete_date && !item.claim_date).length;
+                    let dailyCount = achievementReducer.daily?achievementReducer.daily.filter(item => item.complete_date && !item.claim_date).length:0;
                     let weeklyCount = achievementReducer.weekly.complete_date && !achievementReducer.weekly.claim_date;
                     let monthlyCount = achievementReducer.monthly.complete_date && !achievementReducer.monthly.claim_date;
                     notificationCount = dailyCount+weeklyCount+monthlyCount;
@@ -111,26 +111,26 @@ const NotificationTabBarIcon = props => {
                 break;
             case 'milestone':
                 if (user&&achievementReducer)
-                    notificationCount = achievementReducer.achievements.filter(item => item.type!=='daily'&&item.complete_date&&!item.claim_date).length;
+                    notificationCount = achievementReducer.milestones?achievementReducer.milestones.filter(item => item.complete_date&&!item.claim_date).length:0;
                 break;
             case 'milestone_learn':
                 if (user&&achievementReducer)
-                    notificationCount = achievementReducer.achievements.filter(item => item.type==='learn'&&item.complete_date&&!item.claim_date).length;
+                    notificationCount = achievementReducer.milestones?achievementReducer.milestones.filter(item => item.type==='learn'&&item.complete_date&&!item.claim_date).length:0;
                 break;
             case 'milestone_startup':
                 if (user&&achievementReducer)
-                    notificationCount = achievementReducer.achievements.filter(item => item.type==='startup'&&item.complete_date&&!item.claim_date).length;
+                    notificationCount = achievementReducer.milestones?achievementReducer.milestones.filter(item => item.type==='startup'&&item.complete_date&&!item.claim_date).length:0;
                 break;
             case 'milestone_endurance':
                 if (user&&achievementReducer)
-                    notificationCount = achievementReducer.achievements.filter(item => item.type==='endurance'&&item.complete_date&&!item.claim_date).length;
+                    notificationCount = achievementReducer.milestones.filter(item => item.type==='endurance'&&item.complete_date&&!item.claim_date).length;
                 break;
             case 'left_menu':
                 if (user&&achievementReducer){
-                    let dailyCount = achievementReducer.achievements.filter(item => item.type==='daily'&&item.complete_date&&!item.claim_date).length;
+                    let dailyCount = achievementReducer.daily?achievementReducer.daily.filter(item => item.complete_date&&!item.claim_date).length:0;
                     let weeklyCount = achievementReducer.weekly.complete_date && !achievementReducer.weekly.claim_date;
                     let monthlyCount = achievementReducer.monthly.complete_date && !achievementReducer.monthly.claim_date;
-                    let milestoneCount = achievementReducer.achievements.filter(item => item.type!=='daily'&&item.complete_date&&!item.claim_date).length;
+                    let milestoneCount = achievementReducer.milestones?achievementReducer.milestones.filter(item => item.complete_date&&!item.claim_date).length:0;
                     notificationCount = dailyCount+weeklyCount+monthlyCount+milestoneCount;
                }
                 break;

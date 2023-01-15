@@ -19,7 +19,7 @@ const EventList = props => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
-    const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.achievements:null);
+    const milestoneReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.milestones:null);
     const [showAlert, setShowAlert] = useState(false);
     const [alertTitle, setAlertTitle] = useState('');
     const [alertBody, setAlertBody] = useState('');
@@ -92,7 +92,7 @@ const EventList = props => {
                        }
                         break;
                     case 'achievement':
-                        let showAchievement = user&&achievementReducer&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.showAchievement));
+                        let showAchievement = user&&milestoneReducer&&milestoneReducer.find(milestone => milestone.complete_date && milestone.id === parseInt(item.showAchievement));
                         if (showAchievement) {
                             show = true;
                        }
@@ -136,7 +136,7 @@ const EventList = props => {
                            }
                             break;
                         case 'achievement':
-                            if (achievementReducer&&achievementReducer.find(achievement => achievement.complete_date && achievement.id === parseInt(item.hideAchievement))) {
+                            if (milestoneReducer&&milestoneReducer.find(milestone => milestone.complete_date && milestone.id === parseInt(item.hideAchievement))) {
                                 show = false;
                            }
                             break;
