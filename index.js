@@ -646,7 +646,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 todayDuration: 0,
                 todayGoal: 10,
                 weekDuration: 0,
-                totalDays: 0,
+                totalPracticeDays: 0,
+                totalLoginDays: 1,
                 lastPractice: '',
                 latestUpdate: '',
                 lastUpload: '',
@@ -735,7 +736,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             } else {
                                 idProgressReducer.progress = [];
                             }
-                            idProgressReducer.totalDays = data.progress.totalDays ? parseInt(data.progress.totalDays) : 0;
+                            idProgressReducer.totalPracticeDays = data.progress.totalPracticeDays ? parseInt(data.progress.totalPracticeDays) : 0;
+                            idProgressReducer.totalLoginDays = data.progress.totalLoginDays ? parseInt(data.progress.totalLoginDays) : 1;
                             idProgressReducer.lastPractice = '';
                             idProgressReducer.latestUpdate = 0;
                             idProgressReducer.lastUpload = 0;
@@ -754,7 +756,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             idProgressReducer.todayGoal = 10;
                             idProgressReducer.weekDuration = 0;
                             idProgressReducer.progress = [];
-                            idProgressReducer.totalDays = 0;
+                            idProgressReducer.totalPracticeDays = 0;
+                            idProgressReducer.totalLoginDays = 1;
                             idProgressReducer.lastPractice = '';
                             idProgressReducer.latestUpdate = 0;
                             idProgressReducer.lastUpload = 0;
@@ -846,7 +849,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 case "ONENERGY_PROGRESS_UPLOADED":
                     console.log('upload_done')
                     const newUpload = Math.floor(new Date().getTime() / 1000);
-                    console.log(newUpload)
+
                     let opuTempProgressState = state.progressReducer;
                     opuTempProgressState.actionList = [];
                     opuTempProgressState.lastUpload = newUpload;
@@ -858,12 +861,11 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     let oduTempProgressState = state.progressReducer;
                     let oduTempAchievementState = state.achievementReducer;
 
+                    oduTempProgressState.totalLoginDays += 1;
                     oduTempProgressState.todayDuration = 0;
                     if (new Date().getDay() === 1) {
                         oduTempProgressState.weekDuration = 0;
                     }
-                    oduTempProgressState.totalDays += 1;
-
                     oduTempAchievementState.daily.map((item, tempIndex) => {
                         oduTempAchievementState.daily[tempIndex].complete_date = '';
                         oduTempAchievementState.daily[tempIndex].claim_date = '';
@@ -893,10 +895,11 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     updateDaily = today !== state.progressReducer.lastPractice;
 
                     if (updateDaily) {
+                        acpTempProgressState.totalPracticeDays += 1;
                         acpTempAchievementState.milestones.map((item, tempIndex) => {
                             if (item.trigger === 'progress' && item.triggerField === 'totalDays' && item.complete_date !== today) {
                                 acpTempAchievementState.milestones[tempIndex].step += 1;
-                                if (parseInt(item.total) <= acpTempProgressState.totalDays) {
+                                if (parseInt(item.total) <= acpTempProgressState.totalPracticeDays) {
                                     acpTempAchievementState.milestones[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
                                     acpTempProgressState.actionList.push({
                                         'mode': 'CA',
@@ -1433,7 +1436,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             totalDuration: 0,
                             todayDuration: 0,
                             weekDuration: 0,
-                            totalDays: 0,
+                            totalPracticeDays: 0,
+                            totalLoginDays: 1,
                             latestUpdate: '',
                             lastUpload: '',
                             actionList: [],
@@ -1507,22 +1511,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         'user',
         customUserReducer
     );
-    const customSettingsReducer = reducer => (state = reducer(undefined, {}), action) => {
-        switch (action.type) {
-            case "SETTINGS_ALLOW_LOCATION":
-                const salNewState = {
-                    ...state,
-                    allowLocation: action.payload
-                }
-                return reducer(salNewState, action);
-            default:
-                return reducer(state, action);
-        }
-    }
-    externalCodeSetup.reduxApi.wrapReducer(
-        'settings',
-        customSettingsReducer
-    );
+
     // Add Video reducer for course completion
     externalCodeSetup.reduxApi.addReducer(
         "videoReducer",
@@ -1579,9 +1568,17 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         initial: '1', //Skip Language Choosing Screen
     }
     externalCodeSetup.reduxApi.addReducer(
-        "languagesReducer",
-        (state = {languages: defaultLanguage}, action) => {
+        "settingsReducer",
+        (state = {languages: defaultLanguage, settings: {allowLocation: false}}, action) => {
             switch (action.type) {
+                case "SETTINGS_ALLOW_LOCATION":
+                    return {
+                        ...state,
+                        settings: {
+                            ...state.settings,
+                            allowLocation: action.payload
+                        }
+                    }
                 case "ONENERGY_DEFAULT_LANGUAGE": {
                     return {
                         ...state,
@@ -1610,8 +1607,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
 
     // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
-        let whiteList = [...props.whitelist, "languagesReducer", "postReducer", "onenergyReducer", "videoReducer"];
-        console.log(whiteList);
+        let whiteList = [...props.whitelist, "settingsReducer", "postReducer", "onenergyReducer", "videoReducer"];
+
         return {
             ...props,
             whitelist: whiteList

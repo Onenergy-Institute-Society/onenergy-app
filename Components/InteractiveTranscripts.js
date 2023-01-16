@@ -99,7 +99,7 @@ const InteractiveTranscripts = ({  currentDuration = 0,
     const getItemLayout = (data, index) => (
         {length: scale(40), offset: scale(40) * index, index}
     );
-    console.log(cueArray)
+
     return (
         <>
             {cueArray !== null && (

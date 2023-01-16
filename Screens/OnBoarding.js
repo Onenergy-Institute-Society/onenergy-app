@@ -13,7 +13,7 @@ const OnBoarding = props => {
     const scrollX = useRef(new Animated.Value(0)).current;
     const slidesRef = useRef(null);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-console.log(colors)
+
     const viewableItemsChanged = useRef(({viewableItems}) => {
         try {
             setCurrentIndex(viewableItems[0].index);

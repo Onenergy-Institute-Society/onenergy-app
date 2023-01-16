@@ -8,6 +8,7 @@ import {scale} from '../Utils/scale';
 import Video from 'react-native-video';
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 import TrackSlider from "./TrackSlider";
+import {setupIfNecessary} from "./SetupService";
 
 const AudioPlayerRoutine = (props) => {
     const user = useSelector((state) => state.user.userObject);
@@ -34,11 +35,13 @@ const AudioPlayerRoutine = (props) => {
        }
    }
     useEffect(() => {
-        addTrack(routine.tracks).then(async () => {
-            await TrackPlayer.play();
-            setPlaying(true);
-            setStopped(false);
-       });
+        setupIfNecessary().then(
+            addTrack(routine.tracks).then(async () => {
+                await TrackPlayer.play();
+                setPlaying(true);
+                setStopped(false);
+           })
+        )
    }, [routine]);
 
     async function addTrack(track) {

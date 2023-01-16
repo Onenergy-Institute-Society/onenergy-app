@@ -49,8 +49,7 @@ const HomeContent = (props) => {
     const {global, colors} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const settings = useSelector((state) => state.settings.settings);
-    const allowLocation = useSelector((state) => state.settings.settings.allowLocation);
+    const allowLocation = useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings.allowLocation : null);
     const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
     const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
     const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
@@ -163,22 +162,60 @@ const HomeContent = (props) => {
             if(!allowLocation) {
                 dispatch({
                     type: 'SETTINGS_ALLOW_LOCATION',
+                    payload: true,
                 });
             }
         })
     }
+/*    const setupPromise = TrackPlayer.isServiceRunning()
+        .then((isRunning) => {
+            // calling setupPlayer if it's already set makes app crash
+            if (isRunning) {
+                return Promise.resolve();
+            }
+            return TrackPlayer.setupPlayer();
+        }).then(() => {
+            return TrackPlayer.updateOptions({
+                stoppingAppPausesPlayback: true,
+                alwaysPauseOnInterruption: false,
+                // Media controls capabilities
+                capabilities: [
+                    Capability.Play,
+                    Capability.Pause,
+                    Capability.Stop,
+                ],
+                // Capabilities that will show up when the notification is in the compact form on Android
+                compactCapabilities: [
+                    Capability.Play,
+                    Capability.Pause,
+                    Capability.Stop,
+                ],
+            });
+        })
+    .catch((err) => {
+        console.log(err)
+        if (
+            err?.message?.includes(
+                'The player has already been initialized via setupPlayer',
+            )
+        ) {
+            return Promise.resolve();
+        }
+        return Promise.reject(err);
+    });*/
+
     useEffect(() => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
         });
-        console.log(allowLocation)
+
         if(allowLocation) {
             getLocation();
         }
         const moonIllumination = SunCalc.getMoonIllumination(new Date());
         const phaseNumber = Math.floor(moonIllumination.phase * 100) / 100;
         let phaseName = '';
-        console.log(phaseNumber)
+
         if (phaseNumber === 0) {
             phaseName = 'New Moon';
         } else if (phaseNumber > 0 && phaseNumber < 0.25) {
@@ -214,27 +251,7 @@ const HomeContent = (props) => {
         if (user) {
             navigation.addListener('willFocus', onFocusHandler)
             const subscription = AppState.addEventListener("change", _handleAppStateChange);
-            TrackPlayer.setupPlayer();
-            TrackPlayer.updateOptions({
-                /*                android: {
-                                    appKilledPlaybackBehavior: AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification
-                               },*/
-                stoppingAppPausesPlayback: true,
-                alwaysPauseOnInterruption: false,
-                // Media controls capabilities
-                capabilities: [
-                    Capability.Play,
-                    Capability.Pause,
-                    Capability.Stop,
-                ],
-                // Capabilities that will show up when the notification is in the compact form on Android
-                compactCapabilities: [
-                    Capability.Play,
-                    Capability.Pause,
-                    Capability.Stop,
-                ],
-            });
-            TrackPlayer.setRepeatMode(RepeatMode.Off);
+
             let load = false;
             if (optionData.cache.guide && practiceReducer.guideUpdate && optionData.cache.guide > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
                 load = true;
@@ -271,14 +288,15 @@ const HomeContent = (props) => {
                         dispatch({
                             type: 'USER_VIP_SURVEY_COMPLETED',
                         });
+                        break;
                     case "profile_updated":
                         dispatch({
                             type: 'USER_PROFILE_UPDATED',
                         });
+                        break;
                 }
             }
         });
-
         return unsubscribe;
     }, []);
 
@@ -408,8 +426,7 @@ const HomeContent = (props) => {
                                             margin: scale(10)
                                         }}
                                     />
-{/*                                    <Text>test</Text>
-                                    <SvgVIPMedal/>*/}
+{/*                                    <SvgVIPMedal style={{position:"absolute", bottom:0, left:0}} />*/}
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -640,11 +657,17 @@ const HomeContent = (props) => {
                             <View style={[styles.block_season_left, styles.boxShadow, {backgroundColor: colors.primaryButtonBg}]}>
                                 <View style={{justifyContent: "center", alignItems: "center", padding: scale(15)}}>
                                     <Text style={{
+                                        fontFamily: "MontserratAlternates-SemiBold",
+                                        fontWeight: "bold",
+                                        fontSize: scale(14),
+                                        color: colors.primaryButtonColor
+                                    }}>Tap Here</Text>
+                                    <Text style={{
                                         fontFamily: "MontserratAlternates-Regular",
                                         fontWeight: "normal",
                                         fontSize: scale(14),
                                         color: colors.primaryButtonColor
-                                    }}>Tap here to show sunrise/sunset time</Text>
+                                    }}>show sunrise/sunset time</Text>
                                 </View>
                             </View>
                         </TouchableScale>

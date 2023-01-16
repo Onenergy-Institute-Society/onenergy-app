@@ -28,7 +28,7 @@ const QuestsDaily = (props) => {
     const dispatch = useDispatch();
 
     const handleOnPress = (item, date, mode) => {
-        console.log(item, date, mode)
+
         switch (mode) {
             case 'past':
                 if(item.list.find(pastDate=>pastDate===date)) {
@@ -63,7 +63,7 @@ const QuestsDaily = (props) => {
     const renderItem = ({item}) => {
         let show = -1;
         let today = new moment().format('YYYY-MM-DD');
-        console.log(item.title, item.type, item)
+
 
         switch(item.show){
             case 'course':

@@ -228,12 +228,15 @@ const PracticeGroup = props => {
                             <Text style={styles.subtitle}>last for {new Date(item.duration * 1000).toISOString().substring(14, 19)}, repeat
                                 every {loop} mins</Text>
                             :
-                            <Text style={styles.subtitle}>Finish required lessons to unlock this group practice.</Text>
+                            <Text style={styles.subtitle}>Finish required lessons to unlock.</Text>
                         }
                         {practiceCount?
                             <Text style={[global.itemText]}>{practiceCount} times</Text>
                             :null}
-                        <Text style={styles.description}>tap to view detail</Text>
+                        <View style={{width:windowWidth-scale(60), flexDirection: "row", justifyContent:"space-between"}}>
+                            <Text style={styles.description}>{practiceCount} times</Text>
+                            <Text style={styles.description}>tap to view detail</Text>
+                        </View>
                     </ImageBackground>
                 </View>
             </TouchableOpacity>
@@ -361,7 +364,8 @@ const styles = StyleSheet.create({
         flexGrow: 1,
     },
     imageView: {
-        justifyContent: "space-between",
+        justifyContent: "space-evenly",
+        alignItems: "center",
         width: windowWidth - scale(30),
         height: scale(100),
         borderRadius: 9,
@@ -377,7 +381,7 @@ const styles = StyleSheet.create({
         fontFamily: 'MontserratAlternates-SemiBold',
     },
     description: {
-        alignSelf: "flex-start",
+        alignSelf: "center",
         marginBottom: scale(5),
         fontSize: scale(10),
         fontStyle: "italic",
@@ -387,7 +391,7 @@ const styles = StyleSheet.create({
     },
     subtitle: {
         fontSize: scale(12),
-        textAlign: "center",
+        textAlign: "left",
         color: "black",
         fontWeight: "bold",
         fontFamily: 'MontserratAlternates-SemiBold'

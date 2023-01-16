@@ -7,7 +7,7 @@ import {
     StatusBar,
     Text,
     PixelRatio,
-    BackHandler
+    BackHandler, Platform
 } from "react-native";
 import {useSelector, useDispatch} from "react-redux";
 import Video from "react-native-video";
@@ -68,7 +68,7 @@ const VimeoPlayer = (props) => {
    }
 
     const onVideoLoad = (e) => {
-        console.log(videoReducer)
+
         if(videoReducer.videos.length) {
             const videoIndex = videoReducer.videos.findIndex(item => item.videoId === videoId);
             if (videoIndex >= 0 && videoReducer.videos[videoIndex].duration > 0) {
@@ -84,7 +84,7 @@ const VimeoPlayer = (props) => {
 
     const handleBackButtonClick = () => {
         if(lesson_video) {
-            console.log(videoId, currentTime)
+
             exitVideo(videoId, currentTime);
        }
         navigation.goBack();
@@ -207,7 +207,7 @@ const VimeoPlayer = (props) => {
                                             flexGrow: 1,
                                             justifyContent:"center",
                                             alignItems:"center",
-                                            paddingTop: scale(10),
+                                            paddingTop: Platform.OS==="ios"?scale(10):0,
                                        }
                                    }
                                     textStyle={

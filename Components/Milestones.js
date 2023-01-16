@@ -42,7 +42,7 @@ const Milestones = (props) => {
 
     const renderItem = ({item}) => {
         let show = -1;
-        console.log(item.title, item.type, item)
+
         switch(item.show){
             case 'course':
                 switch(item.showCourseOption){

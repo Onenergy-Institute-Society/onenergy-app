@@ -179,7 +179,7 @@ class TopSlider extends Component {
                 console.log(show, item.image, item)
             return show;
        })
-console.log(topSlides)
+
         if(topSlides&&topSlides.length){
             this.setState({data:topSlides, autoscroll: false} )
             //this.startAutoPlay();

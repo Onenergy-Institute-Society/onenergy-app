@@ -41,7 +41,7 @@ const CategoryScreen = props => {
    }, []);
     useEffect(()=>{
         try {
-            console.log(categoryData)
+
             if(categoryData["meta_box"]["image_advanced"]&&categoryData["meta_box"]["image_advanced"].length) {
                 setCategoryBanner(categoryData["meta_box"]["image_advanced"][0]["full_url"]);
            }

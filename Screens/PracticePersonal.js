@@ -31,7 +31,7 @@ const PracticePersonal = props => {
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
-console.log('guideReducer', guideReducer)
+
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Personal Practice Screen',

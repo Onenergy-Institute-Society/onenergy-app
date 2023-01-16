@@ -10,7 +10,7 @@ import  {scale} from "../Utils/scale";
 
 const VimeoBlockLoader =(props) => {
     const {block} = props;
-    const language = useSelector((state) => state.languagesReducer.languages);
+    const language = useSelector((state) => state.settingsReducer.languages);
     const no_skip_forward = block.data.no_skip_forward;
     const lesson_video = block.data.lesson_video;
     const duration = block.data.duration;
