@@ -21,6 +21,7 @@ import EventList from "../Components/EventList";
 import QiPointHeader from "../Components/QiPointHeader";
 import analytics from '@react-native-firebase/analytics';
 import {SvgIconBack} from "../Utils/svg";
+import {setupIfNecessary} from "../Components/SetupService";
 
 const PracticePersonal = props => {
     const {screenProps} = props;
@@ -38,6 +39,7 @@ const PracticePersonal = props => {
    });
 
     useEffect(() => {
+        setupIfNecessary().then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'practices_basic').title,
        });

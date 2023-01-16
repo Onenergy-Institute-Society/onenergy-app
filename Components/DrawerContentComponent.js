@@ -258,18 +258,6 @@ const CustomDrawerContentComponent = (props) => {
                                 <SvgIconRightArrow color={colors.descLightTextColor}/>
                             </View>
                         </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback onPress={() =>
-                            navigation.navigate("InitData")}>
-                            <View style={[styles.menuItem, {borderBottomRightRadius: 9}]}>
-                                <View style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
-                                    <SvgIconSetting color={colors.secondaryButtonColor}/>
-                                    <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
-                                        Init
-                                    </Text>
-                                </View>
-                                <SvgIconRightArrow color={colors.descLightTextColor}/>
-                            </View>
-                        </TouchableWithoutFeedback>
                     </View>
                 ) : null}
             </View>

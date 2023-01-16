@@ -22,6 +22,7 @@ import TrackPlayer from 'react-native-track-player';
 import EventList from "../Components/EventList";
 import analytics from '@react-native-firebase/analytics';
 import {SvgIconBack} from "../Utils/svg";
+import {setupIfNecessary} from "../Components/SetupService";
 
 const PracticeMember = props => {
     const {navigation, screenProps} = props;
@@ -112,6 +113,7 @@ const PracticeMember = props => {
         removeRoutine(item).then();
    }
     useEffect(() => {
+        setupIfNecessary().then();
         if(!practiceReducer||!practiceReducer.routines||!practiceReducer.routines.length)
             fetchTracks().then();
         props.navigation.setParams({

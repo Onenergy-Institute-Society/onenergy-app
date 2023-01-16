@@ -426,7 +426,9 @@ const HomeContent = (props) => {
                                             margin: scale(10)
                                         }}
                                     />
-{/*                                    <SvgVIPMedal style={{position:"absolute", bottom:0, left:0}} />*/}
+                                    {user.membership&&user.membership.length?
+                                    <SvgVIPMedal style={{position:"absolute", top:0, right:-10}} />
+                                        :null}
                                 </TouchableOpacity>
                             </View>
                         </View>
