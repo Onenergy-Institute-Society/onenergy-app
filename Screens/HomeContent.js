@@ -21,7 +21,6 @@ import AuthWrapper from "@src/components/AuthWrapper";
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import EventList from "../Components/EventList";
-import TrackPlayer, {Capability, RepeatMode} from 'react-native-track-player';
 import analytics from '@react-native-firebase/analytics';
 import ForumsScreen from "@src/containers/Custom/ForumsScreen";
 import {
@@ -167,42 +166,6 @@ const HomeContent = (props) => {
             }
         })
     }
-/*    const setupPromise = TrackPlayer.isServiceRunning()
-        .then((isRunning) => {
-            // calling setupPlayer if it's already set makes app crash
-            if (isRunning) {
-                return Promise.resolve();
-            }
-            return TrackPlayer.setupPlayer();
-        }).then(() => {
-            return TrackPlayer.updateOptions({
-                stoppingAppPausesPlayback: true,
-                alwaysPauseOnInterruption: false,
-                // Media controls capabilities
-                capabilities: [
-                    Capability.Play,
-                    Capability.Pause,
-                    Capability.Stop,
-                ],
-                // Capabilities that will show up when the notification is in the compact form on Android
-                compactCapabilities: [
-                    Capability.Play,
-                    Capability.Pause,
-                    Capability.Stop,
-                ],
-            });
-        })
-    .catch((err) => {
-        console.log(err)
-        if (
-            err?.message?.includes(
-                'The player has already been initialized via setupPlayer',
-            )
-        ) {
-            return Promise.resolve();
-        }
-        return Promise.reject(err);
-    });*/
 
     useEffect(() => {
         props.navigation.setParams({
@@ -288,6 +251,12 @@ const HomeContent = (props) => {
                         dispatch({
                             type: 'USER_VIP_SURVEY_COMPLETED',
                         });
+                        if(!(user.membership && user.membership.length)){
+                            dispatch({
+                                type: 'SETTINGS_ADD_VOUCHER_NOTIFICATION',
+                                payload: data.extra_data
+                            });
+                        }
                         break;
                     case "profile_updated":
                         dispatch({

@@ -29,6 +29,7 @@ import LessonButton from "./Components/LessonButton";
 import PracticePlayer from "./Components/PracticePlayer";
 import VimeoPlayer from "./Components/VimeoPlayer";
 import VimeoBlockLoader from "./Components/VimeoBlockLoader";
+import VideoBlock from "./Components/VideoBlock";
 import PracticePersonal from './Screens/PracticePersonal';
 import PracticeGroup from './Screens/PracticeGroup';
 import PracticeMember from './Screens/PracticeMember';
@@ -268,6 +269,10 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     externalCodeSetup.blocksApi.addCustomBlockRender(
         'bbapp/bgvideoblock',
         props => <BgVideoBlock {...props}/>
+    );
+    externalCodeSetup.blocksApi.addCustomBlockRender(
+        'bbapp/localvideoblock',
+        props => <VideoBlock {...props}/>
     );
     externalCodeSetup.screenHooksApi.hideCourseSingleAdmin();
     externalCodeSetup.courseSingleApi.setFilterIncomingCourseProps((props) => {
@@ -1569,7 +1574,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     }
     externalCodeSetup.reduxApi.addReducer(
         "settingsReducer",
-        (state = {languages: defaultLanguage, settings: {allowLocation: false}}, action) => {
+        (state = {languages: defaultLanguage, settings: {allowLocation: false, vouchers:[]}}, action) => {
             switch (action.type) {
                 case "SETTINGS_ALLOW_LOCATION":
                     return {
@@ -1578,6 +1583,37 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             ...state.settings,
                             allowLocation: action.payload
                         }
+                    }
+                case "SETTINGS_ADD_VOUCHER_NOTIFICATION":
+                    const savnVoucher = state.settings.vouchers;
+                    if(!savnVoucher.find(voucher => voucher === action.payload))
+                    {
+                        savnVoucher.push(action.payload);
+                        return {
+                            ...state,
+                            settings: {
+                                ...state.settings,
+                                vouchers: savnVoucher
+                            }
+                        }
+                    }else{
+                        return state;
+                    }
+                case "SETTINGS_REMOVE_VOUCHER_NOTIFICATION":
+                    const srvnVoucher = state.settings.vouchers;
+                    const srvnIndexVoucher = srvnVoucher.findIndex(voucher => voucher === action.payload);
+                    if(srvnIndexVoucher >=0)
+                    {
+                        srvnVoucher.splice(srvnIndexVoucher);
+                        return {
+                            ...state,
+                            settings: {
+                                ...state.settings,
+                                vouchers: srvnVoucher
+                            }
+                        }
+                    }else{
+                        return state;
                     }
                 case "ONENERGY_DEFAULT_LANGUAGE": {
                     return {
@@ -2062,12 +2098,77 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         }
         return defaultValue;
     });
-    const AfterDetailsComponent = ({user}) => {
-        const userInfo = useSelector((state) => state.user.userObject);
+    const AfterDetailsComponent = () => {
+        const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
+        const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+        const user = useSelector((state) => state.user.userObject);
         return (
-            userInfo.membership && userInfo.membership.length > 0 ?
-                <Text> {userInfo.membership[0].plan.name} </Text>
-                : null
+            <View style={{marginLeft:scale(35),marginTop:scale(15)}}>
+                {progressReducer && progressReducer.points && Object.keys(progressReducer.points).length ? Object.entries(progressReducer.points).map(([key, value]) => (
+                    <View style={{
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                        alignItems: "center",
+                    }}>
+                        <Text style={{
+                            color: '#262626',
+                            textAlign: "left",
+                            marginRight: scale(10),
+                            fontWeight: "normal",
+                            fontFamily: "Montserrat-Regular",
+                            fontSize: scale(16)
+                        }}>
+                            Point:
+                        </Text>
+                        <FastImage
+                            source={require('./assets/images/icon-ray.png')} style={{width: 24, height: 24}}/>
+                        <Text style={{
+                            color: '#262626',
+                            textAlign: "left",
+                            marginLeft: scale(5),
+                            fontWeight: "normal",
+                            fontFamily: "Montserrat-Regular",
+                            fontSize: scale(16)
+                        }}>
+                            {value} {optionData.points.find(pt => pt.pointName === key).pointTitle}
+                        </Text>
+                    </View>
+                )) : null}
+                <View style={{
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "center"
+                }}>
+                    <Text style={{
+                        color: '#262626',
+                        textAlign: "left",
+                        marginRight: scale(10),
+                        fontWeight: "normal",
+                        fontFamily: "Montserrat-Regular",
+                        fontSize: scale(16)
+                    }}>
+                        Rank:
+                    </Text>
+                    <FastImage source={{uri: optionData.ranks[parseInt(user.rank)].rankImage}}
+                               style={{width: 24, height: 24, alignSelf: "center"}}/>
+                    <Text style={{
+                        color: '#262626',
+                        textAlign: "left",
+                        marginLeft: scale(5),
+                        fontWeight: "normal",
+                        fontFamily: "Montserrat-Regular",
+                        fontSize: scale(16)
+                    }}>
+                        {optionData.ranks[parseInt(user.rank)].rankName}
+                    </Text>
+                </View>
+                {user.membership.length > 0 ?
+                    <Text style={{color: "#262626",fontWeight: "normal",
+                        alignItems:"flex-start",
+                        fontFamily: "Montserrat-Regular",
+                        fontSize: scale(16)}}>{user.membership[0].plan.name}</Text>
+                    : null}
+            </View>
         )
     }
 

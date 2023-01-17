@@ -22,7 +22,6 @@ import TrackPlayer from 'react-native-track-player';
 import EventList from "../Components/EventList";
 import analytics from '@react-native-firebase/analytics';
 import {SvgIconBack} from "../Utils/svg";
-import {setupIfNecessary} from "../Components/SetupService";
 
 const PracticeMember = props => {
     const {navigation, screenProps} = props;
@@ -113,7 +112,6 @@ const PracticeMember = props => {
         removeRoutine(item).then();
    }
     useEffect(() => {
-        setupIfNecessary().then();
         if(!practiceReducer||!practiceReducer.routines||!practiceReducer.routines.length)
             fetchTracks().then();
         props.navigation.setParams({
@@ -135,32 +133,30 @@ const PracticeMember = props => {
    },[messageBarDisplay])
     return (
         <SafeAreaView style={[global.container, {justifyContent: "center", alignItems: "center"}]}>
-            {practiceReducer&&practiceReducer.guides&&practiceReducer.guides.length?
+            {practiceReducer&&practiceReducer.guides&&practiceReducer.guides.length&&
                 practiceReducer&&practiceReducer.routines&&practiceReducer.routines.length?
                     <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                         {optionData.goals && optionData.goals.length?
                             <View>
                                 <EventList location={'practice_member'} {...props}/>
                             </View>
-                            : null
-                       }
+                        : null
+                        }
                         <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine} setMessageBarDisplay={setMessageBarDisplay} {...props}/>
                     </ScrollView>
-                    :
-                    <ActivityIndicator size="large"/>
                 :
-                <View style={{
-                    flex: 1,
-                    width: windowWidth
-               }}>
-                    <BlockScreen pageId={emptyData.id}
-                                 contentInsetTop={0}
-                                 contentOffsetY={0}
-                                 hideTitle={true}
-                                 hideNavigationHeader={true}
-                                 {...props}/>
-                </View>
-           }
+                    <View style={{
+                        flex: 1,
+                        width: windowWidth
+                    }}>
+                        <BlockScreen pageId={emptyData.id}
+                                     contentInsetTop={0}
+                                     contentOffsetY={0}
+                                     hideTitle={true}
+                                     hideNavigationHeader={true}
+                                     {...props}/>
+                    </View>
+            }
             {(practiceReducer && practiceReducer.routines && practiceReducer.routines.length<5) || !practiceReducer.routines?
                 <IconButton
                     pressHandler={() => {onAddPressed().then()}}

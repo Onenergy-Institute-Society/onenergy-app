@@ -805,7 +805,9 @@ const styles = StyleSheet.create({
     inputName: {
         height: 50,
         borderRadius: 9,
-        backgroundColor: "#fffdff",
+        borderWidth:1,
+        borderColor: "#8c79ea",
+        backgroundColor: "#ffffff",
         paddingLeft: 15
    },
     trackTitle: {

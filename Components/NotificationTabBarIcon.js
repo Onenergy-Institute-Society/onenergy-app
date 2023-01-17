@@ -10,6 +10,7 @@ const NotificationTabBarIcon = props => {
     const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
     const guideReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer.guides:null);
     const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
+    const vouchers =  useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings.vouchers : null);
     const {notificationID, top, right, size, fontSize=8, showNumber=false, data=''} = props;
 
     let notificationCount=0;
@@ -141,6 +142,11 @@ const NotificationTabBarIcon = props => {
                    });
                }
                 break;
+            case 'voucher':
+                if(vouchers&&vouchers.length)
+                {
+                    notificationCount = vouchers&&vouchers.length;
+                }
             default:
                 notificationCount = 0;
        }

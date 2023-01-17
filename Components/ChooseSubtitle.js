@@ -10,7 +10,7 @@ import {SvgIconCheck} from "../Utils/svg";
 
 const ChooseSubtitle =(props) => {
     const {textTracks, setSelectedCCUrl, screenProps} = props;
-    const {colors} = screenProps;
+    const {global, colors} = screenProps;
     const language = useSelector((state) => state.settingsReducer.languages);
     const dispatch = useDispatch();
     const openCCDialog=()=>{
@@ -28,7 +28,7 @@ const ChooseSubtitle =(props) => {
            }}>
                 <View style={{paddingHorizontal:5, paddingVertical:5, borderBottomWidth:1, borderBottomColor:'#ccc', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <Text
-                        style={{fontSize:scale(20)}}>
+                        style={[global.itemTitle, {fontSize:scale(20)}]}>
                         {item.item.title}
                     </Text>
                     {language.subtitle === item.item.language?(

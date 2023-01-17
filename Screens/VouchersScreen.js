@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {getApi} from "@src/services";
-import {connect, useSelector} from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 import {
     StyleSheet,
     SafeAreaView,
@@ -26,6 +26,7 @@ const VouchersScreen = (props) => {
     const [ loading, setLoading ] = useState(false);
     const [vouchers, setVouchers] = useState({});
     const [vouchersLoading, setVouchersLoading] = useState(true);
+    const dispatch = useDispatch();
 
     analytics().logScreenView({
         screen_class: 'MainActivity',
@@ -71,7 +72,6 @@ const VouchersScreen = (props) => {
                                 text: 'OK', onPress:
                                     async () => {
                                         try {
-
                                             setLoading(true);
                                             const apiRequest = getApi(props.config);
                                             await apiRequest.customRequest(
@@ -85,6 +85,10 @@ const VouchersScreen = (props) => {
                                                 setLoading(false);
                                                 if (response.data) {
                                                     if (response.data.result) {
+                                                        dispatch({
+                                                            type: 'SETTINGS_REMOVE_VOUCHER_NOTIFICATION',
+                                                            payload: data.extra_data
+                                                        });
                                                         switch (response.data.action) {
                                                             case 'restart':
                                                                 Alert.alert('Notice', response.data.message, [
