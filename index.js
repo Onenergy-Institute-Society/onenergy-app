@@ -681,6 +681,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     const data = action.payload.data;
                     const loadGroup = action.payload.loadGroup;
                     const loadGuide = action.payload.loadGuide;
+                    const loadRoutine = action.payload.loadRoutine;
                     const loadAchievement = action.payload.loadAchievement;
                     const loadProgress = action.payload.loadProgress;
                     console.log('2')
@@ -700,6 +701,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             idPracticeReducer.guides = data.guides;
                         }
                         idPracticeReducer.guideUpdate = new Date().toISOString();
+                    }
+                    if (loadRoutine) {
+                        if (data.routines) {
+                            idPracticeReducer.routines = data.routines;
+                        }
+                        idPracticeReducer.routineUpdate = new Date().toISOString();
                     }
                     console.log('5')
                     if (loadAchievement) {

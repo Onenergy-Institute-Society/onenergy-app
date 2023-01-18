@@ -86,6 +86,7 @@ const HomeContent = (props) => {
 
     const _handleAppStateChange = async () => {
         if (user) {
+            console.log(AppState.currentState, checkTodayDate())
             if (AppState.currentState === 'active' && checkTodayDate()) {
                 dispatch({
                     type: 'ONENERGY_DAILY_UPDATE',
@@ -237,6 +238,9 @@ const HomeContent = (props) => {
             if (optionData.cache.group && practiceReducer.groupUpdate && optionData.cache.group > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
                 load = true;
             }
+            if (optionData.cache.routine && practiceReducer.routineUpdate && optionData.cache.routine > practiceReducer.routineUpdate || !practiceReducer.routineUpdate) {
+                load = true;
+            }
             if (optionData.cache.post && postReducer.postUpdate && optionData.cache.post > postReducer.postUpdate || !postReducer.postUpdate) {
                 dispatch({
                     type: 'ONENERGY_POSTS_RESET',
@@ -365,9 +369,9 @@ const HomeContent = (props) => {
                 this.todayGoalDialog.close();
             }}>
                 <View style={[cornerStyle, bottomStyle, {
-                    width: windowWidth - 50,
-                    marginHorizontal: 25,
-                    paddingHorizontal: 25,
+                    width: windowWidth - 30,
+                    marginHorizontal: 15,
+                    paddingHorizontal: 15,
                     backgroundColor: colors.bodyBg,
                     paddingVertical: 15,
                     flexDirection: 'row',
@@ -394,7 +398,7 @@ const HomeContent = (props) => {
                     <>
                         <View style={styles.topRow}>
                             <View style={{width: windowWidth * 2 / 3, justifyContent: "space-between"}}>
-                                <Text style={global.textHeaderTitle}>{optionData.salute}, {user.name}</Text>
+                                <Text style={[global.textHeaderTitle, {fontSize: scale(16)}]}>{optionData.salute}, {user.name}</Text>
                                 <Text style={[global.title, {fontSize: scale(12)}]}>{optionData.greetings}</Text>
                             </View>
                             <View style={{justifyContent: "center", alignItems: "flex-end"}}>
@@ -493,7 +497,7 @@ const HomeContent = (props) => {
                                                 () => {
                                                     this.todayGoalDialog.open();
                                                 }}>
-                                            <Text style={[styles.link, {
+                                            <Text style={[global.linkWithArrow, {
                                                 fontWeight: "bold",
                                                 color: colors.primaryButtonBg
                                             }]}>Goal setting ></Text>

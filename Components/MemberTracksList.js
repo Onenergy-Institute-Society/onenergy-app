@@ -37,7 +37,7 @@ const MemberTracksList = (props) => {
        }
    };
 
-    const onRemoveRoutinePress = (item) =>{
+    const onRemoveRoutinePress = (item, index) =>{
         Alert.alert(
             "Are your sure?",
             "Are you sure you want to delete this routine?",
@@ -51,7 +51,7 @@ const MemberTracksList = (props) => {
                 {
                     text: "Yes",
                     onPress: () => {
-                        props.onRemoveRoutine(item);
+                        props.onRemoveRoutine(item, index);
                    },
                },
             ]
@@ -114,7 +114,7 @@ const MemberTracksList = (props) => {
     const rightActions = (dragX, item, index) => {
         return (
             <View style={{justifyContent:"space-evenly", alignItems:"center", marginRight:15}}>
-                <TouchableOpacity style={{justifyContent:"center", alignItems:"center"}} onPress={() => {onRemoveRoutinePress(item);}}>
+                <TouchableOpacity style={{justifyContent:"center", alignItems:"center"}} onPress={() => {onRemoveRoutinePress(item, index);}}>
                     <IconButton
                         icon={require("@src/assets/img/delete.png")}
                         tintColor={"red"}

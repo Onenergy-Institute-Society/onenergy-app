@@ -17,7 +17,8 @@ export const SetupService = async (): Promise<boolean> => {
                 AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification,
             },
             // This flag is now deprecated. Please use the above to define playback mode.
-            // stoppingAppPausesPlayback: true,
+            //stoppingAppPausesPlayback: true,
+            //stopWithApp: true,
             capabilities: [
                 Capability.Play,
                 Capability.Pause,

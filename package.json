@@ -20,12 +20,12 @@
   "dependencies": {
     "react-native-chart-kit": "^6.12.0",
     "react-native-get-location": "^2.2.1",
-    "react-native-track-player": "^2.2.0-rc4",
+    "react-native-track-player": "^3.2.0",
     "suncalc": "^1.9.0"
   },
   "nativeDependencies": {
     "react-native-get-location": "^2.2.1",
-    "react-native-track-player": "^2.2.0-rc4"
+    "react-native-track-player": "^3.2.0"
   },
   "podDependencies": {
     "ReactNativeGetLocation": "react-native-get-location",

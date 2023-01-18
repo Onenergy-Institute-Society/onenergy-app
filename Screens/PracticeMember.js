@@ -1,19 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {
-    View,
-    SafeAreaView,
-    StyleSheet,
-    TouchableOpacity,
-    Text,
-    ScrollView,
-    ActivityIndicator,
-    Animated
-} from "react-native";
+import {Animated, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {getApi} from "@src/services";
-import {connect, useSelector, useDispatch} from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 import MemberTracksList from "../Components/MemberTracksList";
 import IconButton from "@src/components/IconButton";
-import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {NavigationActions, withNavigation} from "react-navigation";
 import {windowWidth} from "../Utils/Dimensions";
@@ -29,49 +19,30 @@ const PracticeMember = props => {
     const dispatch = useDispatch();
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyData = optionData.helps.find(el => el.name === 'practice_customize_empty_member');
-    const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
+    const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
 
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Custom Routine Screen',
-   });
+    });
 
-    const fetchTracks = async () => {
-        try {
-            const apiRoutines = getApi(props.config);
-            const data = await apiRoutines.customRequest(
-                "wp-json/onenergy/v1/routine",
-                "get",
-                {},
-                null,
-                {},
-                false
-            ).then(response => response.data);
-            dispatch({
-                type: "ONENERGY_ROUTINE_UPDATE",
-                payload: data
-           });
-       } catch (e) {
-            console.error(e);
-       }
-   }
     const removeRoutine = async (item) => {
         try {
             const apiSlide = getApi(props.config);
             await apiSlide.customRequest(
                 "wp-json/onenergy/v1/delRoutine",
                 "post",
-                {"routine":item},
+                {"routine": item},
                 null,
                 {},
                 false
             ).then();
-       } catch (e) {
+        } catch (e) {
             console.error(e);
-       }
-   }
+        }
+    }
     const onAddPressed = async () => {
         await TrackPlayer.reset();
 
@@ -80,94 +51,91 @@ const PracticeMember = props => {
                 routeName: "EditRoutine",
                 params: {
                     routine: null,
-               }
-           })
+                }
+            })
         );
-   }
-    const onEditRoutinePress = async (item, index) =>{
+    }
+    const onEditRoutinePress = async (index) => {
         await TrackPlayer.reset();
 
         navigation.dispatch(
             NavigationActions.navigate({
                 routeName: "EditRoutine",
                 params: {
-                    routine: item,
                     index: index,
-               }
-           })
+                }
+            })
         );
-   }
-    const onRemoveRoutine = async (item) => {
+    }
+    const onRemoveRoutine = async (item, index) => {
         await TrackPlayer.reset();
-
         let array = practiceReducer.routines; // make a separate copy of the array
-        let index = array.indexOf(item);
         if (index !== -1) {
             array.splice(index, 1);
             dispatch({
                 type: "ONENERGY_ROUTINE_UPDATE",
                 payload: array
-           });
-       }
+            });
+        }
         removeRoutine(item).then();
-   }
+    }
     useEffect(() => {
-        if(!practiceReducer||!practiceReducer.routines||!practiceReducer.routines.length)
-            fetchTracks().then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'practices_member').title,
+            showAdd: !!((practiceReducer && practiceReducer.routines && practiceReducer.routines.length < 5) || !practiceReducer.routines),
             onAddPressed: onAddPressed,
-       });
-   },[]);
-    useEffect(()=>{
-        if(messageBarDisplay)
-        {
+        });
+    }, []);
+    useEffect(() => {
+        if (messageBarDisplay) {
             Animated.timing(fadeAnim, {
                 toValue: 1,
                 duration: 2000,
-           }).start();
+            }).start();
             setTimeout(function () {
                 setMessageBarDisplay(false);
-           }, 3000)
-       }
-   },[messageBarDisplay])
+            }, 3000)
+        }
+    }, [messageBarDisplay])
     return (
         <SafeAreaView style={[global.container, {justifyContent: "center", alignItems: "center"}]}>
-            {practiceReducer&&practiceReducer.guides&&practiceReducer.guides.length&&
-                practiceReducer&&practiceReducer.routines&&practiceReducer.routines.length?
-                    <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                        {optionData.goals && optionData.goals.length?
-                            <View>
-                                <EventList location={'practice_member'} {...props}/>
-                            </View>
+            {practiceReducer && practiceReducer.routines && practiceReducer.routines.length ?
+                <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
+                    {optionData.goals && optionData.goals.length ?
+                        <View>
+                            <EventList location={'practice_member'} {...props}/>
+                        </View>
                         : null
-                        }
-                        <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine} setMessageBarDisplay={setMessageBarDisplay} {...props}/>
-                    </ScrollView>
+                    }
+                    <MemberTracksList onEditRoutinePress={onEditRoutinePress} onRemoveRoutine={onRemoveRoutine}
+                                      setMessageBarDisplay={setMessageBarDisplay} {...props}/>
+                </ScrollView>
                 :
-                    <View style={{
-                        flex: 1,
-                        width: windowWidth
-                    }}>
-                        <BlockScreen pageId={emptyData.id}
-                                     contentInsetTop={0}
-                                     contentOffsetY={0}
-                                     hideTitle={true}
-                                     hideNavigationHeader={true}
-                                     {...props}/>
-                    </View>
+                <View style={{
+                    flex: 1,
+                    width: windowWidth
+                }}>
+                    <BlockScreen pageId={emptyData.id}
+                                 contentInsetTop={0}
+                                 contentOffsetY={0}
+                                 hideTitle={true}
+                                 hideNavigationHeader={true}
+                                 {...props}/>
+                </View>
             }
-            {(practiceReducer && practiceReducer.routines && practiceReducer.routines.length<5) || !practiceReducer.routines?
+            {(practiceReducer && practiceReducer.routines && practiceReducer.routines.length < 5) || !practiceReducer.routines ?
                 <IconButton
-                    pressHandler={() => {onAddPressed().then()}}
+                    pressHandler={() => {
+                        onAddPressed().then()
+                    }}
                     icon={require("@src/assets/img/add.png")}
                     style={{height: 24, width: 24}}
                     tintColor={'#FFFFFF'}
                     touchableStyle={{
                         position: "absolute",
                         backgroundColor: "#f4338f",
-                        bottom:scale(80),
-                        color:"white",
+                        bottom: scale(80),
+                        color: "white",
                         tintColor: "#FFFFFF",
                         alignItems: "center",
                         borderRadius: 100,
@@ -177,12 +145,13 @@ const PracticeMember = props => {
                         shadowOpacity: 0.2,
                         shadowRadius: 3,
                         elevation: 4,
-                   }}
-               />
-            :null}
-            {messageBarDisplay?
-                <Animated.View style={[styles.messageBar, {opacity: fadeAnim}]}><Text style={styles.messageText}>Great! You earn more qi. Keep it up!</Text></Animated.View>
-            :null}
+                    }}
+                />
+                : null}
+            {messageBarDisplay ?
+                <Animated.View style={[styles.messageBar, {opacity: fadeAnim}]}><Text style={styles.messageText}>Great!
+                    You earn more qi. Keep it up!</Text></Animated.View>
+                : null}
         </SafeAreaView>
     );
 };
@@ -192,40 +161,41 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#f6f6f8',
-   },
+    },
     scroll_view: {
         flexGrow: 1,
-   },
-    messageText:{
-        fontSize:scale(18),
+    },
+    messageText: {
+        fontSize: scale(18),
         color: "white",
-   },
+    },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-   },
-    messageBar:{
+    },
+    messageBar: {
         position: "absolute",
-        top:scale(15),
-        left:scale(15),
-        right:scale(15),
-        backgroundColor:"#737373",
-        borderColor:"#404040",
-        borderRadius:9,
-        paddingVertical:scale(10),
-        paddingHorizontal:scale(15),
-   }
+        top: scale(15),
+        left: scale(15),
+        right: scale(15),
+        backgroundColor: "#737373",
+        borderColor: "#404040",
+        borderRadius: 9,
+        paddingVertical: scale(10),
+        paddingHorizontal: scale(15),
+    }
 });
 PracticeMember.navigationOptions = ({navigation, screenProps}) => {
+    const {params = {}} = navigation.state;
     const {colors, global} = screenProps;
-    return({
-        headerTitle: navigation.getParam('title'),
+    return ({
+        headerTitle: params.title?params.title:navigation.getParam('title'),
         headerStyle: {
             backgroundColor: colors.headerBg,
-       },
+        },
         headerTintColor: colors.headerColor,
         headerTitleStyle: global.appHeaderTitle,
         headerLeft:
@@ -233,11 +203,37 @@ PracticeMember.navigationOptions = ({navigation, screenProps}) => {
                 onPress={async () => {
                     await TrackPlayer.reset();
                     navigation.goBack();
-               }}
+                }}
             >
-                <SvgIconBack color = {colors.headerIconColor}/>
+                <SvgIconBack color={colors.headerIconColor}/>
             </TouchableOpacity>,
-   })
+        headerRight:
+            params.showAdd?
+                <IconButton
+                    pressHandler={() => {
+                        params.onAddPressed();
+                    }}
+                    icon={require("@src/assets/img/add.png")}
+                    style={{height: scale(12), width: scale(12)}}
+                    tintColor={'#FFFFFF'}
+                    touchableStyle={{
+                        position: "absolute",
+                        backgroundColor: colors.headerIconColor,
+                        bottom: scale(80),
+                        color: "white",
+                        tintColor: "#FFFFFF",
+                        alignItems: "center",
+                        borderRadius: 100,
+                        padding: 8,
+                        shadowColor: "#000",
+                        shadowOffset: {width: -2, height: 4},
+                        shadowOpacity: 0.2,
+                        shadowRadius: 3,
+                        elevation: 4,
+                    }}
+                />
+                :null
+    })
 }
 const mapStateToProps = (state) => ({
     config: state.config,

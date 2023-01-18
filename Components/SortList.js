@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, ScrollView} from 'react-native';
 // Components
 import SortListItem from "./SortListItem";
@@ -13,7 +13,7 @@ export default function SortList(props)
     const [lastShiftingItemIndex, setLastShiftingItemIndex] = React.useState(-1);
     const [alreadyHighlighted, setAlreadyHighlighted] = React.useState(true);
     const [isMoving, setIsMoving] = React.useState(false);
-
+console.log('props', props)
     const initItems = (data) =>
     {
         if(typeof(data) === 'undefined' || data === null || data.length <= 0)
@@ -30,8 +30,8 @@ export default function SortList(props)
            };
        });
    };
-    React.useEffect(() => {setItems(null);}, [props.data]);
-    React.useEffect(() =>
+    useEffect(() => {setItems(null);}, [props.data]);
+    useEffect(() =>
     {
         if(items === null)
         {
@@ -90,7 +90,7 @@ export default function SortList(props)
     {
         if(isMoving === false)
             setIsMoving(true);
-        const newItems = items;
+        const newItems = [...items];
         let shiftingItem = newItems.filter(x => x.id === id)[0];
         // Calculate shiftingItem new index
         let shiftingItemIndex = Math.trunc((draggablePosition + (itemSize / 2)) / itemSize);
