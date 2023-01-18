@@ -379,6 +379,8 @@ const EditRoutine = props => {
        }
         return (
             <TouchableWithoutFeedback onPress={() => {
+                console.log(routineSettings)
+
                 let tempSettings = routineSettings;
                 tempSettings[currentTrack.index] = {...tempSettings[currentTrack.index], count: item.item};
                 setRoutineSettings(tempSettings);
