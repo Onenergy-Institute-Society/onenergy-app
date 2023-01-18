@@ -9,7 +9,7 @@ import {
     View,
     SafeAreaView,
     TouchableOpacity,
-    TouchableWithoutFeedback, TextInput, Image, ScrollView
+    TouchableWithoutFeedback, TextInput, Image, ScrollView, FlatList
 } from "react-native";
 import IconButton from "@src/components/IconButton";
 import {Swipeable, GestureHandlerRootView} from "react-native-gesture-handler";
@@ -29,7 +29,7 @@ const EditRoutine = props => {
     const backgroundImages = optionData.routine_image;
     const backgroundMusics = optionData.routine_bgm;
     const [loading, setLoading] = useState(false);
-    const [routineDetail, setRoutineDetail] = useState(navigation.getParam('routine') ? navigation.getParam('routine') : {
+    const [routineDetailState, setRoutineDetailState] = useState(navigation.getParam('routine') ? navigation.getParam('routine') : {
         id: 0,
         title: '',
         image: optionData.routine_image[0],
@@ -39,8 +39,8 @@ const EditRoutine = props => {
    });
     const [selectBgm, setSelectBgm] = useState('');
     const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
-    const [routineSettings, setRoutineSettings] = useState(routineDetail.routine);
-    const [currentTrack, setCurrentTrack] = useState({index: -1, detail: {}});
+    const [tracksState, setTracksState] = useState([]);
+    const [currentTrackState, setCurrentTrackState] = useState({index: -1, detail: {}});
     const [changedStatus, setChangedStatus] = useState(false);
     const [cancelContentTouches, setCancelContentTouches] = useState(true);
 
@@ -55,7 +55,7 @@ const EditRoutine = props => {
             await apiRoutine.customRequest(
                 "wp-json/onenergy/v1/editRoutine/",
                 "post",
-                {"routine": routineDetail},
+                {"routine": routineDetailState},
                 null,
                 {},
                 false
@@ -70,7 +70,7 @@ const EditRoutine = props => {
             await apiRoutine.customRequest(
                 "wp-json/onenergy/v1/addRoutine",
                 "post",
-                {"routine": routineDetail},
+                {"routine": routineDetailState},
                 null,
                 {},
                 false
@@ -85,46 +85,52 @@ const EditRoutine = props => {
        });
    }, [])
     useEffect(() => {
-        if (routineDetail) {
+        if (routineDetailState) {
+            console.log(routineDetailState)
+            setTracksState(routineDetailState.routine)
             props.navigation.setParams({
-                title: routineDetail.title,
+                title: routineDetailState.title,
                 onBackPressed: onBackPressed,
                 changeStatus: changedStatus,
                 backButtonTitle: changedStatus ? 'Save' : '',
            });
             backgroundMusics.map(bgm => {
-                if (bgm.name === routineDetail.bgm) {
+                if (bgm.name === routineDetailState.bgm) {
                     setSelectBgm(bgm.name);
                }
            });
        } else {
             setSelectBgm(backgroundMusics[0].name);
        }
-   }, [routineDetail])
+   }, [routineDetailState])
     const removeItem = (id) => {
-        let array = routineSettings; // make a separate copy of the array
+        let array = routineDetailState.routine; // make a separate copy of the array
         if (id !== -1) {
             let index = array.findIndex(el => el.id === id);
             array.splice(index, 1);
-            setRoutineSettings(array);
-            setRoutineDetail(prevState => {
-                return {...prevState, routine: array}
+            let tracks = createTracks(array);
+            console.log(tracks)
+            setRoutineDetailState(prevState => {
+                return {...prevState, routine: array, tracks: tracks}
            });
+            //setTracksState(routineDetailState.routine);
             setChangedStatus(true);
        }
    }
 
     const updateItem = (items) => {
-        setRoutineSettings(items);
-        setRoutineDetail(prevState => {
-            return {...prevState, routine: items}
+        let tracks = createTracks(items);
+        console.log(tracks)
+        setRoutineDetailState(prevState => {
+            return {...prevState, routine: items, tracks: tracks}
        });
+        //setTracksState(routineDetailState.routine);
         setChangedStatus(true);
    }
 
     const onBackPressed = () => {
         if (changedStatus) {
-            if (!routineSettings.length) {
+            if (!routineDetailState.routine.length) {
                 Alert.alert(
                     "Notice",
                     "Please add at least one practice to this routine.",
@@ -136,14 +142,14 @@ const EditRoutine = props => {
                 );
                 return false;
            }
-            if (!routineDetail.title.trim()) {
+            if (!routineDetailState.title.trim()) {
                 alert('Please choose a routine name.');
                 return false;
            }
             setLoading(true);
             dispatch({
                 type: "ONENERGY_ROUTINE_SAVE",
-                payload: routineDetail
+                payload: routineDetailState
            })
             setChangedStatus(false);
             if (navigation.getParam('routine')) {
@@ -168,70 +174,62 @@ const EditRoutine = props => {
                 duration: 25,
            });
             routine.map(item => {
-                let tmpGuide;
-                practiceReducer.guides.map(section => {
-                    section.data.map(guide => {
-                        if (guide.id === item.id) {
-                            tmpGuide = guide;
-                       }
-                   })
-               })
-                if (tmpGuide) {
-                    tmpGuide.parts.map(part => {
-                        if (part.start) {
-                            id++;
-                            tracks.push({
-                                id: id,
-                                title: tmpGuide.title,
-                                url: part.start,
-                                artist: '',
-                                artwork: '',
-                                duration: parseInt(tmpGuide.start_duration),
-                           });
-                            switch (tmpGuide.mode) {
-                                case '0':
-                                    if (part.repeat) {
-                                        for (let i = 1; i < parseInt(routine.count); i++) {
-                                            id++;
-                                            tracks.push({
-                                                id: id,
-                                                title: tmpGuide.title,
-                                                url: part.repeat,
-                                                artist: '',
-                                                artwork: '',
-                                                duration: parseInt(tmpGuide.repeat_duration),
-                                           });
-                                       }
-                                   }
-                                    break;
-                                case '1':
-                                    for (let i = 0; i < parseInt(routine.count); i++) {
-                                        id++;
-                                        tracks.push({
-                                            id: id,
-                                            title: tmpGuide.title,
-                                            url: min1,
-                                            artist: '',
-                                            artwork: '',
-                                            duration: 60,
-                                       });
-                                   }
-                                    break
-                           }
-                       }
-                   })
-                    if (tmpGuide.end) {
+                item.parts.map(part => {
+                    console.log(item.title, part)
+                    if (part.start) {
                         id++;
                         tracks.push({
                             id: id,
-                            title: tmpGuide.title,
-                            url: tmpGuide.end,
+                            title: item.title,
+                            url: part.start,
                             artist: '',
                             artwork: '',
-                            duration: parseInt(tmpGuide.end_duration),
+                            duration: parseInt(part.start_duration),
                        });
+                        switch (item.mode) {
+                            case '0':
+                                if (part.repeat) {
+                                    for (let i = 1; i <= parseInt(item.count); i++) {
+                                        id++;
+                                        tracks.push({
+                                            id: id,
+                                            title: item.title,
+                                            url: part.repeat,
+                                            artist: '',
+                                            artwork: '',
+                                            duration: parseInt(part.repeat_duration),
+                                       });
+                                   }
+                               }
+                                break;
+                            case '1':
+                                for (let i = 0; i < parseInt(item.count); i++) {
+                                    id++;
+                                    tracks.push({
+                                        id: id,
+                                        title: item.title,
+                                        url: min1,
+                                        artist: '',
+                                        artwork: '',
+                                        duration: 60,
+                                   });
+                               }
+                                break
+                       }
                    }
+               })
+                if (item.ending) {
+                    id++;
+                    tracks.push({
+                        id: id,
+                        title: item.title,
+                        url: item.ending,
+                        artist: '',
+                        artwork: '',
+                        duration: parseInt(item.endDuration),
+                   });
                }
+
            })
             id++
             tracks.push({
@@ -247,16 +245,17 @@ const EditRoutine = props => {
    }
     const addGuideToRoutine = (item) => {
         item.count = 1;
-        setRoutineSettings((current) => [...current, item]);
-        setRoutineDetail(prevState => {
+        let routine = routineDetailState.routine;
+        routine.push(item);
+        let tracks = createTracks(routine);
+        setRoutineDetailState(prevState => {
             return {
                 ...prevState,
-                routine: [
-                    ...prevState.routine,
-                    item
-                ],
+                routine: routine,
+                tracks: tracks
            }
        });
+       // setTracksState(routineDetailState.routine);
         this.addGuideModal.close();
    }
 
@@ -307,7 +306,7 @@ const EditRoutine = props => {
                         </Text>
                         <TouchableWithoutFeedback
                             onPress={() => {
-                                setCurrentTrack({index: id, item: itemData});
+                                setCurrentTrackState({index: id, item: itemData});
                                 this.countDialog.open();
                            }}>
                             <View style={styles.trackCount}>
@@ -333,13 +332,13 @@ const EditRoutine = props => {
    };
 
     const renderGuides = (item) => {
-        let index = routineDetail.routine.findIndex(el => el.id === item.item.id);
+        let index = routineDetailState.routine.findIndex(el => el.id === item.item.id);
         return (
             item.item.show ?
                 <TouchableWithoutFeedback onPress={() => {
                     addGuideToRoutine(item.item);
-                    setChangedStatus(true)
-               }}>
+                    setChangedStatus(true);
+                }}>
                     <View style={{
                         paddingHorizontal: scale(25),
                         paddingVertical: scale(10),
@@ -379,12 +378,10 @@ const EditRoutine = props => {
        }
         return (
             <TouchableWithoutFeedback onPress={() => {
-                console.log(routineSettings)
-
-                let tempSettings = routineSettings;
-                tempSettings[currentTrack.index] = {...tempSettings[currentTrack.index], count: item.item};
-                setRoutineSettings(tempSettings);
-                setRoutineDetail(prevState => ({...prevState, routine: tempSettings}));
+                let tempSettings = routineDetailState.routine;
+                tempSettings[currentTrackState.index].count = item.item;
+                setRoutineDetailState(prevState => ({...prevState, routine: tempSettings}));
+               // setTracksState(routineDetailState.routine);
                 setChangedStatus(true);
                 this.countDialog.close();
            }
@@ -400,10 +397,10 @@ const EditRoutine = props => {
                     justifyContent: 'space-between'
                }]}>
                     <Text
-                        style={{fontSize: 18}}>
-                        {item.item} {currentTrack.item.mode === "1" ? item.index > 0 ? " minutes" : " minute" : item.index > 0 ? " times" : " time"}
+                        style={{fontFamily:"Montserrat-Regular", fontWeight: "normal", fontSize: scale(18), color: colors.textColor}}>
+                        {item.item} {currentTrackState.item.mode === "1" ? item.index > 0 ? " minutes" : " minute" : item.index > 0 ? " times" : " time"}
                     </Text>
-                    {currentTrack.index !== -1 && parseInt(currentTrack.item.count, 10) === parseInt(item.item, 10) ? (
+                    {currentTrackState.index !== -1 && parseInt(currentTrackState.item.count, 10) === parseInt(item.item, 10) ? (
                         <SvgIconCheck size={24} color={colors.primaryColor}/>
                     ) : null}
                 </View>
@@ -427,7 +424,7 @@ const EditRoutine = props => {
        }
         return (
             <TouchableWithoutFeedback onPress={() => {
-                setRoutineDetail(prevState => ({...prevState, bgm: item.item.name}));
+                setRoutineDetailState(prevState => ({...prevState, bgm: item.item.name}));
                 setSelectBgm(item.item.name);
                 setChangedStatus(true);
                 this.bgmDialog.close();
@@ -444,7 +441,7 @@ const EditRoutine = props => {
                         style={global.text}>
                         {item.item.name}
                     </Text>
-                    {routineDetail.bgm === item.item.name ? (
+                    {routineDetailState.bgm === item.item.name ? (
                         <SvgIconCheck size={24} color={colors.primaryColor}/>
                     ) : null}
                 </View>
@@ -467,7 +464,7 @@ const EditRoutine = props => {
     const renderColor = () => {
         return backgroundImages.map((image) => {
             let imageSelected;
-            if (image === routineDetail.image) {
+            if (image === routineDetailState.image) {
                 imageSelected = {borderWidth: 5, borderColor: '#4942e1'};
            } else {
                 imageSelected = {borderWidth: 0}
@@ -476,7 +473,7 @@ const EditRoutine = props => {
                 <TouchableOpacity
                     key={image}
                     onPress={() => {
-                        setRoutineDetail(prevState => ({...prevState, image: image}));
+                        setRoutineDetailState(prevState => ({...prevState, image: image}));
                         setChangedStatus(true)
                    }}
                 >
@@ -497,9 +494,9 @@ const EditRoutine = props => {
                         placeholder={"Routine Name?"}
                         onChangeText={text => {
                             setChangedStatus(true);
-                            setRoutineDetail(prevState => ({...prevState, title: text}));
+                            setRoutineDetailState(prevState => ({...prevState, title: text}));
                        }}
-                        value={routineDetail ? routineDetail.title : ''}
+                        value={routineDetailState ? routineDetailState.title : ''}
                   />
                 </View>
                 <View style={global.roundBox}>
@@ -564,13 +561,14 @@ const EditRoutine = props => {
                             style={{height: 20, width: 20}}
                       />
                     </View>
+
                     <GestureHandlerRootView style={{height: "100%"}}>
-                        {routineSettings.length === 0 ? (
+                        {tracksState.length === 0 ? (
                             <View><Text style={global.text}>No practice selected, please tap "Plus Sign" to add.</Text></View>
                         ) : (
                             <SortList
                                 horizontal={false}                          // The orientation of the list
-                                data={routineSettings}                                // The list of items to render
+                                data={tracksState}                                // The list of items to render
                                 renderItem={renderTracks}                     // The function to render each item
                                 save={(items) => {
                                     updateItem(items)
@@ -615,13 +613,13 @@ const EditRoutine = props => {
                         backgroundColor: colors.bodyBg,
                         borderBottomColor: colors.borderColor
                    }}>
-                        {currentTrack.index !== -1 ? (
+                        {currentTrackState.index !== -1 ? (
                             <Text style={{
                                 fontSize: scale(24),
                                 color: colors.headerColor,
                                 fontFamily: "MontserratAlternates-SemiBold",
                                 fontWeight: "bold"
-                           }}>{currentTrack.item.mode === "1" ? "Choose duration" : "Choose repeating times"}</Text>
+                           }}>{currentTrackState.item.mode === "1" ? "Choose duration" : "Choose times"}</Text>
                         ) : null}
                         <TouchableOpacity
                             onPress={() => {
@@ -813,6 +811,7 @@ const styles = StyleSheet.create({
         paddingLeft: 15
    },
     trackTitle: {
+        fontSize: scale(12),
         paddingLeft: 10,
         flex: 0.8,
    },

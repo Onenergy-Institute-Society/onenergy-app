@@ -78,7 +78,7 @@ const MemberTracksList = (props) => {
                     onSwipeableLeftWillOpen={handleWillOpen(index)}
                     onSwipeableOpen={handleOpen(index)}
                 >
-                    <View style={[styles.trackItem, styles.boxShadow, {height: showPlayer?scale(120):scale(80)}]}>
+                    <View style={[styles.trackItem, styles.boxShadow, {height: showPlayer?scale(160):scale(120)}]}>
                         <TouchableScale
                             onPress={() => {
                                 onTrackItemPress(item).then();
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'stretch',
-        height: scale(80),
+        height: scale(120),
         borderBottomColor: '#333',
         borderWidth: 0,
    },

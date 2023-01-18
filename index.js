@@ -796,8 +796,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 case "ONENERGY_ROUTINE_SAVE":
                     let routine = action.payload;
                     console.log('routine',routine)
-                    let ors_tempState = [];;
-                    console.log('routines',ors_tempState)
+                    let ors_tempState = [];
                     if(state.practiceReducer.routines.length) {
                         ors_tempState = state.practiceReducer.routines;
                         let index = ors_tempState.findIndex(el => el.id === routine.id);
