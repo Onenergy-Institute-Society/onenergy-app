@@ -76,12 +76,10 @@ const TracksList = (props) => {
                                         }}/>
                                     ) : null}
                                 </View>
-                                <View style={styles.subTitleBox}>
-                                    {practiceCount?
-                                    <Text style={[global.itemText, highlightColor]}>{practiceCount} times</Text>
-                                        :null}
-                                    <Text style={[styles.duration, highlightColor]}>{new Date(item.duration * 1000).toISOString().substring(14, 19)}</Text>
-                                </View>
+                                {practiceCount?
+                                <Text style={[global.itemText, highlightColor, styles.countNumber]}>{practiceCount} times</Text>
+                                    :null}
+                                <Text style={[styles.duration, highlightColor]}>{new Date(item.duration * 1000).toISOString().substring(14, 19)}</Text>
                             </View>
                         </ImageBackground>
                         <AuthWrapper actionOnGuestLogin={'hide'}>
@@ -213,11 +211,10 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         marginTop: scale(5),
     },
-    subTitleBox: {
-        flex: 2,
-        flexDirection: "row",
-        justifyContent: 'space-between',
-        alignItems: "center",
+    countNumber: {
+        position: "absolute",
+        bottom: scale(5),
+        left: scale(15),
     },
     album: {
         fontSize: scale(15),
@@ -231,6 +228,9 @@ const styles = StyleSheet.create({
         fontSize: scale(15),
     },
     duration: {
+        position: "absolute",
+        bottom: scale(5),
+        right: scale(15),
         fontSize: scale(12),
     },
     listBox: {

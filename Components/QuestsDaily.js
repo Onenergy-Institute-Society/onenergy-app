@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
     View,
@@ -27,8 +27,17 @@ const QuestsDaily = (props) => {
     const milestoneReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.milestones:null);
     const dispatch = useDispatch();
 
+    useEffect(()=>{
+        questReducer.sort((a,b)=>{
+            if(a.claim_date===''&&b.claim_date==='')
+            {
+                if(a.complete_date < b.complete_date){return 1}else{return -1}
+            }else{
+                if(a.claim_date > b.claim_date){return 1}else{return -1}
+            }
+        })
+    },[questReducer])
     const handleOnPress = (item, date, mode) => {
-
         switch (mode) {
             case 'past':
                 if(item.list.find(pastDate=>pastDate===date)) {
@@ -64,7 +73,7 @@ const QuestsDaily = (props) => {
         let show = -1;
         let today = new moment().format('YYYY-MM-DD');
 
-
+        console.log(item.title, item)
         switch(item.show){
             case 'course':
                 switch(item.showCourseOption){
@@ -109,14 +118,7 @@ const QuestsDaily = (props) => {
                 questReducer && questReducer.length ?
                     <FlatList
                         contentContainerStyle={{paddingBottom: scale(20)}}
-                        data={questReducer.sort((a,b)=>{
-                            if(a.claim_date===''&&b.claim_date==='')
-                            {
-                                if(a.complete_date < b.complete_date){return 1}else{return -1}
-                           }else{
-                                if(a.claim_date > b.claim_date){return 1}else{return -1}
-                           }
-                       })}
+                        data={questReducer}
                         renderItem={renderItem}
                         keyExtractor={item => item.id}
                         showsVerticalScrollIndicator={false}

@@ -7,7 +7,6 @@ import {StyleSheet} from 'react-native';
 import {scale} from '../Utils/scale';
 import TrackSlider from "./TrackSlider";
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
-import {setupIfNecessary} from "./SetupService";
 
 const AudioPlayer = (props) => {
     const user = useSelector((state) => state.user.userObject);
@@ -44,13 +43,11 @@ const AudioPlayer = (props) => {
        };
    }, [])
     useEffect(() => {
-        setupIfNecessary().then(
-            addTrack(track).then(() => {
-                TrackPlayer.play();
-                setPlaying(true);
-                setStopped(false);
-           })
-        )
+        addTrack(track).then(() => {
+            TrackPlayer.play();
+            setPlaying(true);
+            setStopped(false);
+       })
    }, [track]);
 
     async function addTrack(track) {

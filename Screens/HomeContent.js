@@ -41,6 +41,8 @@ import {
     SvgIconSunset, SvgVIPMedal
 } from "../Utils/svg";
 import messaging from '@react-native-firebase/messaging';
+import TrackPlayer from 'react-native-track-player';
+import { SetupService } from '../Services';
 
 this.todayGoalDialog = undefined;
 const HomeContent = (props) => {
@@ -69,6 +71,18 @@ const HomeContent = (props) => {
         screen_class: 'MainActivity',
         screen_name: 'Home Screen',
     });
+    useEffect(() => {
+        async function run() {
+            const isSetup = await SetupService();
+            console.log(isSetup);
+
+            const queue = await TrackPlayer.getQueue();
+            if (isSetup && queue.length <= 0) {
+                await QueueInitialTracksService();
+            }
+        }
+        run().then();
+    }, []);
 
     const _handleAppStateChange = async () => {
         if (user) {
@@ -168,6 +182,7 @@ const HomeContent = (props) => {
     }
 
     useEffect(() => {
+       // setupIfNecessary().then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
         });
@@ -379,7 +394,7 @@ const HomeContent = (props) => {
                     <>
                         <View style={styles.topRow}>
                             <View style={{width: windowWidth * 2 / 3, justifyContent: "space-between"}}>
-                                <Text style={global.textHeaderTitle}>Hi, {user.name}</Text>
+                                <Text style={global.textHeaderTitle}>{optionData.salute}, {user.name}</Text>
                                 <Text style={[global.title, {fontSize: scale(12)}]}>{optionData.greetings}</Text>
                             </View>
                             <View style={{justifyContent: "center", alignItems: "flex-end"}}>

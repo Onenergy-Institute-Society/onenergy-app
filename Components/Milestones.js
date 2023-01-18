@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
     View,
@@ -23,8 +23,19 @@ const Milestones = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyText = optionData.titles.find(el => el.id === 'achievement_milestone_empty').title
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
-    const milestoneReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.milestones:null);
+    const milestoneReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer.milestones.filter(achievement => achievement.type === type):null);
     const dispatch = useDispatch();
+
+    useEffect(()=>{
+        milestoneReducer.sort((a,b)=>{
+            if(a.claim_date===''&&b.claim_date==='')
+            {
+                if(a.complete_date < b.complete_date){return 1}else{return -1}
+            }else{
+                if(a.claim_date > b.claim_date){return 1}else{return -1}
+            }
+        })
+    },[milestoneReducer])
 
     const handleOnPress = (item) => {
         if(item.complete_date&&!item.claim_date) {
@@ -78,14 +89,7 @@ const Milestones = (props) => {
             {milestoneReducer&&milestoneReducer.length?
                 <FlatList
                     contentContainerStyle={{paddingBottom: scale(20)}}
-                    data={milestoneReducer.sort((a,b)=>{
-                        if(a.claim_date===''&&b.claim_date==='')
-                        {
-                            if(a.complete_date < b.complete_date){return 1}else{return -1}
-                       }else{
-                            if(a.claim_date > b.claim_date){return 1}else{return -1}
-                       }
-                   })}
+                    data={milestoneReducer}
                     renderItem={renderItem}
                     keyExtractor={item => item.id}
                     showsVerticalScrollIndicator={false}

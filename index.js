@@ -49,6 +49,7 @@ import EditRoutine from "./Components/EditRoutine";
 import FeedbackScreen from "./Screens/FeedbackScreen";
 import NotificationTabBarIcon from "./Components/NotificationTabBarIcon";
 import TrackPlayer from 'react-native-track-player';
+import {PlaybackService} from './Services';
 import CourseActionButton from "@src/components/Course/CourseActionButton";
 import AppPageScreen from "./Screens/AppPageScreen";
 import AppAvatar from "@src/components/AppAvatar";
@@ -67,7 +68,6 @@ import HomeScreen from './Screens/HomeScreen';
 import ForumItem from "./Components/ForumItem";
 import CourseIcons from "./Components/CourseIcons";
 import TopicItem from "./Components/TopicItem";
-import Immutable from "immutable";
 import {
     SvgIconHomeFocused,
     SvgIconHomeUnfocused,
@@ -1225,7 +1225,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         }
                     })
                     mcTempProgressState.actionList.push({
-                        'mode': 'CM', //Milestone Claim
+                        'mode': 'CM',
                         'data': {'id': action.payload.id, 'points': mcTempMilestoneState[mcMilestoneIndex].awards},
                         'time': Math.floor(new Date().getTime() / 1000)
                     });
@@ -2032,7 +2032,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     ])
 
     externalCodeSetup.indexJsApi.addIndexJsFunction(() => {
-        TrackPlayer.registerPlaybackService(() => require('./Components/TrackPlayerService'));
+        TrackPlayer.registerPlaybackService(() => PlaybackService);
     })
     externalCodeSetup.blogSingleApi.setAfterBlogSingleBody((props) => {
         const {blog} = props;

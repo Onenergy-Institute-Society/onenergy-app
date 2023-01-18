@@ -30,7 +30,7 @@ const DailyQuotes = (props) => {
                     alignSelf: "flex-start",
                     tintColor: colors.primaryButtonBg
                }}>
-                <Text style={[styles.title, global.text]}>{quote_rendered}</Text>
+                <Text style={[global.text, styles.title]}>{quote_rendered}</Text>
             </ImageBackground>
         </TouchableScale>
     )
@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
         paddingLeft:40,
         paddingRight:40,
         textAlign: 'center',
+        fontSize: scale(14)
    },
     boxShadow: {
         shadowColor: "#000",

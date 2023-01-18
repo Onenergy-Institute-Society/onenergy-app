@@ -25,7 +25,6 @@ import {
     SvgIconQuest,
     SvgIconBack
 } from "../Utils/svg";
-import {setupIfNecessary} from "../Components/SetupService";
 
 const PracticesContent = props => {
 
@@ -47,7 +46,6 @@ const PracticesContent = props => {
             screen_name: 'Practice Screen',
        });
         useEffect(() => {
-            setupIfNecessary().then();
             props.navigation.setParams({
                 title: optionData.titles.find(el => el.id === 'practices_title').title,
            });
