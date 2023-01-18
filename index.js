@@ -795,32 +795,28 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     };
                 case "ONENERGY_ROUTINE_SAVE":
                     let routine = action.payload;
-                    let ors_tempState = state.practiceReducer.routines;
-                    let index = ors_tempState.findIndex(el => el.id === routine.id);
-                    if (index >= 0) {
-                        ors_tempState[index] = routine;
-                        return {
-                            ...state,
-                            practiceReducer: {
-                                ...state.practiceReducer,
-                                routines: ors_tempState,
-                                routineUpdate: new Date().toISOString()
-                            }
-                        };
-                    } else {
-                        return {
-                            ...state,
-                            practiceReducer: {
-                                ...state.practiceReducer,
-                                routines:
-                                    [
-                                        ...state.routines,
-                                        routine
-                                    ],
-                                routineUpdate: new Date().toISOString()
-                            }
-                        };
+                    console.log('routine',routine)
+                    let ors_tempState = [];;
+                    console.log('routines',ors_tempState)
+                    if(state.practiceReducer.routines.length) {
+                        ors_tempState = state.practiceReducer.routines;
+                        let index = ors_tempState.findIndex(el => el.id === routine.id);
+                        if (index >= 0) {
+                            ors_tempState[index] = routine;
+                        } else {
+                            ors_tempState.push(routine)
+                        }
+                    }else{
+                        ors_tempState.push(routine)
                     }
+                    return {
+                        ...state,
+                        practiceReducer: {
+                            ...state.practiceReducer,
+                            routines: ors_tempState,
+                            routineUpdate: new Date().toISOString()
+                        }
+                    };
                 case "ONENERGY_GUIDE_UPDATE":
                     let lessonGuides = action.payload;
                     let tempGuides = state.practiceReducer.guides;
