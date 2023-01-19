@@ -1,17 +1,10 @@
-import React, {
-    useState,
-    useEffect,
-    useRef
-} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import PropTypes from 'prop-types';
 
-import {
-    Image,
-    TouchableOpacity,
-    ImageBackground
-} from 'react-native';
+import {Image, ImageBackground, TouchableOpacity} from 'react-native';
 import ImageCache from '../Components/ImageCache';
+
 const resolveAssetSource = Image.resolveAssetSource;
 
 const ScalableImage = props => {
@@ -31,12 +24,12 @@ const ScalableImage = props => {
 
         return () => {
             mounted.current = false;
-       }
-   }, []);
+        }
+    }, []);
 
     useEffect(() => {
         onProps(props);
-   });
+    });
 
     useEffect(() => {
         setImage(
@@ -45,10 +38,10 @@ const ScalableImage = props => {
                 style={[props.style, {
                     width: scalableWidth,
                     height: scalableHeight
-               }]}
-          />
+                }]}
+            />
         );
-   }, [scalableHeight, scalableWidth]);
+    }, [scalableHeight, scalableWidth]);
 
     const onProps = localProps => {
         const {source} = localProps;
@@ -62,12 +55,11 @@ const ScalableImage = props => {
                 (width, height) => adjustSize(width, height, props),
                 console.err
             );
-       }
-        else {
+        } else {
             const sourceToUse = resolveAssetSource(source);
             adjustSize(sourceToUse.width, sourceToUse.height, props);
-       }
-   };
+        }
+    };
 
     const adjustSize = (sourceWidth, sourceHeight, localProps) => {
         const {width, height} = localProps;
@@ -76,13 +68,11 @@ const ScalableImage = props => {
 
         if (width && height) {
             ratio = Math.min(width / sourceWidth, height / sourceHeight);
-       }
-        else if (width) {
+        } else if (width) {
             ratio = width / sourceWidth;
-       }
-        else if (height) {
+        } else if (height) {
             ratio = height / sourceHeight;
-       }
+        }
 
         if (mounted.current) {
             const computedWidth = sourceWidth * ratio;
@@ -92,19 +82,18 @@ const ScalableImage = props => {
             setScalableHeight(computedHeight);
 
             props.onSize({width: computedWidth, height: computedHeight});
-       }
-   };
+        }
+    };
 
     if (!props.onPress) {
         return image;
-   }
-    else {
+    } else {
         return (
             <TouchableOpacity onPress={props.onPress}>
                 {image}
             </TouchableOpacity>
         );
-   }
+    }
 };
 
 ScalableImage.propTypes = {
@@ -117,7 +106,8 @@ ScalableImage.propTypes = {
 
 ScalableImage.defaultProps = {
     background: false,
-    onSize: size => {}
+    onSize: size => {
+    }
 };
 
 export default ScalableImage;

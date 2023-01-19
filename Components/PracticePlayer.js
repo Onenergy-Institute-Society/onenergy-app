@@ -1,15 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {
-    StyleSheet,
-    View,
-    TouchableOpacity,
-    StatusBar,
-    Text,
-    PixelRatio,
-    Alert,
-    BackHandler
-} from "react-native";
-import {useSelector, useDispatch} from "react-redux";
+import {Alert, BackHandler, PixelRatio, StatusBar, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {useDispatch, useSelector} from "react-redux";
 import Video from "react-native-video";
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
@@ -27,68 +18,68 @@ const PracticePlayer = (props) => {
     const dispatch = useDispatch();
     analytics().logScreenView({
         screen_class: 'MainActivity',
-        screen_name: 'Group Practice: '+ groupPractice.name,
-   });
+        screen_name: 'Group Practice: ' + groupPractice.name,
+    });
 
-    useEffect(()=>{
+    useEffect(() => {
         activateKeepAwake();
         const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
         return () => {
             backHandler.remove();
             deactivateKeepAwake();
-       }
-   }, []);
+        }
+    }, []);
 
     const onVideoEnd = () => {
         setPaused(true);
         deactivateKeepAwake();
         updateProgress().then();
         navigation.goBack();
-   }
+    }
 
     const onVideoLoad = (e) => {
         if (seek) {
             this.videoPlayer.seek(seek);
-       }
-   }
+        }
+    }
 
     const updateProgress = async () => {
-        try
-        {
+        try {
             dispatch({
                 type: 'ONENERGY_PRACTICE_COMPLETED',
                 payload: {
                     'mode': 'PG',
                     'data': groupPractice.id
-               }
-           });
-       } catch (e) {
+                }
+            });
+        } catch (e) {
             console.error(e);
-       }
-   }
+        }
+    }
 
     const handleBackButtonClick = () => {
         Alert.alert(
             "Please Confirm",
-            user.test_mode?"Testing mode: Update progress and exit?":"Stop before session ends will result not counting as one complete practice, are you sure you want to exit?",
+            user.test_mode ? "Testing mode: Update progress and exit?" : "Stop before session ends will result not counting as one complete practice, are you sure you want to exit?",
             [
                 {
                     text: "OK", onPress: () => {
-                        user.test_mode?
-                            updateProgress().then():null;
+                        user.test_mode ?
+                            updateProgress().then() : null;
                         navigation.goBack();
-                   }
-               },
+                    }
+                },
                 {
-                    text: "Cancel", onPress: () => {}
-               }
+                    text: "Cancel", onPress: () => {
+                    }
+                }
             ],
             {
                 cancelable: false,
-           }
+            }
         )
         return true;
-   }
+    }
 
     return (
         <View
@@ -104,12 +95,23 @@ const PracticePlayer = (props) => {
                     paused={paused}
                     resizeMode={"cover"}
                     style={styles.videoStyle}/>
-                <WaitingGroupPractice gp_id={groupPractice.id} gp_time={gp_time} waitingStyle={{flexDirection: "row", justifyContent: "flex-start", alignItems:"center",borderRadius:9, paddingHorizontal:10, backgroundColor:"black", position:"absolute", top:40, left: 20}} waitingIconColor={"white"} waitingIconStyle={{width:16, height:16}} waitingTextStyle={{color:"white", fontSize:scale(16), marginLeft:5}}/>
+                <WaitingGroupPractice gp_id={groupPractice.id} gp_time={gp_time} waitingStyle={{
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    borderRadius: 9,
+                    paddingHorizontal: 10,
+                    backgroundColor: "black",
+                    position: "absolute",
+                    top: 40,
+                    left: 20
+                }} waitingIconColor={"white"} waitingIconStyle={{width: 16, height: 16}}
+                                      waitingTextStyle={{color: "white", fontSize: scale(16), marginLeft: 5}}/>
                 <TouchableOpacity
-                    style={{borderRadius:9, backgroundColor:"red", position:"absolute", top:40, right: 20}}
+                    style={{borderRadius: 9, backgroundColor: "red", position: "absolute", top: 40, right: 20}}
                     onPress={() => handleBackButtonClick()}
-                    >
-                    <Text style={{paddingHorizontal:10, color:"white", fontSize:scale(16)}}>Exit</Text>
+                >
+                    <Text style={{paddingHorizontal: 10, color: "white", fontSize: scale(16)}}>Exit</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -119,18 +121,20 @@ const styles = StyleSheet.create({
     videoStyle: {
         height: windowWidth + 25,
         alignSelf: "stretch",
-   },
+    },
     topViewStyle: {
         flex: 1,
         transform: [
             {rotateZ: '90deg'},
-            {translateY: ((PixelRatio.getPixelSizeForLayoutSize(windowHeight)-
-                        PixelRatio.getPixelSizeForLayoutSize(windowWidth))/
-                    PixelRatio.get()) - 25},
+            {
+                translateY: ((PixelRatio.getPixelSizeForLayoutSize(windowHeight) -
+                        PixelRatio.getPixelSizeForLayoutSize(windowWidth)) /
+                    PixelRatio.get()) - 25
+            },
         ],
         height: windowWidth,
         width: windowHeight,
-   },
+    },
 });
 PracticePlayer.navigationOptions = {header: null};
 export default PracticePlayer;

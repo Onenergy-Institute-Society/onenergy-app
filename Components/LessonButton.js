@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from "react";
-import {Text, View, TouchableOpacity, ActivityIndicator, Alert} from "react-native";
+import React, {useEffect, useState} from "react";
+import {ActivityIndicator, Text, TouchableOpacity, View} from "react-native";
 import {getApi} from "@src/services";
-import {StackActions, NavigationActions, withNavigation} from "react-navigation";
-import {connect, useSelector, useDispatch} from "react-redux";
+import {NavigationActions, StackActions, withNavigation} from "react-navigation";
+import {connect, useDispatch, useSelector} from "react-redux";
 import IconButton from "@src/components/IconButton";
 import AwesomeAlert from "../Components/AwesomeAlert";
 import ImageCache from "./ImageCache";
@@ -12,7 +12,7 @@ const LessonButton = (props) => {
     const {global, colors, lesson} = props;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
+    const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
     const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
     const [completing, setCompleting] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
@@ -23,32 +23,32 @@ const LessonButton = (props) => {
     const [visualGuideForButton, setVisualGuideForButton] = useState(false);
     const dispatch = useDispatch();
 
-    useEffect(()=>{
+    useEffect(() => {
         setTimeout(function () {
             setVisualGuideForButton(true);
-       }, 5000);
-   },[])
+        }, 5000);
+    }, [])
     const completeLesson = async () => {
         try {
             dispatch({
                 type: 'ONENERGY_LESSON_COMPLETED',
                 payload: lesson,
-           });
+            });
             if (lesson.settings.guide) {
                 dispatch({
                     type: 'ONENERGY_GUIDE_UPDATE',
                     payload: lesson.settings.guide,
-               });
+                });
                 if (lesson.settings.no_popup) {
                     props.navigation.goBack();
-               } else {
+                } else {
                     setAlertTitle(optionData.titles.find(el => el.id === 'alert_guide_activated_title').title);
                     setAlertBody(optionData.titles.find(el => el.id === 'alert_guide_activated_body').title + ' ' + lesson.title);
                     setAlertConfirmType(lesson.settings.open_screen ? lesson.settings.open_screen : lesson.settings.back_to);
                     setAlertConfirmText(optionData.titles.find(el => el.id === 'alert_guide_activated_button').title);
                     setShowAlert(true);
-               }
-           } else {
+                }
+            } else {
                 if (lesson.settings.no_popup) {
                     if (lesson.settings.open_screen) {
                         switch (lesson.settings.open_screen) {
@@ -56,22 +56,22 @@ const LessonButton = (props) => {
                                 props.navigation.dispatch(
                                     NavigationActions.navigate({
                                         routeName: "PracticesScreen",
-                                   }));
+                                    }));
                                 break;
                             case "group-practices":
                                 props.navigation.dispatch(
                                     NavigationActions.navigate({
                                         routeName: "PracticeGroup",
-                                   }));
+                                    }));
                                 break;
                             case "programs":
                                 props.navigation.dispatch(
                                     NavigationActions.navigate({
                                         routeName: "ProgramsScreen",
-                                   }));
+                                    }));
                                 break
-                       }
-                   } else {
+                        }
+                    } else {
                         switch (lesson.settings.back_to) {
                             case "top":
                                 props.navigation.dispatch(StackActions.popToTop());
@@ -79,16 +79,16 @@ const LessonButton = (props) => {
                             case "parent":
                                 props.navigation.goBack();
                                 break
-                       }
-                   }
-               } else {
+                        }
+                    }
+                } else {
                     setAlertTitle(optionData.titles.find(el => el.id === 'alert_course_completed_title').title);
                     setAlertBody(optionData.titles.find(el => el.id === 'alert_course_completed_body').title + ' ' + lesson.title);
                     setAlertConfirmType(lesson.settings.open_screen ? lesson.settings.open_screen : lesson.settings.back_to);
                     setAlertConfirmText(optionData.titles.find(el => el.id === 'alert_course_completed_button').title);
                     setShowAlert(true);
-               }
-           }
+                }
+            }
 
             const apiRequest = getApi(props.config);
             apiRequest.customRequest(
@@ -101,12 +101,12 @@ const LessonButton = (props) => {
             );
             dispatch({
                 type: 'ONENERGY_VIDEO_RESET',
-           });
+            });
             setCompleting(false);
-       } catch (e) {
+        } catch (e) {
             console.error(e);
-       }
-   }
+        }
+    }
 
     const alertConfirmPressed = async () => {
         await setShowAlert(false);
@@ -115,19 +115,19 @@ const LessonButton = (props) => {
                 props.navigation.dispatch(
                     NavigationActions.navigate({
                         routeName: "PracticePersonal",
-                   }));
+                    }));
                 break;
             case "group-practices":
                 props.navigation.dispatch(
                     NavigationActions.navigate({
                         routeName: "PracticeGroup",
-                   }));
+                    }));
                 break;
             case "programs":
                 props.navigation.dispatch(
                     NavigationActions.navigate({
                         routeName: "ProgramsScreen",
-                   }));
+                    }));
                 break
             case 'top':
                 props.navigation.dispatch(StackActions.popToTop());
@@ -137,12 +137,12 @@ const LessonButton = (props) => {
                 break;
             default:
                 break;
-       }
-   }
+        }
+    }
 
     return (
         <View style={[global.row, {paddingHorizontal: 20, paddingVertical: 15}]}>
-            {progressReducer.completedLessons&&progressReducer.completedLessons.includes(lesson.id)?
+            {progressReducer.completedLessons && progressReducer.completedLessons.includes(lesson.id) ?
                 <View style={[
                     global.completeLessonButtonW,
                     {flex: 1, backgroundColor: colors.secondaryButtonBg}
@@ -154,8 +154,8 @@ const LessonButton = (props) => {
                                 style={{
                                     height: 24,
                                     width: 24,
-                               }}
-                          />
+                                }}
+                            />
                             <Text
                                 style={{color: "#000", fontWeight: "bold"}}
                             >
@@ -164,21 +164,21 @@ const LessonButton = (props) => {
                         </View>
                     </View>
                 </View>
-            :
-                videoComplete || lesson.settings.no_video || user.test_mode?
+                :
+                videoComplete || lesson.settings.no_video || user.test_mode ?
                     <TouchableOpacity
                         style={[
                             global.completeLessonButtonW,
                             {flex: 1, backgroundColor: colors.primaryButtonBg}
                         ]}
                         onPress={() => {
-                            if(!completing) {
+                            if (!completing) {
                                 setCompleting(true);
                                 setTimeout(function () {
                                     completeLesson().then();
-                               }, 2000);
-                           }
-                       }}
+                                }, 2000);
+                            }
+                        }}
                     >
                         <View style={global.row}>
                             <View style={global.linkWithArrow}>
@@ -187,29 +187,29 @@ const LessonButton = (props) => {
                                 >
                                     Mark Complete
                                 </Text>
-                                {completing?
-                                    <ActivityIndicator style={{marginLeft:10}} color={"#FFF"} size={"small"}/>
-                                    :null}
+                                {completing ?
+                                    <ActivityIndicator style={{marginLeft: 10}} color={"#FFF"} size={"small"}/>
+                                    : null}
                             </View>
                         </View>
-                        {visualGuideForButton?
+                        {visualGuideForButton ?
                             <ImageCache style={{
-                                bottom:scale(-80),
-                                alignSelf:"center",
+                                bottom: scale(-80),
+                                alignSelf: "center",
                                 position: "absolute",
                                 transform: [{rotate: '180deg'}],
-                                width:scale(200),
-                                height:scale(240),
+                                width: scale(200),
+                                height: scale(240),
                                 shadowColor: "#000",
                                 shadowOffset: {width: 2, height: -4},
                                 shadowOpacity: 0.2,
                                 shadowRadius: 3,
                                 elevation: 4,
-                           }} source={require('../assets/images/tapFinger.gif')}/>
-                            :null
-                       }
+                            }} source={require('../assets/images/tapFinger.gif')}/>
+                            : null
+                        }
                     </TouchableOpacity>
-                :
+                    :
                     <View style={[
                         global.completeLessonButtonW,
                         {flex: 1, backgroundColor: colors.secondaryButtonBg}
@@ -224,7 +224,7 @@ const LessonButton = (props) => {
                             </View>
                         </View>
                     </View>
-           }
+            }
 
             <AwesomeAlert
                 show={showAlert}
@@ -241,9 +241,9 @@ const LessonButton = (props) => {
                     setShowAlert(false);
                     setTimeout(function () {
                         alertConfirmPressed().then();
-                   }, 500);
-               }}
-          />
+                    }, 500);
+                }}
+            />
         </View>
     )
 }

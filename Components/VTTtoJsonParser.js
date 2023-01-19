@@ -3,15 +3,15 @@ function timeValuesToMilliseconds({
                                       minutes = 0,
                                       seconds = 0,
                                       milliseconds = 0,
-                                 }) {
+                                  }) {
     return hours * 3600000 + minutes * 60000 + seconds * 1000 + milliseconds;
 }
 
 function splitTimeStamp(timeStamp) {
     let count = (timeStamp.match(/:/g) || []).length;
-    if(count===1){
-        timeStamp = '00:'+timeStamp;
-   }
+    if (count === 1) {
+        timeStamp = '00:' + timeStamp;
+    }
     const [hours, minutes, secondsAndMilliseconds = ''] = timeStamp.split(':');
     const millisecondSeparator = secondsAndMilliseconds.includes(',')
         ? ','
@@ -20,7 +20,7 @@ function splitTimeStamp(timeStamp) {
             : '';
     if (millisecondSeparator === '') {
         //error ('Unable to process timestamp');
-   }
+    }
     const [seconds, milliseconds] = secondsAndMilliseconds.split(
         millisecondSeparator
     );
@@ -29,20 +29,20 @@ function splitTimeStamp(timeStamp) {
         minutes: Number(minutes),
         seconds: Number(seconds),
         milliseconds: Number(milliseconds),
-   };
+    };
 }
 
 function parseTimeStamps(string, marker) {
     const [startTimeRaw, endTimeRaw] = string.split(marker);
     if (!endTimeRaw) {
         return;
-   }
+    }
     const startTimeValues = splitTimeStamp(startTimeRaw);
     const endTimeValues = splitTimeStamp(endTimeRaw);
     return {
         startTime: timeValuesToMilliseconds(startTimeValues),
         endTime: timeValuesToMilliseconds(endTimeValues),
-   };
+    };
 }
 
 function dropEmptyArrayBlocks(arrayBlocks) {
@@ -54,11 +54,11 @@ function processArrayToArrayBlocks(array) {
         (blockArray, currentLine) => {
             if (currentLine === '') {
                 blockArray.push([]);
-           } else {
+            } else {
                 blockArray[blockArray.length - 1].push(currentLine);
-           }
+            }
             return blockArray;
-       },
+        },
         [[]]
     );
 }
@@ -71,42 +71,40 @@ function dropNonCueData(rawCueData) {
             header.startsWith('NOTE') ||
             header.startsWith('STYLE')
         );
-   });
+    });
 }
 
 function processArrayBlocksToCues(arrayBlocks) {
     return arrayBlocks.map((block, blockIndex) => {
-        const processedCue =
-            block &&
+        // if (processedCue.endTime <= processedCue.startTime) {
+        // throw new ParserError('Invalid Cue: Timecodes not valid');
+        //}
+        return block &&
             block.reduce(
                 (cue, string, index) => {
                     // Ignore cue identifier
                     if (index === 0 && !string.includes('-->')) {
                         return cue;
-                   }
+                    }
                     if (!cue.endTime && string.includes('-->')) {
                         const timeStamps = parseTimeStamps(string, '-->');
                         if (timeStamps) {
                             cue.startTime = timeStamps.startTime;
                             cue.endTime = timeStamps.endTime;
-                       }
+                        }
                         return cue;
-                   }
+                    }
                     cue.text = cue.text + ' ' + string.replace('&nbsp;&nbsp;', '').replace('&nbsp;', ' ');
                     return cue;
-               },
+                },
                 {
                     sequence: blockIndex,
                     startTime: 0,
                     endTime: 0,
                     text: '',
-               }
+                }
             );
-        // if (processedCue.endTime <= processedCue.startTime) {
-        // throw new ParserError('Invalid Cue: Timecodes not valid');
-        //}
-        return processedCue;
-   });
+    });
 }
 
 export default function WebVttParser(string) {

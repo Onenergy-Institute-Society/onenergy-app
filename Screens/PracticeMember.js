@@ -3,7 +3,6 @@ import {Animated, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, 
 import {getApi} from "@src/services";
 import {connect, useDispatch, useSelector} from "react-redux";
 import MemberTracksList from "../Components/MemberTracksList";
-import IconButton from "@src/components/IconButton";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {NavigationActions, withNavigation} from "react-navigation";
 import {windowWidth} from "../Utils/Dimensions";
@@ -11,7 +10,7 @@ import {scale} from "../Utils/scale";
 import TrackPlayer from 'react-native-track-player';
 import EventList from "../Components/EventList";
 import analytics from '@react-native-firebase/analytics';
-import {SvgIconBack} from "../Utils/svg";
+import {SvgIconBack, SvgAddIcon} from "../Utils/svg";
 
 const PracticeMember = props => {
     const {navigation, screenProps} = props;
@@ -50,14 +49,14 @@ const PracticeMember = props => {
             NavigationActions.navigate({
                 routeName: "EditRoutine",
                 params: {
-                    routine: null,
+                    index: -1,
                 }
             })
         );
     }
     const onEditRoutinePress = async (index) => {
         await TrackPlayer.reset();
-
+console.log('index:', index)
         navigation.dispatch(
             NavigationActions.navigate({
                 routeName: "EditRoutine",
@@ -86,6 +85,11 @@ const PracticeMember = props => {
             onAddPressed: onAddPressed,
         });
     }, []);
+    useEffect(() => {
+        props.navigation.setParams({
+            showAdd: !!((practiceReducer && practiceReducer.routines && practiceReducer.routines.length < 5) || !practiceReducer.routines),
+        });
+    }, [practiceReducer.routines.length]);
     useEffect(() => {
         if (messageBarDisplay) {
             Animated.timing(fadeAnim, {
@@ -123,31 +127,6 @@ const PracticeMember = props => {
                                  {...props}/>
                 </View>
             }
-            {(practiceReducer && practiceReducer.routines && practiceReducer.routines.length < 5) || !practiceReducer.routines ?
-                <IconButton
-                    pressHandler={() => {
-                        onAddPressed().then()
-                    }}
-                    icon={require("@src/assets/img/add.png")}
-                    style={{height: 24, width: 24}}
-                    tintColor={'#FFFFFF'}
-                    touchableStyle={{
-                        position: "absolute",
-                        backgroundColor: "#f4338f",
-                        bottom: scale(80),
-                        color: "white",
-                        tintColor: "#FFFFFF",
-                        alignItems: "center",
-                        borderRadius: 100,
-                        padding: 16,
-                        shadowColor: "#000",
-                        shadowOffset: {width: -2, height: 4},
-                        shadowOpacity: 0.2,
-                        shadowRadius: 3,
-                        elevation: 4,
-                    }}
-                />
-                : null}
             {messageBarDisplay ?
                 <Animated.View style={[styles.messageBar, {opacity: fadeAnim}]}><Text style={styles.messageText}>Great!
                     You earn more qi. Keep it up!</Text></Animated.View>
@@ -190,6 +169,7 @@ const styles = StyleSheet.create({
 });
 PracticeMember.navigationOptions = ({navigation, screenProps}) => {
     const {params = {}} = navigation.state;
+    console.log(params)
     const {colors, global} = screenProps;
     return ({
         headerTitle: params.title?params.title:navigation.getParam('title'),
@@ -209,29 +189,14 @@ PracticeMember.navigationOptions = ({navigation, screenProps}) => {
             </TouchableOpacity>,
         headerRight:
             params.showAdd?
-                <IconButton
-                    pressHandler={() => {
-                        params.onAddPressed();
+                <TouchableOpacity
+                    onPress={async () => {
+                        await TrackPlayer.reset();
+                        await params.onAddPressed();
                     }}
-                    icon={require("@src/assets/img/add.png")}
-                    style={{height: scale(12), width: scale(12)}}
-                    tintColor={'#FFFFFF'}
-                    touchableStyle={{
-                        position: "absolute",
-                        backgroundColor: colors.headerIconColor,
-                        bottom: scale(80),
-                        color: "white",
-                        tintColor: "#FFFFFF",
-                        alignItems: "center",
-                        borderRadius: 100,
-                        padding: 8,
-                        shadowColor: "#000",
-                        shadowOffset: {width: -2, height: 4},
-                        shadowOpacity: 0.2,
-                        shadowRadius: 3,
-                        elevation: 4,
-                    }}
-                />
+                >
+                    <SvgAddIcon color={colors.headerIconColor} style={{marginRight:scale(15)}}/>
+                </TouchableOpacity>
                 :null
     })
 }

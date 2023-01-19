@@ -1,5 +1,5 @@
 import React from "react";
-import {View, Text, TouchableOpacity, StyleSheet} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 //Load BuddyBoss components and helper functions
 import AppTouchableOpacity from "@src/components/AppTouchableOpacity";
 import AppAvatar from "@src/components/AppAvatar";
@@ -7,14 +7,14 @@ import ActionSheetButton from "@src/components/ActionButtons/ActionSheetButton";
 import {getForumAvatarSource, shortContent} from "@src/utils";
 import AuthWrapper from "@src/components/AuthWrapper";
 import {scale, windowWidth} from "../Utils/scale";
+
 const ForumItem = ({
                        forum,
                        colors,
-                       formatDateFunc,
                        global,
                        actionButtons,
                        t
-                  }) => {
+                   }) => {
     const avatarSource = getForumAvatarSource(forum);
     const verticalSpacing = 18;
     return (
@@ -27,7 +27,7 @@ const ForumItem = ({
                     size={50}
                     source={avatarSource}
                     style={{marginVertical: verticalSpacing}}
-              />
+                />
                 <View
                     style={{
                         flex: 1,
@@ -35,12 +35,12 @@ const ForumItem = ({
                         marginLeft: 13,
                         ...global.bottomBorder,
                         paddingVertical: verticalSpacing
-                   }}
+                    }}
                 >
                     <View
                         style={{
                             flex: 1
-                       }}
+                        }}
                     >
                         <View>
                             <Text style={[global.itemTitle, {marginBottom: 4, marginTop: 1}]}>
@@ -72,11 +72,11 @@ const ForumItem = ({
                                 title: forum.title,
                                 description: shortContent(forum.shortContent),
                                 avatarSource
-                           }}
+                            }}
                             global={global}
                             color={colors.textIconColor}
                             t={t}
-                      />
+                        />
                     </AuthWrapper>
                 </View>
             </AppTouchableOpacity>
@@ -90,13 +90,13 @@ const styles = StyleSheet.create({
         marginTop: scale(15),
         marginHorizontal: scale(15),
         width: windowWidth - scale(30),
-   },
+    },
     boxShadow: {
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 4,
-   },
+    },
 });
 export default ForumItem;

@@ -6,23 +6,23 @@ class TouchableScale extends PureComponent {
         super(props);
         this.scaleValue = new Animated.Value(1);
         this.pressThreshold = 300;
-   }
+    }
 
     onPressIn = () => {
         this.pressedIn = Date.now();
         Animated.timing(this.scaleValue, {
                 toValue: 0.97,
                 duration: 300,
-           }
+            }
         ).start();
-   }
+    }
 
-    onPressOut = (event) => {
+    onPressOut = () => {
         Animated.timing(this.scaleValue, {
             toValue: 1,
             duration: 150,
-       }).start()
-   }
+        }).start()
+    }
 
     render() {
         const {style, onPress, children} = this.props;
@@ -37,6 +37,7 @@ class TouchableScale extends PureComponent {
                 </Animated.View>
             </TouchableOpacity>
         );
-   }
+    }
 }
+
 export default TouchableScale;

@@ -195,7 +195,6 @@ const PracticesContent = props => {
                    }}
                     modalHeight={windowHeight * 5 / 6}
                     handlePosition="outside"
-                    handlePosition="inside"
                     childrenStyle={{backgroundColor: colors.bodyBg}}
                     HeaderComponent={
                         <View style={{
@@ -233,11 +232,12 @@ const styles = StyleSheet.create({
         flex: 1,
    },
     card: {
+        backgroundColor: 'white',
         width: windowWidth-scale(30),
         height: (windowWidth-scale(30))*16/45,
         borderRadius: 9,
         marginTop: scale(20),
-        marginbottom: scale(5),
+        marginBottom: scale(5),
         marginHorizontal: scale(15),
         alignItems: 'flex-start',
         justifyContent: 'center',

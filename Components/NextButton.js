@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
-import {View, StyleSheet, Animated, TouchableOpacity} from "react-native";
-import Svg, {G, Circle} from 'react-native-svg';
+import {Animated, StyleSheet, TouchableOpacity, View} from "react-native";
+import Svg, {Circle, G} from 'react-native-svg';
 import IconButton from "@src/components/IconButton";
 
 const NextButton = ({percentage, scrollTo}) => {
@@ -18,42 +18,41 @@ const NextButton = ({percentage, scrollTo}) => {
             toValue,
             duration: 250,
             useNativeDriver: true
-       }).start()
-   }
+        }).start()
+    }
 
     useEffect(() => {
         animation(percentage);
-   }, [percentage]);
+    }, [percentage]);
 
     useEffect(() => {
-        try
-        {
-            if(progressAnimation) {
+        try {
+            if (progressAnimation) {
                 progressAnimation.addListener(
                     (value) => {
                         const strokeDashoffset = circumference - (circumference * value.value) / 100;
                         if (progressRef?.current) {
                             progressRef.current.setNativeProps({
                                 strokeDashoffset,
-                           });
-                       }
-                   }, [percentage]
+                            });
+                        }
+                    }, [percentage]
                 );
                 return () => {
                     progressAnimation.removeAllListeners();
-               };
-           }
-       }catch (e) {
+                };
+            }
+        } catch (e) {
             console.log(e)
-       }
-   },[]);
+        }
+    }, []);
 
     return (
         <View style={styles.container}>
             <Svg width={size} height={size}>
                 <G rotation="-90" origin={center}>
                     <Circle stroke="#E6E7E8" cx={center} cy={center} r={radius} strokeWidth={strokeWidth}
-                  />
+                    />
                     <Circle
                         ref={progressRef}
                         stroke="#F4338F"
@@ -62,15 +61,15 @@ const NextButton = ({percentage, scrollTo}) => {
                         r={radius}
                         strokeWidth={strokeWidth}
                         strokeDasharray={circumference}
-                  />
+                    />
                 </G>
             </Svg>
             <TouchableOpacity onPress={scrollTo} style={styles.button} activeOpacity={0.6}>
                 <IconButton
                     pressHandler={scrollTo}
                     icon={percentage === 100 ? require("@src/assets/img/check-simple.png") : require("@src/assets/img/arrow-right-variant-2.png")}
-                    style={{tintColor:"#fff", width:24, height:24}}
-              />
+                    style={{tintColor: "#fff", width: 24, height: 24}}
+                />
             </TouchableOpacity>
         </View>
     )
@@ -81,12 +80,12 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center"
-   },
+    },
     button: {
         position: "absolute",
         backgroundColor: '#f4338f',
         borderRadius: 100,
         padding: 20,
-   }
+    }
 })
 export default NextButton;

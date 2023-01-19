@@ -1,5 +1,4 @@
 import React from 'react';
-import AuthWrapper from "@src/components/AuthWrapper";
 import LoginScreen from "@src/containers/Custom/LoginScreen";
 import {TouchableOpacity} from "react-native";
 import {SvgIconBack} from "../Utils/svg";
@@ -16,19 +15,19 @@ MyLoginScreen.navigationOptions = ({navigation, screenProps}) => {
         <TouchableOpacity
             onPress={() => {
                 navigation.goBack()
-           }}
+            }}
         >
-            <SvgIconBack color = {colors.headerIconColor}/>
+            <SvgIconBack color={colors.headerIconColor}/>
         </TouchableOpacity>
     return {
         title: navigation.getParam('title') ? navigation.getParam('title') : 'Login',
         headerStyle: {
             backgroundColor: colors.headerBg,
-       },
+        },
         headerTintColor: colors.headerColor,
         headerTitleStyle: global.appHeaderTitle,
         headerLeft: headerLeft,
-   };
+    };
 }
 
 export default MyLoginScreen;

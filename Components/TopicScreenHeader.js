@@ -1,5 +1,5 @@
 import React from "react";
-import {View, TouchableOpacity} from "react-native";
+import {TouchableOpacity, View} from "react-native";
 import Animated from "react-native-reanimated";
 import {DEVICE_WIDTH} from "@src/styles/global";
 import {SvgIconBack} from "../Utils/svg";
@@ -9,13 +9,8 @@ const TopicScreenHeader = (props) => {
         headerLeftStyle,
         style,
         global,
-        backToCourse,
-        renderTimer,
-        headerRightAuthWrapperProps,
-        prevNext,
-        topic,
         navigation
-   } = props;
+    } = props;
     return (
         <Animated.View
             style={[
@@ -25,10 +20,10 @@ const TopicScreenHeader = (props) => {
                     backgroundColor: "transparent",
                     paddingHorizontal: 10,
                     overflow: "hidden"
-               },
+                },
                 {
                     width: DEVICE_WIDTH
-               },
+                },
                 style
             ]}
         >
@@ -40,14 +35,16 @@ const TopicScreenHeader = (props) => {
                         flexDirection: "row",
                         flex: 1,
                         height: "100%"
-                   }
+                    }
                 ]}
             >
                 <View style={[global.headerButtonLeft, headerLeftStyle]}>
                     <TouchableOpacity
-                        onPress={() => {navigation.goBack()}}
+                        onPress={() => {
+                            navigation.goBack()
+                        }}
                     >
-                        <SvgIconBack color = {props.screenProps.colors.headerIconColor}/>
+                        <SvgIconBack color={props.screenProps.colors.headerIconColor}/>
                     </TouchableOpacity>
                 </View>
             </View>

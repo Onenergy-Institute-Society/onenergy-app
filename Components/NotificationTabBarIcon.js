@@ -1,37 +1,35 @@
 import React from "react";
-import {
-    View, Text,
-} from "react-native";
+import {Text, View,} from "react-native";
 import {useSelector} from "react-redux";
 
 const NotificationTabBarIcon = props => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const achievementReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.achievementReducer:null);
-    const guideReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer.guides:null);
-    const postReducer = useSelector((state) => state.postReducer?state.postReducer:null);
-    const vouchers =  useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings.vouchers : null);
-    const {notificationID, top, right, size, fontSize=8, showNumber=false, data=''} = props;
+    const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
+    const guideReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer.guides : null);
+    const postReducer = useSelector((state) => state.postReducer ? state.postReducer : null);
+    const vouchers = useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings.vouchers : null);
+    const {notificationID, top, right, size, fontSize = 8, showNumber = false, data = ''} = props;
 
-    let notificationCount=0;
-    if(user) {
+    let notificationCount = 0;
+    if (user) {
         switch (notificationID) {
             case 'guide_personal':
-                if(guideReducer) {
+                if (guideReducer) {
                     guideReducer.map(section => {
                         notificationCount += section.data.filter(item => item.new).length
-                   })
-               }
+                    })
+                }
                 break;
             case 'guide_page':
-                if(guideReducer) {
+                if (guideReducer) {
                     guideReducer.map(section => {
                         notificationCount += section.data.filter(item => item.new).length
-                   })
-               }
+                    })
+                }
                 break;
             case 'blog_read':
-                if(postReducer) {
+                if (postReducer) {
                     notificationCount = postReducer.posts.filter((post) => post.categories.includes(105) && post.notify === true).length;
                     if (notificationCount === 0) {
                         let categoryIndex = postReducer.lastView.findIndex(lv => lv.category === 105);
@@ -40,13 +38,13 @@ const NotificationTabBarIcon = props => {
                             const datePost = new Date(optionData.latest_post_read);
                             if (datePost > dateTime) {
                                 notificationCount = 1;
-                           }
-                       }
-                   }
-               }
+                            }
+                        }
+                    }
+                }
                 break;
             case 'blog_watch':
-                if(postReducer) {
+                if (postReducer) {
                     notificationCount = postReducer.posts.filter((post) => post.categories.includes(103) && post.notify === true).length;
                     if (notificationCount === 0) {
                         let categoryIndex = postReducer.lastView.findIndex(lv => lv.category === 103);
@@ -55,18 +53,18 @@ const NotificationTabBarIcon = props => {
                             const datePost = new Date(optionData.latest_post_watch);
                             if (datePost > dateTime) {
                                 notificationCount = 1;
-                           }
-                       }
-                   }
-               }
+                            }
+                        }
+                    }
+                }
                 break;
             case 'blog':
-                if(postReducer) {
+                if (postReducer) {
                     notificationCount = postReducer.posts.filter((post) => post.categories.includes(103) && post.notify === true).length;
 
                     if (!notificationCount) {
                         notificationCount = postReducer.posts.filter((post) => post.categories.includes(105) && post.notify === true).length;
-                   }
+                    }
 
                     if (notificationCount === 0) {
                         let categoryIndex = postReducer.lastView.findIndex(lv => lv.category === 103);
@@ -75,8 +73,8 @@ const NotificationTabBarIcon = props => {
                             const datePost = new Date(optionData.latest_post_watch);
                             if (datePost > dateTime) {
                                 notificationCount = 1;
-                           }
-                       }
+                            }
+                        }
                         if (notificationCount === 0) {
                             categoryIndex = postReducer.lastView.findIndex(lv => lv.category === 105);
                             if (categoryIndex && categoryIndex >= 0) {
@@ -84,75 +82,75 @@ const NotificationTabBarIcon = props => {
                                 const datePost = new Date(optionData.latest_post_read);
                                 if (datePost > dateTime) {
                                     notificationCount = 1;
-                               }
-                           }
-                       }
-                   }
-               }
+                                }
+                            }
+                        }
+                    }
+                }
                 break;
             case 'quest_daily':
-                if (user&&achievementReducer)
-                    notificationCount = achievementReducer.daily?achievementReducer.daily.filter(item => item.complete_date&&!item.claim_date).length:0;
+                if (user && achievementReducer)
+                    notificationCount = achievementReducer.daily ? achievementReducer.daily.filter(item => item.complete_date && !item.claim_date).length : 0;
                 break;
             case 'quest_weekly':
-                if (user&&achievementReducer)
-                    notificationCount = achievementReducer.weekly.complete_date&&!achievementReducer.weekly.claim_date;
+                if (user && achievementReducer)
+                    notificationCount = achievementReducer.weekly.complete_date && !achievementReducer.weekly.claim_date;
                 break;
             case 'quest_monthly':
-                if (user&&achievementReducer)
-                    notificationCount = achievementReducer.monthly.complete_date&&!achievementReducer.monthly.claim_date;
+                if (user && achievementReducer)
+                    notificationCount = achievementReducer.monthly.complete_date && !achievementReducer.monthly.claim_date;
                 break;
             case 'quest':
-                if (user&&achievementReducer){
-                    let dailyCount = achievementReducer.daily?achievementReducer.daily.filter(item => item.complete_date && !item.claim_date).length:0;
+                if (user && achievementReducer) {
+                    let dailyCount = achievementReducer.daily ? achievementReducer.daily.filter(item => item.complete_date && !item.claim_date).length : 0;
                     let weeklyCount = achievementReducer.weekly.complete_date && !achievementReducer.weekly.claim_date;
                     let monthlyCount = achievementReducer.monthly.complete_date && !achievementReducer.monthly.claim_date;
-                    notificationCount = dailyCount+weeklyCount+monthlyCount;
-               }
+                    notificationCount = dailyCount + weeklyCount + monthlyCount;
+                }
                 break;
             case 'milestone':
-                if (user&&achievementReducer)
-                    notificationCount = achievementReducer.milestones?achievementReducer.milestones.filter(item => item.complete_date&&!item.claim_date).length:0;
+                if (user && achievementReducer)
+                    notificationCount = achievementReducer.milestones ? achievementReducer.milestones.filter(item => item.complete_date && !item.claim_date).length : 0;
                 break;
             case 'milestone_learn':
-                if (user&&achievementReducer)
-                    notificationCount = achievementReducer.milestones?achievementReducer.milestones.filter(item => item.type==='learn'&&item.complete_date&&!item.claim_date).length:0;
+                if (user && achievementReducer)
+                    notificationCount = achievementReducer.milestones ? achievementReducer.milestones.filter(item => item.type === 'learn' && item.complete_date && !item.claim_date).length : 0;
                 break;
             case 'milestone_startup':
-                if (user&&achievementReducer)
-                    notificationCount = achievementReducer.milestones?achievementReducer.milestones.filter(item => item.type==='startup'&&item.complete_date&&!item.claim_date).length:0;
+                if (user && achievementReducer)
+                    notificationCount = achievementReducer.milestones ? achievementReducer.milestones.filter(item => item.type === 'startup' && item.complete_date && !item.claim_date).length : 0;
                 break;
             case 'milestone_endurance':
-                if (user&&achievementReducer)
-                    notificationCount = achievementReducer.milestones.filter(item => item.type==='endurance'&&item.complete_date&&!item.claim_date).length;
+                if (user && achievementReducer)
+                    notificationCount = achievementReducer.milestones.filter(item => item.type === 'endurance' && item.complete_date && !item.claim_date).length;
                 break;
             case 'left_menu':
-                if (user&&achievementReducer){
-                    let dailyCount = achievementReducer.daily?achievementReducer.daily.filter(item => item.complete_date&&!item.claim_date).length:0;
+                if (user && achievementReducer) {
+                    let dailyCount = achievementReducer.daily ? achievementReducer.daily.filter(item => item.complete_date && !item.claim_date).length : 0;
                     let weeklyCount = achievementReducer.weekly.complete_date && !achievementReducer.weekly.claim_date;
                     let monthlyCount = achievementReducer.monthly.complete_date && !achievementReducer.monthly.claim_date;
-                    let milestoneCount = achievementReducer.milestones?achievementReducer.milestones.filter(item => item.complete_date&&!item.claim_date).length:0;
-                    notificationCount = dailyCount+weeklyCount+monthlyCount+milestoneCount;
-               }
+                    let milestoneCount = achievementReducer.milestones ? achievementReducer.milestones.filter(item => item.complete_date && !item.claim_date).length : 0;
+                    notificationCount = dailyCount + weeklyCount + monthlyCount + milestoneCount;
+                }
                 break;
             case 'practice':
-                if(guideReducer) {
+                if (guideReducer) {
                     guideReducer.map((section) => {
                         notificationCount = section.data.find(item => item.id === data && item.show && item.new);
-                   });
-               }
+                    });
+                }
                 break;
             case 'voucher':
-                if(vouchers&&vouchers.length)
-                {
-                    notificationCount = vouchers&&vouchers.length;
+                if (vouchers && vouchers.length) {
+                    notificationCount = vouchers && vouchers.length;
                 }
+                break;
             default:
                 notificationCount = 0;
-       }
-   }
+        }
+    }
     return (
-        notificationCount > 0?
+        notificationCount > 0 ?
             <View
                 style={{
                     color: '#FFFFFF',
@@ -169,13 +167,13 @@ const NotificationTabBarIcon = props => {
                     backgroundColor: '#FF0000',
                     textAlign: "center",
                     zIndex: 999
-               }}
+                }}
             >
-                {showNumber?
+                {showNumber ?
                     <Text style={{fontSize: fontSize, color: '#FFFFFF',}}>{notificationCount}</Text>
-                :null}
+                    : null}
             </View>
-        :null
+            : null
     )
 }
 

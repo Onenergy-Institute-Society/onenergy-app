@@ -1,4 +1,3 @@
-
 export const tracks = [
     {
         id: '1',
@@ -8,7 +7,7 @@ export const tracks = [
         artwork: 'https://picsum.photos/id/1003/200/300',
         album: '',
         duration: 149,
-   },
+    },
     {
         id: '2',
         url: 'https://www.chosic.com/wp-content/uploads/2021/07/Raindrops-on-window-sill.mp3',
@@ -17,7 +16,7 @@ export const tracks = [
         artwork: 'https://picsum.photos/id/10/200/300',
         album: 'Chosic',
         duration: 119,
-   },
+    },
     {
         id: '3',
         url: 'https://www.chosic.com/wp-content/uploads/2021/07/purrple-cat-equinox.mp3',
@@ -26,7 +25,7 @@ export const tracks = [
         artwork: 'https://picsum.photos/id/1016/200/300',
         album: '',
         duration: 140,
-   },
+    },
     {
         id: '4',
         url: 'https://www.chosic.com/wp-content/uploads/2021/04/And-So-It-Begins-Inspired-By-Crush-Sometimes.mp3',
@@ -35,7 +34,7 @@ export const tracks = [
         artwork: 'https://picsum.photos/id/1019/200/300',
         album: 'Artificial Music',
         duration: 208,
-   },
+    },
     {
         id: '5',
         url: 'https://www.chosic.com/wp-content/uploads/2021/05/inossi-got-you.mp3',
@@ -44,7 +43,7 @@ export const tracks = [
         artwork: 'https://picsum.photos/id/103/200/300',
         album: 'INOSSI',
         duration: 178,
-   },
+    },
     {
         id: '6',
         url: 'https://www.chosic.com/wp-content/uploads/2021/04/kvgarlic__largestreamoverloginforestmarch.mp3',
@@ -53,5 +52,5 @@ export const tracks = [
         artwork: 'https://picsum.photos/id/1038/200/300',
         album: 'Chosic',
         duration: 66,
-   },
+    },
 ];

@@ -9,12 +9,6 @@ const QuizScreenHeader = (props) => {
         headerLeftStyle,
         style,
         global,
-        colors,
-        backToCourse,
-        headerRightAuthWrapperProps,
-        prevNext,
-        quiz,
-        renderQuizTimer,
         navigation
     } = props;
     return (
@@ -46,9 +40,11 @@ const QuizScreenHeader = (props) => {
             >
                 <View style={[global.headerButtonLeft, headerLeftStyle]}>
                     <TouchableOpacity
-                        onPress={() => {navigation.goBack()}}
+                        onPress={() => {
+                            navigation.goBack()
+                        }}
                     >
-                        <SvgIconBack color = {props.screenProps.colors.headerIconColor}/>
+                        <SvgIconBack color={props.screenProps.colors.headerIconColor}/>
                     </TouchableOpacity>
                 </View>
             </View>

@@ -1,13 +1,16 @@
 import React, {useState} from 'react';
 import {
-    SafeAreaView,
-    FlatList,
     Image,
     ImageBackground,
+    LayoutAnimation,
+    Platform,
+    SafeAreaView,
+    SectionList,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View, SectionList
+    UIManager,
+    View
 } from 'react-native';
 import {useSelector} from "react-redux";
 import {scale} from '../Utils/scale';
@@ -16,6 +19,9 @@ import {windowWidth} from "../Utils/Dimensions";
 import NotificationTabBarIcon from "./NotificationTabBarIcon";
 import AuthWrapper from "@src/components/AuthWrapper";
 
+if (Platform.OS === "android") {
+    UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 const TracksList = (props) => {
     const {tracks, setMessageBarDisplay, screenProps} = props;
     const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
@@ -23,6 +29,9 @@ const TracksList = (props) => {
     const [selectedTrack, setSelectedTrack] = useState(null);
 
     const onTrackItemPress = async (track) => {
+        LayoutAnimation.configureNext(
+            LayoutAnimation.Presets.spring
+        );
         if (!selectedTrack || track.id !== selectedTrack.id) {
             setSelectedTrack(track);
         }
@@ -51,11 +60,14 @@ const TracksList = (props) => {
                 }]}
                       key={'practice-' + item.id}>
                     <TouchableOpacity
+                        activeOpacity={1}
                         onPress={() => {
                             onTrackItemPress(item).then();
                         }}
                     >
-                        <ImageBackground style={[styles.trackItemInner, styles.itemStyle]}
+                        <ImageBackground style={styles.itemStyle}
+                                         resizeMode={"cover"}
+                                         imageStyle={{borderTopLeftRadius: 9, borderTopRightRadius: 9, borderBottomLeftRadius: showPlayer?0:9, borderBottomRightRadius: showPlayer?0:9}}
                                          source={selectedTrack && selectedTrack.id === item.id ? require('../assets/images/1-1024x683.jpg') : require('../assets/images/7-1024x683.jpg')}>
                             <View style={styles.trackImgBox}>
                                 <ImageBackground style={styles.trackImg} imageStyle={{borderRadius: 9}}
@@ -76,10 +88,12 @@ const TracksList = (props) => {
                                         }}/>
                                     ) : null}
                                 </View>
-                                {practiceCount?
-                                <Text style={[global.itemText, highlightColor, styles.countNumber]}>{practiceCount} times</Text>
-                                    :null}
-                                <Text style={[styles.duration, highlightColor]}>{new Date(item.duration * 1000).toISOString().substring(14, 19)}</Text>
+                                {practiceCount ?
+                                    <Text
+                                        style={[global.itemText, highlightColor, styles.countNumber]}>{practiceCount} times</Text>
+                                    : null}
+                                <Text
+                                    style={[styles.duration, highlightColor]}>{new Date(item.duration * 1000).toISOString().substring(14, 19)}</Text>
                             </View>
                         </ImageBackground>
                         <AuthWrapper actionOnGuestLogin={'hide'}>
@@ -134,7 +148,6 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         paddingVertical: 0,
         paddingHorizontal: 0,
-        width: windowWidth - scale(30),
         marginHorizontal: scale(15),
         marginTop: scale(10),
         marginBottom: scale(5),
@@ -177,6 +190,7 @@ const styles = StyleSheet.create({
         color: '#000',
     },
     itemStyle: {
+        width: windowWidth - scale(30),
         paddingHorizontal: scale(8),
         display: 'flex',
         flexDirection: 'row',

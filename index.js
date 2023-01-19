@@ -928,8 +928,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 console.log('w3')
                                 acpTempAchievementState.weekly.days = [];
                                 acpTempAchievementState.weekly.days.push(today);
-                            } else {
-                                console.log('w4')
+                            } else if (today !== lastDay){
                                 acpTempAchievementState.weekly.days.push(today);
                                 if (acpTempAchievementState.weekly.days.length === 7) {
                                     acpTempAchievementState.weekly.complete_date = today;
@@ -951,7 +950,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             } else if (acpTempAchievementState.monthly.days.length > 30) {
                                 acpTempAchievementState.monthly.days = [];
                                 acpTempAchievementState.monthly.days.push(today);
-                            } else {
+                            } else if (today !== lastDay){
                                 acpTempAchievementState.monthly.days.push(today);
                                 if (acpTempAchievementState.monthly.days.length === 30) {
                                     acpTempAchievementState.monthly.complete_date = today;

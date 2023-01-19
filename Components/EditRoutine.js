@@ -1,34 +1,40 @@
 import React, {useEffect, useState} from "react";
 import {getApi} from "@src/services";
-import {connect, useSelector, useDispatch} from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 import {
     Alert,
-    ActivityIndicator,
+    Image,
+    SafeAreaView,
+    ScrollView,
     StyleSheet,
     Text,
-    View,
-    SafeAreaView,
+    TextInput,
     TouchableOpacity,
-    TouchableWithoutFeedback, TextInput, Image, ScrollView
+    TouchableWithoutFeedback,
+    View
 } from "react-native";
 import IconButton from "@src/components/IconButton";
-import {Swipeable, GestureHandlerRootView} from "react-native-gesture-handler";
+import {GestureHandlerRootView, Swipeable} from "react-native-gesture-handler";
 import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import SortList from "./SortList";
 import {Modalize} from 'react-native-modalize';
 import {scale} from "../Utils/scale";
 import analytics from '@react-native-firebase/analytics';
-import {SvgIconBack, SvgIconCheck, SvgIconCross} from "../Utils/svg";
+import {SvgAddIcon, SvgIconBack, SvgIconCheck, SvgIconCross, SvgPlayIcon, SvgStopIcon} from "../Utils/svg";
+import Video from 'react-native-video';
 
 const EditRoutine = props => {
-    const {navigation, screenProps, index} = props;
+    const {navigation, screenProps} = props;
+    const index = navigation.getParam('index');
     const {colors, global} = screenProps;
     const dispatch = useDispatch();
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const backgroundImages = optionData.routine_image;
     const backgroundMusics = optionData.routine_bgm;
-    const routinesReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer.routines:[]);
-    const [routineDetailState, setRoutineDetailState] = useState(index >= 0 ? routinesReducer[index]: {
+    const [playingSound, setPlayingSound] = useState(false);
+    const [soundUrl, setSoundUrl] = useState('');
+    const routinesReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer.routines : []);
+    const [routineDetailState, setRoutineDetailState] = useState(index >= 0 ? routinesReducer[index] : {
         id: 0,
         title: '',
         image: optionData.routine_image[0],
@@ -36,6 +42,8 @@ const EditRoutine = props => {
         tracks: [],
         routine: []
     });
+    const [routines, setRoutines] = useState(index >= 0 ? routinesReducer[index].routine : []);
+    const [refresh, setRefresh] = useState(0);
     const [selectBgm, setSelectBgm] = useState('');
     const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
     const [currentTrackState, setCurrentTrackState] = useState({index: -1, detail: {}});
@@ -83,9 +91,14 @@ const EditRoutine = props => {
         });
     }, [])
     useEffect(() => {
+        if (routinesReducer && routinesReducer.length && index >= 0) {
+            setRoutineDetailState(routinesReducer[index])
+        }
+    }, [routinesReducer])
+    useEffect(() => {
         if (routineDetailState) {
             props.navigation.setParams({
-                title: routineDetailState.title,
+                title: routineDetailState.title ? routineDetailState.title : "New Routine",
                 onBackPressed: onBackPressed,
                 changeStatus: changedStatus,
                 backButtonTitle: changedStatus ? 'Save' : '',
@@ -98,28 +111,8 @@ const EditRoutine = props => {
         } else {
             setSelectBgm(backgroundMusics[0].name);
         }
+
     }, [routineDetailState])
-    const removeItem = (id) => {
-        let array = routineDetailState.routine; // make a separate copy of the array
-        if (id !== -1) {
-            let index = array.findIndex(el => el.id === id);
-            array.splice(index, 1);
-            let tracks = createTracks(array);
-            setRoutineDetailState(prevState => {
-                return {...prevState, routine: array, tracks: tracks}
-            });
-            setChangedStatus(true);
-        }
-    }
-
-    const updateItem = (items) => {
-        let tracks = createTracks(items);
-        setRoutineDetailState(prevState => {
-            return {...prevState, routine: items, tracks: tracks}
-        });
-        setChangedStatus(true);
-    }
-
     const onBackPressed = () => {
         if (changedStatus) {
             if (!routineDetailState.routine.length) {
@@ -234,21 +227,67 @@ const EditRoutine = props => {
         }
         return tracks;
     }
+    const removeItem = (id) => {
+        let newRoutines = routines; // make a separate copy of the array
+        if (id !== -1) {
+            let index = newRoutines.findIndex(el => el.id === id);
+            newRoutines.splice(index, 1);
+            setRoutines(newRoutines);
+            let tracks = createTracks(newRoutines);
+            setRoutineDetailState(prevState => {
+                return {...prevState, routine: newRoutines, tracks: tracks}
+            });
+            setChangedStatus(true);
+            setRefresh(refresh + 1);
+            setPlayingSound(false);
+        }
+    }
+
+    const updateItem = (items) => {
+        let tracks = createTracks(items);
+        setRoutines(items);
+        setRoutineDetailState(prevState => {
+            return {...prevState, routine: items, tracks: tracks}
+        });
+        setChangedStatus(true);
+        setRefresh(refresh + 1);
+        setPlayingSound(false);
+    }
     const addGuideToRoutine = (item) => {
         item.count = 1;
-        let routine = routineDetailState.routine;
-        routine.push(item);
-        let tracks = createTracks(routine);
+        let newRoutines = routines;
+        newRoutines.push(item);
+        let tracks = createTracks(newRoutines);
+        setRoutines(newRoutines);
         setRoutineDetailState(prevState => {
             return {
                 ...prevState,
-                routine: routine,
+                routine: newRoutines,
                 tracks: tracks
             }
         });
+        setChangedStatus(true);
+        setRefresh(refresh + 1);
+        setPlayingSound(false);
         this.addGuideModal.close();
     }
-
+    const changeCount = (item) => {
+        let newRoutines = routines;
+        newRoutines[currentTrackState.index].count = item.item;
+        let tracks = createTracks(newRoutines)
+        setRoutines(newRoutines);
+        setRoutineDetailState(prevState => {
+            return {
+                ...prevState,
+                routine: newRoutines,
+                tracks: tracks
+            }
+        });
+        setChangedStatus(true);
+        setRefresh(refresh + 1);
+        setPlayingSound(false);
+        this.countDialog.close();
+    }
     const rightActions = (dragX, item) => {
         return (
             <TouchableOpacity style={{justifyContent: "center", alignItems: "center"}} onPress={() => {
@@ -289,32 +328,34 @@ const EditRoutine = props => {
                 onSwipeableLeftWillOpen={handleWillOpen(id)}
                 onSwipeableOpen={handleOpen(id)}
             >
-                <View key={itemData.id} style={styles.listContainer}>
-                    <View style={styles.content}>
-                        <Text style={[global.text, styles.trackTitle]}>
-                            {itemData.title}
-                        </Text>
-                        <TouchableWithoutFeedback
-                            onPress={() => {
-                                setCurrentTrackState({index: id, item: itemData});
-                                this.countDialog.open();
-                            }}>
-                            <View style={styles.trackCount}>
-                                <Text
-                                    style={[global.textAlt, styles.trackCountText]}>{itemData.parts > 1 ? itemData.parts + 'x' : ''}{itemData.count}{itemData.mode === "0" ? "" : "m"}</Text>
-                                <Image style={{marginLeft: 5, tintColor: colors.headerIconColor}}
-                                       source={require("@src/assets/img/arrow-down.png")}/>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                    <View style={styles.orderButton} {...handler}>
-                        <IconButton
-                            icon={require("@src/assets/img/handle.png")}
-                            style={{
-                                height: 32,
-                                marginRight: 10,
-                            }}
-                        />
+                <View style={{width: windowWidth - scale(30), flexDirection: "row", justifyContent: "flex-start"}}>
+                    <View key={itemData.id} style={styles.listContainer}>
+                        <View style={styles.content}>
+                            <Text style={[global.text, styles.trackTitle]}>
+                                {itemData.title}
+                            </Text>
+                            <TouchableWithoutFeedback
+                                onPress={() => {
+                                    setCurrentTrackState({index: id, item: itemData});
+                                    this.countDialog.open();
+                                }}>
+                                <View style={styles.trackCount}>
+                                    <Text
+                                        style={[global.textAlt, styles.trackCountText]}>{parseInt(itemData.repeatCount) > 1 ? parseInt(itemData.repeatCount) + 'x' : ''}{itemData.count}{itemData.mode === "0" ? "" : "m"}</Text>
+                                    <Image style={{marginLeft: 5, tintColor: colors.headerIconColor}}
+                                           source={require("@src/assets/img/arrow-down.png")}/>
+                                </View>
+                            </TouchableWithoutFeedback>
+                        </View>
+                        <View style={styles.orderButton} {...handler}>
+                            <IconButton
+                                icon={require("@src/assets/img/handle.png")}
+                                style={{
+                                    height: 32,
+                                    marginRight: 10,
+                                }}
+                            />
+                        </View>
                     </View>
                 </View>
             </Swipeable>
@@ -322,7 +363,11 @@ const EditRoutine = props => {
     };
 
     const renderGuides = (item) => {
+        console.log(item)
         let index = routineDetailState.routine.findIndex(el => el.id === item.item.id);
+        let track;
+        track = item.item.parts[0].start;
+        console.log(item.item.title, track)
         return (
             item.item.show ?
                 <TouchableWithoutFeedback onPress={() => {
@@ -339,10 +384,26 @@ const EditRoutine = props => {
                         alignItems: 'center',
                         justifyContent: 'space-between'
                     }}>
-                        <Text
-                            style={global.text}>
-                            {item.item.title}
-                        </Text>
+                        <View style={{flexDirection:"row", justifyContent:"flex-start", alignItems:"center"}}>
+                            {track?
+                                <TouchableOpacity
+                                    onPress={()=>{
+                                        if(playingSound&&track===soundUrl) {
+                                            setPlayingSound(false);
+                                        }else {
+                                            setSoundUrl(track);
+                                            setPlayingSound(true);
+                                        }
+                                    }}
+                                >
+                                    {playingSound&&track===soundUrl?<SvgStopIcon color={colors.headerIconColor}/>:<SvgPlayIcon color={colors.headerIconColor}/>}
+                                </TouchableOpacity>
+                                :null}
+                            <Text
+                                style={[global.text,{marginLeft:scale(5)}]}>
+                                {item.item.title}
+                            </Text>
+                        </View>
                         {index >= 0 ? (
                             <SvgIconCheck size={24} color={colors.primaryColor}/>
                         ) : null}
@@ -368,13 +429,8 @@ const EditRoutine = props => {
         }
         return (
             <TouchableWithoutFeedback onPress={() => {
-                let tempSettings = routineDetailState.routine;
-                tempSettings[currentTrackState.index].count = item.item;
-                setRoutineDetailState(prevState => ({...prevState, routine: tempSettings}));
-                setChangedStatus(true);
-                this.countDialog.close();
-            }
-            }>
+                changeCount(item);
+            }}>
                 <View style={[cornerStyle, bottomStyle, {
                     width: windowWidth - 50,
                     marginHorizontal: 25,
@@ -404,6 +460,13 @@ const EditRoutine = props => {
     const renderBGM = (item) => {
         let cornerStyle = {};
         let bottomStyle = {};
+        let bgmTrack;
+        if (item.item.name !== 'No Sound') {
+            bgmTrack = optionData.routine_bgm.find(el => el.name === item.item.name).bgm;
+        } else {
+            bgmTrack = '';
+        }
+        console.log(soundUrl, playingSound)
         switch (item.index) {
             case 0:
                 cornerStyle = {borderTopLeftRadius: 9, borderTopRightRadius: 9};
@@ -421,6 +484,7 @@ const EditRoutine = props => {
                 setRoutineDetailState(prevState => ({...prevState, bgm: item.item.name}));
                 setSelectBgm(item.item.name);
                 setChangedStatus(true);
+                setPlayingSound(false);
                 this.bgmDialog.close();
             }}>
                 <View style={[cornerStyle, bottomStyle, {
@@ -431,10 +495,28 @@ const EditRoutine = props => {
                     alignItems: 'center',
                     justifyContent: 'space-between'
                 }]}>
-                    <Text
-                        style={global.text}>
-                        {item.item.name}
-                    </Text>
+                    <View style={{flexDirection:"row", justifyContent:"flex-start", alignItems:"center"}}>
+                    {bgmTrack?
+                        <TouchableOpacity
+                            onPress={()=>{
+                                if(playingSound&&bgmTrack===soundUrl) {
+                                    console.log('stop')
+                                    setPlayingSound(false);
+                                }else {
+                                    console.log('play')
+                                    setSoundUrl(bgmTrack);
+                                    setPlayingSound(true);
+                                }
+                            }}
+                        >
+                            {playingSound&&bgmTrack===soundUrl?<SvgStopIcon color={colors.headerIconColor}/>:<SvgPlayIcon color={colors.headerIconColor}/>}
+                        </TouchableOpacity>
+                        :null}
+                        <Text
+                            style={[global.text,{marginLeft:scale(5)}]}>
+                            {item.item.name}
+                        </Text>
+                    </View>
                     {routineDetailState.bgm === item.item.name ? (
                         <SvgIconCheck size={24} color={colors.primaryColor}/>
                     ) : null}
@@ -546,14 +628,14 @@ const EditRoutine = props => {
                         alignItems: "center"
                     }}>
                         <Text style={global.settingsItemTitle}>Practices</Text>
-                        <IconButton
-                            pressHandler={() => {
+                        <Text style={[global.text, {fontSize: scale(10)}]}>(swipe to delete, tap to listen)</Text>
+                        <TouchableOpacity
+                            onPress={() => {
                                 this.addGuideModal.open();
                             }}
-                            icon={require("@src/assets/img/add.png")}
-                            tintColor={colors.primaryColor}
-                            style={{height: 20, width: 20}}
-                        />
+                        >
+                            <SvgAddIcon color={colors.primaryColor}/>
+                        </TouchableOpacity>
                     </View>
 
                     <GestureHandlerRootView style={{height: "100%"}}>
@@ -562,7 +644,7 @@ const EditRoutine = props => {
                         ) : (
                             <SortList
                                 horizontal={false}                          // The orientation of the list
-                                data={routineDetailState.routine}                                // The list of items to render
+                                data={routines}                                // The list of items to render
                                 renderItem={renderTracks}                     // The function to render each item
                                 save={(items) => {
                                     updateItem(items)
@@ -573,10 +655,24 @@ const EditRoutine = props => {
                                 style={styles.list}
                                 contentContainerStyle={styles.contentContainer}
                                 setCancelContentTouches={setCancelContentTouches}
+                                refresh={refresh}
                             />
                         )}
                     </GestureHandlerRootView>
                 </View>
+                {soundUrl&&playingSound?
+                <Video
+                    ref={videoPlayer => this.videoPlayer = videoPlayer}
+                    audioOnly={true}
+                    onEnd={()=>setPlayingSound(false)}
+                    playInBackground={false}
+                    playWhenInactive={false}
+                    ignoreSilentSwitch={"ignore"}
+                    repeat={false}
+                    paused={!playingSound}
+                    source={{uri: soundUrl}}
+                />
+                    :null}
             </ScrollView>
             <Modalize
                 ref={(countDialog) => {
@@ -648,6 +744,7 @@ const EditRoutine = props => {
                         <TouchableOpacity
                             onPress={() => {
                                 this.bgmDialog.close();
+                                setPlayingSound(false);
                             }}
                         >
                             <SvgIconCross/>
@@ -691,6 +788,7 @@ const EditRoutine = props => {
                         <TouchableOpacity
                             onPress={() => {
                                 this.addGuideModal.close();
+                                setPlayingSound(false);
                             }}
                         >
                             <SvgIconCross/>
@@ -718,21 +816,21 @@ const styles = StyleSheet.create({
     ScrollContainer: {
         height: "100%",
         flexGrow: 1,
-        paddingHorizontal: 15,
+        paddingHorizontal: scale(15),
     },
     list: {
-        width: windowWidth - scale(60),
+        width: windowWidth - scale(30),
         flex: 1,
         justifyContent: 'center',
         alignItems: 'flex-start',
         overflow: 'scroll',
     },
     contentContainer: {
-        width: windowWidth - scale(35),
+        width: windowWidth - scale(30),
     },
     index: {},
     listContainer: {
-        width: windowWidth - scale(60),
+        width: windowWidth - scale(30),
         aspectRatio: 8,
         flexDirection: 'row',
         marginBottom: 5,
@@ -746,6 +844,7 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 1,
+        height: "100%",
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
@@ -787,10 +886,10 @@ const styles = StyleSheet.create({
     trackTitle: {
         fontSize: scale(12),
         paddingLeft: 10,
-        flex: 0.8,
+        flex: 0.7,
     },
     trackCount: {
-        flex: 0.2,
+        flex: 0.3,
         width: scale(50),
         flexDirection: "row",
         justifyContent: "flex-end",
@@ -825,10 +924,24 @@ EditRoutine.navigationOptions = ({navigation, screenProps}) => {
                 <View style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
                     <SvgIconBack color={colors.headerIconColor}/>
                     <Text style={{
+                        fontFamily: "Montserrat-Regular",
                         fontSize: scale(16),
                         color: screenProps.colors.headerIconColor
                     }}>{params.backButtonTitle}</Text>
                 </View>
+            </TouchableOpacity>,
+        headerRight:
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.goBack();
+                }}
+            >
+                <Text style={{
+                    marginRight: scale(15),
+                    fontFamily: "Montserrat-Regular",
+                    fontSize: scale(16),
+                        color: screenProps.colors.headerIconColor
+                }}>Cancel</Text>
             </TouchableOpacity>,
     }
 }

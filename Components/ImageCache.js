@@ -10,10 +10,10 @@ const ImageCache = ({source, style}) => {
                 style={style}
                 source={{
                     uri: source.uri,
-               }}
-          />
+                }}
+            />
         )
-   }
+    }
 
     return (
         <FastImage
@@ -22,8 +22,8 @@ const ImageCache = ({source, style}) => {
                 uri: source.uri,
                 headers: {Authorization: 'someAuthToken'},
                 priority: FastImage.priority.normal,
-           }}
-      />
+            }}
+        />
     )
 }
 ImageCache.propTypes = {

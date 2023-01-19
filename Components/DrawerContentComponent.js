@@ -1,10 +1,12 @@
 import * as React from 'react';
 import {
-    View,
-    Text,
     ImageBackground,
+    SafeAreaView,
+    StyleSheet,
+    Text,
     TouchableOpacity,
-    TouchableWithoutFeedback, SafeAreaView, StyleSheet
+    TouchableWithoutFeedback,
+    View
 } from 'react-native';
 import {useSelector} from "react-redux";
 import FastImage from 'react-native-fast-image';
@@ -15,9 +17,13 @@ import {
     SvgIconLogin,
     SvgIconMilestone,
     SvgIconProgress,
-    SvgIconQuest, SvgIconQuestion,
-    SvgIconRightArrow, SvgIconSetting,
-    SvgIconSignup, SvgIconSupport, SvgIconVoucher
+    SvgIconQuest,
+    SvgIconQuestion,
+    SvgIconRightArrow,
+    SvgIconSetting,
+    SvgIconSignup,
+    SvgIconSupport,
+    SvgIconVoucher
 } from "../Utils/svg";
 
 const CustomDrawerContentComponent = (props) => {
@@ -39,13 +45,14 @@ const CustomDrawerContentComponent = (props) => {
                                     onPress={() => navigation.navigate("ProfileScreen")}
                                 >
                                     <FastImage
-                                        source={{uri: user && user.avatar_urls['full'] ? user.avatar_urls['full'] : user.avatar_urls['96']}} style={{
+                                        source={{uri: user && user.avatar_urls['full'] ? user.avatar_urls['full'] : user.avatar_urls['96']}}
+                                        style={{
                                             height: scale(80),
                                             width: scale(80),
                                             borderRadius: 100,
                                             margin: scale(10)
-                                       }}
-                                  />
+                                        }}
+                                    />
                                 </TouchableOpacity>
                             </View>
                             <View style={{paddingTop: 20,}}>
@@ -60,8 +67,8 @@ const CustomDrawerContentComponent = (props) => {
                                         textShadowOffset: {
                                             width: -1,
                                             height: 1
-                                       }
-                                   }}>
+                                        }
+                                    }}>
                                     {user.name}
                                 </Text>
                                 {progressReducer && progressReducer.points && Object.keys(progressReducer.points).length ? Object.entries(progressReducer.points).map(([key, value]) => (
@@ -70,20 +77,21 @@ const CustomDrawerContentComponent = (props) => {
                                             flexDirection: "row",
                                             justifyContent: "flex-end",
                                             alignItems: "center"
-                                       }}>
+                                        }}>
                                             <FastImage
-                                                source={require('../assets/images/icon-ray.png')} style={{width: 16, height: 16}}/>
+                                                source={require('../assets/images/icon-ray.png')}
+                                                style={{width: 16, height: 16}}/>
                                             <Text style={{
-                                                    color: '#fff',
-                                                    textAlign: "left",
-                                                    marginLeft: 5,
-                                                    textShadowColor: 'grey',
-                                                    textShadowRadius: 1,
-                                                    textShadowOffset: {
-                                                        width: -1,
-                                                        height: 1
-                                                   }
-                                               }}>
+                                                color: '#fff',
+                                                textAlign: "left",
+                                                marginLeft: 5,
+                                                textShadowColor: 'grey',
+                                                textShadowRadius: 1,
+                                                textShadowOffset: {
+                                                    width: -1,
+                                                    height: 1
+                                                }
+                                            }}>
                                                 {value} {optionData.points.find(pt => pt.pointName === key).pointTitle}
                                             </Text>
                                         </View>
@@ -125,8 +133,11 @@ const CustomDrawerContentComponent = (props) => {
                             <>
                                 <TouchableWithoutFeedback onPress={() => {
                                     navigation.navigate("MySignupScreen");
-                               }}>
-                                    <View style={[styles.menuItem, {borderBottomWidth: 1, borderBottomColor: colors.borderColor}]}>
+                                }}>
+                                    <View style={[styles.menuItem, {
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: colors.borderColor
+                                    }]}>
                                         <View style={{flexDirection: "row", alignItems: "center"}}>
                                             <SvgIconSignup color={colors.secondaryButtonColor}/>
                                             <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
@@ -138,8 +149,11 @@ const CustomDrawerContentComponent = (props) => {
                                 </TouchableWithoutFeedback>
                                 <TouchableWithoutFeedback onPress={() => {
                                     navigation.navigate("MyLoginScreen");
-                               }}>
-                                    <View style={[styles.menuItem, {borderBottomWidth: 1, borderBottomColor: colors.borderColor}]}>
+                                }}>
+                                    <View style={[styles.menuItem, {
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: colors.borderColor
+                                    }]}>
                                         <View style={{flexDirection: "row", alignItems: "center"}}>
                                             <SvgIconLogin color={colors.secondaryButtonColor}/>
                                             <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
@@ -154,8 +168,11 @@ const CustomDrawerContentComponent = (props) => {
                             <>
                                 <TouchableWithoutFeedback onPress={() => {
                                     navigation.navigate('StatsScreen');
-                               }}>
-                                    <View style={[styles.menuItem, {borderBottomWidth: 1, borderBottomColor: colors.borderColor}]}>
+                                }}>
+                                    <View style={[styles.menuItem, {
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: colors.borderColor
+                                    }]}>
                                         <View style={{flexDirection: "row", alignItems: "center"}}>
                                             <SvgIconProgress color={colors.secondaryButtonColor}/>
                                             <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
@@ -167,8 +184,11 @@ const CustomDrawerContentComponent = (props) => {
                                 </TouchableWithoutFeedback>
                                 <TouchableWithoutFeedback onPress={() => {
                                     navigation.navigate('QuestsScreen');
-                               }}>
-                                    <View style={[styles.menuItem, {borderBottomWidth: 1, borderBottomColor: colors.borderColor}]}>
+                                }}>
+                                    <View style={[styles.menuItem, {
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: colors.borderColor
+                                    }]}>
                                         <View style={{flexDirection: "row", alignItems: "center"}}>
                                             <SvgIconQuest color={colors.secondaryButtonColor}/>
                                             <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
@@ -184,8 +204,11 @@ const CustomDrawerContentComponent = (props) => {
                                 </TouchableWithoutFeedback>
                                 <TouchableWithoutFeedback onPress={() => {
                                     navigation.navigate("MilestonesScreen");
-                               }}>
-                                    <View style={[styles.menuItem, {borderBottomWidth: 1, borderBottomColor: colors.borderColor}]}>
+                                }}>
+                                    <View style={[styles.menuItem, {
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: colors.borderColor
+                                    }]}>
                                         <View style={{flexDirection: "row", alignItems: "center"}}>
                                             <SvgIconMilestone color={colors.secondaryButtonColor}/>
                                             <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
@@ -201,8 +224,11 @@ const CustomDrawerContentComponent = (props) => {
                                 </TouchableWithoutFeedback>
                                 <TouchableWithoutFeedback onPress={() => {
                                     navigation.navigate("VouchersScreen");
-                               }}>
-                                    <View style={[styles.menuItem, {borderBottomWidth: 1, borderBottomColor: colors.borderColor}]}>
+                                }}>
+                                    <View style={[styles.menuItem, {
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: colors.borderColor
+                                    }]}>
                                         <View style={{flexDirection: "row", alignItems: "center"}}>
                                             <SvgIconVoucher color={colors.secondaryButtonColor}/>
                                             <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
@@ -217,11 +243,14 @@ const CustomDrawerContentComponent = (props) => {
                                     </View>
                                 </TouchableWithoutFeedback>
                             </>
-                       }
+                        }
                         <TouchableWithoutFeedback onPress={() => {
                             navigation.navigate("ForumsScreen");
-                       }}>
-                            <View style={[styles.menuItem, {borderBottomWidth: 1, borderBottomColor: colors.borderColor}]}>
+                        }}>
+                            <View style={[styles.menuItem, {
+                                borderBottomWidth: 1,
+                                borderBottomColor: colors.borderColor
+                            }]}>
                                 <View style={{flexDirection: "row", alignItems: "center"}}>
                                     <SvgIconQuestion color={colors.secondaryButtonColor}/>
                                     <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
@@ -231,25 +260,29 @@ const CustomDrawerContentComponent = (props) => {
                                 <SvgIconRightArrow color={colors.descLightTextColor}/>
                             </View>
                         </TouchableWithoutFeedback>
-                        {user?
-                        <TouchableWithoutFeedback onPress={() => {
-                            navigation.navigate("FeedbackScreen");
-                       }}>
-                            <View style={[styles.menuItem, {borderBottomWidth: 1, borderBottomColor: colors.borderColor}]}>
-                                <View style={{flexDirection: "row", alignItems: "center"}}>
-                                    <SvgIconSupport color={colors.secondaryButtonColor}/>
-                                    <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
-                                        {optionData.titles.find(el => el.id === 'left_menu_feedback').title}
-                                    </Text>
+                        {user ?
+                            <TouchableWithoutFeedback onPress={() => {
+                                navigation.navigate("FeedbackScreen");
+                            }}>
+                                <View style={[styles.menuItem, {
+                                    borderBottomWidth: 1,
+                                    borderBottomColor: colors.borderColor
+                                }]}>
+                                    <View style={{flexDirection: "row", alignItems: "center"}}>
+                                        <SvgIconSupport color={colors.secondaryButtonColor}/>
+                                        <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
+                                            {optionData.titles.find(el => el.id === 'left_menu_feedback').title}
+                                        </Text>
+                                    </View>
+                                    <SvgIconRightArrow color={colors.descLightTextColor}/>
                                 </View>
-                                <SvgIconRightArrow color={colors.descLightTextColor}/>
-                            </View>
-                        </TouchableWithoutFeedback>
-                            :null}
+                            </TouchableWithoutFeedback>
+                            : null}
                         <TouchableWithoutFeedback onPress={() =>
                             navigation.navigate("SettingsScreen")}>
                             <View style={[styles.menuItem, {borderBottomRightRadius: 9}]}>
-                                <View style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
+                                <View
+                                    style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
                                     <SvgIconSetting color={colors.secondaryButtonColor}/>
                                     <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
                                         {optionData.titles.find(el => el.id === 'left_menu_settings').title}
@@ -265,12 +298,12 @@ const CustomDrawerContentComponent = (props) => {
     );
 }
 const styles = StyleSheet.create({
-    menuItem : {
+    menuItem: {
         paddingHorizontal: 5,
         paddingVertical: scale(15),
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'
-   }
+    }
 });
 export default CustomDrawerContentComponent;

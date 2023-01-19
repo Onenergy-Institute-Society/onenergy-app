@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 export default (Indicator = ({
                                  itemCount,
@@ -9,7 +9,7 @@ export default (Indicator = ({
                                  indicatorActiveColor,
                                  indicatorInActiveColor,
                                  indicatorActiveWidth = 6,
-                            }) => {
+                             }) => {
     return (
         <View style={[styles.container, indicatorContainerStyle]}>
             {renderIndicator(
@@ -36,7 +36,7 @@ export const renderIndicator = (
     for (let i = 0; i < count; i++) {
         indicators.push(
             <View
-                key = {i.toString()}
+                key={i.toString()}
                 style={[
                     styles.indicator,
                     indicatorStyle,
@@ -47,17 +47,17 @@ export const renderIndicator = (
                                 ...{
                                     backgroundColor: indicatorActiveColor,
                                     width: indicatorActiveWidth,
-                               },
-                           }
+                                },
+                            }
                             : styles.active
                         : {
                             ...styles.inactive,
                             ...{backgroundColor: indicatorInActiveColor},
-                       },
+                        },
                 ]}
-          />,
+            />,
         );
-   }
+    }
     return indicators;
 };
 
@@ -66,15 +66,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         alignSelf: 'center',
-   },
+    },
     indicator: {
         width: 6,
         height: 6,
         borderRadius: 3,
         marginRight: 5,
-   },
-  active: {
- },
-  inactive: {
- },
+    },
+    active: {},
+    inactive: {},
 });

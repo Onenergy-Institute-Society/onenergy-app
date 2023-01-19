@@ -186,7 +186,7 @@ const getTemplate = (params, enterprise) => {
     Object.entries(params)
         .forEach(([key, value]) => {
             template = template.replace(new RegExp(`{{${key}}}`, 'img'), value);
-       });
+        });
 
     return template;
 };

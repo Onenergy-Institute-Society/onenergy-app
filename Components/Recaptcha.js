@@ -22,20 +22,8 @@
  * SOFTWARE.
  */
 
-import React, {
-    forwardRef,
-    useMemo,
-    useState,
-    useCallback,
-    useRef,
-    useImperativeHandle,
-} from 'react';
-import {
-    Modal,
-    StyleSheet,
-    ActivityIndicator,
-    View,
-} from 'react-native';
+import React, {forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState,} from 'react';
+import {ActivityIndicator, Modal, StyleSheet, View,} from 'react-native';
 
 import WebView from 'react-native-webview';
 import getTemplate from './get-template';
@@ -44,7 +32,7 @@ const styles = StyleSheet.create({
     webView: {
         flex: 1,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-   },
+    },
     loadingContainer: {
         position: 'absolute',
         top: 0,
@@ -53,7 +41,7 @@ const styles = StyleSheet.create({
         right: 0,
         justifyContent: 'center',
         alignItems: 'center',
-   },
+    },
 });
 
 const originWhitelist = ['*'];
@@ -76,7 +64,7 @@ const Recaptcha = forwardRef(({
                                   lang,
                                   style,
                                   enterprise,
-                             }, $ref,
+                              }, $ref,
 ) => {
     const $isClosed = useRef(true);
     const $webView = useRef();
@@ -91,8 +79,8 @@ const Recaptcha = forwardRef(({
             size,
             theme,
             lang,
-       }, enterprise);
-   }, [siteKey, size, theme, lang, enterprise]);
+        }, enterprise);
+    }, [siteKey, size, theme, lang, enterprise]);
 
     const handleLoad = useCallback((...args) => {
         onLoad && onLoad(...args);
@@ -101,70 +89,70 @@ const Recaptcha = forwardRef(({
             $webView.current.injectJavaScript(`
                 window.rnRecaptcha.execute();
             `);
-       }
+        }
 
         setLoading(false);
-   }, [onLoad, isInvisibleSize]);
+    }, [onLoad, isInvisibleSize]);
 
     const handleClose = useCallback((...args) => {
         if ($isClosed.current) {
             return;
-       }
+        }
         $isClosed.current = true;
         setVisible(false);
         onClose && onClose(...args);
-   }, [onClose]);
+    }, [onClose]);
 
     const handleMessage = useCallback((content) => {
         try {
             const payload = JSON.parse(content.nativeEvent.data);
             if (payload.close && isInvisibleSize) {
                 handleClose();
-           }
+            }
             if (payload.load) {
                 handleLoad(...payload.load);
-           }
+            }
             if (payload.expire) {
                 onExpire && onExpire(...payload.expire);
-           }
+            }
             if (payload.error) {
                 handleClose();
                 onError && onError(...payload.error);
-           }
+            }
             if (payload.verify) {
                 handleClose();
                 onVerify && onVerify(...payload.verify);
-           }
-       } catch (err) {
+            }
+        } catch (err) {
             console.warn(err);
-       }
-   }, [onVerify, onExpire, onError, handleClose, handleLoad, isInvisibleSize]);
+        }
+    }, [onVerify, onExpire, onError, handleClose, handleLoad, isInvisibleSize]);
 
     const source = useMemo(() => ({
         html,
         baseUrl,
-   }), [html, baseUrl]);
+    }), [html, baseUrl]);
 
     useImperativeHandle($ref, () => ({
         open: () => {
             setVisible(true);
             setLoading(true);
             $isClosed.current = false;
-       },
+        },
         close: handleClose,
-   }), [handleClose]);
+    }), [handleClose]);
 
     const handleNavigationStateChange = useCallback(() => {
         // prevent navigation on Android
         if (!loading) {
             $webView.current.stopLoading();
-       }
-   }, [loading]);
+        }
+    }, [loading]);
 
     const handleShouldStartLoadWithRequest = useCallback(event => {
         // prevent navigation on iOS
         return event.navigationType === 'other';
-   }, [loading]);
+    }, [loading]);
 
     const webViewStyles = useMemo(() => [
         styles.webView,
@@ -174,13 +162,13 @@ const Recaptcha = forwardRef(({
     const renderLoading = () => {
         if (!loading && source) {
             return null;
-       }
+        }
         return (
             <View style={styles.loadingContainer}>
                 {loadingComponent || <ActivityIndicator size="large"/>}
             </View>
         );
-   };
+    };
 
     return (
         <Modal
@@ -201,7 +189,7 @@ const Recaptcha = forwardRef(({
                 onShouldStartLoadWithRequest={handleShouldStartLoadWithRequest}
                 onNavigationStateChange={handleNavigationStateChange}
                 ref={$webView}
-          />
+            />
             {footerComponent}
             {renderLoading()}
         </Modal>
