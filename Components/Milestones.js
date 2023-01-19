@@ -39,7 +39,7 @@ const Milestones = (props) => {
     const handleOnPress = (item) => {
         if (item.complete_date && !item.claim_date) {
             LayoutAnimation.configureNext(
-                LayoutAnimation.Presets.easeInEaseOut
+                LayoutAnimation.Presets.spring
             );
             dispatch({
                 type: "ONENERGY_MILESTONE_CLAIM",

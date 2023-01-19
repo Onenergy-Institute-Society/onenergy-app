@@ -23,7 +23,7 @@ const StatsScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
-
+console.log(practiceReducer, progressReducer)
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Progress Screen',
@@ -357,7 +357,7 @@ const StatsScreen = (props) => {
                                     return (
                                         <>
                                             <View style={styles.row}>
-                                                <Text style={[global.title,styles.title,{flex:0.5}]}>{practiceReducer.guides.find(section => section.id === item.section_id).name}</Text>
+                                                <Text style={[global.title,styles.title,{flex:0.5}]}>{practiceReducer.guides.find(section => section.id === item.section_id).title}</Text>
                                                 <Text style={[global.textAlt,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.section_count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
                                                 <Text style={[global.textAlt,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.section_duration / 60 )>60?Math.round(item.section_duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.section_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                                 <Svg

@@ -17,5 +17,4 @@ Pod::Spec.new do |s|
 
   s.dependency "React-Core"
   s.dependency "ReactNativeGetLocation"
-  s.dependency "react-native-track-player"
 end

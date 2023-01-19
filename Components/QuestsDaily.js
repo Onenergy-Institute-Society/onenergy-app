@@ -41,7 +41,7 @@ const QuestsDaily = (props) => {
             case 'past':
                 if (item.list.find(pastDate => pastDate === date)) {
                     LayoutAnimation.configureNext(
-                        LayoutAnimation.Presets.easeInEaseOut
+                        LayoutAnimation.Presets.spring
                     );
                     dispatch({
                         type: "ONENERGY_PAST_CLAIM",
