@@ -87,7 +87,7 @@ const VouchersScreen = (props) => {
                                                     if (response.data.result) {
                                                         dispatch({
                                                             type: 'SETTINGS_REMOVE_VOUCHER_NOTIFICATION',
-                                                            payload: data.extra_data
+                                                            payload: item.id
                                                         });
                                                         switch (response.data.action) {
                                                             case 'restart':

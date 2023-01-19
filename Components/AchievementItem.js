@@ -116,7 +116,8 @@ const styles = StyleSheet.create({
         width: windowWidth - scale(30),
         height: scale(70),
         flexDirection: 'row',
-        marginTop: scale(15),
+        marginTop: scale(0),
+        marginBottom: scale(15),
         marginHorizontal: scale(15),
     },
     rowRight: {

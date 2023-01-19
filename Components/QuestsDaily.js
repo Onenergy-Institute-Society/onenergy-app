@@ -1,6 +1,16 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {connect, useDispatch, useSelector} from "react-redux";
-import {FlatList, LayoutAnimation, Platform, SafeAreaView, StyleSheet, Text, UIManager, View} from 'react-native';
+import {
+    FlatList,
+    LayoutAnimation,
+    Platform,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    UIManager,
+    View
+} from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import AchievementItem from "./AchievementItem";
@@ -15,27 +25,12 @@ const QuestsDaily = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyText = optionData.titles.find(el => el.id === 'achievement_quest_empty').title
     const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
-    const questReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.daily : null);
+    const uncompletedQuestReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.daily.filter(quest => quest.complete_date==='') : null);
+    const completedQuestReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.daily.filter(quest => quest.complete_date!==''&&quest.claim_date==='') : null);
+    const claimedQuestReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.daily.filter(quest => quest.claim_date!=='') : null);
     const milestoneReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.milestones : null);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        questReducer.sort((a, b) => {
-            if (a.claim_date === '' && b.claim_date === '') {
-                if (a.complete_date < b.complete_date) {
-                    return 1
-                } else {
-                    return -1
-                }
-            } else {
-                if (a.claim_date > b.claim_date) {
-                    return 1
-                } else {
-                    return -1
-                }
-            }
-        })
-    }, [questReducer])
     const handleOnPress = (item, date, mode) => {
         switch (mode) {
             case 'past':
@@ -116,14 +111,34 @@ const QuestsDaily = (props) => {
     return (
         <SafeAreaView style={global.container}>
             {
-                questReducer && questReducer.length ?
-                    <FlatList
-                        contentContainerStyle={{paddingBottom: scale(20)}}
-                        data={questReducer}
-                        renderItem={renderItem}
-                        keyExtractor={item => item.id}
-                        showsVerticalScrollIndicator={false}
-                    />
+                uncompletedQuestReducer||completedQuestReducer||claimedQuestReducer?
+                    <ScrollView style={styles.containerStyle} showsVerticalScrollIndicator={false}>
+                        {completedQuestReducer && completedQuestReducer.length ?
+                            <FlatList
+                                scrollEnabled={false}
+                                data={completedQuestReducer}
+                                renderItem={renderItem}
+                                keyExtractor={item => item.id}
+                                showsVerticalScrollIndicator={false}
+                            />
+                            :null}
+                        {uncompletedQuestReducer && uncompletedQuestReducer.length ?
+                            <FlatList
+                                scrollEnabled={false}
+                                data={uncompletedQuestReducer}
+                                renderItem={renderItem}
+                                keyExtractor={item => item.id}
+                                showsVerticalScrollIndicator={false}
+                            />:null}
+                        {claimedQuestReducer && claimedQuestReducer.length ?
+                            <FlatList
+                                scrollEnabled={false}
+                                data={claimedQuestReducer}
+                                renderItem={renderItem}
+                                keyExtractor={item => item.id}
+                                showsVerticalScrollIndicator={false}
+                            />:null}
+                    </ScrollView>
                     :
                     <View style={{
                         flex: 1,
@@ -152,11 +167,9 @@ const QuestsDaily = (props) => {
     )
 }
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: "#ffffff",
+    containerStyle: {
+        paddingTop: scale(15),
+        marginBottom: scale(25)
     },
     row: {
         borderRadius: 9,

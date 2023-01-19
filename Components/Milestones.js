@@ -1,6 +1,6 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {connect, useDispatch, useSelector} from "react-redux";
-import {FlatList, LayoutAnimation, Platform, SafeAreaView, StyleSheet, Text, UIManager, View} from 'react-native';
+import {FlatList, LayoutAnimation, Platform, SafeAreaView, StyleSheet, Text, UIManager, View, ScrollView} from 'react-native';
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import MilestonesAccordian from "./MilestonesAccordian";
@@ -16,25 +16,10 @@ const Milestones = (props) => {
     const emptyText = optionData.titles.find(el => el.id === 'achievement_milestone_empty').title
     const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
     const milestoneReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.milestones.filter(achievement => achievement.type === type) : null);
+    const uncompletedMilestoneReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.milestones.filter(achievement => achievement.type === type && achievement.complete_date==='') : null);
+    const completedMilestoneReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.milestones.filter(achievement => achievement.type === type && achievement.complete_date!=='' && achievement.claim_date==='') : null);
+    const claimedMilestoneReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.milestones.filter(achievement => achievement.type === type && achievement.claim_date!=='') : null);
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        milestoneReducer.sort((a, b) => {
-            if (a.claim_date === '' && b.claim_date === '') {
-                if (a.complete_date < b.complete_date) {
-                    return 1
-                } else {
-                    return -1
-                }
-            } else {
-                if (a.claim_date > b.claim_date) {
-                    return 1
-                } else {
-                    return -1
-                }
-            }
-        })
-    }, [milestoneReducer])
 
     const handleOnPress = (item) => {
         if (item.complete_date && !item.claim_date) {
@@ -85,14 +70,35 @@ const Milestones = (props) => {
     };
     return (
         <SafeAreaView style={global.container}>
-            {milestoneReducer && milestoneReducer.length ?
-                <FlatList
-                    contentContainerStyle={{paddingBottom: scale(20)}}
-                    data={milestoneReducer}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.id}
-                    showsVerticalScrollIndicator={false}
-                />
+            {
+                uncompletedMilestoneReducer||completedMilestoneReducer||claimedMilestoneReducer?
+                    <ScrollView style={styles.containerStyle} showsVerticalScrollIndicator={false}>
+                        {completedMilestoneReducer && completedMilestoneReducer.length ?
+                            <FlatList
+                                scrollEnabled={false}
+                                data={completedMilestoneReducer}
+                                renderItem={renderItem}
+                                keyExtractor={item => item.id}
+                                showsVerticalScrollIndicator={false}
+                            />
+                            :null}
+                        {uncompletedMilestoneReducer && uncompletedMilestoneReducer.length ?
+                            <FlatList
+                                scrollEnabled={false}
+                                data={uncompletedMilestoneReducer}
+                                renderItem={renderItem}
+                                keyExtractor={item => item.id}
+                                showsVerticalScrollIndicator={false}
+                            />:null}
+                        {claimedMilestoneReducer && claimedMilestoneReducer.length ?
+                            <FlatList
+                                scrollEnabled={false}
+                                data={claimedMilestoneReducer}
+                                renderItem={renderItem}
+                                keyExtractor={item => item.id}
+                                showsVerticalScrollIndicator={false}
+                            />:null}
+                    </ScrollView>
                 :
                 <View style={{
                     flex: 1,
@@ -121,11 +127,9 @@ const Milestones = (props) => {
     )
 }
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: "#ffffff",
+    containerStyle: {
+        paddingTop: scale(15),
+        marginBottom: scale(25)
     },
     row: {
         borderRadius: 9,

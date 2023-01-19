@@ -272,7 +272,7 @@ console.log(practiceReducer, progressReducer)
                                         return (
                                             <>
                                                 <View style={styles.row}>
-                                                    <Text style={[global.title, styles.title, {fontSize:scale(14), flex: 0.6}]}>{practiceReducer.routines.find(routine => routine.id === item.routine_id).title}</Text>
+                                                    <Text style={[global.title, styles.title, {fontSize:scale(14), flex: 0.6}]}>{practiceReducer.routines.find(routine => routine.id === item.routine_id)?practiceReducer.routines.find(routine => routine.id === item.routine_id).title:''}</Text>
                                                     <Text style={[global.textAlt, {
                                                         flex: 0.2,
                                                         alignSelf: "flex-end",
@@ -284,7 +284,7 @@ console.log(practiceReducer, progressReducer)
                                                         alignSelf: "flex-end",
                                                         textAlign: "right",
                                                         alignItems: "flex-end"
-                                                   }]}>{Math.round(item.routine_duration / 60) > 60 ? Math.round(item.routine_duration / 60 / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : Math.round(item.routine_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                                   }]}>{item.routine_duration?Math.round(item.routine_duration / 60) > 60 ? Math.round(item.routine_duration / 60 / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : Math.round(item.routine_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
                                                 </View>
                                                 {index < progressReducer.routineStats.length - 1 ?
                                                     <View style={[styles.rowHr, {backgroundColor: "#f9a8d4"}]}/>

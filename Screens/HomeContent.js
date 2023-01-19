@@ -817,7 +817,7 @@ const HomeContent = (props) => {
                 }}
                 modalStyle={{backgroundColor: colors.bodyFrontBg}}
                 modalHeight={windowHeight / 2}
-                childrenStyle={{padding: 25}}
+                childrenStyle={{marginBottom: scale(25)}}
                 withHandle="false"
                 HeaderComponent={
                     <View style={{

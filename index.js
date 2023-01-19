@@ -976,16 +976,21 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             let routineIndex;
                             routineIndex = state.practiceReducer.routines.findIndex((temp) => temp.id === acpData);
                             tempArray = state.practiceReducer.routines[routineIndex].routine;
+                            let tempTracks = state.practiceReducer.routines[routineIndex].tracks;
+                            let routineDuration = 0;
+                            tempTracks.map(track => {
+                                routineDuration = duration + parseInt(track.duration);
+                            })
 
                             acpTempIndex = acpTempProgressState.routineStats.findIndex(item => item.routine_id === acpData)
                             if (acpTempIndex >= 0) {
                                 acpTempProgressState.routineStats[acpTempIndex].routine_count += 1;
-                                acpTempProgressState.routineStats[acpTempIndex].routine_duration += acpTempPracticeState.routines[routineIndex].duration;
+                                acpTempProgressState.routineStats[acpTempIndex].routine_duration += routineDuration;
                             } else {
                                 acpTempProgressState.routineStats.push({
                                     'routine_id': acpData,
                                     'routine_count': 1,
-                                    'routine_duration': state.practiceReducer.routines[routineIndex].duration,
+                                    'routine_duration': routineDuration,
                                 })
                             }
                             break;
@@ -1258,11 +1263,13 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             dcTempProgressState.points[award.name] = parseInt(award.point);
                         }
                     })
+
                     dcTempProgressState.actionList.push({
                         'mode': 'CM',
                         'data': {'id': action.payload.id, 'points': dcTempDailyState[dcDailyIndex].awards},
                         'time': Math.floor(new Date().getTime() / 1000)
                     });
+
                     dcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
 
                     return {

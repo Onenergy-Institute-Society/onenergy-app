@@ -13,6 +13,7 @@ import {
     View
 } from 'react-native';
 import PropTypes from 'prop-types';
+import {scale} from "../Utils/scale";
 
 const {height, width} = Dimensions.get('window');
 
@@ -314,15 +315,19 @@ const styles = StyleSheet.create({
         marginTop: 5
     },
     title: {
+        fontFamily: "MontserratAlternates-SemiBold",
+        fontWeight: "bold",
         paddingVertical: 5,
         paddingHorizontal: 15,
         color: '#626262',
-        fontSize: 18
+        fontSize: scale(18)
     },
     message: {
+        fontFamily: "Montserrat-Regular",
+        fontWeight: "normal",
         paddingTop: 5,
         color: '#7b7b7b',
-        fontSize: 14
+        fontSize: scale(14)
     },
     button: {
         paddingHorizontal: 10,
@@ -331,7 +336,9 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     buttonText: {
+        fontFamily: "Montserrat-SemiBold",
+        fontWeight: "bold",
         color: '#fff',
-        fontSize: 13
+        fontSize: scale(13)
     }
 });

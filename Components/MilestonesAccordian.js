@@ -209,7 +209,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         width: windowWidth - scale(30),
-        marginTop: scale(15),
+        marginTop: scale(0),
+        marginBottom: scale(15),
         marginHorizontal: scale(15),
     },
     row: {
