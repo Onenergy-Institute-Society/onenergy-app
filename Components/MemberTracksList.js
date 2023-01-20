@@ -29,13 +29,13 @@ const MemberTracksList = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
     const [selectedRoutine, setSelectedRoutine] = useState(null);
-
+console.log(practiceReducer)
     // state vars
     const onTrackItemPress = (routine) => {
         LayoutAnimation.configureNext(
             LayoutAnimation.Presets.spring
         );
-        if (!selectedRoutine || routine.id !== selectedRoutine.id) {
+        if (!selectedRoutine || routine.uid !== selectedRoutine.uid) {
 
             if (routine.bgm !== 'No Sound') {
                 routine.bgm_url = optionData.routine_bgm.find(el => el.name === routine.bgm).bgm;
@@ -60,6 +60,7 @@ const MemberTracksList = (props) => {
                 {
                     text: "Yes",
                     onPress: () => {
+                        row[key].close();
                         props.onRemoveRoutine(item, index);
                     },
                 },
@@ -72,7 +73,7 @@ const MemberTracksList = (props) => {
     const handleOpen = (index: any) => () => setKey(index);
     const renderItem = ({item, index}) => {
         console.log(item)
-        let showPlayer = !!(selectedRoutine && selectedRoutine.id === item.id);
+        let showPlayer = !!(selectedRoutine && selectedRoutine.uid === item.uid);
         let totalDuration = 0;
         item.tracks.map((item) => {
             totalDuration += item.duration;
@@ -102,7 +103,7 @@ const MemberTracksList = (props) => {
                             <View style={styles.titleBox}>
                                 <Text style={styles.title}>{item.title}</Text>
                                 <Text
-                                    style={styles.duration}>{new Date(totalDuration * 1000).toISOString().substring(14, 19)}</Text>
+                                    style={[styles.duration, {color: colors.primaryButtonBg}]}>{new Date(totalDuration * 1000).toISOString().substring(14, 19)}</Text>
                             </View>
                             <View style={styles.subTitleBox}><Text
                                 style={styles.subTitle}>Practices: {item.routine.length}</Text><Text
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
     duration: {
         fontFamily: "MontserratAlternates-Regular",
         fontSize: scale(12),
-        color: "#262626",
+        color: "#fff",
     },
     listBox: {
         height: '100%',

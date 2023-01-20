@@ -63,6 +63,13 @@ const HomeContent = (props) => {
 
     const onFocusHandler = () => {
         try {
+            console.log('Focus changed', checkTodayDate())
+            if (user && checkTodayDate()) {
+                alert('Welcome Back!');
+                dispatch({
+                    type: 'ONENERGY_DAILY_UPDATE',
+                });
+            }
             navigation.closeDrawer();
         } catch (e) {
         }
@@ -73,26 +80,21 @@ const HomeContent = (props) => {
     });
     useEffect(() => {
         async function run() {
-            const isSetup = await SetupService();
-            console.log(isSetup);
-
-            const queue = await TrackPlayer.getQueue();
-            if (isSetup && queue.length <= 0) {
-                await QueueInitialTracksService();
-            }
+            await SetupService();
         }
         run().then();
     }, []);
 
     const _handleAppStateChange = async () => {
         if (user) {
-            console.log(AppState.currentState, checkTodayDate())
+            console.log('state changed', AppState.currentState, checkTodayDate())
             if (AppState.currentState === 'active' && checkTodayDate()) {
                 dispatch({
                     type: 'ONENERGY_DAILY_UPDATE',
                 });
             }
             if ((Platform.OS === "android" && AppState.currentState === 'background') || (Platform.OS === "ios" && AppState.currentState === 'inactive')) {
+                console.log('progressReducer.latestUpdate', progressReducer.latestUpdate, 'progressReducer.lastUpload', progressReducer.lastUpload)
                 if (progressReducer.latestUpdate && progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
                     let achievements = {
                         'milestones': [],
@@ -144,9 +146,6 @@ const HomeContent = (props) => {
                                 type: 'ONENERGY_ACHIEVEMENT_RESET',
                             });
                             dispatch({
-                                type: 'ONENERGY_ACHIEVEMENT_RESET',
-                            });
-                            dispatch({
                                 type: 'ONENERGY_PROGRESS_RESET',
                             });
                             RNRestart.Restart()
@@ -159,11 +158,8 @@ const HomeContent = (props) => {
 
     const checkTodayDate = () => {
         const today = new moment().format('YYYY-MM-DD');
-        if (progressReducer.latestUpdate && today !== new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD')) {
-            return true;
-        } else {
-            return false;
-        }
+        console.log(today, new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD'))
+        return !!(progressReducer.latestUpdate && today !== new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD'));
     }
     const getLocation = () => {
         GetLocation.getCurrentPosition({

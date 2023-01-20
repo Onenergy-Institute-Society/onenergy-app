@@ -25,31 +25,34 @@ import Video from 'react-native-video';
 
 const EditRoutine = props => {
     const {navigation, screenProps} = props;
-    const index = navigation.getParam('index');
+    const routineIndex = navigation.getParam('routineIndex');
     const {colors, global} = screenProps;
     const dispatch = useDispatch();
+    const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const backgroundImages = optionData.routine_image;
     const backgroundMusics = optionData.routine_bgm;
     const [playingSound, setPlayingSound] = useState(false);
     const [soundUrl, setSoundUrl] = useState('');
     const routinesReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer.routines : []);
-    const [routineDetailState, setRoutineDetailState] = useState(index >= 0 ? routinesReducer[index] : {
+    const [routineDetailState, setRoutineDetailState] = useState(routineIndex >= 0 ? routinesReducer[routineIndex] : {
         id: 0,
+        uid: user.id + '_' + new Date(),
         title: '',
         image: optionData.routine_image[0],
         bgm: optionData.routine_bgm[0].name,
         tracks: [],
         routine: []
     });
-    const [routines, setRoutines] = useState(index >= 0 ? routinesReducer[index].routine : []);
+    const [routines, setRoutines] = useState(routineIndex >= 0 ? routinesReducer[routineIndex].routine : []);
     const [refresh, setRefresh] = useState(0);
     const [selectBgm, setSelectBgm] = useState('');
     const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
     const [currentTrackState, setCurrentTrackState] = useState({index: -1, detail: {}});
     const [changedStatus, setChangedStatus] = useState(false);
     const [cancelContentTouches, setCancelContentTouches] = useState(true);
-
+    const row = [];
+    const [key, setKey] = useState('');
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Routine Edit Screen',
@@ -70,17 +73,20 @@ const EditRoutine = props => {
             console.error(e);
         }
     }
-    const addTracks = async () => {
+    const addTracks = async (routineIndex) => {
         try {
             const apiRoutine = getApi(props.config);
-            await apiRoutine.customRequest(
+            const data = await apiRoutine.customRequest(
                 "wp-json/onenergy/v1/addRoutine",
                 "post",
                 {"routine": routineDetailState},
                 null,
                 {},
                 false
-            ).then();
+            ).then(response => response.data);
+                if(data){
+                    setRoutineDetailState(prevState => ({...prevState, id: data}));
+                }
         } catch (e) {
             console.error(e);
         }
@@ -91,8 +97,8 @@ const EditRoutine = props => {
         });
     }, [])
     useEffect(() => {
-        if (routinesReducer && routinesReducer.length && index >= 0) {
-            setRoutineDetailState(routinesReducer[index])
+        if (routinesReducer && routinesReducer.length && routineIndex >= 0) {
+            setRoutineDetailState(routinesReducer[routineIndex])
         }
     }, [routinesReducer])
     useEffect(() => {
@@ -131,16 +137,23 @@ const EditRoutine = props => {
                 alert('Please choose a routine name.');
                 return false;
             }
-            dispatch({
-                type: "ONENERGY_ROUTINE_SAVE",
-                payload: routineDetailState
-            })
             setChangedStatus(false);
-            if (navigation.getParam('routine')) {
-                updateTracks().then();
+            if (routineIndex >= 0) {
+                updateTracks().then(
+                    dispatch({
+                        type: "ONENERGY_ROUTINE_SAVE",
+                        payload: routineDetailState
+                    })
+                );
             } else {
-                addTracks().then();
+                addTracks(routineIndex).then(
+                    dispatch({
+                        type: "ONENERGY_ROUTINE_SAVE",
+                        payload: routineDetailState
+                    })
+                );
             }
+
         }
         navigation.goBack();
     }
@@ -304,8 +317,7 @@ const EditRoutine = props => {
             </TouchableOpacity>
         )
     }
-    const row = [];
-    const [key, setKey] = useState('');
+
     const handleWillOpen = (index: any) => () => {
         if ((key !== '') && (key !== index)) {
             if (row[key]) {
@@ -367,7 +379,6 @@ const EditRoutine = props => {
         let index = routineDetailState.routine.findIndex(el => el.id === item.item.id);
         let track;
         track = item.item.parts[0].start;
-        console.log(item.item.title, track)
         return (
             item.item.show ?
                 <TouchableWithoutFeedback onPress={() => {
@@ -375,8 +386,9 @@ const EditRoutine = props => {
                     setChangedStatus(true);
                 }}>
                     <View style={{
+                        backgroundColor: colors.bodyBg,
                         paddingHorizontal: scale(25),
-                        paddingVertical: scale(10),
+                        paddingVertical: scale(15),
                         borderBottomWidth: 1,
                         borderBottomColor: '#ccc',
                         borderTopRightRadius: 9,
@@ -529,9 +541,11 @@ const EditRoutine = props => {
             section.section.data.find((item) => item.show) ?
                 <Text style={[global.settingsItemTitle, {
                     backgroundColor: '#e6e6e8',
+                    borderTopRightRadius: 9,
+                    borderTopLeftRadius: 9,
                     paddingVertical: 10,
                     fontSize: 24,
-                    marginTop: 15,
+                    marginTop: scale(15),
                     textAlign: "center"
                 }]}>{section.section.title.toUpperCase()}</Text>
                 : null
@@ -559,7 +573,7 @@ const EditRoutine = props => {
         })
     }
     return (
-        <SafeAreaView style={[global.settingsFormContainer]}>
+        <SafeAreaView style={global.container}>
             <ScrollView nestedScrollEnabled={true} style={styles.ScrollContainer}
                         canCancelContentTouches={cancelContentTouches}
             >
@@ -628,13 +642,13 @@ const EditRoutine = props => {
                         alignItems: "center"
                     }}>
                         <Text style={global.settingsItemTitle}>Practices</Text>
-                        <Text style={[global.text, {fontSize: scale(10)}]}>(swipe to delete, tap to listen)</Text>
+                        <Text style={[global.text, {fontSize: scale(10)}]}>(swipe to delete, drag to sort)</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 this.addGuideModal.open();
                             }}
                         >
-                            <SvgAddIcon color={colors.primaryColor}/>
+                            <SvgAddIcon color={colors.primaryColor} size={scale(36)}/>
                         </TouchableOpacity>
                     </View>
 
@@ -721,7 +735,7 @@ const EditRoutine = props => {
                     this.bgmDialog = bgmDialog;
                 }}
                 modalStyle={{backgroundColor: colors.bodyFrontBg}}
-                childrenStyle={{padding: 25}}
+                childrenStyle={{padding: scale(25)}}
                 adjustToContentHeight="true"
                 withHandle="false"
                 HeaderComponent={
@@ -766,6 +780,7 @@ const EditRoutine = props => {
                     this.addGuideModal = addGuideModal;
                 }}
                 modalStyle={{backgroundColor: colors.bodyFrontBg}}
+                childrenStyle={{paddingHorizontal: scale(25), paddingBottom:scale(25)}}
                 modalHeight={windowHeight * 2 / 3}
                 handlePosition="outside"
                 HeaderComponent={

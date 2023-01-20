@@ -49,19 +49,18 @@ const PracticeMember = props => {
             NavigationActions.navigate({
                 routeName: "EditRoutine",
                 params: {
-                    index: -1,
+                    routineIndex: -1,
                 }
             })
         );
     }
     const onEditRoutinePress = async (index) => {
         await TrackPlayer.reset();
-console.log('index:', index)
         navigation.dispatch(
             NavigationActions.navigate({
                 routeName: "EditRoutine",
                 params: {
-                    index: index,
+                    routineIndex: index,
                 }
             })
         );
@@ -195,7 +194,7 @@ PracticeMember.navigationOptions = ({navigation, screenProps}) => {
                         await params.onAddPressed();
                     }}
                 >
-                    <SvgAddIcon color={colors.headerIconColor} style={{marginRight:scale(15)}}/>
+                    <SvgAddIcon color={colors.headerIconColor} size={scale(24)} style={{marginRight:scale(15)}}/>
                 </TouchableOpacity>
                 :null
     })

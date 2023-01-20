@@ -179,7 +179,7 @@ const FeedbackScreen = props => {
             <Modalize
                 ref={(departmentDialog) => {this.departmentDialog = departmentDialog;}}
                 modalStyle={{backgroundColor:colors.bodyFrontBg}}
-                childrenStyle={{padding:25}}
+                childrenStyle={{padding:scale(25)}}
                 adjustToContentHeight = "true"
                 withHandle = "false"
                 HeaderComponent={

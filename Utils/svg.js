@@ -335,7 +335,7 @@ export const SvgMoreVertical = (props) => {
 }
 export const SvgAddIcon = (props) => {
     return (
-        <Svg width={scale(24)} height={scale(24)} viewBox="0 0 24 24" style={props.style}>
+        <Svg width={props.size} height={props.size} viewBox="0 0 24 24" style={props.style}>
             <Circle cx="12" cy="12" r="10" stroke={props.color} fill={props.color}/>
             <Path d="M12 8v8M8 12h8" fill="none" stroke="#ffffff" strokeWidth="2"/>
         </Svg>

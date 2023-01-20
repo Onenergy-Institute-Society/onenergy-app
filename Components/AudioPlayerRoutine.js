@@ -26,7 +26,7 @@ console.log(routine)
                 type: 'ONENERGY_PRACTICE_COMPLETED',
                 payload: {
                     mode: 'PR',
-                    data: routine.id
+                    data: routine.uid
                 }
             });
             setMessageBarDisplay(true);
