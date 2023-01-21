@@ -1596,7 +1596,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     }
     externalCodeSetup.reduxApi.addReducer(
         "settingsReducer",
-        (state = {languages: defaultLanguage, settings: {allowLocation: false, initLoaded: true, vouchers:[]}}, action) => {
+        (state = {languages: defaultLanguage, settings: {allowLocation: false, initLoaded: 0, vouchers:[]}}, action) => {
             switch (action.type) {
                 case "SETTINGS_INIT_LOADED":
                     return {
@@ -1670,7 +1670,20 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             }
         }
     );
-
+    externalCodeSetup.reduxApi.addReducer(
+        "tempReducer",
+        (state = {initLoaded: '0'}, action) => {
+            switch (action.type) {
+                case "TEMP_INIT_LOADED":
+                    return {
+                        ...state,
+                        initLoaded: action.payload
+                    }
+                default:
+                    return state;
+            }
+        }
+    );
     // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
         let whiteList = [...props.whitelist, "settingsReducer", "postReducer", "onenergyReducer", "videoReducer"];

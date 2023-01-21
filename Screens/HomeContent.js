@@ -50,12 +50,11 @@ const HomeContent = (props) => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const allowLocation = useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings.allowLocation : null);
-    const initLoaded = useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings.initLoaded : null);
+    const initLoaded = useSelector((state) => state.tempReducer ? state.tempReducer.initLoaded : '0');
     const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
     const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
     const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
     const postReducer = useSelector((state) => state.postReducer ? state.postReducer : null);
-    const [load, setLoad] = useState(0);
     const dispatch = useDispatch();
     const [location, setLocation] = useState(null);
     const [sunrise, setSunrise] = useState('');
@@ -65,7 +64,7 @@ const HomeContent = (props) => {
     const onFocusHandler = () => {
         try {
             console.log('Focus changed', checkTodayDate())
-            if (user && load===2 && checkTodayDate() && initLoaded) {
+            if (user && checkTodayDate()) {
                 dispatch({
                     type: 'ONENERGY_DAILY_UPDATE',
                 });
@@ -82,7 +81,7 @@ const HomeContent = (props) => {
     const _handleAppStateChange = async () => {
         if (user) {
             console.log('state changed', AppState.currentState, checkTodayDate())
-            if (AppState.currentState === 'active' && load === 2 && checkTodayDate()) {
+            if (AppState.currentState === 'active' && checkTodayDate()) {
                 dispatch({
                     type: 'ONENERGY_DAILY_UPDATE',
                 });
@@ -215,18 +214,20 @@ const HomeContent = (props) => {
             dateDiff = 29 - lunarAge;
             moonPhase = 'New Moon';
         }
-        moonPhaseDate = moment(today).add(dateDiff, 'days').format('MMM DD');
+        console.log(phaseNumber, lunarAge, dateDiff)
+        moonPhaseDate = moment.utc().add(dateDiff, 'days').format('MMM DD');
         setNextMoonPhase({'date': moonPhaseDate, 'phase': moonPhase});
-        if (user) {
-            console.log(practiceReducer, achievementReducer, progressReducer)
+        if(user) {
+            let load;
+
             if (optionData.cache.guide && practiceReducer.guideUpdate && optionData.cache.guide > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
-                setLoad(1);
+                load = 1;
             }
             if (optionData.cache.group && practiceReducer.groupUpdate && optionData.cache.group > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
-                setLoad(1);
+                load = 1;
             }
             if (optionData.cache.routine && practiceReducer.routineUpdate && optionData.cache.routine > practiceReducer.routineUpdate || !practiceReducer.routineUpdate) {
-                setLoad(1);
+                load = 1;
             }
             if (optionData.cache.post && postReducer.postUpdate && optionData.cache.post > postReducer.postUpdate || !postReducer.postUpdate) {
                 dispatch({
@@ -234,30 +235,46 @@ const HomeContent = (props) => {
                 });
             }
             if (optionData.cache.achievement && achievementReducer.achievementUpdate && optionData.cache.achievement > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
-                setLoad(1);
+                load = 1;
             }
             if (optionData.cache.progress && progressReducer.progressUpdate && optionData.cache.progress > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
-                setLoad(1);
+                load = 1;
             }
-            async function run() {
-                await SetupService();
+            dispatch({
+                type: 'TEMP_INIT_LOADED',
+                payload: '1'
+            });
+            if(load === 1){
+                props.navigation.navigate("InitData", {transition: 'fade'});
+            }else{
+                async function run() {
+                    await SetupService();
+                }
+                run().then();
+                dispatch({
+                    type: 'TEMP_INIT_LOADED',
+                    payload: '0'
+                });
+                navigation.addListener('willFocus', onFocusHandler)
+                const subscription = AppState.addEventListener("change", _handleAppStateChange);
+                return () => {
+                    navigation.removeListener('willFocus', onFocusHandler);
+                    subscription.remove();
+                }
             }
-            run().then();
-        }else{
-            setLoad(2);
         }
     }, []);
 
     useEffect(() => {
-        console.log('load',load)
-        if(load === 1){
+        if(initLoaded==='done') {
+            async function run() {
+                await SetupService();
+            }
+            run().then();
             dispatch({
-                type: 'SETTINGS_INIT_LOADED',
-                payload: false
+                type: 'TEMP_INIT_LOADED',
+                payload: '0'
             });
-            props.navigation.navigate("InitData", {transition: 'fade'});
-        }
-        if(load === 2&&initLoaded) {
             navigation.addListener('willFocus', onFocusHandler)
             const subscription = AppState.addEventListener("change", _handleAppStateChange);
             return () => {
@@ -265,7 +282,7 @@ const HomeContent = (props) => {
                 subscription.remove();
             }
         }
-    }, [load])
+    }, [initLoaded])
 
     useEffect(() => {
         const unsubscribe = messaging().onMessage(async remoteMessage => {

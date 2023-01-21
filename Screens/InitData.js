@@ -106,8 +106,8 @@ const InitData = (props) => {
         }
         if (loaded) {
             dispatch({
-                type: 'SETTINGS_INIT_LOADED',
-                payload: true
+                type: 'TEMP_INIT_LOADED',
+                payload: 'done'
             });
             navigation.goBack();
         }

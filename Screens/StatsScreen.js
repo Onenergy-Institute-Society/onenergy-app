@@ -23,7 +23,7 @@ const StatsScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
-console.log(practiceReducer, progressReducer)
+
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Progress Screen',
@@ -60,21 +60,23 @@ console.log(practiceReducer, progressReducer)
            }
         ],
    };
-
     let pieData=[];
     let pieLegend=['#093423', '#157d54', '#1eb478', '#22cc89', '#2edc97', '#65e5b2', '#95eecb', '#b4f3da', '#ccf7e6', '#fdfffe', '#ffffff'];
     if(progressReducer.sectionStats&&progressReducer.sectionStats.length) {
         progressReducer.sectionStats.map((item, index) => {
-            let section = practiceReducer.guides.find(section => section.id === item.section_id);
-            pieData.push(
-                {
-                    name: section.name,
-                    duration: item.section_duration,
-                    color: pieLegend[index],
-                    legendFontColor: "#262626",
-                    legendFontSize: scale(10)
-               }
-            )
+            if(item.section_id) {
+                console.log(item)
+                let section = practiceReducer.guides.find(section => section.id === item.section_id);
+                pieData.push(
+                    {
+                        name: section.name,
+                        duration: item.section_duration,
+                        color: pieLegend[index],
+                        legendFontColor: "#262626",
+                        legendFontSize: scale(10)
+                    }
+                )
+            }
        })
    }
     const chartConfig = {
