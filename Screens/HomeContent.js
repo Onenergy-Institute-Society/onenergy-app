@@ -50,7 +50,6 @@ const HomeContent = (props) => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const allowLocation = useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings.allowLocation : null);
-    const initLoaded = useSelector((state) => state.tempReducer ? state.tempReducer.initLoaded : '0');
     const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
     const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
     const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
@@ -63,8 +62,9 @@ const HomeContent = (props) => {
 
     const onFocusHandler = () => {
         try {
-            console.log('Focus changed', checkTodayDate())
-            if (user && checkTodayDate()) {
+            console.log('Focus changed')
+            if (user && progressReducer.latestUpdate && checkTodayDate()) {
+                console.log('Daily Initialize')
                 dispatch({
                     type: 'ONENERGY_DAILY_UPDATE',
                 });
@@ -79,16 +79,16 @@ const HomeContent = (props) => {
     });
 
     const _handleAppStateChange = async () => {
-        if (user) {
-            console.log('state changed', AppState.currentState, checkTodayDate())
+        if (user && progressReducer.latestUpdate) {
+            console.log('state changed', AppState.currentState)
             if (AppState.currentState === 'active' && checkTodayDate()) {
+                console.log('Daily Initialize')
                 dispatch({
                     type: 'ONENERGY_DAILY_UPDATE',
                 });
             }
             if ((Platform.OS === "android" && AppState.currentState === 'background') || (Platform.OS === "ios" && AppState.currentState === 'inactive')) {
-                console.log('progressReducer.latestUpdate', progressReducer.latestUpdate, 'progressReducer.lastUpload', progressReducer.lastUpload)
-                if (progressReducer.latestUpdate && progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
+                if (progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
                     let achievements = {
                         'milestones': [],
                         'daily': [],
@@ -151,7 +151,7 @@ const HomeContent = (props) => {
 
     const checkTodayDate = () => {
         const today = new moment().format('YYYY-MM-DD');
-        console.log(today, new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD'))
+        console.log(today, progressReducer.latestUpdate, new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD'))
         if(progressReducer.latestUpdate!==0)
             return today !== new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD');
     }
@@ -206,7 +206,7 @@ const HomeContent = (props) => {
         let dateDiff;
         let moonPhase = '';
         let moonPhaseDate = '';
-        const today = new moment().format('YYYY-MM-DD');
+
         if (lunarAge <= 14) {
             dateDiff = 15 - lunarAge;
             moonPhase = 'Full Moon';
@@ -214,7 +214,7 @@ const HomeContent = (props) => {
             dateDiff = 29 - lunarAge;
             moonPhase = 'New Moon';
         }
-        console.log(phaseNumber, lunarAge, dateDiff)
+
         moonPhaseDate = moment.utc().add(dateDiff, 'days').format('MMM DD');
         setNextMoonPhase({'date': moonPhaseDate, 'phase': moonPhase});
         if(user) {
@@ -240,41 +240,13 @@ const HomeContent = (props) => {
             if (optionData.cache.progress && progressReducer.progressUpdate && optionData.cache.progress > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
                 load = 1;
             }
-            dispatch({
-                type: 'TEMP_INIT_LOADED',
-                payload: '1'
-            });
             if(load === 1){
                 props.navigation.navigate("InitData", {transition: 'fade'});
-            }else{
-                async function run() {
-                    await SetupService();
-                }
-                run().then();
-                dispatch({
-                    type: 'TEMP_INIT_LOADED',
-                    payload: '0'
-                });
-                navigation.addListener('willFocus', onFocusHandler)
-                const subscription = AppState.addEventListener("change", _handleAppStateChange);
-                return () => {
-                    navigation.removeListener('willFocus', onFocusHandler);
-                    subscription.remove();
-                }
             }
-        }
-    }, []);
-
-    useEffect(() => {
-        if(initLoaded==='done') {
             async function run() {
                 await SetupService();
             }
             run().then();
-            dispatch({
-                type: 'TEMP_INIT_LOADED',
-                payload: '0'
-            });
             navigation.addListener('willFocus', onFocusHandler)
             const subscription = AppState.addEventListener("change", _handleAppStateChange);
             return () => {
@@ -282,7 +254,7 @@ const HomeContent = (props) => {
                 subscription.remove();
             }
         }
-    }, [initLoaded])
+    }, []);
 
     useEffect(() => {
         const unsubscribe = messaging().onMessage(async remoteMessage => {

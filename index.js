@@ -1474,35 +1474,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         }
     );
 
-    /*    const customBlogReducer = reducer => (state = reducer(undefined, {}), action) => {
-            switch (action.type) {
-                case "ONENERGY_BLOG_UPDATE":
-                    let blogCache = state.byId;
-                    if(blogCache) {
-                        action.payload.map((item) => {
-                            blogCache = blogCache.set(-1, item);
-                        });
-                        console.log('blogCache', blogCache)
-                    }else{
-                        blogCache = Immutable.fromJS(action.payload);
-                    }
-    /!*                action.payload.map((item) => {
-                        newBlogCache = blogCache.splice(0, 0, item);
-                   });*!/
-                    console.log('blogCache', blogCache)
-                    const newBlogs = {
-                        ...state,
-                        blogCache: blogCache
-                   }
-                    return reducer(newBlogs, action);
-                default:
-                    return reducer(state, action);
-           }
-       }
-        externalCodeSetup.reduxApi.wrapReducer(
-            'blogCache',
-            customBlogReducer
-        );*/
     const customUserReducer = reducer => (state = reducer(undefined, {}), action) => {
         switch (action.type) {
             case "USER_UPDATE_MEMBERSHIP":
@@ -1665,20 +1636,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         }
                     };
                 }
-                default:
-                    return state;
-            }
-        }
-    );
-    externalCodeSetup.reduxApi.addReducer(
-        "tempReducer",
-        (state = {initLoaded: '0'}, action) => {
-            switch (action.type) {
-                case "TEMP_INIT_LOADED":
-                    return {
-                        ...state,
-                        initLoaded: action.payload
-                    }
                 default:
                     return state;
             }
