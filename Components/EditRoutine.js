@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {getApi} from "@src/services";
 import {connect, useDispatch, useSelector} from "react-redux";
 import {
+    ActivityIndicator,
     Alert,
     Image,
     SafeAreaView,
@@ -33,11 +34,11 @@ const EditRoutine = props => {
     const backgroundImages = optionData.routine_image;
     const backgroundMusics = optionData.routine_bgm;
     const [playingSound, setPlayingSound] = useState(false);
+    const [waitingGetID, setWaitingGetID] = useState(null);
     const [soundUrl, setSoundUrl] = useState('');
     const routinesReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer.routines : []);
     const [routineDetailState, setRoutineDetailState] = useState(routineIndex >= 0 ? routinesReducer[routineIndex] : {
         id: 0,
-        uid: user.id + '_' + new Date(),
         title: '',
         image: optionData.routine_image[0],
         bgm: optionData.routine_bgm[0].name,
@@ -73,8 +74,9 @@ const EditRoutine = props => {
             console.error(e);
         }
     }
-    const addTracks = async (routineIndex) => {
+    const addTracks = async () => {
         try {
+            setWaitingGetID(true);
             const apiRoutine = getApi(props.config);
             const data = await apiRoutine.customRequest(
                 "wp-json/onenergy/v1/addRoutine",
@@ -84,13 +86,26 @@ const EditRoutine = props => {
                 {},
                 false
             ).then(response => response.data);
-                if(data){
-                    setRoutineDetailState(prevState => ({...prevState, id: data}));
-                }
+            if (data) {
+                setWaitingGetID(false);
+                setRoutineDetailState(prevState => ({...prevState, id: data}));
+            }
         } catch (e) {
             console.error(e);
         }
     }
+    useEffect(() => {
+        props.navigation.setParams({
+            waitingGetID: waitingGetID,
+        });
+        if (routineIndex===-1&&!waitingGetID&&routineDetailState.title!=='') {
+            dispatch({
+                type: "ONENERGY_ROUTINE_SAVE",
+                payload: routineDetailState
+            })
+            navigation.goBack();
+        }
+    }, [waitingGetID]);
     useEffect(() => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
@@ -139,23 +154,16 @@ const EditRoutine = props => {
             }
             setChangedStatus(false);
             if (routineIndex >= 0) {
-                updateTracks().then(
-                    dispatch({
-                        type: "ONENERGY_ROUTINE_SAVE",
-                        payload: routineDetailState
-                    })
-                );
+                updateTracks().then()
+                dispatch({
+                    type: "ONENERGY_ROUTINE_SAVE",
+                    payload: routineDetailState
+                })
+                navigation.goBack();
             } else {
-                addTracks(routineIndex).then(
-                    dispatch({
-                        type: "ONENERGY_ROUTINE_SAVE",
-                        payload: routineDetailState
-                    })
-                );
+                addTracks().then();
             }
-
         }
-        navigation.goBack();
     }
     const createTracks = (routine) => {
         let tracks = [];
@@ -382,8 +390,10 @@ const EditRoutine = props => {
         return (
             item.item.show ?
                 <TouchableWithoutFeedback onPress={() => {
-                    addGuideToRoutine(item.item);
-                    setChangedStatus(true);
+                    if (index === -1) {
+                        addGuideToRoutine(item.item);
+                        setChangedStatus(true);
+                    }
                 }}>
                     <View style={{
                         backgroundColor: colors.bodyBg,
@@ -396,23 +406,25 @@ const EditRoutine = props => {
                         alignItems: 'center',
                         justifyContent: 'space-between'
                     }}>
-                        <View style={{flexDirection:"row", justifyContent:"flex-start", alignItems:"center"}}>
-                            {track?
+                        <View style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
+                            {track ?
                                 <TouchableOpacity
-                                    onPress={()=>{
-                                        if(playingSound&&track===soundUrl) {
+                                    onPress={() => {
+                                        if (playingSound && track === soundUrl) {
                                             setPlayingSound(false);
-                                        }else {
+                                        } else {
                                             setSoundUrl(track);
                                             setPlayingSound(true);
                                         }
                                     }}
                                 >
-                                    {playingSound&&track===soundUrl?<SvgStopIcon color={colors.headerIconColor}/>:<SvgPlayIcon color={colors.headerIconColor}/>}
+                                    {playingSound && track === soundUrl ?
+                                        <SvgStopIcon color={colors.headerIconColor}/> :
+                                        <SvgPlayIcon color={colors.headerIconColor}/>}
                                 </TouchableOpacity>
-                                :null}
+                                : null}
                             <Text
-                                style={[global.text,{marginLeft:scale(5)}]}>
+                                style={[global.text, {marginLeft: scale(5)}]}>
                                 {item.item.title}
                             </Text>
                         </View>
@@ -507,25 +519,26 @@ const EditRoutine = props => {
                     alignItems: 'center',
                     justifyContent: 'space-between'
                 }]}>
-                    <View style={{flexDirection:"row", justifyContent:"flex-start", alignItems:"center"}}>
-                    {bgmTrack?
-                        <TouchableOpacity
-                            onPress={()=>{
-                                if(playingSound&&bgmTrack===soundUrl) {
-                                    console.log('stop')
-                                    setPlayingSound(false);
-                                }else {
-                                    console.log('play')
-                                    setSoundUrl(bgmTrack);
-                                    setPlayingSound(true);
-                                }
-                            }}
-                        >
-                            {playingSound&&bgmTrack===soundUrl?<SvgStopIcon color={colors.headerIconColor}/>:<SvgPlayIcon color={colors.headerIconColor}/>}
-                        </TouchableOpacity>
-                        :null}
+                    <View style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
+                        {bgmTrack ?
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (playingSound && bgmTrack === soundUrl) {
+                                        console.log('stop')
+                                        setPlayingSound(false);
+                                    } else {
+                                        console.log('play')
+                                        setSoundUrl(bgmTrack);
+                                        setPlayingSound(true);
+                                    }
+                                }}
+                            >
+                                {playingSound && bgmTrack === soundUrl ? <SvgStopIcon color={colors.headerIconColor}/> :
+                                    <SvgPlayIcon color={colors.headerIconColor}/>}
+                            </TouchableOpacity>
+                            : null}
                         <Text
-                            style={[global.text,{marginLeft:scale(5)}]}>
+                            style={[global.text, {marginLeft: scale(5)}]}>
                             {item.item.name}
                         </Text>
                     </View>
@@ -674,19 +687,19 @@ const EditRoutine = props => {
                         )}
                     </GestureHandlerRootView>
                 </View>
-                {soundUrl&&playingSound?
-                <Video
-                    ref={videoPlayer => this.videoPlayer = videoPlayer}
-                    audioOnly={true}
-                    onEnd={()=>setPlayingSound(false)}
-                    playInBackground={false}
-                    playWhenInactive={false}
-                    ignoreSilentSwitch={"ignore"}
-                    repeat={false}
-                    paused={!playingSound}
-                    source={{uri: soundUrl}}
-                />
-                    :null}
+                {soundUrl && playingSound ?
+                    <Video
+                        ref={videoPlayer => this.videoPlayer = videoPlayer}
+                        audioOnly={true}
+                        onEnd={() => setPlayingSound(false)}
+                        playInBackground={false}
+                        playWhenInactive={false}
+                        ignoreSilentSwitch={"ignore"}
+                        repeat={false}
+                        paused={!playingSound}
+                        source={{uri: soundUrl}}
+                    />
+                    : null}
             </ScrollView>
             <Modalize
                 ref={(countDialog) => {
@@ -780,7 +793,7 @@ const EditRoutine = props => {
                     this.addGuideModal = addGuideModal;
                 }}
                 modalStyle={{backgroundColor: colors.bodyFrontBg}}
-                childrenStyle={{paddingHorizontal: scale(25), paddingBottom:scale(25)}}
+                childrenStyle={{paddingHorizontal: scale(25), paddingBottom: scale(25)}}
                 modalHeight={windowHeight * 2 / 3}
                 handlePosition="outside"
                 HeaderComponent={
@@ -931,33 +944,38 @@ EditRoutine.navigationOptions = ({navigation, screenProps}) => {
         headerTintColor: colors.headerColor,
         headerTitleStyle: global.appHeaderTitle,
         headerLeft:
-            <TouchableOpacity
-                onPress={() => {
-                    params.onBackPressed();
-                }}
-            >
-                <View style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
+            params.waitingGetID ?
+                <View style={{marginLeft:scale(15)}}>
+                    <ActivityIndicator size={"small"} color={screenProps.colors.headerIconColor}/>
+                </View>
+                :
+                <TouchableOpacity
+                    onPress={() => {
+                        params.onBackPressed();
+                    }}
+                >
+                    <View style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
                     <SvgIconBack color={colors.headerIconColor}/>
                     <Text style={{
                         fontFamily: "Montserrat-Regular",
                         fontSize: scale(16),
                         color: screenProps.colors.headerIconColor
                     }}>{params.backButtonTitle}</Text>
-                </View>
-            </TouchableOpacity>,
+                    </View>
+                </TouchableOpacity>,
         headerRight:
-            <TouchableOpacity
-                onPress={() => {
-                    navigation.goBack();
-                }}
-            >
-                <Text style={{
-                    marginRight: scale(15),
-                    fontFamily: "Montserrat-Regular",
-                    fontSize: scale(16),
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.goBack();
+                    }}
+                >
+                    <Text style={{
+                        marginRight: scale(15),
+                        fontFamily: "Montserrat-Regular",
+                        fontSize: scale(16),
                         color: screenProps.colors.headerIconColor
-                }}>Cancel</Text>
-            </TouchableOpacity>,
+                    }}>Cancel</Text>
+                </TouchableOpacity>
     }
 }
 const mapStateToProps = (state) => ({

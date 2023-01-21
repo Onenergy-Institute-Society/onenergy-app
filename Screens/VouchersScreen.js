@@ -19,13 +19,19 @@ import {BlurView} from "@react-native-community/blur";
 import ScalableImage from "../Components/ScalableImage";
 import analytics from '@react-native-firebase/analytics';
 import {SvgIconBack} from "../Utils/svg";
+import AwesomeAlert from "../Components/AwesomeAlert";
 
 const VouchersScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyText = optionData.titles.find(el => el.id === 'voucher_empty').title
+    const user = useSelector((state) => state.user.userObject);
     const [ loading, setLoading ] = useState(false);
     const [vouchers, setVouchers] = useState({});
     const [vouchersLoading, setVouchersLoading] = useState(true);
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertTitle, setAlertTitle] = useState('');
+    const [alertBody, setAlertBody] = useState('');
+    const [alertConfirmText, setAlertConfirmText] = useState('');
     const dispatch = useDispatch();
 
     analytics().logScreenView({
@@ -56,6 +62,30 @@ const VouchersScreen = (props) => {
             title: optionData.titles.find(el => el.id === 'voucher_title').title,
        });
    },[])
+    const reloadUser = async () => {
+        const apiRequest = getApi(props.config);
+        await apiRequest.customRequest(
+            "wp-json/wp/v2/users/" + user.id,
+            "get",
+            {},
+            null,
+            {},
+            false
+        ).then(response => {
+            if(response.data){
+                console.log("response.data", response.data)
+                dispatch({
+                    type: 'USER_UPDATE_MEMBERSHIP',
+                    payload: response.data.membership
+                });
+                setLoading(false);
+                setAlertTitle(optionData.titles.find(el => el.id === 'alert_voucher_membership_activated_title').title);
+                setAlertBody(optionData.titles.find(el => el.id === 'alert_voucher_membership_activated_body').title);
+                setAlertConfirmText(optionData.titles.find(el => el.id === 'alert_voucher_membership_activated_button').title);
+                setShowAlert(true);
+            }
+        });
+    }
     const renderItem = ({item}) => {
         return (
             <TouchableOpacity
@@ -68,6 +98,9 @@ const VouchersScreen = (props) => {
                         ])
                    }else {
                         Alert.alert('Notice', "Redeem voucher now?", [
+                            {
+                                text: 'Cancel'
+                            },
                             {
                                 text: 'OK', onPress:
                                     async () => {
@@ -82,14 +115,22 @@ const VouchersScreen = (props) => {
                                                 {},
                                                 false
                                             ).then(response => {
-                                                setLoading(false);
                                                 if (response.data) {
                                                     if (response.data.result) {
+                                                        let voucherIndex = vouchers.findIndex(voucher => voucher.id === item.id);
+                                                        let tempVouchers = vouchers;
+                                                        tempVouchers[voucherIndex].redeemDate = new moment().format('YYYY-MM-DD');
+                                                        setVouchersLoading(true);
+                                                        setVouchers(tempVouchers);
+                                                        setVouchersLoading(false);
                                                         dispatch({
                                                             type: 'SETTINGS_REMOVE_VOUCHER_NOTIFICATION',
                                                             payload: item.id
                                                         });
                                                         switch (response.data.action) {
+                                                            case 'reload':
+                                                                reloadUser();
+                                                                break;
                                                             case 'restart':
                                                                 Alert.alert('Notice', response.data.message, [
                                                                     {text: 'OK', onPress: () => RNRestart.Restart()},
@@ -110,9 +151,6 @@ const VouchersScreen = (props) => {
                                             console.error(e);
                                        }
                                    }
-                           },
-                            {
-                                text: 'Cancel'
                            }
                         ])}
                    }
@@ -140,7 +178,9 @@ const VouchersScreen = (props) => {
                 vouchers.length?
                     <FlatList
                         contentContainerStyle={{paddingBottom: scale(20)}}
-                        data={vouchers} renderItem={renderItem} keyExtractor={item => item.id}
+                        data={vouchers}
+                        renderItem={renderItem}
+                        keyExtractor = {(item, index) => `${item.title}-${index}`}
                    />
                     :
                     <View style={{
@@ -170,6 +210,21 @@ const VouchersScreen = (props) => {
                 </View>
             </BlurView>
            }
+            <AwesomeAlert
+                show={showAlert}
+                showProgress={false}
+                title={alertTitle}
+                message={alertBody}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={true}
+                showCancelButton={false}
+                showConfirmButton={true}
+                confirmText={alertConfirmText}
+                confirmButtonColor="#4942E1"
+                onConfirmPressed={() => {
+                    setShowAlert(false);
+                }}
+            />
         </SafeAreaView>
     )
 }

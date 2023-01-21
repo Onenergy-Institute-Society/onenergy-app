@@ -685,9 +685,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     const loadAchievement = action.payload.loadAchievement;
                     const loadProgress = action.payload.loadProgress;
                     console.log('2')
-                    let idPracticeReducer = state.practiceReducer;
-                    let idAchievementReducer = state.achievementReducer;
-                    let idProgressReducer = state.progressReducer;
+                    const idPracticeReducer = {...state.practiceReducer};
+                    const idAchievementReducer = {...state.achievementReducer};
+                    const idProgressReducer = {...state.progressReducer};
 
                     const oidToday = new moment().format('YYYY-MM-DD');
                     const oidUpdateDaily = data.progress.latestUpdate===0 || (data.progress.latestUpdate && oidToday !== new moment.unix(data.progress.latestUpdate).format('YYYY-MM-DD'));
@@ -811,43 +811,51 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             }
                         };
                 case "ONENERGY_ROUTINE_SAVE":
-                    let routine = action.payload;
-                    let ors_tempState = [];
-                    if(state.practiceReducer.routines.length) {
-                        ors_tempState = state.practiceReducer.routines;
-                        let index = ors_tempState.findIndex(el => el.uid === routine.uid);
-                        if (index >= 0) {
-                            ors_tempState[index] = routine;
+                    let orsRoutine = action.payload;
+                    const ors_tempPracticeState = {...state.practiceReducer};
+
+                    if(ors_tempPracticeState.routines) {
+                        if (ors_tempPracticeState.routines.length) {
+                            let orsIndex = ors_tempPracticeState.routines.findIndex(el => el.id === orsRoutine.id);
+                            if (orsIndex >= 0) {
+                                ors_tempPracticeState.routines[orsIndex] = orsRoutine;
+                            } else {
+                                ors_tempPracticeState.routines.push(orsRoutine);
+                            }
                         } else {
-                            ors_tempState.push(routine)
+                            ors_tempPracticeState.routines.push(orsRoutine);
+                        }
+                        return {
+                            ...state,
+                            practiceReducer: {
+                                ...state.practiceReducer,
+                                routines: ors_tempPracticeState.routines,
+                                routineUpdate: new Date().toISOString()
+                            }
                         }
                     }else{
-                        ors_tempState.push(routine)
-                    }
-                    return {
-                        ...state,
-                        practiceReducer: {
-                            ...state.practiceReducer,
-                            routines: ors_tempState,
-                            routineUpdate: new Date().toISOString()
+                        return {
+                            ...state,
+                            practiceReducer: {
+                                ...state.practiceReducer,
+                                routines: [...state.practiceReducer.routines, orsRoutine],
+                                routineUpdate: new Date().toISOString()
+                            }
                         }
-                    };
+                    }
                 case "ONENERGY_GUIDE_UPDATE":
                     let lessonGuides = action.payload;
-                    let tempGuides = state.practiceReducer.guides;
+                    let tempGuides = {...state.practiceReducer};
                     state.practiceReducer.guides.map((section, index) => {
                         let tempIndex = section.data.findIndex(item => lessonGuides.includes(item.id));
                         if (tempIndex >= 0) {
-                            tempGuides[index].data[tempIndex].show = true;
-                            tempGuides[index].data[tempIndex].new = true;
+                            tempGuides.guides[index].data[tempIndex].show = true;
+                            tempGuides.guides[index].data[tempIndex].new = true;
                         }
                     });
                     return {
                         ...state,
-                        practiceReducer: {
-                            ...state.practiceReducer,
-                            guides: tempGuides
-                        }
+                        practiceReducer: tempGuides
                     };
                 case "ONENERGY_PROGRESS_GOAL":
                     switch (action.payload.mode) {
@@ -864,7 +872,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     break;
                 case "ONENERGY_PROGRESS_UPLOADED":
                     console.log('upload_done')
-                    let opuTempProgressState = state.progressReducer;
+                    const opuTempProgressState = {...state.progressReducer};
                     opuTempProgressState.actionList = [];
                     opuTempProgressState.lastUpload = Math.floor(new Date().getTime() / 1000);
                     return {
@@ -872,43 +880,37 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         progressReducer: opuTempProgressState
                     };
                 case "ONENERGY_DAILY_UPDATE":
-                    let oduTempProgressState = state.progressReducer;
-                    let oduTempAchievementState = state.achievementReducer;
+                    const oduTempProgressState = {...state.progressReducer};
+                    const oduTempDailyState = {...state.achievementReducer};
 
                     oduTempProgressState.totalLoginDays += 1;
                     oduTempProgressState.todayDuration = 0;
                     if (new Date().getDay() === 1) {
                         oduTempProgressState.weekDuration = 0;
                     }
-                    oduTempAchievementState.daily.map((item, tempIndex) => {
-                        oduTempAchievementState.daily[tempIndex].complete_date = '';
-                        oduTempAchievementState.daily[tempIndex].claim_date = '';
+                    oduTempDailyState.daily.map((item, tempIndex) => {
+                        oduTempDailyState.daily[tempIndex].complete_date = '';
+                        oduTempDailyState.daily[tempIndex].claim_date = '';
                     })
                     oduTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
 
                     return {
                         ...state,
-                        achievementReducer: {
-                            ...state.achievementReducer,
-                            daily: oduTempAchievementState.daily,
-                        },
+                        achievementReducer: oduTempDailyState,
                         progressReducer: oduTempProgressState,
                     };
                 case "ONENERGY_PRACTICE_COMPLETED":
-                    let acpTempPracticeState = state.practiceReducer;
-                    let acpTempProgressState = state.progressReducer;
-                    let acpTempAchievementState = state.achievementReducer;
+                    const acpTempPracticeState = {...state.practiceReducer};
+                    const acpTempProgressState = {...state.progressReducer};
+                    const acpTempAchievementState = {...state.achievementReducer};
                     let acpMode = action.payload.mode;
                     let acpData = action.payload.data;
                     let acpToday = new moment().format('YYYY-MM-DD');
                     let tempSection;
-                    let acpUpdateDaily;
                     let tmpAchievements;
                     let acpTempIndex;
 
-                    acpUpdateDaily = !!(acpTempProgressState.latestUpdate && acpToday !== new moment.unix(acpTempProgressState.latestUpdate).format('YYYY-MM-DD'));
-
-                    if (acpUpdateDaily) {
+                    if (acpToday > acpTempProgressState.lastPractice) {
                         acpTempProgressState.totalPracticeDays += 1;
                         acpTempAchievementState.milestones.map((item, tempIndex) => {
                             if (item.trigger === 'progress' && item.triggerField === 'totalDays' && item.complete_date !== acpToday) {
@@ -968,7 +970,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             acpTempAchievementState.monthly.days = [];
                             acpTempAchievementState.monthly.days.push(acpToday)
                         }
-                        acpTempProgressState.lastPractice = acpToday;
                     }
 
                     let tempArray = [];
@@ -981,19 +982,28 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             console.log('32')
 
                             let routineIndex;
+                            console.log('33')
                             routineIndex = state.practiceReducer.routines.findIndex((temp) => temp.id === acpData);
+                            console.log('34')
                             tempArray = state.practiceReducer.routines[routineIndex].routine;
+                            console.log('35')
                             let tempTracks = state.practiceReducer.routines[routineIndex].tracks;
+                            console.log('36')
                             let routineDuration = 0;
+                            console.log('37')
                             tempTracks.map(track => {
-                                routineDuration = duration + parseInt(track.duration);
+                                routineDuration = routineDuration + parseInt(track.duration);
                             })
+                            console.log('38')
 
                             acpTempIndex = acpTempProgressState.routineStats.findIndex(item => item.routine_id === acpData)
+                            console.log('39')
                             if (acpTempIndex >= 0) {
+                                console.log('40')
                                 acpTempProgressState.routineStats[acpTempIndex].routine_count += 1;
                                 acpTempProgressState.routineStats[acpTempIndex].routine_duration += routineDuration;
                             } else {
+                                console.log('41')
                                 acpTempProgressState.routineStats.push({
                                     'routine_id': acpData,
                                     'routine_count': 1,
@@ -1225,12 +1235,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         practiceReducer: acpTempPracticeState
                     };
                 case "ONENERGY_MILESTONE_CLAIM":
-                    let mcTempMilestoneState = state.achievementReducer.milestones;
-                    let mcTempProgressState = state.progressReducer;
-                    let mcMilestoneIndex = mcTempMilestoneState.findIndex(achievement => achievement.id === action.payload.id);
+                    const mcTempMilestoneState = {...state.achievementReducer};
+                    const mcTempProgressState = {...state.progressReducer};
+                    let mcMilestoneIndex = mcTempMilestoneState.milestones.findIndex(achievement => achievement.id === action.payload.id);
 
-                    mcTempMilestoneState[mcMilestoneIndex].claim_date = new moment().format('YYYY-MM-DD');
-                    mcTempMilestoneState[mcMilestoneIndex].awards.map(award => {
+                    mcTempMilestoneState.milestones[mcMilestoneIndex].claim_date = new moment().format('YYYY-MM-DD');
+                    mcTempMilestoneState.milestones[mcMilestoneIndex].awards.map(award => {
                         if (mcTempProgressState.points[award.name]) {
                             mcTempProgressState.points[award.name] += parseInt(award.point);
                         } else {
@@ -1239,31 +1249,28 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     })
                     mcTempProgressState.actionList.push({
                         'mode': 'CM',
-                        'data': {'id': action.payload.id, 'points': mcTempMilestoneState[mcMilestoneIndex].awards},
+                        'data': {'id': action.payload.id, 'points': mcTempMilestoneState.milestones[mcMilestoneIndex].awards},
                         'time': Math.floor(new Date().getTime() / 1000)
                     });
                     mcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
 
                     return {
                         ...state,
-                        achievementReducer: {
-                            ...state.achievementReducer,
-                            milestones: mcTempMilestoneState,
-                        },
+                        achievementReducer: mcTempMilestoneState,
                         progressReducer: mcTempProgressState
                     };
                 case "ONENERGY_DAILY_CLAIM":
-                    let dcTempDailyState = state.achievementReducer.daily;
-                    let dcTempProgressState = state.progressReducer;
-                    let dcDailyIndex = dcTempDailyState.findIndex(achievement => achievement.id === action.payload.id);
+                    const dcTempDailyState = {...state.achievementReducer};
+                    const dcTempProgressState = {...state.progressReducer};
+                    let dcDailyIndex = dcTempDailyState.daily.findIndex(achievement => achievement.id === action.payload.id);
                     const odcToday = new moment().format('YYYY-MM-DD');
 
-                    dcTempDailyState[dcDailyIndex].claim_date = odcToday;
-                    let dailyListItemIndex = dcTempDailyState[dcDailyIndex].list.findIndex(item => item === odcToday)
+                    dcTempDailyState.daily[dcDailyIndex].claim_date = odcToday;
+                    let dailyListItemIndex = dcTempDailyState.daily[dcDailyIndex].list.findIndex(item => item === odcToday)
                     if (dailyListItemIndex >= 0) {
-                        dcTempDailyState[dcDailyIndex].list.splice(dailyListItemIndex, 1);
+                        dcTempDailyState.daily[dcDailyIndex].list.splice(dailyListItemIndex, 1);
                     }
-                    dcTempDailyState[dcDailyIndex].awards.map(award => {
+                    dcTempDailyState.daily[dcDailyIndex].awards.map(award => {
                         if (dcTempProgressState.points[award.name]) {
                             dcTempProgressState.points[award.name] += parseInt(award.point);
                         } else {
@@ -1273,7 +1280,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
 
                     dcTempProgressState.actionList.push({
                         'mode': 'CM',
-                        'data': {'id': action.payload.id, 'points': dcTempDailyState[dcDailyIndex].awards},
+                        'data': {'id': action.payload.id, 'points': dcTempDailyState.daily[dcDailyIndex].awards},
                         'time': Math.floor(new Date().getTime() / 1000)
                     });
 
@@ -1281,22 +1288,19 @@ export const applyCustomCode = (externalCodeSetup: any) => {
 
                     return {
                         ...state,
-                        achievementReducer: {
-                            ...state.achievementReducer,
-                            daily: dcTempDailyState,
-                        },
+                        achievementReducer: dcTempDailyState,
                         progressReducer: dcTempProgressState
                     };
                 case "ONENERGY_PAST_CLAIM":
-                    let awcTempQuestState = state.achievementReducer.daily;
+                    const awcTempQuestState = {...state.achievementReducer};
+                    const awcTempProgressState = {...state.progressReducer};
                     let awcAchievementIndex = awcTempQuestState.findIndex(achievement => achievement.id === action.payload.id);
-                    let awcTempProgressState = state.progressReducer;
                     let awcWaitItemIndex = awcTempQuestState[awcAchievementIndex].list.findIndex(waitItem => waitItem === action.payload.date);
 
                     console.log(awcTempQuestState[awcAchievementIndex], awcAchievementIndex, awcWaitItemIndex)
                     if (awcAchievementIndex >= 0) {
-                        awcTempQuestState[awcAchievementIndex].list.splice(awcWaitItemIndex, 1);
-                        awcTempQuestState[awcAchievementIndex].awards.map(award => {
+                        awcTempQuestState.daily[awcAchievementIndex].list.splice(awcWaitItemIndex, 1);
+                        awcTempQuestState.daily[awcAchievementIndex].awards.map(award => {
                             if (awcTempProgressState.points[award.name]) {
                                 awcTempProgressState.points[award.name] += parseInt(award.point);
                             } else {
@@ -1305,21 +1309,19 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         })
                         awcTempProgressState.actionList.push({
                             'mode': 'CM',
-                            'data': {'id': action.payload.id, 'points': awcTempQuestState[awcAchievementIndex].awards},
+                            'data': {'id': action.payload.id, 'points': awcTempQuestState.daily[awcAchievementIndex].awards},
                             'time': Math.floor(new Date().getTime() / 1000)
                         });
                         awcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     }
                     return {
                         ...state,
-                        achievementReducer: {
-                            ...state.achievementReducer,
-                            daily: awcTempQuestState,
-                        }
+                        achievementReducer: awcTempQuestState,
+                        progressReducer: awcTempProgressState
                     };
                 case "ONENERGY_WEEKLY_MONTHLY_CLAIM":
-                    let acwTempAchievementState = state.achievementReducer;
-                    let acwTempProgressState = state.progressReducer;
+                    const acwTempAchievementState = {...state.achievementReducer};
+                    const acwTempProgressState = {...state.progressReducer};
                     switch (action.payload.mode) {
                         case 'weekly':
                             acwTempAchievementState.weekly.claim_date = new moment().format('YYYY-MM-DD');
@@ -1351,10 +1353,10 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         progressReducer: acwTempProgressState
                     };
                 case "ONENERGY_LESSON_COMPLETED":
-                    let olcTempProgressState = state.progressReducer;
-                    let olcTempMilestoneState = state.achievementReducer.milestones;
+                    const olcTempProgressState = {...state.progressReducer};
+                    const olcTempMilestoneState = {...state.achievementReducer};
                     let lesson = action.payload;
-                    let olcTempMilestone = olcTempMilestoneState.filter(item =>
+                    let olcTempMilestone = olcTempMilestoneState.milestones.filter(item =>
                         (item.trigger === 'course' &&
                             (
                                 parseInt(item.triggerCourse) === lesson.parent.id || !item.triggerCourse
@@ -1402,15 +1404,11 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     olcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     return {
                         ...state,
-                        achievementReducer: {
-                            ...state.achievementReducer,
-                            milestones:
-                            olcTempMilestoneState,
-                        },
+                        achievementReducer: olcTempMilestoneState,
                         progressReducer: olcTempProgressState
                     };
                 case 'ONENERGY_COURSE_ENROLLED':
-                    let oceTempProgressState = state.progressReducer;
+                    const oceTempProgressState = {...state.progressReducer};
                     oceTempProgressState.enrolledCourses.push({
                         "id": action.payload,
                         "date": Math.floor(new Date().getTime() / 1000)
@@ -1507,14 +1505,23 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         );*/
     const customUserReducer = reducer => (state = reducer(undefined, {}), action) => {
         switch (action.type) {
-            case "USER_VIP_SURVEY_COMPLETED":
-                let uvscTempUser = state.userObject;
-                uvscTempUser.vip_survey_completed = true;
-                const uvscNewState = {
+            case "USER_UPDATE_MEMBERSHIP":
+                let umTempUser = state.userObject;
+                umTempUser.membership = action.payload;
+                console.log(umTempUser)
+                const umNewState = {
                     ...state,
-                    userObject: uvscTempUser
+                    userObject: umTempUser
                 }
-                return reducer(uvscNewState, action);
+                return reducer(umNewState, action);
+            case "USER_VIP_SURVEY_COMPLETED":
+                let vscTempUser = state.userObject;
+                vscTempUser.vip_survey_completed = true;
+                const vscNewState = {
+                    ...state,
+                    userObject: vscTempUser
+                }
+                return reducer(vscNewState, action);
             case "USER_PROFILE_UPDATED":
                 let upuTempUser = state.userObject;
                 upuTempUser.profile_updated = true;
@@ -1589,8 +1596,16 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     }
     externalCodeSetup.reduxApi.addReducer(
         "settingsReducer",
-        (state = {languages: defaultLanguage, settings: {allowLocation: false, vouchers:[]}}, action) => {
+        (state = {languages: defaultLanguage, settings: {allowLocation: false, initLoaded: true, vouchers:[]}}, action) => {
             switch (action.type) {
+                case "SETTINGS_INIT_LOADED":
+                    return {
+                        ...state,
+                        settings: {
+                            ...state.settings,
+                            initLoaded: action.payload
+                        }
+                    }
                 case "SETTINGS_ALLOW_LOCATION":
                     return {
                         ...state,

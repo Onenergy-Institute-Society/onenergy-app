@@ -35,7 +35,7 @@ console.log(practiceReducer)
         LayoutAnimation.configureNext(
             LayoutAnimation.Presets.spring
         );
-        if (!selectedRoutine || routine.uid !== selectedRoutine.uid) {
+        if (!selectedRoutine || routine.id !== selectedRoutine.id) {
 
             if (routine.bgm !== 'No Sound') {
                 routine.bgm_url = optionData.routine_bgm.find(el => el.name === routine.bgm).bgm;
@@ -60,8 +60,8 @@ console.log(practiceReducer)
                 {
                     text: "Yes",
                     onPress: () => {
-                        row[key].close();
                         props.onRemoveRoutine(item, index);
+                        row[key].close();
                     },
                 },
             ]
@@ -73,7 +73,7 @@ console.log(practiceReducer)
     const handleOpen = (index: any) => () => setKey(index);
     const renderItem = ({item, index}) => {
         console.log(item)
-        let showPlayer = !!(selectedRoutine && selectedRoutine.uid === item.uid);
+        let showPlayer = !!(selectedRoutine && selectedRoutine.id === item.id);
         let totalDuration = 0;
         item.tracks.map((item) => {
             totalDuration += item.duration;
@@ -103,13 +103,18 @@ console.log(practiceReducer)
                             <View style={styles.titleBox}>
                                 <Text style={styles.title}>{item.title}</Text>
                                 <Text
-                                    style={[styles.duration, {color: colors.primaryButtonBg}]}>{new Date(totalDuration * 1000).toISOString().substring(14, 19)}</Text>
+                                    style={styles.duration}>{new Date(totalDuration * 1000).toISOString().substring(14, 19)}</Text>
                             </View>
                             <View style={styles.subTitleBox}><Text
                                 style={styles.subTitle}>Practices: {item.routine.length}</Text><Text
                                 style={styles.subTitle}>Background: {item.bgm}</Text></View>
                             <SvgMoreVertical color={"#fff"}
-                                             style={{position: "absolute", right: scale(10), bottom: scale(10)}}/>
+                                             style={{position: "absolute", right: scale(10), bottom: scale(10),                                         textShadowColor: 'grey',
+                                                 textShadowRadius: 1,
+                                                 textShadowOffset: {
+                                                     width: -1,
+                                                     height: 1
+                                                 }}}/>
                         </ImageBackground>
                     </TouchableOpacity>
                     {showPlayer ? (
@@ -231,9 +236,16 @@ const styles = StyleSheet.create({
         color: "#262626",
     },
     duration: {
-        fontFamily: "MontserratAlternates-Regular",
+        fontFamily: "Montserrat-SemiBold",
         fontSize: scale(12),
+        fontWeight: "bold",
         color: "#fff",
+        textShadowColor: 'grey',
+        textShadowRadius: 1,
+        textShadowOffset: {
+            width: -1,
+            height: 1
+        }
     },
     listBox: {
         height: '100%',

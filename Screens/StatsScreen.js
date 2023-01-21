@@ -272,7 +272,7 @@ console.log(practiceReducer, progressReducer)
                                         return (
                                             <>
                                                 <View style={styles.row}>
-                                                    <Text style={[global.title, styles.title, {fontSize:scale(14), flex: 0.6}]}>{practiceReducer.routines.find(routine => routine.uid === item.routine_id)?practiceReducer.routines.find(routine => routine.uid === item.routine_id).title:''}</Text>
+                                                    <Text style={[global.title, styles.title, {fontSize:scale(14), flex: 0.6}]}>{practiceReducer.routines.find(routine => routine.id === item.routine_id)?practiceReducer.routines.find(routine => routine.id === item.routine_id).title:''}</Text>
                                                     <Text style={[global.textAlt, {
                                                         flex: 0.2,
                                                         alignSelf: "flex-end",
@@ -318,7 +318,7 @@ console.log(practiceReducer, progressReducer)
                            }]}
                             colors={['#ddd6fe', '#ede9fe']}>
                             {progressReducer.groupStats.map((item, index)=> {
-                                let groupName = practiceReducer.groups.find(group => group.id = item.group_id).name;
+                                let groupName = practiceReducer.groups.find(group => group.id === item.group_id).name;
                                 return (
                                     <>
                                         <View style={styles.row}>

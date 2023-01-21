@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {connect, useDispatch, useSelector} from "react-redux";
 import {Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {scale} from "../Utils/scale";
@@ -9,8 +9,13 @@ const QuestsWeekly = (props) => {
     const {screenProps} = props;
     const {colors, global} = screenProps;
     const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.weekly : null);
+    const [weekly, setWeekly] = useState(achievementReducer);
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        setWeekly(achievementReducer);
+    },[])
 
     return (
         <SafeAreaView style={global.container}>
@@ -69,7 +74,7 @@ const QuestsWeekly = (props) => {
                                     </Text>
                                 </View>
                             </View>
-                            :
+                        :
                             <View style={[styles.boxShadow, styles.rowReward]}>
                                 <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
                                     <Text style={[global.itemTitle, {fontWeight: "normal"}]}>7 Days Streak</Text>
@@ -109,7 +114,7 @@ const QuestsWeekly = (props) => {
                                     </View>
                                 </TouchableWithoutFeedback>
                             </View>
-                        : null}
+                    : null}
                 </View>
             </ScrollView>
         </SafeAreaView>

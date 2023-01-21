@@ -105,6 +105,10 @@ const InitData = (props) => {
             loaded = false;
         }
         if (loaded) {
+            dispatch({
+                type: 'SETTINGS_INIT_LOADED',
+                payload: true
+            });
             navigation.goBack();
         }
     }, [achievementReducer.achievementUpdate, progressReducer.progressUpdate, practiceReducer.groupUpdate, practiceReducer.guideUpdate])

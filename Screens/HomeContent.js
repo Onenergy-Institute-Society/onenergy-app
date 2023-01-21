@@ -41,7 +41,6 @@ import {
     SvgIconSunset, SvgVIPMedal
 } from "../Utils/svg";
 import messaging from '@react-native-firebase/messaging';
-import TrackPlayer from 'react-native-track-player';
 import { SetupService } from '../Services';
 
 this.todayGoalDialog = undefined;
@@ -51,10 +50,12 @@ const HomeContent = (props) => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const allowLocation = useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings.allowLocation : null);
+    const initLoaded = useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings.initLoaded : null);
     const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
     const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
     const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
     const postReducer = useSelector((state) => state.postReducer ? state.postReducer : null);
+    const [load, setLoad] = useState(0);
     const dispatch = useDispatch();
     const [location, setLocation] = useState(null);
     const [sunrise, setSunrise] = useState('');
@@ -64,8 +65,7 @@ const HomeContent = (props) => {
     const onFocusHandler = () => {
         try {
             console.log('Focus changed', checkTodayDate())
-            if (user && checkTodayDate()) {
-                alert('Welcome Back!');
+            if (user && load===2 && checkTodayDate() && initLoaded) {
                 dispatch({
                     type: 'ONENERGY_DAILY_UPDATE',
                 });
@@ -78,17 +78,11 @@ const HomeContent = (props) => {
         screen_class: 'MainActivity',
         screen_name: 'Home Screen',
     });
-    useEffect(() => {
-        async function run() {
-            await SetupService();
-        }
-        run().then();
-    }, []);
 
     const _handleAppStateChange = async () => {
         if (user) {
             console.log('state changed', AppState.currentState, checkTodayDate())
-            if (AppState.currentState === 'active' && checkTodayDate()) {
+            if (AppState.currentState === 'active' && load === 2 && checkTodayDate()) {
                 dispatch({
                     type: 'ONENERGY_DAILY_UPDATE',
                 });
@@ -159,7 +153,8 @@ const HomeContent = (props) => {
     const checkTodayDate = () => {
         const today = new moment().format('YYYY-MM-DD');
         console.log(today, new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD'))
-        return !!(progressReducer.latestUpdate && today !== new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD'));
+        if(progressReducer.latestUpdate!==0)
+            return today !== new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD');
     }
     const getLocation = () => {
         GetLocation.getCurrentPosition({
@@ -179,7 +174,6 @@ const HomeContent = (props) => {
     }
 
     useEffect(() => {
-       // setupIfNecessary().then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
         });
@@ -224,18 +218,15 @@ const HomeContent = (props) => {
         moonPhaseDate = moment(today).add(dateDiff, 'days').format('MMM DD');
         setNextMoonPhase({'date': moonPhaseDate, 'phase': moonPhase});
         if (user) {
-            navigation.addListener('willFocus', onFocusHandler)
-            const subscription = AppState.addEventListener("change", _handleAppStateChange);
-
-            let load = false;
+            console.log(practiceReducer, achievementReducer, progressReducer)
             if (optionData.cache.guide && practiceReducer.guideUpdate && optionData.cache.guide > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
-                load = true;
+                setLoad(1);
             }
             if (optionData.cache.group && practiceReducer.groupUpdate && optionData.cache.group > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
-                load = true;
+                setLoad(1);
             }
             if (optionData.cache.routine && practiceReducer.routineUpdate && optionData.cache.routine > practiceReducer.routineUpdate || !practiceReducer.routineUpdate) {
-                load = true;
+                setLoad(1);
             }
             if (optionData.cache.post && postReducer.postUpdate && optionData.cache.post > postReducer.postUpdate || !postReducer.postUpdate) {
                 dispatch({
@@ -243,20 +234,39 @@ const HomeContent = (props) => {
                 });
             }
             if (optionData.cache.achievement && achievementReducer.achievementUpdate && optionData.cache.achievement > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
-                load = true;
+                setLoad(1);
             }
             if (optionData.cache.progress && progressReducer.progressUpdate && optionData.cache.progress > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
-                load = true;
+                setLoad(1);
             }
-            if (load) {
-                props.navigation.navigate("InitData", {transition: 'fade'});
+            async function run() {
+                await SetupService();
             }
+            run().then();
+        }else{
+            setLoad(2);
+        }
+    }, []);
+
+    useEffect(() => {
+        console.log('load',load)
+        if(load === 1){
+            dispatch({
+                type: 'SETTINGS_INIT_LOADED',
+                payload: false
+            });
+            props.navigation.navigate("InitData", {transition: 'fade'});
+        }
+        if(load === 2&&initLoaded) {
+            navigation.addListener('willFocus', onFocusHandler)
+            const subscription = AppState.addEventListener("change", _handleAppStateChange);
             return () => {
                 navigation.removeListener('willFocus', onFocusHandler);
                 subscription.remove();
             }
         }
-    }, []);
+    }, [load])
+
     useEffect(() => {
         const unsubscribe = messaging().onMessage(async remoteMessage => {
             const data = remoteMessage.data;
@@ -532,7 +542,7 @@ const HomeContent = (props) => {
                                             lineHeight: scale(14),
                                             fontSize: scale(14),
                                             color: colors.primaryColor
-                                        }]}>time{"\n"}practiced</Text>
+                                        }]}>total{"\n"}practiced</Text>
                                     </View>
                                     <View style={{
                                         flexDirection: "row",

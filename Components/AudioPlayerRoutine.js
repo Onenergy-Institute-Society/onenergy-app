@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {connect, useDispatch, useSelector} from "react-redux";
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Platform} from 'react-native';
 import TrackPlayer, {Event, State, useTrackPlayerEvents} from 'react-native-track-player';
 import IconButton from "@src/components/IconButton";
 import {scale} from '../Utils/scale';
@@ -19,14 +19,24 @@ const AudioPlayerRoutine = (props) => {
     const [nextTrack, setNextTrack] = useState(0);
     const [pastPosition, setPastPosition] = useState(0);
     const dispatch = useDispatch();
-console.log(routine)
+    const secondsToHHMMSS = (seconds: number | string) => {
+        seconds = Number(seconds);
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = Math.floor((seconds % 3600) % 60);
+
+        const hrs = h > 0 ? (h < 10 ? `0${h}:` : `${h}:`) : '';
+        const mins = m > 0 ? (m < 10 ? `0${m}:` : `${m}:`) : '00:';
+        const scnds = s > 0 ? (s < 10 ? `0${s}` : s) : '00';
+        return `${hrs}${mins}${scnds}`;
+    };
     const updateProgress = async () => {
         try {
             dispatch({
                 type: 'ONENERGY_PRACTICE_COMPLETED',
                 payload: {
                     mode: 'PR',
-                    data: routine.uid
+                    data: routine.id
                 }
             });
             setMessageBarDisplay(true);
@@ -90,24 +100,24 @@ console.log(routine)
 
     useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
         if (event.type === 'playback-queue-ended') {
-            /*            console.log(nextTrack, routine.tracks.length )
-                        if (Platform.OS === 'ios') {
-                            if (nextTrack === routine.tracks.length - 1) {
-                                setPlaying(false);
-                                setStopped(true);
-                                setTrackTitle('');
-                                await TrackPlayer.reset();
-                                setNextTrack(0);
-                                updateProgress().then();
-                           }
-                       } else {*/
+            console.log(nextTrack, routine.tracks.length )
+            if (Platform.OS === 'ios') {
+                if (!nextTrack || nextTrack === routine.tracks.length - 1) {
+                    setPlaying(false);
+                    setStopped(true);
+                    setTrackTitle('');
+                    await TrackPlayer.reset();
+                    setNextTrack(0);
+                    updateProgress().then();
+               }
+           } else {
             setPlaying(false);
             setStopped(true);
             setTrackTitle('');
             await TrackPlayer.reset();
             setNextTrack(0);
             updateProgress().then();
-//           }
+           }
         }
     });
 
@@ -174,8 +184,7 @@ console.log(routine)
                     </View>
                 </View>
                 <View style={styles.progressBarSection}>
-                    <Text>{trackTitle}</Text><TrackSlider type={"routine"} pastPosition={pastPosition}
-                                                          totalDuration={totalDuration}/>
+                    <TrackSlider type={"routine"} pastPosition={pastPosition} totalDuration={totalDuration}/>
                     {!!routine.bgm ? (
                         <Video
                             ref={videoPlayer => this.videoPlayer = videoPlayer}
@@ -193,8 +202,13 @@ console.log(routine)
             <View style={styles.routineDetailBox}>
                 <Text style={[styles.subTitle,{fontWeight:trackTitle==='Opening'?"bold":"normal"}]}>Opening</Text>
                 {
-                    routine.routine.map((item) => {
-                        return <Text style={[styles.subTitle,{fontWeight:trackTitle===item.title?"bold":"normal"}]}>{item.title}</Text>
+                    routine.routine.map((item, index) => {
+                        console.log(routine.tracks[index])
+                        return (
+                            <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                                <Text style={[styles.subTitle,{fontWeight:trackTitle===item.title&&playing?"bold":"normal"}]}>{item.title}</Text>
+                            </View>
+                        )
                     })
                 }
                 <Text style={[styles.subTitle,{fontWeight:trackTitle==='Closing'?"bold":"normal"}]}>Closing</Text>

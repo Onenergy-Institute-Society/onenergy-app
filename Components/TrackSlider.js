@@ -36,6 +36,7 @@ const TrackSlider = (props) => {
         <>
             {type === 'routine' ?
                 <Text style={{
+                    fontFamily:"Montserrat-Regular", fontWeight:"normal",
                     marginLeft: 5,
                     fontSize: scale(12),
                 }}>{secondsToHHMMSS(Math.floor(type ? totalDuration - pastDuration - position : duration - position || 0))}</Text>
@@ -65,7 +66,7 @@ const TrackSlider = (props) => {
                             }
                         }}
                     />
-                    <Text style={{marginLeft: 5, fontSize: scale(12),}}>{secondsToHHMMSS(duration || 0)}</Text>
+                    <Text style={{fontFamily:"Montserrat-Regular", fontWeight:"normal", marginLeft: 5, fontSize: scale(12),}}>{secondsToHHMMSS(duration || 0)}</Text>
                 </>
             }
         </>
