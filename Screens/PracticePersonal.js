@@ -59,7 +59,7 @@ const PracticePersonal = props => {
         <SafeAreaView style={global.container}>
             {progressReducer.completedLessons&&progressReducer.completedLessons.length?
                 <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                    {(optionData.goals && optionData.goals.length) ?
+                    {(optionData.goalCards && optionData.goalCards.length) ?
                         <View>
                             <EventList location={'practice_guided'} {...props}/>
                         </View>

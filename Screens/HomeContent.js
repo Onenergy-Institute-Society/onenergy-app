@@ -623,7 +623,7 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                         </TouchableWithoutFeedback>
                     </View>
                 }
-                {optionData.goals && optionData.goals.length ?
+                {optionData.goalCards && optionData.goalCards.length ?
                     <View style={styles.programRow}>
                         <EventList location={'top'} {...props}/>
                         <EventList location={'home'} {...props}/>

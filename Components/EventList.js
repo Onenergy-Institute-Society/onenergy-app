@@ -28,7 +28,7 @@ const EventList = props => {
         }, 10000);
     }, [])
     const renderItem = () => {
-        return optionData.goals.map((item) => {
+        return optionData.goalCards.map((item) => {
             let showDate = null;
             let show = false;
             let shadow = item.link;

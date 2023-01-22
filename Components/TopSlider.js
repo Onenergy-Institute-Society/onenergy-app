@@ -54,8 +54,8 @@ class TopSlider extends Component {
         const milestoneReducer = this.props.milestoneReducer;
         const optionData = this.props.optionData;
         let topSlides;
-        if (optionData && optionData.goals)
-            topSlides = optionData.goals.filter(item => {
+        if (optionData && optionData.goalCards)
+            topSlides = optionData.goalCards.filter(item => {
                 let show = false;
                 let showDate;
                 const current_time = new moment.utc();

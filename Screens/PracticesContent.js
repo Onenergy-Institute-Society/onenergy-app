@@ -103,7 +103,7 @@ const PracticesContent = props => {
         return (
             <SafeAreaView style={global.container}>
                 <ScrollView style={{flexGrow: 1}} showsVerticalScrollIndicator={false}>
-                    {(optionData.goals && optionData.goals.length) ?
+                    {(optionData.goalCards && optionData.goalCards.length) ?
                         <View>
                             <EventList location={'practice'} {...props}/>
                         </View>
