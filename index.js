@@ -813,6 +813,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 case "ONENERGY_ROUTINE_SAVE":
                     let orsRoutine = action.payload;
                     const ors_tempPracticeState = {...state.practiceReducer};
+console.log(ors_tempPracticeState)
 
                     if(ors_tempPracticeState.routines) {
                         if (ors_tempPracticeState.routines.length) {
@@ -2028,7 +2029,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         ...list,
         "activities",
         "friends",
-        "groups"
+        "groups",
+        "documents",
+
     ])
 
     externalCodeSetup.indexJsApi.addIndexJsFunction(() => {

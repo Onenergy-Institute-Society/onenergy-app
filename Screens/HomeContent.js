@@ -181,28 +181,28 @@ const HomeContent = (props) => {
             getLocation();
         }
         const moonIllumination = SunCalc.getMoonIllumination(new Date());
-        const phaseNumber = Math.floor(moonIllumination.phase * 100) / 100;
+        const phaseNumber = Math.round(moonIllumination.phase * 100) / 100;
         let phaseName = '';
-
-        if (phaseNumber === 0) {
+console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonIllumination.phase, phaseNumber)
+        if (phaseNumber >= 0 && phaseNumber < 0.125 || phaseNumber >= 0.875 && phaseNumber <= 1) {
             phaseName = 'New Moon';
-        } else if (phaseNumber > 0 && phaseNumber < 0.25) {
+        } else if (phaseNumber >= 0.125 && phaseNumber < 0.225) {
             phaseName = 'Waxing Crescent';
-        } else if (phaseNumber === 0.25) {
+        } else if (phaseNumber >= 0.225 && phaseNumber < 0.275) {
             phaseName = 'First Quarter';
-        } else if (phaseNumber > 0.25 && phaseNumber < 0.5) {
+        } else if (phaseNumber >= 0.275 && phaseNumber < 0.475) {
             phaseName = 'Waxing Gibbous';
-        } else if (phaseNumber === 0.5) {
+        } else if (phaseNumber >= 0.475 && phaseNumber < 0.525) {
             phaseName = 'Full Moon';
-        } else if (phaseNumber > 0.5 && phaseNumber < 0.75) {
+        } else if (phaseNumber >= 0.525 && phaseNumber < 0.725) {
             phaseName = 'Waning Gibbous';
-        } else if (phaseNumber === 0.75) {
+        } else if (phaseNumber >= 0.725 && phaseNumber < 0.775) {
             phaseName = 'Last Quarter';
-        } else if (phaseNumber > 0.75 && phaseNumber < 1) {
+        } else if (phaseNumber > 0.775 && phaseNumber < 0.875) {
             phaseName = 'Waning Crescent';
         }
         setPhase(phaseName)
-        const lunarAge = Math.floor(phaseNumber * 30);
+        const lunarAge = Math.round(phaseNumber * 30);
         let dateDiff;
         let moonPhase = '';
         let moonPhaseDate = '';

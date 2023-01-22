@@ -65,7 +65,7 @@ const AchievementItem = (props) => {
                                 >
                                     REWARD
                                 </Text>
-                                {item.awards.map(point =>
+                                {item.awards&&item.awards.length&&item.awards.map(point =>
                                     <Text
                                         style={[global.pointTitle, {
                                             flexWrap: "nowrap",

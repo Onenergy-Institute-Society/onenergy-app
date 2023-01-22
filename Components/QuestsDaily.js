@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {connect, useDispatch, useSelector} from "react-redux";
 import {
     FlatList,
@@ -7,12 +7,12 @@ import {
     SafeAreaView,
     ScrollView,
     StyleSheet,
-    Text,
     UIManager,
     View
 } from 'react-native';
+import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
+import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {scale} from "../Utils/scale";
-import {windowWidth} from "../Utils/Dimensions";
 import AchievementItem from "./AchievementItem";
 import moment from 'moment';
 
@@ -23,12 +23,13 @@ const QuestsDaily = (props) => {
     const {screenProps} = props;
     const {global} = screenProps;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const emptyText = optionData.titles.find(el => el.id === 'achievement_quest_empty').title
+    const emptyText = optionData.helps.find(el => el.name === 'achievement_quest_empty');
     const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
     const uncompletedQuestReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.daily.filter(quest => quest.complete_date==='') : null);
     const completedQuestReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.daily.filter(quest => quest.complete_date!==''&&quest.claim_date==='') : null);
     const claimedQuestReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.daily.filter(quest => quest.claim_date!=='') : null);
     const milestoneReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.milestones : null);
+    const [hideEmptyMessage, setHideEmptyMessage] = useState(false);
     const dispatch = useDispatch();
 
     const handleOnPress = (item, date, mode) => {
@@ -72,15 +73,15 @@ const QuestsDaily = (props) => {
             case 'course':
                 switch (item.showCourseOption) {
                     case 'enrolled':
-                        show = progressReducer.enrolledCourses && progressReducer.enrolledCourses.findIndex(course => course.id === parseInt(item.showCourse));
+                        show = progressReducer.enrolledCourses.length? progressReducer.enrolledCourses.findIndex(course => course.id === parseInt(item.showCourse)):-1;
                         break;
                     case 'completed':
-                        show = progressReducer.completedCourses && progressReducer.completedCourses.findIndex(course => course.id === parseInt(item.showCourse));
+                        show = progressReducer.completedCourses.length? progressReducer.completedCourses.findIndex(course => course.id === parseInt(item.showCourse)):-1;
                         break;
                 }
                 break;
             case 'lesson':
-                show = progressReducer.completedLessons && progressReducer.completedLessons.findIndex(lesson => lesson.id === parseInt(item.showLesson));
+                show = progressReducer.completedLessons.length? progressReducer.completedLessons.findIndex(lesson => lesson.id === parseInt(item.showLesson)):-1;
                 break;
             case 'achievement':
                 show = milestoneReducer && milestoneReducer.findIndex(milestone => milestone.id === parseInt(item.showAchievement) && milestone.complete_date !== '');
@@ -89,6 +90,8 @@ const QuestsDaily = (props) => {
                 show = 1;
                 break;
         }
+        if(show >= 0)
+            setHideEmptyMessage(true);
         return (
             show >= 0 ?
                 <>
@@ -111,57 +114,43 @@ const QuestsDaily = (props) => {
     return (
         <SafeAreaView style={global.container}>
             {
-                uncompletedQuestReducer||completedQuestReducer||claimedQuestReducer?
-                    <ScrollView style={styles.containerStyle} showsVerticalScrollIndicator={false}>
-                        {completedQuestReducer && completedQuestReducer.length ?
-                            <FlatList
-                                scrollEnabled={false}
-                                data={completedQuestReducer}
-                                renderItem={renderItem}
-                                keyExtractor={item => item.id}
-                                showsVerticalScrollIndicator={false}
-                            />
-                            :null}
-                        {uncompletedQuestReducer && uncompletedQuestReducer.length ?
-                            <FlatList
-                                scrollEnabled={false}
-                                data={uncompletedQuestReducer}
-                                renderItem={renderItem}
-                                keyExtractor={item => item.id}
-                                showsVerticalScrollIndicator={false}
-                            />:null}
-                        {claimedQuestReducer && claimedQuestReducer.length ?
-                            <FlatList
-                                scrollEnabled={false}
-                                data={claimedQuestReducer}
-                                renderItem={renderItem}
-                                keyExtractor={item => item.id}
-                                showsVerticalScrollIndicator={false}
-                            />:null}
-                    </ScrollView>
-                    :
-                    <View style={{
-                        flex: 1,
-                        width: windowWidth
-                    }}>
-                        <View style={[styles.boxShadow, {
-                            padding: 15,
-                            justifyContent: "center",
-                            alignSelf: "center",
-                            borderRadius: 9,
-                            backgroundColor: "#fff",
-                            margin: 15
-                        }]}>
-                            <View style={{marginHorizontal: 0, justifyContent: "center", alignItems: "center"}}>
-                                <Text style={[styles.body, {
-                                    marginHorizontal: 0,
-                                    fontSize: scale(14),
-                                    lineHeight: scale(14 * 1.47),
-                                    textAlign: "left"
-                                }]}>{emptyText}</Text>
-                            </View>
-                        </View>
-                    </View>
+                <ScrollView style={styles.containerStyle} showsVerticalScrollIndicator={false}>
+                    {completedQuestReducer && completedQuestReducer.length ?
+                        <FlatList
+                            scrollEnabled={false}
+                            data={completedQuestReducer}
+                            renderItem={renderItem}
+                            keyExtractor={item => item.id}
+                            showsVerticalScrollIndicator={false}
+                        />
+                        :null}
+                    {uncompletedQuestReducer && uncompletedQuestReducer.length ?
+                        <FlatList
+                            scrollEnabled={false}
+                            data={uncompletedQuestReducer}
+                            renderItem={renderItem}
+                            keyExtractor={item => item.id}
+                            showsVerticalScrollIndicator={false}
+                        />:null}
+                    {claimedQuestReducer && claimedQuestReducer.length ?
+                        <FlatList
+                            scrollEnabled={false}
+                            data={claimedQuestReducer}
+                            renderItem={renderItem}
+                            keyExtractor={item => item.id}
+                            showsVerticalScrollIndicator={false}
+                        />:null}
+                    {!hideEmptyMessage ?
+                        <View style={{flex: 1, backgroundColor: '#fff'}}>
+                            <BlockScreen pageId={emptyText.id}
+                                         contentInsetTop={0}
+                                         contentOffsetY={0}
+                                         hideTitle={true}
+                                         hideNavigationHeader={true}
+                                         {...props}/>
+                        </View>:null
+                    }
+                </ScrollView>
             }
         </SafeAreaView>
     )
@@ -170,41 +159,6 @@ const styles = StyleSheet.create({
     containerStyle: {
         paddingTop: scale(15),
         marginBottom: scale(25)
-    },
-    row: {
-        borderRadius: 9,
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: windowWidth - scale(30),
-        height: scale(70),
-        flexDirection: 'row',
-        backgroundColor: '#f2f2f2',
-        marginTop: scale(10),
-        marginHorizontal: scale(15),
-    },
-    rowLeft: {
-        marginVertical: 0,
-        paddingHorizontal: scale(10),
-        borderTopLeftRadius: 9,
-        borderBottomLeftRadius: 9,
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: (windowWidth - scale(30)) * 2 / 3,
-        height: scale(70),
-        backgroundColor: '#f2f2f2',
-    },
-    rowRight: {
-        marginVertical: 0,
-        borderTopRightRadius: 9,
-        borderBottomRightRadius: 9,
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: (windowWidth - scale(30)) / 3,
-        height: scale(70),
-        backgroundColor: '#7de7fa',
-    },
-    pointText: {
-        fontSize: scale(14),
     },
     boxShadow: {
         shadowColor: "#000",

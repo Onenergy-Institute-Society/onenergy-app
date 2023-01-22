@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {connect, useDispatch, useSelector} from "react-redux";
-import {FlatList, LayoutAnimation, Platform, SafeAreaView, StyleSheet, Text, UIManager, View, ScrollView} from 'react-native';
+import {FlatList, LayoutAnimation, Platform, SafeAreaView, StyleSheet, UIManager, View, ScrollView} from 'react-native';
+import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
+import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {scale} from "../Utils/scale";
-import {windowWidth} from "../Utils/Dimensions";
 import MilestonesAccordian from "./MilestonesAccordian";
 import AchievementItem from "./AchievementItem";
 
@@ -13,15 +14,16 @@ const Milestones = (props) => {
     const {type, screenProps} = props;
     const {global} = screenProps;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const emptyText = optionData.titles.find(el => el.id === 'achievement_milestone_empty').title
+    const emptyText = optionData.helps.find(el => el.name === 'achievement_milestone_empty');
     const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
     const milestoneReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.milestones.filter(achievement => achievement.type === type) : null);
     const uncompletedMilestoneReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.milestones.filter(achievement => achievement.type === type && achievement.complete_date==='') : null);
     const completedMilestoneReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.milestones.filter(achievement => achievement.type === type && achievement.complete_date!=='' && achievement.claim_date==='') : null);
     const claimedMilestoneReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.milestones.filter(achievement => achievement.type === type && achievement.claim_date!=='') : null);
+    const [hideEmptyMessage, setHideEmptyMessage] = useState(false);
     const dispatch = useDispatch();
-
-    const handleOnPress = (item) => {
+console.log(optionData)
+    const handleOnPress = (item, date, mode) => {
         if (item.complete_date && !item.claim_date) {
             LayoutAnimation.configureNext(
                 LayoutAnimation.Presets.spring
@@ -42,15 +44,15 @@ console.log(item.title, item)
             case 'course':
                 switch (item.showCourseOption) {
                     case 'enrolled':
-                        show = progressReducer.enrolledCourses.length && progressReducer.enrolledCourses.findIndex(course => course.id === parseInt(item.showCourse));
+                        show = progressReducer.enrolledCourses.length? progressReducer.enrolledCourses.findIndex(course => course.id === parseInt(item.showCourse)):-1;
                         break;
                     case 'completed':
-                        show = progressReducer.completedCourses.length && progressReducer.completedCourses.findIndex(course => course.id === parseInt(item.showCourse));
+                        show = progressReducer.completedCourses.length? progressReducer.completedCourses.findIndex(course => course.id === parseInt(item.showCourse)):-1;
                         break;
                 }
                 break;
             case 'lesson':
-                show = progressReducer.completedLessons.length && progressReducer.completedLessons.findIndex(lesson => lesson.id === parseInt(item.showLesson));
+                show = progressReducer.completedLessons.length? progressReducer.completedLessons.findIndex(lesson => lesson.id === parseInt(item.showLesson)):-1;
                 break;
             case 'achievement':
                 show = milestoneReducer && milestoneReducer.findIndex(milestone => (milestone.id === parseInt(item.showAchievement) && milestone.complete_date));
@@ -59,6 +61,8 @@ console.log(item.title, item)
                 show = 1;
                 break;
         }
+        if(show>=0)
+            setHideEmptyMessage(true);
         return (
             show >= 0 ?
                 Array.isArray(item.step) ?
@@ -71,57 +75,43 @@ console.log(item.title, item)
     return (
         <SafeAreaView style={global.container}>
             {
-                uncompletedMilestoneReducer||completedMilestoneReducer||claimedMilestoneReducer?
-                    <ScrollView style={styles.containerStyle} showsVerticalScrollIndicator={false}>
-                        {completedMilestoneReducer && completedMilestoneReducer.length ?
-                            <FlatList
-                                scrollEnabled={false}
-                                data={completedMilestoneReducer}
-                                renderItem={renderItem}
-                                keyExtractor={item => item.id}
-                                showsVerticalScrollIndicator={false}
-                            />
-                            :null}
-                        {uncompletedMilestoneReducer && uncompletedMilestoneReducer.length ?
-                            <FlatList
-                                scrollEnabled={false}
-                                data={uncompletedMilestoneReducer}
-                                renderItem={renderItem}
-                                keyExtractor={item => item.id}
-                                showsVerticalScrollIndicator={false}
-                            />:null}
-                        {claimedMilestoneReducer && claimedMilestoneReducer.length ?
-                            <FlatList
-                                scrollEnabled={false}
-                                data={claimedMilestoneReducer}
-                                renderItem={renderItem}
-                                keyExtractor={item => item.id}
-                                showsVerticalScrollIndicator={false}
-                            />:null}
-                    </ScrollView>
-                :
-                <View style={{
-                    flex: 1,
-                    width: windowWidth
-                }}>
-                    <View style={[styles.boxShadow, {
-                        padding: 15,
-                        justifyContent: "center",
-                        alignSelf: "center",
-                        borderRadius: 9,
-                        backgroundColor: "#fff",
-                        margin: 15
-                    }]}>
-                        <View style={{marginHorizontal: 0, justifyContent: "center", alignItems: "center"}}>
-                            <Text style={[styles.body, {
-                                marginHorizontal: 0,
-                                fontSize: scale(14),
-                                lineHeight: scale(14 * 1.47),
-                                textAlign: "left"
-                            }]}>{emptyText}</Text>
-                        </View>
-                    </View>
-                </View>
+                <ScrollView style={styles.containerStyle} showsVerticalScrollIndicator={false}>
+                    {completedMilestoneReducer && completedMilestoneReducer.length ?
+                        <FlatList
+                            scrollEnabled={false}
+                            data={completedMilestoneReducer}
+                            renderItem={renderItem}
+                            keyExtractor={item => item.id}
+                            showsVerticalScrollIndicator={false}
+                        />
+                        :null}
+                    {uncompletedMilestoneReducer && uncompletedMilestoneReducer.length ?
+                        <FlatList
+                            scrollEnabled={false}
+                            data={uncompletedMilestoneReducer}
+                            renderItem={renderItem}
+                            keyExtractor={item => item.id}
+                            showsVerticalScrollIndicator={false}
+                        />:null}
+                    {claimedMilestoneReducer && claimedMilestoneReducer.length ?
+                        <FlatList
+                            scrollEnabled={false}
+                            data={claimedMilestoneReducer}
+                            renderItem={renderItem}
+                            keyExtractor={item => item.id}
+                            showsVerticalScrollIndicator={false}
+                        />:null}
+                    {!hideEmptyMessage ?
+                        <View style={{flex: 1, backgroundColor: '#fff'}}>
+                            <BlockScreen pageId={emptyText.id}
+                                         contentInsetTop={0}
+                                         contentOffsetY={0}
+                                         hideTitle={true}
+                                         hideNavigationHeader={true}
+                                         {...props}/>
+                        </View>:null
+                    }
+                </ScrollView>
             }
         </SafeAreaView>
     )
@@ -130,41 +120,6 @@ const styles = StyleSheet.create({
     containerStyle: {
         paddingTop: scale(15),
         marginBottom: scale(25)
-    },
-    row: {
-        borderRadius: 9,
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: windowWidth - scale(30),
-        height: scale(70),
-        flexDirection: 'row',
-        backgroundColor: '#f2f2f2',
-        marginTop: scale(10),
-        marginHorizontal: scale(15),
-    },
-    rowLeft: {
-        marginVertical: 0,
-        paddingHorizontal: scale(10),
-        borderTopLeftRadius: 9,
-        borderBottomLeftRadius: 9,
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: (windowWidth - scale(30)) * 2 / 3,
-        height: scale(70),
-        backgroundColor: '#f2f2f2',
-    },
-    rowRight: {
-        marginVertical: 0,
-        borderTopRightRadius: 9,
-        borderBottomRightRadius: 9,
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: (windowWidth - scale(30)) / 3,
-        height: scale(70),
-        backgroundColor: '#7de7fa',
-    },
-    pointText: {
-        fontSize: scale(14),
     },
     boxShadow: {
         shadowColor: "#000",

@@ -11,6 +11,8 @@ import {
     Alert,
     ActivityIndicator,
 } from 'react-native';
+import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
+import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {scale} from "../Utils/scale";
 import {windowWidth} from "../Utils/Dimensions";
 import moment from 'moment';
@@ -23,7 +25,7 @@ import AwesomeAlert from "../Components/AwesomeAlert";
 
 const VouchersScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const emptyText = optionData.titles.find(el => el.id === 'voucher_empty').title
+    const emptyText = optionData.helps.find(el => el.name === 'voucher_empty');
     const user = useSelector((state) => state.user.userObject);
     const [ loading, setLoading ] = useState(false);
     const [vouchers, setVouchers] = useState({});
@@ -183,20 +185,13 @@ const VouchersScreen = (props) => {
                         keyExtractor = {(item, index) => `${item.title}-${index}`}
                    />
                     :
-                    <View style={{
-                        flex: 1,
-                        width: windowWidth
-                   }}>
-                        <View style={[styles.boxShadow, {padding:15,justifyContent: "center",alignSelf:"center",borderRadius: 9,backgroundColor:"#fff", margin:15}]}>
-                            <View style={{marginHorizontal: 0, justifyContent: "center", alignItems: "center"}}>
-                                <Text style={[styles.body, {
-                                    marginHorizontal: 0,
-                                    fontSize:scale(14),
-                                    lineHeight:scale(14*1.47),
-                                    textAlign:"left"
-                               }]}>{emptyText}</Text>
-                            </View>
-                        </View>
+                    <View style={{flex: 1, backgroundColor: '#fff'}}>
+                        <BlockScreen pageId={emptyText.id}
+                                     contentInsetTop={0}
+                                     contentOffsetY={0}
+                                     hideTitle={true}
+                                     hideNavigationHeader={true}
+                                     {...props}/>
                     </View>
            }
             {loading &&

@@ -35,6 +35,7 @@ const EditRoutine = props => {
     const backgroundMusics = optionData.routine_bgm;
     const [playingSound, setPlayingSound] = useState(false);
     const [waitingGetID, setWaitingGetID] = useState(null);
+    const [saving, setSaving] = useState(false);
     const [soundUrl, setSoundUrl] = useState('');
     const routinesReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer.routines : []);
     const [routineDetailState, setRoutineDetailState] = useState(routineIndex >= 0 ? routinesReducer[routineIndex] : {
@@ -77,6 +78,7 @@ const EditRoutine = props => {
     const addTracks = async () => {
         try {
             setWaitingGetID(true);
+            setSaving(true);
             const apiRoutine = getApi(props.config);
             const data = await apiRoutine.customRequest(
                 "wp-json/onenergy/v1/addRoutine",
@@ -95,22 +97,26 @@ const EditRoutine = props => {
         }
     }
     useEffect(() => {
-        props.navigation.setParams({
-            waitingGetID: waitingGetID,
-        });
-        if (routineIndex===-1&&!waitingGetID&&routineDetailState.title!=='') {
-            dispatch({
-                type: "ONENERGY_ROUTINE_SAVE",
-                payload: routineDetailState
-            })
-            navigation.goBack();
+        if(!waitingGetID && routineDetailState.id > 0) {
+            if (routineIndex === -1 && !waitingGetID && routineDetailState.title !== '') {
+                dispatch({
+                    type: "ONENERGY_ROUTINE_SAVE",
+                    payload: routineDetailState
+                })
+                navigation.goBack();
+            }
         }
-    }, [waitingGetID]);
+    }, [waitingGetID, routineDetailState]);
     useEffect(() => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
         });
     }, [])
+    useEffect(() => {
+        props.navigation.setParams({
+            saving: saving,
+        });
+    }, [saving])
     useEffect(() => {
         if (routinesReducer && routinesReducer.length && routineIndex >= 0) {
             setRoutineDetailState(routinesReducer[routineIndex])
@@ -163,6 +169,8 @@ const EditRoutine = props => {
             } else {
                 addTracks().then();
             }
+        }else{
+            navigation.goBack();
         }
     }
     const createTracks = (routine) => {
@@ -944,7 +952,7 @@ EditRoutine.navigationOptions = ({navigation, screenProps}) => {
         headerTintColor: colors.headerColor,
         headerTitleStyle: global.appHeaderTitle,
         headerLeft:
-            params.waitingGetID ?
+            params.saving ?
                 <View style={{marginLeft:scale(15)}}>
                     <ActivityIndicator size={"small"} color={screenProps.colors.headerIconColor}/>
                 </View>
