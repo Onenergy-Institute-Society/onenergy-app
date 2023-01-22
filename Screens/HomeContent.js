@@ -181,28 +181,28 @@ const HomeContent = (props) => {
             getLocation();
         }
         const moonIllumination = SunCalc.getMoonIllumination(new Date());
-        const phaseNumber = Math.round(moonIllumination.phase * 100) / 100;
+        const phaseNumber = moonIllumination.phase * 200;
         let phaseName = '';
 console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonIllumination.phase, phaseNumber)
-        if (phaseNumber >= 0 && phaseNumber < 0.125 || phaseNumber >= 0.875 && phaseNumber <= 1) {
+        if (phaseNumber >= 0 && phaseNumber <= 2 || phaseNumber >= 198 && phaseNumber <= 200) {
             phaseName = 'New Moon';
-        } else if (phaseNumber >= 0.125 && phaseNumber < 0.225) {
+        } else if (phaseNumber > 2 && phaseNumber < 48) {
             phaseName = 'Waxing Crescent';
-        } else if (phaseNumber >= 0.225 && phaseNumber < 0.275) {
+        } else if (phaseNumber >= 48 && phaseNumber <= 52) {
             phaseName = 'First Quarter';
-        } else if (phaseNumber >= 0.275 && phaseNumber < 0.475) {
+        } else if (phaseNumber > 52 && phaseNumber < 98) {
             phaseName = 'Waxing Gibbous';
-        } else if (phaseNumber >= 0.475 && phaseNumber < 0.525) {
+        } else if (phaseNumber >= 98 && phaseNumber <= 102) {
             phaseName = 'Full Moon';
-        } else if (phaseNumber >= 0.525 && phaseNumber < 0.725) {
+        } else if (phaseNumber > 102 && phaseNumber < 148) {
             phaseName = 'Waning Gibbous';
-        } else if (phaseNumber >= 0.725 && phaseNumber < 0.775) {
+        } else if (phaseNumber >= 148 && phaseNumber <= 152) {
             phaseName = 'Last Quarter';
-        } else if (phaseNumber > 0.775 && phaseNumber < 0.875) {
+        } else if (phaseNumber > 152 && phaseNumber < 198) {
             phaseName = 'Waning Crescent';
         }
         setPhase(phaseName)
-        const lunarAge = Math.round(phaseNumber * 30);
+        const lunarAge = (phaseNumber * 3)/20;
         let dateDiff;
         let moonPhase = '';
         let moonPhaseDate = '';
@@ -211,7 +211,7 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
             dateDiff = 15 - lunarAge;
             moonPhase = 'Full Moon';
         } else {
-            dateDiff = 29 - lunarAge;
+            dateDiff = 30 - lunarAge;
             moonPhase = 'New Moon';
         }
 
@@ -501,53 +501,73 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                                 </View>
                             </TouchableScale>
                             <View style={{marginRight: scale(15), justifyContent: "space-between"}}>
-                                <View style={[styles.progressRightRow, styles.boxShadow]}>
-                                    <View style={{
-                                        width: "100%",
-                                        flexDirection: "row",
-                                        justifyContent: "center",
-                                        alignItems: "center"
-                                    }}>
-                                        <Text style={[global.itemTitle, {
-                                            fontSize: scale(14),
-                                            color: colors.primaryColor
-                                        }]}>courses{"\n"}in progress</Text>
+                                <TouchableScale
+                                    onPress={
+                                        () => {
+                                            navigation.dispatch(
+                                                NavigationActions.navigate({
+                                                    routeName: "ProgramsScreen"
+                                                })
+                                            )
+                                        }}>
+                                    <View style={[styles.progressRightRow, styles.boxShadow]}>
+                                        <View style={{
+                                            width: "100%",
+                                            flexDirection: "row",
+                                            justifyContent: "center",
+                                            alignItems: "center"
+                                        }}>
+                                            <Text style={[global.itemTitle, {
+                                                fontSize: scale(14),
+                                                color: colors.primaryColor
+                                            }]}>courses{"\n"}in progress</Text>
+                                        </View>
+                                        <View style={{flexDirection: "row", justifyContent: "flex-start"}}>
+                                            <Text style={[global.itemTitle, {
+                                                fontSize: scale(40),
+                                                color: colors.primaryButtonBg
+                                            }]}>{progressReducer.enrolledCourses ? progressReducer.completedCourses ? progressReducer.enrolledCourses.length - progressReducer.completedCourses.length : progressReducer.enrolledCourses.length : 0}</Text>
+                                        </View>
                                     </View>
-                                    <View style={{flexDirection: "row", justifyContent: "flex-start"}}>
-                                        <Text style={[global.itemTitle, {
-                                            fontSize: scale(40),
-                                            color: colors.primaryButtonBg
-                                        }]}>{progressReducer.enrolledCourses ? progressReducer.completedCourses ? progressReducer.enrolledCourses.length - progressReducer.completedCourses.length : progressReducer.enrolledCourses.length : 0}</Text>
+                                </TouchableScale>
+                                <TouchableScale
+                                    onPress={
+                                        () => {
+                                            navigation.dispatch(
+                                                NavigationActions.navigate({
+                                                    routeName: "PracticesScreen"
+                                                })
+                                            )
+                                        }}>
+                                    <View style={[styles.progressRightRow, styles.boxShadow]}>
+                                        <View style={{
+                                            width: "100%",
+                                            flexDirection: "row",
+                                            justifyContent: "center",
+                                            alignItems: "center"
+                                        }}>
+                                            <Text style={[global.itemTitle, {
+                                                lineHeight: scale(14),
+                                                fontSize: scale(14),
+                                                color: colors.primaryColor
+                                            }]}>total{"\n"}practiced</Text>
+                                        </View>
+                                        <View style={{
+                                            flexDirection: "row",
+                                            justifyContent: "center",
+                                            alignItems: "baseline"
+                                        }}>
+                                            <Text style={[global.itemTitle, {
+                                                fontSize: scale(40),
+                                                color: colors.primaryButtonBg
+                                            }]}>{progressReducer.totalDuration ? Math.round(progressReducer.totalDuration / 60) > 60 ? Math.round(progressReducer.totalDuration / 60 / 60) : Math.round(progressReducer.totalDuration / 60) : 0}</Text><Text
+                                            style={[global.itemText, {
+                                                fontSize: scale(14),
+                                                color: colors.primaryButtonBg
+                                            }]}>{progressReducer.totalDuration ? Math.round(progressReducer.totalDuration / 60) > 60 ? optionData.titles.find(el => el.id === 'stats_detail_hours').title : optionData.titles.find(el => el.id === 'stats_detail_minutes').title : ''}</Text>
+                                        </View>
                                     </View>
-                                </View>
-                                <View style={[styles.progressRightRow, styles.boxShadow]}>
-                                    <View style={{
-                                        width: "100%",
-                                        flexDirection: "row",
-                                        justifyContent: "center",
-                                        alignItems: "center"
-                                    }}>
-                                        <Text style={[global.itemTitle, {
-                                            lineHeight: scale(14),
-                                            fontSize: scale(14),
-                                            color: colors.primaryColor
-                                        }]}>total{"\n"}practiced</Text>
-                                    </View>
-                                    <View style={{
-                                        flexDirection: "row",
-                                        justifyContent: "center",
-                                        alignItems: "baseline"
-                                    }}>
-                                        <Text style={[global.itemTitle, {
-                                            fontSize: scale(40),
-                                            color: colors.primaryButtonBg
-                                        }]}>{progressReducer.totalDuration ? Math.round(progressReducer.totalDuration / 60) > 60 ? Math.round(progressReducer.totalDuration / 60 / 60) : Math.round(progressReducer.totalDuration / 60) : 0}</Text><Text
-                                        style={[global.itemText, {
-                                            fontSize: scale(14),
-                                            color: colors.primaryButtonBg
-                                        }]}>{progressReducer.totalDuration ? Math.round(progressReducer.totalDuration / 60) > 60 ? optionData.titles.find(el => el.id === 'stats_detail_hours').title : optionData.titles.find(el => el.id === 'stats_detail_minutes').title : ''}</Text>
-                                    </View>
-                                </View>
+                                </TouchableScale>
                             </View>
                         </View>
                     </>

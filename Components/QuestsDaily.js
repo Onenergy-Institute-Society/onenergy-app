@@ -90,6 +90,7 @@ const QuestsDaily = (props) => {
                 show = 1;
                 break;
         }
+        if(item.complete_date) show = 1;
         if(show >= 0)
             setHideEmptyMessage(true);
         return (

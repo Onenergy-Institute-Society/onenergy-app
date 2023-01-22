@@ -22,7 +22,7 @@ const Milestones = (props) => {
     const claimedMilestoneReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.milestones.filter(achievement => achievement.type === type && achievement.claim_date!=='') : null);
     const [hideEmptyMessage, setHideEmptyMessage] = useState(false);
     const dispatch = useDispatch();
-console.log(optionData)
+
     const handleOnPress = (item, date, mode) => {
         if (item.complete_date && !item.claim_date) {
             LayoutAnimation.configureNext(
@@ -39,7 +39,7 @@ console.log(optionData)
 
     const renderItem = ({item}) => {
         let show = -1;
-console.log(item.title, item)
+
         switch (item.show) {
             case 'course':
                 switch (item.showCourseOption) {
@@ -61,6 +61,7 @@ console.log(item.title, item)
                 show = 1;
                 break;
         }
+        if(item.complete_date) show = 1;
         if(show>=0)
             setHideEmptyMessage(true);
         return (

@@ -23,7 +23,7 @@ import {
     SvgIconSetting,
     SvgIconSignup,
     SvgIconSupport,
-    SvgIconVoucher
+    SvgIconVoucher, SvgVIPMedal
 } from "../Utils/svg";
 
 const CustomDrawerContentComponent = (props) => {

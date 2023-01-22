@@ -114,7 +114,7 @@ const LessonButton = (props) => {
             case "guided-practices":
                 props.navigation.dispatch(
                     NavigationActions.navigate({
-                        routeName: "PracticePersonal",
+                        routeName: "PracticePersonal"
                     }));
                 break;
             case "group-practices":

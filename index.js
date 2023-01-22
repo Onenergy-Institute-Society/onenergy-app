@@ -1295,10 +1295,9 @@ console.log(ors_tempPracticeState)
                 case "ONENERGY_PAST_CLAIM":
                     const awcTempQuestState = {...state.achievementReducer};
                     const awcTempProgressState = {...state.progressReducer};
-                    let awcAchievementIndex = awcTempQuestState.findIndex(achievement => achievement.id === action.payload.id);
-                    let awcWaitItemIndex = awcTempQuestState[awcAchievementIndex].list.findIndex(waitItem => waitItem === action.payload.date);
+                    let awcAchievementIndex = awcTempQuestState.daily.findIndex(achievement => achievement.id === action.payload.id);
+                    let awcWaitItemIndex = awcTempQuestState.daily[awcAchievementIndex].list.findIndex(waitItem => waitItem === action.payload.date);
 
-                    console.log(awcTempQuestState[awcAchievementIndex], awcAchievementIndex, awcWaitItemIndex)
                     if (awcAchievementIndex >= 0) {
                         awcTempQuestState.daily[awcAchievementIndex].list.splice(awcWaitItemIndex, 1);
                         awcTempQuestState.daily[awcAchievementIndex].awards.map(award => {
@@ -1346,11 +1345,7 @@ console.log(ors_tempPracticeState)
                     acwTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     return {
                         ...state,
-                        achievementReducer: {
-                            ...state.achievementReducer,
-                            weekly: acwTempAchievementState.weekly,
-                            monthly: acwTempAchievementState.monthly
-                        },
+                        achievementReducer: acwTempAchievementState,
                         progressReducer: acwTempProgressState
                     };
                 case "ONENERGY_LESSON_COMPLETED":
