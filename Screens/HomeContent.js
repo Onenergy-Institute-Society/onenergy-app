@@ -207,11 +207,11 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
         let moonPhase = '';
         let moonPhaseDate = '';
 
-        if (lunarAge <= 14) {
-            dateDiff = 15 - lunarAge;
+        if (lunarAge <= 14.765) {
+            dateDiff = 14.765 - lunarAge;
             moonPhase = 'Full Moon';
         } else {
-            dateDiff = 30 - lunarAge;
+            dateDiff = 29.530 - lunarAge;
             moonPhase = 'New Moon';
         }
 

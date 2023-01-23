@@ -230,11 +230,8 @@ const PracticeGroup = props => {
                             :
                             <Text style={styles.subtitle}>Finish required lessons to unlock.</Text>
                         }
-                        {practiceCount?
-                            <Text style={[global.itemText]}>{practiceCount} times</Text>
-                            :null}
                         <View style={{width:windowWidth-scale(60), flexDirection: "row", justifyContent:"space-between"}}>
-                            <Text style={styles.description}>{practiceCount} times</Text>
+                            <Text style={styles.description}>{practiceCount?practiceCount + 'times':null}</Text>
                             <Text style={styles.description}>tap to view detail</Text>
                         </View>
                     </ImageBackground>

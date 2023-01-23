@@ -88,10 +88,6 @@ const TracksList = (props) => {
                                         }}/>
                                     ) : null}
                                 </View>
-                                {practiceCount ?
-                                    <Text
-                                        style={[global.itemText, highlightColor, styles.countNumber]}>{practiceCount} times</Text>
-                                    : null}
                                 <Text
                                     style={[styles.duration, highlightColor]}>{new Date(item.duration * 1000).toISOString().substring(14, 19)}</Text>
                             </View>
@@ -224,11 +220,6 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: 'flex-start',
         marginTop: scale(5),
-    },
-    countNumber: {
-        position: "absolute",
-        bottom: scale(5),
-        left: scale(15),
     },
     album: {
         fontSize: scale(15),
