@@ -2354,7 +2354,7 @@ console.log(ors_tempPracticeState)
         //Pass the necessary props to the custom component
         return null;
     })
-    externalCodeSetup.cssApi.addGlobalStyle("boxTitle", {"fontWeight": "bold"}, false);
+   /* externalCodeSetup.cssApi.addGlobalStyle("boxTitle", {"fontWeight": "bold"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("appHeaderTitle", {"fontWeight": "bold"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("forumListTitle", {"fontWeight": "bold"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("subForumTitle", {"fontWeight": "bold"}, false);
@@ -2379,7 +2379,7 @@ console.log(ors_tempPracticeState)
     externalCodeSetup.cssApi.addGlobalStyle("text", {"fontWeight": "normal"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("semiBoldText", {"fontWeight": "bold"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("boldText", {"fontWeight": "bold"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("text", {"fontWeight": "normal"}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("text", {"fontWeight": "normal"}, false);*/
     externalCodeSetup.cssApi.addCustomColors({"altCardColor": "#FFEEE7"});
 
     externalCodeSetup.courseSingleApi.setCourseHeaderDetails(props => {

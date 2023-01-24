@@ -43,7 +43,7 @@ const ForumItem = ({
                         }}
                     >
                         <View>
-                            <Text style={[global.itemTitle, {marginBottom: 4, marginTop: 1}]}>
+                            <Text style={[global.itemTitle, {color: colors.textColor, marginBottom: 4, marginTop: 1}]}>
                                 {forum.title}
                             </Text>
                             {forum.shortContent ? (
