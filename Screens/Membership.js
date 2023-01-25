@@ -7,8 +7,7 @@ import {
     View,
     Text, Linking,
 } from 'react-native';
-import {scale} from "../Utils/scale";
-import {windowWidth} from "../Utils/Dimensions";
+import {ms, mvs, s, windowWidth} from "../Utils/Scale";
 import moment from 'moment';
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
@@ -81,7 +80,7 @@ const Membership = (props) => {
                     <TouchableOpacity style={styles.btnUpgrade}
                                       onPress={async () => {await props.attemptDeepLink(false)(null, 'https://app.onenergy.institute/bbapp/screen/iap_products');}}
                     >
-                        <Text style={{color: "white", fontSize:scale(18), paddingHorizontal:15, fontWeight: "700"}}>UPGRADE NOW</Text>
+                        <Text style={{color: "white", fontSize:s(18), paddingHorizontal:15, fontWeight: "700"}}>UPGRADE NOW</Text>
                     </TouchableOpacity>
                 </>
            }
@@ -97,16 +96,16 @@ const styles = StyleSheet.create({
    },
     cardContainer: {
         backgroundColor: '#fff',
-        paddingVertical: 16,
-        paddingHorizontal: 12,
-        borderRadius: 9,
+        paddingVertical: mvs(16),
+        paddingHorizontal: ms(12),
+        borderRadius:s(9),
         alignSelf: 'center',
-        width: windowWidth-scale(30),
-        marginTop:scale(15),
+        width: windowWidth-s(30),
+        marginTop:mvs(15),
    },
     title: {
         color: '#000',
-        fontSize: scale(14),
+        fontSize: s(14),
    },
     metaContainer: {
         justifyContent: 'space-between'
@@ -122,14 +121,14 @@ const styles = StyleSheet.create({
    },
     description: {
         color: '#000',
-        marginTop: 5,
-        fontSize: scale(20)
+        marginTop: mvs(5),
+        fontSize: s(20)
    },
     button: {
         backgroundColor: '#22d3ee',
         alignSelf: 'flex-start',
-        paddingHorizontal: 12,
-        paddingVertical: 4,
+        paddingHorizontal: ms(12),
+        paddingVertical: mvs(4),
         borderRadius: 2
    },
     buttonText: {
@@ -139,13 +138,13 @@ const styles = StyleSheet.create({
         fontSize: 14
    },
     btnUpgrade: {
-        marginTop:15,
-        fontSize: scale(20),
+        marginTop:mvs(15),
+        fontSize: s(20),
         color:"white",
-        borderRadius:9,
+        borderRadius:s(9),
         backgroundColor:"#4942e1",
-        padding:10,
-        marginBottom:scale(10),
+        padding:ms(10),
+        marginBottom:mvs(10),
    }
 });
 Membership.navigationOptions = ({navigation, screenProps}) => {

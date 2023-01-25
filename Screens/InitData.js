@@ -1,11 +1,9 @@
 import React, {useEffect} from "react";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
-    StyleSheet,
-    SafeAreaView, View, Text, Modal, ImageBackground, BackHandler, ActivityIndicator
+    SafeAreaView, Text, ImageBackground, BackHandler, ActivityIndicator
 } from "react-native";
 import {getApi} from "@src/services";
-import {scale} from '../Utils/scale';
 
 const InitData = (props) => {
     const {navigation, screenProps} = props;

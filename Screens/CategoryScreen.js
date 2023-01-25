@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {getApi} from "@src/services";
-import {SafeAreaView, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
+import {SafeAreaView, StyleSheet, TouchableOpacity} from 'react-native';
 import {connect,} from "react-redux";
 import ImageCache from '../Components/ImageCache';
 import PostList from "../Components/PostList";
-import {windowWidth} from "../Utils/Dimensions";
-import {scale} from "../Utils/scale";
+import {mvs, s, windowWidth} from "../Utils/Scale";
 import analytics from '@react-native-firebase/analytics';
 import {SvgIconBack} from "../Utils/svg";
 
@@ -60,12 +59,12 @@ const CategoryScreen = props => {
 };
 const styles = StyleSheet.create({
     image: {
-        width: windowWidth - scale(30),
-        height: (windowWidth - scale(30)) / 2.5,
-        borderRadius: 9,
+        width: windowWidth - s(30),
+        height: (windowWidth - s(30)) / 2.5,
+        borderRadius:s(9),
         overflow: 'hidden',
         marginHorizontal:15,
-        marginTop:15,
+        marginTop:mvs(15),
    },
 });
 const mapStateToProps = (state) => ({

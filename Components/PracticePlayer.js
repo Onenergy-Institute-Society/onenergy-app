@@ -3,8 +3,7 @@ import {Alert, BackHandler, PixelRatio, StatusBar, StyleSheet, Text, TouchableOp
 import {useDispatch, useSelector} from "react-redux";
 import Video from "react-native-video";
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
-import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import {scale} from "../Utils/scale";
+import {ms, s, windowHeight, windowWidth} from "../Utils/Scale";
 import WaitingGroupPractice from "./WaitingGroupPractice";
 import analytics from '@react-native-firebase/analytics';
 
@@ -99,19 +98,19 @@ const PracticePlayer = (props) => {
                     flexDirection: "row",
                     justifyContent: "flex-start",
                     alignItems: "center",
-                    borderRadius: 9,
-                    paddingHorizontal: 10,
+                    borderRadius:s(9),
+                    paddingHorizontal: ms(10),
                     backgroundColor: "black",
                     position: "absolute",
                     top: 40,
                     left: 20
                 }} waitingIconColor={"white"} waitingIconStyle={{width: 16, height: 16}}
-                                      waitingTextStyle={{color: "white", fontSize: scale(16), marginLeft: 5}}/>
+                                      waitingTextStyle={{color: "white", fontSize: s(16), marginLeft: 5}}/>
                 <TouchableOpacity
-                    style={{borderRadius: 9, backgroundColor: "red", position: "absolute", top: 40, right: 20}}
+                    style={{borderRadius:s(9), backgroundColor: "red", position: "absolute", top: 40, right: 20}}
                     onPress={() => handleBackButtonClick()}
                 >
-                    <Text style={{paddingHorizontal: 10, color: "white", fontSize: scale(16)}}>Exit</Text>
+                    <Text style={{paddingHorizontal: ms(10), color: "white", fontSize: s(16)}}>Exit</Text>
                 </TouchableOpacity>
             </View>
         </View>

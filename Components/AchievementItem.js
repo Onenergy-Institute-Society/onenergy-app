@@ -1,7 +1,7 @@
 import React from 'react';
 import {useSelector} from "react-redux";
 import {StyleSheet, Text, TouchableWithoutFeedback, View,} from 'react-native';
-import {scale, windowWidth} from "../Utils/scale";
+import {ms, mvs, s, windowWidth} from "../Utils/Scale";
 import * as Progress from 'react-native-progress';
 import moment from 'moment';
 
@@ -14,7 +14,7 @@ const AchievementItem = (props) => {
     return (
         <View style={[styles.boxShadow, styles.row]}>
             <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
-                <Text style={[global.title, {fontSize: scale(12)}]}>{item.title}</Text>
+                <Text style={[global.title, {fontSize: s(12)}]}>{item.title}</Text>
                 {mode === 'past' ?
                     <View style={{marginVertical: 10}}>
                         <View
@@ -24,7 +24,7 @@ const AchievementItem = (props) => {
                     </View>
                     : null}
                 <View style={{
-                    marginTop: 10,
+                    marginTop: mvs(10),
                     justifyContent: "center",
                     alignItems: "center",
                     width: mode !== 'past' && !item.claim_date ? '100%' : 0,
@@ -34,7 +34,7 @@ const AchievementItem = (props) => {
                                   color={item.complete_date === today && mode === 'daily' ? "lightgreen" : item.complete_date ? "lightgreen" : colors.primaryButtonBg}
                                   unfilledColor={"black"} borderRadius={9}
                                   progress={mode === 'daily' ? item.complete_date === today ? item.total : 0 : item.complete_date ? item.total : item.step / item.total}
-                                  width={windowWidth / 2} height={scale(16)}/>
+                                  width={windowWidth / 2} height={s(16)}/>
                     <View
                         style={{
                             position: "absolute",
@@ -69,7 +69,7 @@ const AchievementItem = (props) => {
                                     <Text
                                         style={[global.pointTitle, {
                                             flexWrap: "nowrap",
-                                            fontSize: scale(24),
+                                            fontSize: s(24),
                                             color: '#FFF'
                                         }]}
                                     >
@@ -88,7 +88,7 @@ const AchievementItem = (props) => {
                                     numberOfLines={1}
                                     style={[global.itemMeta, {
                                         flexWrap: "nowrap",
-                                        fontSize: scale(mode !== 'past' && item.claim_date ? 11 : 24),
+                                        fontSize: s(mode !== 'past' && item.claim_date ? 11 : 24),
                                         color: '#FFF'
                                     }]}
                                 >
@@ -110,35 +110,35 @@ const AchievementItem = (props) => {
 
 const styles = StyleSheet.create({
     row: {
-        borderRadius: 9,
+        borderRadius:s(9),
         alignItems: 'center',
         justifyContent: 'space-between',
-        width: windowWidth - scale(30),
-        height: scale(70),
+        width: windowWidth - s(30),
+        height: s(70),
         flexDirection: 'row',
-        marginTop: scale(0),
-        marginBottom: scale(15),
-        marginHorizontal: scale(15),
+        marginTop: 0,
+        marginBottom: mvs(15),
+        marginHorizontal: s(15),
     },
     rowRight: {
         marginVertical: 0,
-        borderTopRightRadius: 9,
-        borderBottomRightRadius: 9,
+        borderTopRightRadius: s(9),
+        borderBottomRightRadius: s(9),
         alignItems: 'center',
         justifyContent: 'center',
-        width: (windowWidth - scale(30)) / 3,
-        height: scale(70),
+        width: (windowWidth - s(30)) / 3,
+        height: s(70),
         backgroundColor: '#8c79ea',
     },
     rowLeft: {
         marginVertical: 0,
-        paddingHorizontal: scale(10),
-        borderTopLeftRadius: 9,
-        borderBottomLeftRadius: 9,
+        paddingHorizontal: ms(10),
+        borderTopLeftRadius: s(9),
+        borderBottomLeftRadius: s(9),
         alignItems: 'center',
         justifyContent: 'center',
-        width: (windowWidth - scale(30)) * 2 / 3,
-        height: scale(70),
+        width: (windowWidth - s(30)) * 2 / 3,
+        height: s(70),
         backgroundColor: '#f2f2f2',
     },
     boxShadow: {
@@ -149,9 +149,9 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     title: {
-        paddingLeft: 10,
-        paddingRight: 10,
-        fontSize: scale(14),
+        paddingLeft: ms(10),
+        paddingRight: ms(10),
+        fontSize: s(14),
         fontWeight: 'bold',
         color: "#5E5E5E",
     },

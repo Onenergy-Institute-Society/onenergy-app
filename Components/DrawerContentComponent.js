@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {useSelector} from "react-redux";
 import FastImage from 'react-native-fast-image';
-import {scale} from "../Utils/scale";
+import {ms, mvs, s} from "../Utils/Scale";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import AuthWrapper from "@src/components/AuthWrapper";
 import {
@@ -36,7 +36,7 @@ const CustomDrawerContentComponent = (props) => {
         <SafeAreaView style={{flex: 1, backgroundColor: colors.bodyFrontBg}}>
             <ImageBackground
                 source={require('../assets/images/1-1024x683.jpg')}
-                style={{height: scale(140), justifyContent: "center", alignItems: "center"}}>
+                style={{height: s(140), justifyContent: "center", alignItems: "center"}}>
                 {user ?
                     <>
                         <View style={{flexDirection: 'row', justifyContent: "space-between"}}>
@@ -47,21 +47,21 @@ const CustomDrawerContentComponent = (props) => {
                                     <FastImage
                                         source={{uri: user && user.avatar_urls['full'] ? user.avatar_urls['full'] : user.avatar_urls['96']}}
                                         style={{
-                                            height: scale(80),
-                                            width: scale(80),
+                                            height: s(80),
+                                            width: s(80),
                                             borderRadius: 100,
-                                            margin: scale(10)
+                                            margin: s(10)
                                         }}
                                     />
                                 </TouchableOpacity>
                             </View>
-                            <View style={{paddingTop: 20,}}>
+                            <View style={{paddingTop: mvs(20),}}>
                                 <Text
                                     style={{
                                         color: '#fff',
-                                        fontSize: scale(18),
+                                        fontSize: s(18),
                                         textAlign: "right",
-                                        marginBottom: 10,
+                                        marginBottom: mvs(10),
                                         textShadowColor: 'grey',
                                         textShadowRadius: 1,
                                         textShadowOffset: {
@@ -106,7 +106,7 @@ const CustomDrawerContentComponent = (props) => {
                                                style={{width: 24, height: 24, alignSelf: "center"}}/>
                                     <Text style={{
                                         color: '#fff',
-                                        fontSize: scale(14),
+                                        fontSize: s(14),
                                         marginLeft: 5,
                                         textShadowColor: 'grey',
                                         textShadowRadius: 1,
@@ -128,7 +128,7 @@ const CustomDrawerContentComponent = (props) => {
             </ImageBackground>
             <View style={{flex: 1, justifyContent: "space-between"}}>
                 {(optionData && Object.keys(optionData).length > 0) ? (
-                    <View style={{backgroundColor: colors.bodyBg, margin: 10, paddingLeft: 10, borderRadius: 9}}>
+                    <View style={{backgroundColor: colors.bodyBg, margin: ms(10), paddingLeft: ms(10), borderRadius: s(9)}}>
                         {!user ?
                             <>
                                 <TouchableWithoutFeedback onPress={() => {
@@ -139,8 +139,8 @@ const CustomDrawerContentComponent = (props) => {
                                         borderBottomColor: colors.borderColor
                                     }]}>
                                         <View style={{flexDirection: "row", alignItems: "center"}}>
-                                            <SvgIconSignup color={colors.secondaryButtonColor}/>
-                                            <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
+                                            <SvgIconSignup size={24} color={colors.secondaryButtonColor}/>
+                                            <Text style={[global.settingsItemTitle, {marginLeft: s(10)}]}>
                                                 {optionData.titles.findIndex(el => el.id === 'left_menu_signup') >= 0 ? optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_signup')].title : 'Create an Account'}
                                             </Text>
                                         </View>
@@ -155,8 +155,8 @@ const CustomDrawerContentComponent = (props) => {
                                         borderBottomColor: colors.borderColor
                                     }]}>
                                         <View style={{flexDirection: "row", alignItems: "center"}}>
-                                            <SvgIconLogin color={colors.secondaryButtonColor}/>
-                                            <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
+                                            <SvgIconLogin size={24} color={colors.secondaryButtonColor}/>
+                                            <Text style={[global.settingsItemTitle, {marginLeft: s(10)}]}>
                                                 {optionData.titles.findIndex(el => el.id === 'left_menu_login') >= 0 ? optionData.titles[optionData.titles.findIndex(el => el.id === 'left_menu_login')].title : 'Login My Account'}
                                             </Text>
                                         </View>
@@ -175,7 +175,7 @@ const CustomDrawerContentComponent = (props) => {
                                     }]}>
                                         <View style={{flexDirection: "row", alignItems: "center"}}>
                                             <SvgIconProgress color={colors.secondaryButtonColor}/>
-                                            <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
+                                            <Text style={[global.settingsItemTitle, {marginLeft: s(10)}]}>
                                                 {optionData.titles.find(el => el.id === 'left_menu_progress').title}
                                             </Text>
                                         </View>
@@ -191,13 +191,13 @@ const CustomDrawerContentComponent = (props) => {
                                     }]}>
                                         <View style={{flexDirection: "row", alignItems: "center"}}>
                                             <SvgIconQuest color={colors.secondaryButtonColor}/>
-                                            <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
+                                            <Text style={[global.settingsItemTitle, {marginLeft: s(10)}]}>
                                                 {optionData.titles.find(el => el.id === 'left_menu_quests').title}
                                             </Text>
                                         </View>
                                         <AuthWrapper actionOnGuestLogin={'hide'}>
                                             <NotificationTabBarIcon notificationID={'quest'} top={5} right={5}
-                                                                    size={scale(10)} showNumber={false}/>
+                                                                    size={10} showNumber={false}/>
                                         </AuthWrapper>
                                         <SvgIconRightArrow color={colors.descLightTextColor}/>
                                     </View>
@@ -211,13 +211,13 @@ const CustomDrawerContentComponent = (props) => {
                                     }]}>
                                         <View style={{flexDirection: "row", alignItems: "center"}}>
                                             <SvgIconMilestone color={colors.secondaryButtonColor}/>
-                                            <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
+                                            <Text style={[global.settingsItemTitle, {marginLeft: s(10)}]}>
                                                 {optionData.titles.find(el => el.id === 'left_menu_achievements').title}
                                             </Text>
                                         </View>
                                         <AuthWrapper actionOnGuestLogin={'hide'}>
                                             <NotificationTabBarIcon notificationID={'milestone'} top={5} right={5}
-                                                                    size={scale(10)} showNumber={false}/>
+                                                                    size={10} showNumber={false}/>
                                         </AuthWrapper>
                                         <SvgIconRightArrow color={colors.descLightTextColor}/>
                                     </View>
@@ -231,13 +231,13 @@ const CustomDrawerContentComponent = (props) => {
                                     }]}>
                                         <View style={{flexDirection: "row", alignItems: "center"}}>
                                             <SvgIconVoucher color={colors.secondaryButtonColor}/>
-                                            <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
+                                            <Text style={[global.settingsItemTitle, {marginLeft: s(10)}]}>
                                                 {optionData.titles.find(el => el.id === 'left_menu_vouchers').title}
                                             </Text>
                                         </View>
                                         <AuthWrapper actionOnGuestLogin={'hide'}>
                                             <NotificationTabBarIcon notificationID={'voucher'} top={5} right={5}
-                                                                    size={scale(10)} showNumber={false}/>
+                                                                    size={10} showNumber={false}/>
                                         </AuthWrapper>
                                         <SvgIconRightArrow color={colors.descLightTextColor}/>
                                     </View>
@@ -253,7 +253,7 @@ const CustomDrawerContentComponent = (props) => {
                             }]}>
                                 <View style={{flexDirection: "row", alignItems: "center"}}>
                                     <SvgIconQuestion color={colors.secondaryButtonColor}/>
-                                    <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
+                                    <Text style={[global.settingsItemTitle, {marginLeft: s(10)}]}>
                                         {optionData.titles.find(el => el.id === 'left_menu_faq').title}
                                     </Text>
                                 </View>
@@ -270,7 +270,7 @@ const CustomDrawerContentComponent = (props) => {
                                 }]}>
                                     <View style={{flexDirection: "row", alignItems: "center"}}>
                                         <SvgIconSupport color={colors.secondaryButtonColor}/>
-                                        <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
+                                        <Text style={[global.settingsItemTitle, {marginLeft: s(10)}]}>
                                             {optionData.titles.find(el => el.id === 'left_menu_feedback').title}
                                         </Text>
                                     </View>
@@ -280,11 +280,11 @@ const CustomDrawerContentComponent = (props) => {
                             : null}
                         <TouchableWithoutFeedback onPress={() =>
                             navigation.navigate("SettingsScreen")}>
-                            <View style={[styles.menuItem, {borderBottomRightRadius: 9}]}>
+                            <View style={[styles.menuItem, {borderBottomRightRadius: s(9)}]}>
                                 <View
                                     style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
                                     <SvgIconSetting color={colors.secondaryButtonColor}/>
-                                    <Text style={[global.settingsItemTitle, {marginLeft: scale(10)}]}>
+                                    <Text style={[global.settingsItemTitle, {marginLeft: s(10)}]}>
                                         {optionData.titles.find(el => el.id === 'left_menu_settings').title}
                                     </Text>
                                 </View>
@@ -299,8 +299,8 @@ const CustomDrawerContentComponent = (props) => {
 }
 const styles = StyleSheet.create({
     menuItem: {
-        paddingHorizontal: 5,
-        paddingVertical: scale(15),
+        paddingHorizontal: ms(5),
+        paddingVertical: mvs(15),
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'

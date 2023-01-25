@@ -1,7 +1,6 @@
 import React, {useRef} from "react";
 import {StyleSheet, View} from "react-native";
-import {scale} from "../Utils/scale";
-import {windowWidth} from "../Utils/Dimensions";
+import {s, windowWidth} from "../Utils/Scale";
 import Video from "react-native-video";
 
 const BgVideoBlock = (props) => {
@@ -15,8 +14,8 @@ const BgVideoBlock = (props) => {
             height = parseInt(block.data.data.height);
             break;
         case "full":
-            width = windowWidth - scale(30);
-            height = (windowWidth - scale(30)) / parseInt(block.data.data.width) * parseInt(block.data.data.height);
+            width = windowWidth - s(30);
+            height = (windowWidth - s(30)) / parseInt(block.data.data.width) * parseInt(block.data.data.height);
             break
     }
     const onEnd = () => {
@@ -46,14 +45,14 @@ const BgVideoBlock = (props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        margin: scale(15),
+        margin: s(15),
         justifyContent: "center",
         alignItems: "center",
         alignSelf: "center",
     },
     backgroundVideo: {
         justifyContent: "center",
-        width: windowWidth - scale(30),
+        width: windowWidth - s(30),
         height: "auto",
         alignItems: "stretch",
     },

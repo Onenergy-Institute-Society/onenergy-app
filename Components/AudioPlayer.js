@@ -3,7 +3,7 @@ import {connect, useDispatch, useSelector} from "react-redux";
 import {AppState, StyleSheet, TouchableOpacity, View} from 'react-native';
 import TrackPlayer, {Event, State, useTrackPlayerEvents} from 'react-native-track-player';
 import IconButton from "@src/components/IconButton";
-import {scale} from '../Utils/scale';
+import {s} from '../Utils/Scale';
 import TrackSlider from "./TrackSlider";
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 
@@ -52,6 +52,7 @@ const AudioPlayer = (props) => {
     }, [track]);
 
     async function addTrack(track) {
+        const state = await TrackPlayer.getState();
         await TrackPlayer.reset();
         return await TrackPlayer.add(track, -1);
     }
@@ -105,9 +106,18 @@ const AudioPlayer = (props) => {
             setStopped(false);
         }
         if ((state === State.Paused)) {
-            await TrackPlayer.play();
-            setPlaying(true);
-            setStopped(false);
+            const queue = await TrackPlayer.getQueue();
+            if(!queue.length){
+                addTrack(track).then(async () => {
+                    await TrackPlayer.play();
+                    setPlaying(true);
+                    setStopped(false);
+                })
+            }else {
+                await TrackPlayer.play();
+                setPlaying(true);
+                setStopped(false);
+            }
         }
         if ((state === State.Stopped) || (state === State.None)) {
             await addTrack(track);
@@ -136,8 +146,8 @@ const AudioPlayer = (props) => {
                             icon={playing ? require("@src/assets/img/music-pause.png") : require("@src/assets/img/music-play.png")}
                             tintColor={"black"}
                             style={{
-                                height: 24,
-                                width: 24,
+                                height: s(24),
+                                width: s(24),
                             }}
                         />
                     </TouchableOpacity>
@@ -148,8 +158,8 @@ const AudioPlayer = (props) => {
                                 icon={require("@src/assets/img/stop.png")}
                                 tintColor={"black"}
                                 style={{
-                                    height: 24,
-                                    width: 24,
+                                    height: s(24),
+                                    width: s(24),
                                 }}
                             />
                         </TouchableOpacity>
@@ -175,9 +185,9 @@ const styles = StyleSheet.create({
         ...flexStyles,
         overflow: "hidden",
         paddingHorizontal: 5,
-        height: scale(50),
-        borderBottomLeftRadius: 9,
-        borderBottomRightRadius: 9,
+        height: s(50),
+        borderBottomLeftRadius: s(9),
+        borderBottomRightRadius: s(9),
         flexDirection: "row",
     },
     progressBarSection: {
@@ -187,7 +197,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         display: 'flex',
         flexDirection: 'row',
-        paddingHorizontal: scale(10),
+        paddingHorizontal: s(10),
     },
     buttonsSection: {
         ...flexStyles,
@@ -200,13 +210,13 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'flex-start',
-        width: scale(150),
+        width: s(150),
     },
     stopButton: {
-        marginHorizontal: scale(5),
+        marginHorizontal: s(5),
     },
     playPauseButton: {
-        marginLeft: scale(5),
+        marginLeft: s(5),
     },
     playPauseIcon: {
         color: '#000',
@@ -217,12 +227,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     trackTitle: {
-        fontSize: scale(20),
+        fontSize: s(20),
         fontWeight: 'bold',
         color: '#3d3d5c',
     },
     trackSubtitle: {
-        fontSize: scale(16),
+        fontSize: s(16),
         fontWeight: 'bold',
         color: '#3d3d5c',
     },

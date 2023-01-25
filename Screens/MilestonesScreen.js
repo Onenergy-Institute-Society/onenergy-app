@@ -6,7 +6,7 @@ import {withNavigation} from "react-navigation";
 import Milestones from "../Components/Milestones";
 import {useSelector} from "react-redux";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
-import {scale} from "../Utils/scale";
+import {s} from "../Utils/Scale";
 import QiPointHeader from "../Components/QiPointHeader";
 import AuthWrapper from "@src/components/AuthWrapper";
 import {SvgIconBack} from "../Utils/svg";
@@ -42,7 +42,7 @@ const MilestonesStamina = (props) => {
 const TabTitle = ({tintColor, name}) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     return (
-        <Text style={{color: tintColor, fontFamily:"MontserratAlternates-SemiBold", fontWeight:"bold", fontSize: scale(14) }}>{optionData.titles.find(el => el.id === name).title}</Text>
+        <Text style={{color: tintColor, fontFamily:"MontserratAlternates-SemiBold", fontWeight:"bold", fontSize: s(14) }}>{optionData.titles.find(el => el.id === name).title}</Text>
     )
 }
 const Tabs = createMaterialTopTabNavigator(
@@ -54,7 +54,7 @@ const Tabs = createMaterialTopTabNavigator(
                     <View>
                         <TabTitle tintColor={tintColor} name={'milestone_learn_tab'}/>
                         <AuthWrapper actionOnGuestLogin={'hide'}>
-                            <NotificationTabBarIcon notificationID={'milestone_learn'} top={-5} right={-5} size={scale(10)} showNumber={false}/>
+                            <NotificationTabBarIcon notificationID={'milestone_learn'} top={-5} right={-5} size={10} showNumber={false}/>
                         </AuthWrapper>
                     </View>
                 ),
@@ -67,7 +67,7 @@ const Tabs = createMaterialTopTabNavigator(
                     <View>
                         <TabTitle tintColor={tintColor} name={'milestone_startup_tab'}/>
                         <AuthWrapper actionOnGuestLogin={'hide'}>
-                            <NotificationTabBarIcon notificationID={'milestone_startup'} top={-5} right={-5} size={scale(10)} showNumber={false}/>
+                            <NotificationTabBarIcon notificationID={'milestone_startup'} top={-5} right={-5} size={10} showNumber={false}/>
                         </AuthWrapper>
                     </View>
                 ),
@@ -80,7 +80,7 @@ const Tabs = createMaterialTopTabNavigator(
                     <View>
                         <TabTitle tintColor={tintColor} name={'milestone_stamina_tab'}/>
                         <AuthWrapper actionOnGuestLogin={'hide'}>
-                            <NotificationTabBarIcon notificationID={'milestone_endurance'} top={-5} right={-5} size={scale(10)} showNumber={false}/>
+                            <NotificationTabBarIcon notificationID={'milestone_endurance'} top={-5} right={-5} size={10} showNumber={false}/>
                         </AuthWrapper>
                     </View>
                 ),
@@ -94,7 +94,7 @@ const Tabs = createMaterialTopTabNavigator(
         optimizationsEnabled: true,
         tabBarOptions: {
             style: {
-                height: scale(40),
+                height: s(40),
                 backgroundColor: '#f2f0fd',
                 marginTop: 0
            },

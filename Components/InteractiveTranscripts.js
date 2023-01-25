@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {FlatList, StyleProp, Text, ViewStyle} from 'react-native';
 import WebVttParser from './VTTtoJsonParser.js';
-import {scale} from "../Utils/scale";
+import {s} from "../Utils/Scale";
 
 interface InteractiveTranscriptsProps {
     currentDuration: number;
@@ -90,7 +90,7 @@ const InteractiveTranscripts = ({
         };
     };
     const getItemLayout = (data, index) => (
-        {length: scale(40), offset: scale(40) * index, index}
+        {length: s(40), offset: s(40) * index, index}
     );
 
     return (

@@ -15,8 +15,7 @@ import {
     ActivityIndicator
 } from 'react-native';
 import {Modalize} from 'react-native-modalize';
-import {windowWidth} from "../Utils/Dimensions";
-import {scale} from '../Utils/scale';
+import {ms, mvs, s, windowWidth} from '../Utils/Scale';
 import Recaptcha from "../Components/Recaptcha";
 import {BlurView} from "@react-native-community/blur";
 import analytics from '@react-native-firebase/analytics';
@@ -98,11 +97,11 @@ const FeedbackScreen = props => {
         switch(item.index)
         {
             case 0:
-                cornerStyle = {borderTopLeftRadius:9, borderTopRightRadius:9, marginTop:25};
+                cornerStyle = {borderTopLeftRadius:s(9), borderTopRightRadius:s(9), marginTop:mvs(25)};
                 bottomStyle = {borderBottomWidth:1, borderBottomColor:'#E6E6E8'};
                 break;
             case 3:
-                cornerStyle = {borderBottomLeftRadius:9, borderBottomRightRadius:9, marginBottom:25};
+                cornerStyle = {borderBottomLeftRadius:s(9), borderBottomRightRadius:s(9), marginBottom:mvs(25)};
                 break;
             default:
                 bottomStyle = {borderBottomWidth:1, borderBottomColor:'#E6E6E8'};
@@ -110,7 +109,7 @@ const FeedbackScreen = props => {
        }
         return (
             <TouchableWithoutFeedback onPress={() => {setDepartment(item.item);this.departmentDialog.close();}}>
-                <View style={[cornerStyle, bottomStyle, {paddingHorizontal:25, backgroundColor:colors.bodyBg, paddingVertical:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
+                <View style={[cornerStyle, bottomStyle, {paddingHorizontal:ms(25), backgroundColor:colors.bodyBg, paddingVertical:mvs(15), flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}]}>
                     <Text
                         style={global.text}>
                         {item.item.name}
@@ -129,7 +128,7 @@ const FeedbackScreen = props => {
                     <TouchableWithoutFeedback
                         onPress={() => {Keyboard.dismiss();this.departmentDialog.open();}}>
                         <View style={styles.content}>
-                            <Text style={[global.text, { paddingLeft:15, opacity: department ? 1 : 0.4 }]}>
+                            <Text style={[global.text, { paddingLeft:ms(15), opacity: department ? 1 : 0.4 }]}>
                                 {department?department.name:"Choose a department"}
                             </Text>
                             <View>
@@ -157,7 +156,7 @@ const FeedbackScreen = props => {
                 <TouchableOpacity
                     onPress={() => {Keyboard.dismiss();onSendPress();}}
                 >
-                    <View style={{borderRadius:9, height:scale(40), width:windowWidth-scale(30), marginTop:15, justifyContent:"center", alignItems:"center", backgroundColor:colors.primaryButtonBg, paddingVertical:10}}>
+                    <View style={{borderRadius:s(9), height:s(40), width:windowWidth-s(30), marginTop:mvs(15), justifyContent:"center", alignItems:"center", backgroundColor:colors.primaryButtonBg, paddingVertical:mvs(10)}}>
                         <Text style={{
                             fontWeight: "bold",
                             fontFamily: 'Montserrat-SemiBold',
@@ -179,12 +178,12 @@ const FeedbackScreen = props => {
             <Modalize
                 ref={(departmentDialog) => {this.departmentDialog = departmentDialog;}}
                 modalStyle={{backgroundColor:colors.bodyFrontBg}}
-                childrenStyle={{padding:scale(25)}}
+                childrenStyle={{padding:ms(25)}}
                 adjustToContentHeight = "true"
                 withHandle = "false"
                 HeaderComponent={
                     <View style={{
-                        padding: scale(15),
+                        padding: ms(15),
                         flexDirection: "row",
                         justifyContent: "space-between",
                         borderTopLeftRadius: 9,
@@ -193,7 +192,7 @@ const FeedbackScreen = props => {
                         backgroundColor: colors.bodyBg,
                         borderBottomColor: colors.borderColor
                    }}>
-                        <Text style={{fontSize: scale(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Department</Text>
+                        <Text style={{fontSize: s(24), color: colors.headerColor, fontFamily: "MontserratAlternates-SemiBold", fontWeight: "bold"}}>Department</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 this.departmentDialog.close();
@@ -235,43 +234,43 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent:"flex-start",
         alignItems: "flex-start",
-        paddingHorizontal:15,
+        paddingHorizontal:ms(15),
    },
     title: {
-        fontSize: scale(16),
+        fontSize: s(16),
         fontWeight: "bold",
         textAlign: 'left',
         color: 'black',
         fontFamily: 'MontserratAlternates-SemiBold',
    },
     inputContentLine:{
-        width: windowWidth - scale(30),
-        height: scale(40),
-        borderRadius: 9,
+        width: windowWidth - s(30),
+        height: s(40),
+        borderRadius:s(9),
         borderWidth:1,
         borderColor: "#8c79ea",
         backgroundColor: "#ffffff",
-        paddingLeft:15,
-        marginTop:15,
+        paddingLeft:ms(15),
+        marginTop:mvs(15),
         textAlignVertical: "top",
    },
     inputContent:{
-        width: windowWidth - scale(30),
-        height:scale(180),
-        borderRadius: 9,
+        width: windowWidth - s(30),
+        height:s(180),
+        borderRadius:s(9),
         borderWidth:1,
         borderColor: "#8c79ea",
         backgroundColor: "#ffffff",
-        paddingLeft:15,
-        marginTop:15,
+        paddingLeft:ms(15),
+        marginTop:mvs(15),
         textAlignVertical: "top",
    },
     listContainer:{
-        width: windowWidth-scale(30),
+        width: windowWidth-s(30),
         aspectRatio:8,
         flexDirection:'row',
-        marginTop:15,
-        borderRadius:9,
+        marginTop:mvs(15),
+        borderRadius:s(9),
         borderWidth:1,
         borderColor: "#8c79ea",
         backgroundColor: "#ffffff",
@@ -286,17 +285,17 @@ const styles = StyleSheet.create({
         alignItems: "center",
    },
     department:{
-        fontSize: scale(18),
+        fontSize: s(18),
         color: '#262626',
-        paddingLeft: 10,
+        paddingLeft: ms(10),
         flex:4,
         fontWeight:"bold",
         fontFamily: 'Montserrat-SemiBold',
    },
     subject:{
-        fontSize: scale(18),
+        fontSize: s(18),
         color: '#262626',
-        paddingLeft: 10,
+        paddingLeft: ms(10),
         flex:4,
         fontWeight:"normal",
         fontFamily: 'Montserrat-Regular',

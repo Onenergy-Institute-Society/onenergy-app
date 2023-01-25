@@ -2,8 +2,7 @@ import React, {useState} from 'react';
 import {useSelector, useDispatch} from "react-redux";
 import {View, Text, ImageBackground, StyleSheet, TouchableOpacity} from 'react-native';
 import {NavigationActions} from "react-navigation";
-import {scale} from "../Utils/scale";
-import {windowWidth} from "../Utils/Dimensions";
+import {s, windowWidth} from "../Utils/Scale";
 import TouchableScale from "../Components/TouchableScale";
 const ChooseLanguage = (props) => {
     const languages = [
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
       alignItems:"flex-start",
    },
     heading: {
-        fontSize: scale(24),
+        fontSize: s(24),
         fontStyle: "italic",
         fontWeight: "bold",
         alignSelf: "baseline",
@@ -141,7 +140,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingVertical: 12,
         paddingHorizontal: 32,
-        borderRadius: 9,
+        borderRadius:s(9),
         elevation: 3,
         backgroundColor: '#4942e1',
    },

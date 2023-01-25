@@ -6,7 +6,7 @@ import {connect, useDispatch, useSelector} from "react-redux";
 import IconButton from "@src/components/IconButton";
 import AwesomeAlert from "../Components/AwesomeAlert";
 import ImageCache from "./ImageCache";
-import {scale} from "../Utils/scale";
+import {s} from "../Utils/Scale";
 
 const LessonButton = (props) => {
     const {global, colors, lesson} = props;
@@ -194,12 +194,12 @@ const LessonButton = (props) => {
                         </View>
                         {visualGuideForButton ?
                             <ImageCache style={{
-                                bottom: scale(-80),
+                                bottom: s(-80),
                                 alignSelf: "center",
                                 position: "absolute",
                                 transform: [{rotate: '180deg'}],
-                                width: scale(200),
-                                height: scale(240),
+                                width: s(200),
+                                height: s(240),
                                 shadowColor: "#000",
                                 shadowOffset: {width: 2, height: -4},
                                 shadowOpacity: 0.2,

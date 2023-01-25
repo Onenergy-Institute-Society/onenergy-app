@@ -5,8 +5,7 @@ import {connect, useDispatch, useSelector} from "react-redux";
 import MemberTracksList from "../Components/MemberTracksList";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {NavigationActions, withNavigation} from "react-navigation";
-import {windowWidth} from "../Utils/Dimensions";
-import {scale} from "../Utils/scale";
+import {s, windowWidth} from "../Utils/Scale";
 import TrackPlayer from 'react-native-track-player';
 import EventList from "../Components/EventList";
 import analytics from '@react-native-firebase/analytics';
@@ -144,7 +143,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
     },
     messageText: {
-        fontSize: scale(18),
+        fontSize: s(18),
         color: "white",
     },
     boxShadow: {
@@ -156,19 +155,18 @@ const styles = StyleSheet.create({
     },
     messageBar: {
         position: "absolute",
-        top: scale(15),
-        left: scale(15),
-        right: scale(15),
+        top: s(15),
+        left: s(15),
+        right: s(15),
         backgroundColor: "#737373",
         borderColor: "#404040",
-        borderRadius: 9,
-        paddingVertical: scale(10),
-        paddingHorizontal: scale(15),
+        borderRadius:s(9),
+        paddingVertical: s(10),
+        paddingHorizontal: s(15),
     }
 });
 PracticeMember.navigationOptions = ({navigation, screenProps}) => {
     const {params = {}} = navigation.state;
-    console.log(params)
     const {colors, global} = screenProps;
     return ({
         headerTitle: params.title?params.title:navigation.getParam('title'),
@@ -194,7 +192,7 @@ PracticeMember.navigationOptions = ({navigation, screenProps}) => {
                         await params.onAddPressed();
                     }}
                 >
-                    <SvgAddIcon color={colors.headerIconColor} size={scale(24)} style={{marginRight:scale(15)}}/>
+                    <SvgAddIcon color={colors.headerIconColor} size={s(24)} style={{marginRight:s(15)}}/>
                 </TouchableOpacity>
                 :null
     })

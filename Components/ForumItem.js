@@ -6,7 +6,7 @@ import AppAvatar from "@src/components/AppAvatar";
 import ActionSheetButton from "@src/components/ActionButtons/ActionSheetButton";
 import {getForumAvatarSource, shortContent} from "@src/utils";
 import AuthWrapper from "@src/components/AuthWrapper";
-import {scale, windowWidth} from "../Utils/scale";
+import {ms, mvs, s, windowWidth} from "../Utils/Scale";
 
 const ForumItem = ({
                        forum,
@@ -24,7 +24,7 @@ const ForumItem = ({
                 onPress={forum.toSingle}
             >
                 <AppAvatar
-                    size={50}
+                    size={s(50)}
                     source={avatarSource}
                     style={{marginVertical: verticalSpacing}}
                 />
@@ -32,7 +32,7 @@ const ForumItem = ({
                     style={{
                         flex: 1,
                         flexDirection: "row",
-                        marginLeft: 13,
+                        marginLeft: ms(13),
                         ...global.bottomBorder,
                         paddingVertical: verticalSpacing
                     }}
@@ -43,12 +43,12 @@ const ForumItem = ({
                         }}
                     >
                         <View>
-                            <Text style={[global.itemTitle, {color: colors.textColor, marginBottom: 4, marginTop: 1}]}>
+                            <Text style={[global.itemTitle, {fontSize: s(16), color: colors.textColor, marginBottom: mvs(4), marginTop: mvs(1)}]}>
                                 {forum.title}
                             </Text>
                             {forum.shortContent ? (
                                 <Text
-                                    style={[global.itemDesc, {marginBottom: 8}]}
+                                    style={[global.itemDesc, {marginBottom: mvs(8)}]}
                                     numberOfLines={2}
                                     ellipsizeMode={"tail"}
                                 >
@@ -57,7 +57,7 @@ const ForumItem = ({
                             ) : null}
                         </View>
                         <View style={[global.itemFooter]}>
-                            <Text style={global.itemMeta}>{forum.topicCount}</Text>
+                            <Text style={[global.itemMeta, {fontSize: s(12)}]}>{forum.topicCount}</Text>
                         </View>
                     </View>
                     <AuthWrapper actionOnGuestLogin={"hide"}>
@@ -86,10 +86,10 @@ const ForumItem = ({
 
 const styles = StyleSheet.create({
     containerStyle: {
-        borderRadius: 9,
-        marginTop: scale(15),
-        marginHorizontal: scale(15),
-        width: windowWidth - scale(30),
+        borderRadius:s(9),
+        marginTop: mvs(15),
+        marginHorizontal: s(15),
+        width: windowWidth - s(30),
     },
     boxShadow: {
         shadowColor: "#000",

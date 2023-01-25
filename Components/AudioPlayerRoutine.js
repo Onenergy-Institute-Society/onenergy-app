@@ -3,7 +3,7 @@ import {connect, useDispatch, useSelector} from "react-redux";
 import {StyleSheet, Text, TouchableOpacity, View, Platform} from 'react-native';
 import TrackPlayer, {Event, State, useTrackPlayerEvents} from 'react-native-track-player';
 import IconButton from "@src/components/IconButton";
-import {scale} from '../Utils/scale';
+import {s} from '../Utils/Scale';
 import Video from 'react-native-video';
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 import TrackSlider from "./TrackSlider";
@@ -53,11 +53,13 @@ const AudioPlayerRoutine = (props) => {
     }, [routine]);
 
     async function addTrack(track) {
+        const state = await TrackPlayer.getState();
         await TrackPlayer.reset();
         return await TrackPlayer.add(track, -1);
     }
 
     useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.RemoteStop], async (event) => {
+        console.log(event.type, event.state, State)
         if ((event.type === Event.PlaybackState) && ((event.state === State.Stopped) || (event.state === State.None))) {
             setTrackTitle('');
             deactivateKeepAwake();
@@ -100,7 +102,6 @@ const AudioPlayerRoutine = (props) => {
 
     useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
         if (event.type === 'playback-queue-ended') {
-            console.log(nextTrack, routine.tracks.length )
             if (Platform.OS === 'ios') {
                 if (!nextTrack || nextTrack === routine.tracks.length - 1) {
                     setPlaying(false);
@@ -108,6 +109,7 @@ const AudioPlayerRoutine = (props) => {
                     setTrackTitle('');
                     await TrackPlayer.reset();
                     setNextTrack(0);
+                    this.videoPlayer.seek(0);
                     updateProgress().then();
                }
            } else {
@@ -116,6 +118,7 @@ const AudioPlayerRoutine = (props) => {
             setTrackTitle('');
             await TrackPlayer.reset();
             setNextTrack(0);
+            this.videoPlayer.seek(0);
             updateProgress().then();
            }
         }
@@ -123,21 +126,33 @@ const AudioPlayerRoutine = (props) => {
 
     const onPlayPausePress = async () => {
         const state = await TrackPlayer.getState();
+        console.log(state, State)
         if (state === State.Playing) {
             await TrackPlayer.pause();
             setPlaying(false);
             setStopped(false);
         }
         if ((state === State.Paused)) {
-            await TrackPlayer.play();
-            setPlaying(true);
-            setStopped(false);
+            const queue = await TrackPlayer.getQueue();
+            if(!queue.length){
+                addTrack(routine.tracks).then(async () => {
+                    await TrackPlayer.play();
+                    setPlaying(true);
+                    setStopped(false);
+                })
+            }else {
+                await TrackPlayer.play();
+                setPlaying(true);
+                setStopped(false);
+            }
         }
         if ((state === State.Stopped) || (state === State.None)) {
-            await addTrack(routine.tracks);
-            await TrackPlayer.play();
-            setPlaying(true);
-            setStopped(false);
+            console.log('stopped', routine.tracks)
+            addTrack(routine.tracks).then(async () => {
+                await TrackPlayer.play();
+                setPlaying(true);
+                setStopped(false);
+            })
         }
     };
 
@@ -149,6 +164,7 @@ const AudioPlayerRoutine = (props) => {
             setPastPosition(0);
             setPlaying(false);
             setStopped(true);
+            this.videoPlayer.seek(0);
         }
     };
 
@@ -163,8 +179,8 @@ const AudioPlayerRoutine = (props) => {
                                 icon={playing ? require("@src/assets/img/music-pause.png") : require("@src/assets/img/music-play.png")}
                                 tintColor={"black"}
                                 style={{
-                                    height: 24,
-                                    width: 24,
+                                    height: s(24),
+                                    width: s(24),
                                 }}
                             />
                         </TouchableOpacity>
@@ -175,8 +191,8 @@ const AudioPlayerRoutine = (props) => {
                                     icon={require("@src/assets/img/stop.png")}
                                     tintColor={"black"}
                                     style={{
-                                        height: 24,
-                                        width: 24,
+                                        height: s(24),
+                                        width: s(24),
                                     }}
                                 />
                             </TouchableOpacity>
@@ -200,18 +216,17 @@ const AudioPlayerRoutine = (props) => {
                 </View>
             </View>
             <View style={styles.routineDetailBox}>
-                <Text style={[styles.subTitle,{fontWeight:trackTitle==='Opening'?"bold":"normal"}]}>Opening</Text>
+                <Text style={[styles.subTitle,{fontFamily:trackTitle==="Opening"&&playing?"Montserrat-SemiBold":"Montserrat-Regular", fontWeight:trackTitle==='Opening'&&playing?"bold":"normal"}]}>Opening</Text>
                 {
                     routine.routine.map((item, index) => {
-                        console.log(routine.tracks[index])
                         return (
                             <View style={{flexDirection:"row", justifyContent:"space-between"}}>
-                                <Text style={[styles.subTitle,{fontWeight:trackTitle===item.title&&playing?"bold":"normal"}]}>{item.title}</Text>
+                                <Text style={[styles.subTitle,{fontFamily:trackTitle===item.title&&playing?"Montserrat-SemiBold":"Montserrat-Regular", fontWeight:trackTitle===item.title&&playing?"bold":"normal"}]}>{item.title}</Text>
                             </View>
                         )
                     })
                 }
-                <Text style={[styles.subTitle,{fontWeight:trackTitle==='Closing'?"bold":"normal"}]}>Closing</Text>
+                <Text style={[styles.subTitle,{fontFamily:trackTitle==="Closing"&&playing?"Montserrat-SemiBold":"Montserrat-Regular", fontWeight:trackTitle==='Closing'&&playing?"bold":"normal"}]}>Closing</Text>
             </View>
         </>
     );
@@ -227,13 +242,13 @@ const flexStyles: any = {
 
 const styles = StyleSheet.create({
     routineDetailBox: {
-        padding: scale(15),
+        padding: s(15),
     },
     playerMaxView: {
         ...flexStyles,
         overflow: "hidden",
         paddingHorizontal: 5,
-        height: scale(40),
+        height: s(40),
         flexDirection: "row",
     },
     progressBarSection: {
@@ -243,7 +258,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         display: 'flex',
         flexDirection: 'row',
-        paddingHorizontal: scale(10),
+        paddingHorizontal: s(10),
     },
     buttonsSection: {
         ...flexStyles,
@@ -256,13 +271,13 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: 'flex-start',
-        width: scale(150),
+        width: s(150),
     },
     stopButton: {
-        marginHorizontal: scale(5),
+        marginHorizontal: s(5),
     },
     playPauseButton: {
-        marginLeft: scale(5),
+        marginLeft: s(5),
     },
     playPauseIcon: {
         color: '#000',
@@ -273,18 +288,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     trackTitle: {
-        fontSize: scale(20),
+        fontSize: s(20),
         fontWeight: 'bold',
         color: '#3d3d5c',
     },
     trackSubtitle: {
-        fontSize: scale(16),
+        fontSize: s(16),
         fontWeight: 'bold',
         color: '#3d3d5c',
     },
     subTitle: {
         fontFamily: "Montserrat-Regular",
-        fontSize: scale(14),
+        fontSize: s(14),
         color: "#262626",
     },
 });

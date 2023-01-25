@@ -9,8 +9,7 @@ import {
     TouchableWithoutFeedback,
     View,
 } from "react-native";
-import {windowWidth} from "../Utils/Dimensions";
-import {scale} from "../Utils/scale";
+import {ms, mvs, s, windowWidth} from "../Utils/Scale";
 import * as Progress from 'react-native-progress';
 import {SvgIconCheck} from "../Utils/svg";
 
@@ -35,16 +34,16 @@ class MilestonesAccordian extends Component {
         return (
             <View style={[styles.column, styles.boxShadow, {backgroundColor: this.props.screenProps.colors.bodyBg}]}>
                 <View style={[styles.row, {
-                    borderBottomRightRadius: this.state.expanded ? 0 : 9,
-                    borderBottomLeftRadius: this.state.expanded ? 0 : 9,
+                    borderBottomRightRadius: this.state.expanded ? 0 : s(9),
+                    borderBottomLeftRadius: this.state.expanded ? 0 : s(9),
                     backgroundColor: this.props.screenProps.colors.bodyBg
                 }]}>
                     <TouchableOpacity onPress={() => this.toggleExpand()}>
                         <View style={[styles.rowLeft, {backgroundColor: this.props.screenProps.colors.bodyBg}]}>
                             <Text
-                                style={[this.props.screenProps.global.title, {fontSize: scale(12)}]}>{this.props.item.title}</Text>
+                                style={[this.props.screenProps.global.title, {fontSize: s(12)}]}>{this.props.item.title}</Text>
                             <View style={{
-                                marginTop: 10,
+                                marginTop: mvs(10),
                                 justifyContent: "center",
                                 alignItems: "center",
                                 width: !claim_date ? '100%' : 0,
@@ -54,7 +53,7 @@ class MilestonesAccordian extends Component {
                                               color={complete_date ? "lightgreen" : this.props.screenProps.colors.primaryButtonBg}
                                               unfilledColor={"black"} borderRadius={9}
                                               progress={completed_steps / this.props.item.step.length}
-                                              width={windowWidth / 2} height={scale(16)}/>
+                                              width={windowWidth / 2} height={s(16)}/>
                                 <View
                                     style={{
                                         position: "absolute",
@@ -70,7 +69,7 @@ class MilestonesAccordian extends Component {
                                 </View>
                             </View>
                         </View>
-                        <View style={{position: "absolute", top: scale(15), left: scale(10)}}>
+                        <View style={{position: "absolute", top: s(15), left: s(10)}}>
                             <Image source={require("@src/assets/img/arrow-down.png")} style={{
                                 tintColor: this.props.screenProps.colors.primaryButtonBg,
                                 transform: [{rotate: this.state.expanded ? '180deg' : '0deg'}],
@@ -98,7 +97,7 @@ class MilestonesAccordian extends Component {
                                             <Text
                                                 style={[this.props.screenProps.global.pointTitle, {
                                                     flexWrap: "nowrap",
-                                                    fontSize: scale(24),
+                                                    fontSize: s(24),
                                                     color: '#FFF'
                                                 }]}
                                             >
@@ -116,7 +115,7 @@ class MilestonesAccordian extends Component {
                                         <Text
                                             style={[this.props.screenProps.global.itemMeta, {
                                                 flexWrap: "nowrap",
-                                                fontSize: scale(claim_date ? 11 : 24),
+                                                fontSize: s(claim_date ? 11 : 24),
                                                 color: '#FFF'
                                             }]}
                                         >
@@ -137,10 +136,10 @@ class MilestonesAccordian extends Component {
                     this.state.expanded &&
                     <View style={{
                         backgroundColor: this.props.screenProps.colors.bodyBg,
-                        borderBottomRightRadius: 9,
-                        borderBottomLeftRadius: 9,
-                        paddingBottom: scale(10),
-                        width: windowWidth - scale(30),
+                        borderBottomRightRadius: s(9),
+                        borderBottomLeftRadius: s(9),
+                        paddingBottom: mvs(10),
+                        width: windowWidth - s(30),
                         alignItems: "center",
                         justifyContent: "flex-start"
                     }}>
@@ -196,7 +195,7 @@ const styles = StyleSheet.create({
         flex: 0.9,
         fontFamily: "MontserratAlternates-Regular",
         fontWeight: "normal",
-        fontSize: scale(12),
+        fontSize: s(12),
     },
     btnActive: {
         borderColor: Colors.GREEN,
@@ -205,53 +204,53 @@ const styles = StyleSheet.create({
         borderColor: Colors.DARKGRAY,
     },
     column: {
-        borderRadius: 9,
+        borderRadius:s(9),
         alignItems: 'center',
         justifyContent: 'space-between',
-        width: windowWidth - scale(30),
-        marginTop: scale(0),
-        marginBottom: scale(15),
-        marginHorizontal: scale(15),
+        width: windowWidth - s(30),
+        marginTop: 0,
+        marginBottom: mvs(15),
+        marginHorizontal: s(15),
     },
     row: {
-        borderRadius: 9,
+        borderRadius:s(9),
         alignItems: 'center',
         justifyContent: 'space-between',
-        width: windowWidth - scale(30),
-        height: scale(70),
+        width: windowWidth - s(30),
+        height: s(70),
         flexDirection: 'row',
     },
     rowLeft: {
         marginHorizontal: 0,
-        paddingHorizontal: 5,
-        borderTopLeftRadius: 9,
-        borderBottomLeftRadius: 9,
+        paddingHorizontal: ms(5),
+        borderTopLeftRadius: s(9),
+        borderBottomLeftRadius: s(9),
         alignItems: 'center',
         justifyContent: 'center',
-        width: (windowWidth - scale(30)) * 2 / 3,
-        height: scale(70),
+        width: (windowWidth - s(30)) * 2 / 3,
+        height: s(70),
     },
     rowRight: {
         marginVertical: 0,
-        borderTopRightRadius: 9,
+        borderTopRightRadius: s(9),
         alignItems: 'center',
         justifyContent: 'center',
-        width: (windowWidth - scale(30)) / 3,
-        height: scale(70),
+        width: (windowWidth - s(30)) / 3,
+        height: s(70),
     },
     childRow: {
         flexDirection: 'row',
-        width: windowWidth - scale(30),
-        height: scale(32),
+        width: windowWidth - s(30),
+        height: s(32),
         alignItems: 'center',
-        paddingLeft: 15,
-        paddingRight: 15,
-        fontSize: scale(12),
+        paddingLeft: ms(15),
+        paddingRight: ms(15),
+        fontSize: s(12),
         justifyContent: 'space-between',
     },
     childHr: {
         height: 1,
-        width: windowWidth - scale(50),
+        width: windowWidth - s(50),
     },
     boxShadow: {
         shadowColor: "#000",

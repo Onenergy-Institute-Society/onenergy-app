@@ -3,6 +3,7 @@ import {TouchableOpacity, View} from "react-native";
 import Animated from "react-native-reanimated";
 import {DEVICE_WIDTH} from "@src/styles/global";
 import {SvgIconBack} from "../Utils/svg";
+import {ms} from "../Utils/Scale";
 
 const TopicScreenHeader = (props) => {
     const {
@@ -18,7 +19,7 @@ const TopicScreenHeader = (props) => {
                 global.fakeHeader,
                 {
                     backgroundColor: "transparent",
-                    paddingHorizontal: 10,
+                    paddingHorizontal: ms(10),
                     overflow: "hidden"
                 },
                 {

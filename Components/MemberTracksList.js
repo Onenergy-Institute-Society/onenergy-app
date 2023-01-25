@@ -13,9 +13,8 @@ import {
     View
 } from 'react-native';
 import {useSelector} from "react-redux";
-import {scale} from '../Utils/scale';
+import {mvs, s, windowWidth} from '../Utils/Scale';
 import AudioPlayerRoutine from './AudioPlayerRoutine';
-import {windowWidth} from "../Utils/Dimensions";
 import {Swipeable} from "react-native-gesture-handler";
 import IconButton from "@src/components/IconButton";
 import {SvgMoreVertical} from "../Utils/svg";
@@ -29,7 +28,7 @@ const MemberTracksList = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
     const [selectedRoutine, setSelectedRoutine] = useState(null);
-console.log(practiceReducer)
+
     // state vars
     const onTrackItemPress = (routine) => {
         LayoutAnimation.configureNext(
@@ -72,7 +71,6 @@ console.log(practiceReducer)
     const handleWillOpen = (index: any) => () => (key !== '') && (key !== index) && row[key].close();
     const handleOpen = (index: any) => () => setKey(index);
     const renderItem = ({item, index}) => {
-        console.log(item)
         let showPlayer = !!(selectedRoutine && selectedRoutine.id === item.id);
         let totalDuration = 0;
         item.tracks.map((item) => {
@@ -99,7 +97,7 @@ console.log(practiceReducer)
                         <ImageBackground style={styles.itemStyle}
                                          source={{uri: item.image}}
                                          resizeMode={"cover"}
-                                         imageStyle={{borderTopLeftRadius: 9, borderTopRightRadius: 9, borderBottomLeftRadius: showPlayer?0:9, borderBottomRightRadius: showPlayer?0:9}}>
+                                         imageStyle={{borderTopLeftRadius: s(9), borderTopRightRadius: s(9), borderBottomLeftRadius: showPlayer?0:s(9), borderBottomRightRadius: showPlayer?0:s(9)}}>
                             <View style={styles.titleBox}>
                                 <Text style={styles.title}>{item.title}</Text>
                                 <Text
@@ -109,7 +107,7 @@ console.log(practiceReducer)
                                 style={styles.subTitle}>Practices: {item.routine.length}</Text><Text
                                 style={styles.subTitle}>Background: {item.bgm}</Text></View>
                             <SvgMoreVertical color={"#fff"}
-                                             style={{position: "absolute", right: scale(10), bottom: scale(10),                                         textShadowColor: 'grey',
+                                             style={{position: "absolute", right: s(10), bottom: s(10),                                         textShadowColor: 'grey',
                                                  textShadowRadius: 1,
                                                  textShadowOffset: {
                                                      width: -1,
@@ -129,7 +127,6 @@ console.log(practiceReducer)
     };
 
     const rightActions = (dragX, item, index) => {
-        console.log(index)
         return (
             <View style={{justifyContent: "space-evenly", alignItems: "center", marginRight: 15}}>
                 <TouchableOpacity style={{justifyContent: "center", alignItems: "center"}} onPress={() => {
@@ -140,7 +137,7 @@ console.log(practiceReducer)
                         tintColor={"red"}
                         style={{
                             alignSelf: "center",
-                            height: 24,
+                            height: s(24),
                         }}
                     />
                 </TouchableOpacity>
@@ -154,7 +151,7 @@ console.log(practiceReducer)
                         tintColor={"#4942e1"}
                         style={{
                             alignSelf: "center",
-                            height: 24,
+                            height: s(24),
                         }}
                     />
                 </TouchableOpacity>
@@ -164,7 +161,7 @@ console.log(practiceReducer)
     return (
         <SafeAreaView style={global.container}>
             {practiceReducer && practiceReducer.routines && practiceReducer.routines.length ?
-                <FlatList contentContainerStyle={{paddingBottom: scale(20)}} style={styles.trackList}
+                <FlatList contentContainerStyle={{paddingBottom: s(20)}} style={styles.trackList}
                           data={practiceReducer.routines} renderItem={renderItem} keyExtractor={item => item.id}/>
                 : null}
         </SafeAreaView>
@@ -178,14 +175,14 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     trackList: {
-        paddingTop: scale(5),
+        paddingTop: s(5),
     },
     trackItem: {
-        borderRadius: 9,
-        width: windowWidth - scale(30),
-        marginHorizontal: scale(15),
-        marginTop: scale(15),
-        marginBottom: scale(10),
+        borderRadius:s(9),
+        width: windowWidth - s(30),
+        marginHorizontal: s(15),
+        marginTop: mvs(15),
+        marginBottom: mvs(10),
         justifyContent: "flex-start",
         flexGrow: 1,
     },
@@ -197,30 +194,30 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     itemStyle: {
-        borderRadius: 9,
-        width: windowWidth - scale(30),
+        borderRadius:s(9),
+        width: windowWidth - s(30),
         justifyContent: 'space-between',
         alignItems: 'center',
-        height: scale(80),
+        height: s(80),
     },
     titleBox: {
-        width: windowWidth - scale(30),
-        marginTop: scale(5),
-        paddingHorizontal: scale(15),
+        width: windowWidth - s(30),
+        marginTop: mvs(5),
+        paddingHorizontal: s(15),
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: 'center',
     },
     subTitleBox: {
-        width: windowWidth - scale(30),
-        marginBottom: scale(5),
-        paddingHorizontal: scale(15),
+        width: windowWidth - s(30),
+        marginBottom: mvs(5),
+        paddingHorizontal: s(15),
         justifyContent: "center",
         alignItems: 'flex-start',
     },
     title: {
         fontFamily: "MontserratAlternates-SemiBold",
-        fontSize: scale(16),
+        fontSize: s(16),
         fontWeight: 'bold',
         color: "#262626",
     },
@@ -232,12 +229,12 @@ const styles = StyleSheet.create({
     },
     subTitle: {
         fontFamily: "Montserrat-Regular",
-        fontSize: scale(14),
+        fontSize: s(14),
         color: "#262626",
     },
     duration: {
         fontFamily: "Montserrat-SemiBold",
-        fontSize: scale(12),
+        fontSize: s(12),
         fontWeight: "bold",
         color: "#fff",
         textShadowColor: 'grey',
@@ -251,7 +248,7 @@ const styles = StyleSheet.create({
         height: '100%',
         justifyContent: "center",
         alignItems: "center",
-        paddingTop: scale(10),
+        paddingTop: s(10),
     },
     editButton: {
         flex: 1,
@@ -260,7 +257,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#4942e1",
         justifyContent: "center",
         alignItems: "center",
-        height: scale(30),
+        height: s(30),
         padding: 15,
         borderRadius: 6
     },

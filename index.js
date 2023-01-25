@@ -10,6 +10,7 @@ import {
     Alert
 } from "react-native";
 import {getApi} from "@src/services";
+import Orientation from 'react-native-orientation';
 import Icon from "@src/components/Icon";
 import {CourseVideo} from "@src/components/Course/CourseStatus";
 import InitData from "./Screens/InitData";
@@ -41,9 +42,8 @@ import MilestonesScreen from './Screens/MilestonesScreen';
 import VouchersScreen from './Screens/VouchersScreen';
 import StatsScreen from './Screens/StatsScreen';
 import Membership from './Screens/Membership';
-import {scale} from './Utils/scale';
+import {ms, mvs, s, windowWidth} from './Utils/Scale';
 import ImageCache from "./Components/ImageCache";
-import {windowWidth} from "./Utils/Dimensions";
 import ProgramsScreen from "./Screens/ProgramsScreen";
 import EditRoutine from "./Components/EditRoutine";
 import FeedbackScreen from "./Screens/FeedbackScreen";
@@ -348,17 +348,17 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         }
         const styles = StyleSheet.create({
             containerStyle: {
-                marginHorizontal: scale(15),
+                marginHorizontal: s(15),
                 backgroundColor: 'transparent',
             },
             statusBar: {
-                height: scale(25),
+                height: s(25),
                 position: 'absolute',
                 top: 10,
                 flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
-                width: scale(105),
+                width: s(105),
                 marginLeft: 0,
                 borderColor: '#000',
                 borderWidth: 0,
@@ -369,27 +369,27 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             },
             statusText: {
                 color: 'white',
-                fontSize: scale(13),
+                fontSize: s(13),
                 backgroundColor: 'transparent',
                 fontFamily: "MontserratAlternates-Regular"
             },
             progressBar: {
                 height: 3,
                 position: 'absolute',
-                top: scale(20),
-                right: scale(20),
+                top: s(20),
+                right: s(20),
                 flexDirection: "row",
-                width: (windowWidth - scale(30)) / 2,
+                width: (windowWidth - s(30)) / 2,
                 backgroundColor: 'white',
                 borderColor: '#000',
                 borderWidth: 0,
                 borderRadius: 5,
             },
             image: {
-                width: windowWidth - scale(30),
-                height: (windowWidth - scale(30)) / 9 * 4,
-                borderRadius: 9,
-                marginLeft: (windowWidth - scale(30)) / 9,
+                width: windowWidth - s(30),
+                height: (windowWidth - s(30)) / 9 * 4,
+                borderRadius:s(9),
+                marginLeft: (windowWidth - s(30)) / 9,
                 overflow: 'hidden',
                 resizeMode: "cover",
             },
@@ -403,23 +403,23 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 alignItems: "flex-end",
             },
             meta: {
-                width: windowWidth - scale(30),
-                height: (windowWidth - scale(30)) / 9 * 4,
-                borderRadius: 9,
+                width: windowWidth - s(30),
+                height: (windowWidth - s(30)) / 9 * 4,
+                borderRadius:s(9),
                 justifyContent: "center",
                 alignItems: "center",
-                paddingRight: 10,
-                paddingTop: 10,
+                paddingRight: ms(10),
+                paddingTop: mvs(10),
             },
             icon: {
-                width: (windowWidth - scale(30)) / 2,
-                height: (windowWidth - scale(30)) / 2,
+                width: (windowWidth - s(30)) / 2,
+                height: (windowWidth - s(30)) / 2,
                 position: "absolute",
-                left: (windowWidth - scale(30)) / 9,
-                top: (windowWidth - scale(30)) / 9 + scale(10),
+                left: (windowWidth - s(30)) / 9,
+                top: (windowWidth - s(30)) / 9 + s(10),
             },
             title: {
-                fontSize: scale(20),
+                fontSize: s(20),
                 textAlign: 'center',
                 justifyContent: "center",
                 color: 'white',
@@ -429,16 +429,16 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 fontWeight: "bold",
                 fontFamily: 'MontserratAlternates-SemiBold',
                 position: "absolute",
-                bottom: scale(10),
+                bottom: s(10),
                 left: 0,
                 right: 0,
             },
             card: {
                 backgroundColor: 'white',
-                borderRadius: 9,
+                borderRadius:s(9),
                 width: '100%',
-                height: scale(150),
-                marginTop: scale(25),
+                height: s(150),
+                marginTop: mvs(25),
                 justifyContent: "space-between",
             },
             boxShadow: {
@@ -1253,7 +1253,7 @@ console.log(ors_tempPracticeState)
                         'data': {'id': action.payload.id, 'points': mcTempMilestoneState.milestones[mcMilestoneIndex].awards},
                         'time': Math.floor(new Date().getTime() / 1000)
                     });
-                    mcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
+                    mcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000);
 
                     return {
                         ...state,
@@ -1692,8 +1692,8 @@ console.log(ors_tempPracticeState)
             let Info = null;
             return [Info,
                 <View style={{
-                    paddingHorizontal: 20,
-                    paddingVertical: 16,
+                    paddingHorizontal: ms(20),
+                    paddingVertical: mvs(16),
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
@@ -1707,8 +1707,8 @@ console.log(ors_tempPracticeState)
             let Info = null;
             return [Info,
                 <View style={{
-                    paddingHorizontal: 20,
-                    paddingVertical: 16,
+                    paddingHorizontal: ms(20),
+                    paddingVertical: mvs(16),
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
@@ -1727,8 +1727,8 @@ console.log(ors_tempPracticeState)
                 diffExpiringTime = 'Course expires in ' + diffExpiringDays + ' days, please finish all the lesson in time.';
                 Info =
                     diffExpiringDays <= 7 && diffExpiringDays > 0 ?
-                        <View style={{paddingHorizontal: 20, paddingVertical: 10}}>
-                            <Text style={{color: "red", fontSize: scale(14)}}>{diffExpiringTime}</Text>
+                        <View style={{paddingHorizontal: ms(20), paddingVertical: mvs(10)}}>
+                            <Text style={{color: "red", fontSize: s(14)}}>{diffExpiringTime}</Text>
                         </View>
                         : null
             }
@@ -1758,7 +1758,7 @@ console.log(ors_tempPracticeState)
             if (user && courseVM.price.required_points > 0 && progressReducer && progressReducer.points && progressReducer.points.length ? progressReducer.points.qi : 0 < courseVM.price.required_points && courseVM.error.message) {
                 const Info =
                     <View style={{paddingHorizontal: 20, paddingVertical: 10}}>
-                        <Text style={{color: "red", fontSize: scale(14)}}>{courseVM.error.message}</Text>
+                        <Text style={{color: "red", fontSize: s(14)}}>{courseVM.error.message}</Text>
                     </View>
                 const Redirect =
                     <View style={{
@@ -1812,12 +1812,12 @@ console.log(ors_tempPracticeState)
                                     });
                                 }}>
                                 <FastImage style={{
-                                    bottom: scale(-80),
-                                    right: scale(80),
+                                    bottom: s(-80),
+                                    right: s(80),
                                     position: "absolute",
                                     transform: [{rotate: '180deg'}],
-                                    width: scale(200),
-                                    height: scale(240),
+                                    width: s(200),
+                                    height: s(240),
                                     shadowColor: "#000",
                                     shadowOffset: {width: 2, height: -4},
                                     shadowOpacity: 0.2,
@@ -1955,7 +1955,7 @@ console.log(ors_tempPracticeState)
                         <SvgIconProgramUnfocused color={iconProps.tintColor}/>
                     }
                     <AuthWrapper actionOnGuestLogin={'hide'}>
-                        <NotificationTabBarIcon notificationID={'blog'} top={-3} right={-3} size={scale(10)}
+                        <NotificationTabBarIcon notificationID={'blog'} top={-3} right={-3} size={10}
                                                 showNumber={false}/>
                     </AuthWrapper>
                 </View>
@@ -1974,7 +1974,7 @@ console.log(ors_tempPracticeState)
                         <SvgIconQiGongUnfocused color={iconProps.tintColor}/>
                     }
                     <AuthWrapper actionOnGuestLogin={'hide'}>
-                        <NotificationTabBarIcon notificationID={'guide_page'} top={-3} right={-3} size={scale(10)}
+                        <NotificationTabBarIcon notificationID={'guide_page'} top={-3} right={-3} size={10}
                                                 showNumber={false}/>
                     </AuthWrapper>
                 </View>
@@ -1993,7 +1993,7 @@ console.log(ors_tempPracticeState)
                         <SvgIconWisdomUnfocused color={iconProps.tintColor}/>
                     }
                     <AuthWrapper actionOnGuestLogin={'hide'}>
-                        <NotificationTabBarIcon notificationID={'blog'} top={-3} right={-3} size={scale(10)}
+                        <NotificationTabBarIcon notificationID={'blog'} top={-3} right={-3} size={10}
                                                 showNumber={false}/>
                     </AuthWrapper>
                 </View>
@@ -2026,10 +2026,13 @@ console.log(ors_tempPracticeState)
         "friends",
         "groups",
         "documents",
-
+        "gamipress_points",
+        "gamipress_achievements",
+        "gamipress_ranks"
     ])
 
     externalCodeSetup.indexJsApi.addIndexJsFunction(() => {
+        Orientation.lockToPortrait();
         TrackPlayer.registerPlaybackService(() => PlaybackService);
     })
     externalCodeSetup.blogSingleApi.setAfterBlogSingleBody((props) => {
@@ -2101,7 +2104,7 @@ console.log(ors_tempPracticeState)
         const optionData = useSelector((state) => state.settings.settings.onenergy_option);
         const user = useSelector((state) => state.user.userObject);
         return (
-            <View style={{marginLeft:scale(35),marginTop:scale(15)}}>
+            <View style={{marginLeft:s(35),marginTop:mvs(15)}}>
                 {progressReducer && progressReducer.points && Object.keys(progressReducer.points).length ? Object.entries(progressReducer.points).map(([key, value]) => (
                     <View style={{
                         flexDirection: "row",
@@ -2111,10 +2114,10 @@ console.log(ors_tempPracticeState)
                         <Text style={{
                             color: '#262626',
                             textAlign: "left",
-                            marginRight: scale(10),
+                            marginRight: s(10),
                             fontWeight: "normal",
                             fontFamily: "Montserrat-Regular",
-                            fontSize: scale(16)
+                            fontSize: s(16)
                         }}>
                             Point:
                         </Text>
@@ -2123,10 +2126,10 @@ console.log(ors_tempPracticeState)
                         <Text style={{
                             color: '#262626',
                             textAlign: "left",
-                            marginLeft: scale(5),
+                            marginLeft: s(5),
                             fontWeight: "normal",
                             fontFamily: "Montserrat-Regular",
-                            fontSize: scale(16)
+                            fontSize: s(16)
                         }}>
                             {value} {optionData.points.find(pt => pt.pointName === key).pointTitle}
                         </Text>
@@ -2140,10 +2143,10 @@ console.log(ors_tempPracticeState)
                     <Text style={{
                         color: '#262626',
                         textAlign: "left",
-                        marginRight: scale(10),
+                        marginRight: s(10),
                         fontWeight: "normal",
                         fontFamily: "Montserrat-Regular",
-                        fontSize: scale(16)
+                        fontSize: s(16)
                     }}>
                         Rank:
                     </Text>
@@ -2152,10 +2155,10 @@ console.log(ors_tempPracticeState)
                     <Text style={{
                         color: '#262626',
                         textAlign: "left",
-                        marginLeft: scale(5),
+                        marginLeft: s(5),
                         fontWeight: "normal",
                         fontFamily: "Montserrat-Regular",
-                        fontSize: scale(16)
+                        fontSize: s(16)
                     }}>
                         {optionData.ranks[parseInt(user.rank)].rankName}
                     </Text>
@@ -2164,7 +2167,7 @@ console.log(ors_tempPracticeState)
                     <Text style={{color: "#262626",fontWeight: "normal",
                         alignItems:"flex-start",
                         fontFamily: "Montserrat-Regular",
-                        fontSize: scale(16)}}>{user.membership[0].plan.name}</Text>
+                        fontSize: s(16)}}>{user.membership[0].plan.name}</Text>
                     : null}
             </View>
         )
@@ -2380,6 +2383,19 @@ console.log(ors_tempPracticeState)
     externalCodeSetup.cssApi.addGlobalStyle("semiBoldText", {"fontWeight": "bold"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("boldText", {"fontWeight": "bold"}, false);
     externalCodeSetup.cssApi.addGlobalStyle("text", {"fontWeight": "normal"}, false);*/
+
+    externalCodeSetup.cssApi.addGlobalStyle("appHeaderTitle", {"fontSize": s(17)}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("textHeaderTitle", {"fontSize": s(28)}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("heading", {"fontSize": s(17.6)}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("desc", {"fontSize": s(16)}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("title", {"fontSize": s(18)}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("text", {"fontSize": s(17.6)}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("textAlt", {"fontSize": s(15.4)}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("link", {"fontSize": s(12)}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("widgetTitle", {"fontSize": s(18)}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("forumListTitle", {"fontSize": s(20)}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("subForumTitle", {"fontSize": s(12)}, false);
+    externalCodeSetup.cssApi.addGlobalStyle("settingsItemTitle", {"fontSize": s(17)}, false);
     externalCodeSetup.cssApi.addCustomColors({"altCardColor": "#FFEEE7"});
 
     externalCodeSetup.courseSingleApi.setCourseHeaderDetails(props => {
@@ -2431,7 +2447,7 @@ console.log(ors_tempPracticeState)
             },
             courseDetailsText: {
                 ...global.itemText,
-                marginBottom: 10,
+                marginBottom: mvs(10),
                 marginLeft: 14
             }
 
@@ -2465,8 +2481,8 @@ console.log(ors_tempPracticeState)
                             style={[
                                 global.courseIncludesTitle,
                                 {
-                                    marginBottom: 15,
-                                    marginTop: courseVM?.members?.length > 0 ? 20 : 0
+                                    marginBottom: mvs(15),
+                                    marginTop: courseVM?.members?.length > 0 ? mvs(20) : 0
                                 }
                             ]}
                         >

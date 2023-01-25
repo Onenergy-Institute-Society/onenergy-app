@@ -3,7 +3,6 @@ import {
     ActivityIndicator,
     Animated,
     BackHandler,
-    Dimensions,
     Modal,
     Platform,
     StyleSheet,
@@ -13,9 +12,7 @@ import {
     View
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {scale} from "../Utils/scale";
-
-const {height, width} = Dimensions.get('window');
+import {s, windowWidth, windowHeight, mvs} from "../Utils/Scale";
 
 const HwBackHandler = BackHandler;
 const HW_BACK_EVENT = 'hardwareBackPress';
@@ -292,8 +289,8 @@ const styles = StyleSheet.create({
         position: 'absolute'
     },
     overlay: {
-        width: width,
-        height: height,
+        width: windowWidth,
+        height: windowHeight,
         position: 'absolute',
         backgroundColor: 'rgba(52,52,52,0.5)'
     },
@@ -312,7 +309,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'flex-end',
-        marginTop: 5
+        marginTop: mvs(5)
     },
     title: {
         fontFamily: "MontserratAlternates-SemiBold",
@@ -320,14 +317,14 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 15,
         color: '#626262',
-        fontSize: scale(18)
+        fontSize: s(18)
     },
     message: {
         fontFamily: "Montserrat-Regular",
         fontWeight: "normal",
         paddingTop: 5,
         color: '#7b7b7b',
-        fontSize: scale(14)
+        fontSize: s(14)
     },
     button: {
         paddingHorizontal: 10,
@@ -339,6 +336,6 @@ const styles = StyleSheet.create({
         fontFamily: "Montserrat-SemiBold",
         fontWeight: "bold",
         color: '#fff',
-        fontSize: scale(13)
+        fontSize: s(13)
     }
 });

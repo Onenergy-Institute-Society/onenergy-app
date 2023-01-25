@@ -122,7 +122,7 @@ const NotificationTabBarIcon = props => {
                 break;
             case 'milestone_endurance':
                 if (user && achievementReducer)
-                    notificationCount = achievementReducer.milestones.filter(item => item.type === 'endurance' && item.complete_date && !item.claim_date).length;
+                    notificationCount = achievementReducer.milestones ? achievementReducer.milestones.filter(item => item.type === 'endurance' && item.complete_date && !item.claim_date).length : 0;
                 break;
             case 'left_menu':
                 if (user && achievementReducer) {

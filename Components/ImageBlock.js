@@ -1,9 +1,8 @@
 import React from "react";
 import {Image, StyleSheet, TouchableWithoutFeedback, View} from "react-native";
 import {useSelector} from "react-redux";
-import {scale} from "../Utils/scale";
+import {s, windowWidth} from "../Utils/Scale";
 import {NavigationActions, withNavigation} from "react-navigation";
-import {windowWidth} from "../Utils/Dimensions";
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import ScalableImage from "./ScalableImage";
 
@@ -100,7 +99,7 @@ const ImageBlock = (props) => {
                             }]}/>
                         :
                         <ScalableImage
-                            width={windowWidth - scale(30)}
+                            width={windowWidth - s(30)}
                             source={{uri: block.data.data.image}}
                             resizeMode={block.data.data.resize}
                             style={styles.image}/>
@@ -113,15 +112,15 @@ const ImageBlock = (props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        margin: scale(15),
+        margin: s(15),
         justifyContent: "center",
         alignItems: "center",
         alignSelf: "center",
-        borderRadius: 9,
+        borderRadius:s(9),
         backgroundColor: "#fff",
     },
     image: {
-        borderRadius: 9,
+        borderRadius:s(9),
     },
     boxShadow: {
         shadowColor: "#000",

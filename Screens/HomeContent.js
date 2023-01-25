@@ -9,8 +9,7 @@ import {
     AppState, Platform, TouchableOpacity, TouchableWithoutFeedback
 } from "react-native";
 import {getApi} from "@src/services";
-import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import {scale} from '../Utils/scale';
+import {ms, mvs, s, windowHeight, windowWidth} from '../Utils/Scale';
 import FastImage from 'react-native-fast-image';
 import TouchableScale from "../Components/TouchableScale";
 import DailyQuotes from '../Components/DailyQuotes'
@@ -27,7 +26,6 @@ import {
     ProgressChart,
 } from "react-native-chart-kit";
 import {Modalize} from 'react-native-modalize';
-import RNRestart from 'react-native-restart';
 import moment from 'moment';
 import SunCalc from "suncalc";
 import GetLocation from 'react-native-get-location'
@@ -60,7 +58,7 @@ const HomeContent = (props) => {
     const [phase, setPhase] = useState('');
     const [nextMoonPhase, setNextMoonPhase] = useState({});
 
-    const onFocusHandler = () => {
+    const onFocusHandler = async () => {
         try {
             console.log('Focus changed')
             if (user && progressReducer.latestUpdate && checkTodayDate()) {
@@ -69,6 +67,7 @@ const HomeContent = (props) => {
                     type: 'ONENERGY_DAILY_UPDATE',
                 });
             }
+            await updateStatus();
             navigation.closeDrawer();
         } catch (e) {
         }
@@ -88,67 +87,56 @@ const HomeContent = (props) => {
                 });
             }
             if ((Platform.OS === "android" && AppState.currentState === 'background') || (Platform.OS === "ios" && AppState.currentState === 'inactive')) {
-                if (progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
-                    let achievements = {
-                        'milestones': [],
-                        'daily': [],
-                        'weekly': achievementReducer.weekly,
-                        'monthly': achievementReducer.monthly
-                    }
-                    achievementReducer.milestones.map((milestone) => {
-                        achievements.milestones.push({
-                            'id': milestone.id,
-                            'step': milestone.step,
-                            'complete_date': milestone.complete_date,
-                            'claim_date': milestone.claim_date,
-                        });
-                    });
-                    achievementReducer.daily.map((quest) => {
-                        achievements.daily.push({
-                            'id': quest.id,
-                            'step': quest.step,
-                            'complete_date': quest.complete_date,
-                            'claim_date': quest.claim_date,
-                            'list': quest.list
-                        });
-                    });
-                    const apiRequest = getApi(props.config);
-                    await apiRequest.customRequest(
-                        "wp-json/onenergy/v1/statsUpdate",
-                        "post",
-                        {
-                            "progress": progressReducer,
-                            "achievements": achievements
-                        },
-                        null,
-                        {},
-                        false
-                    ).then(response => {
-                        if (response.data) {
-                            dispatch({
-                                type: 'ONENERGY_PROGRESS_UPLOADED'
-                            });
-                        } else {
-                            dispatch({
-                                type: 'ONENERGY_POSTS_RESET',
-                            });
-                            dispatch({
-                                type: 'ONENERGY_PRACTICE_RESET',
-                            });
-                            dispatch({
-                                type: 'ONENERGY_ACHIEVEMENT_RESET',
-                            });
-                            dispatch({
-                                type: 'ONENERGY_PROGRESS_RESET',
-                            });
-                            RNRestart.Restart()
-                        }
-                    });
-                }
+                await updateStatus();
             }
         }
     };
 
+    const updateStatus = async () => {
+        if (progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
+            let achievements = {
+                'milestones': [],
+                'daily': [],
+                'weekly': achievementReducer.weekly,
+                'monthly': achievementReducer.monthly
+            }
+            achievementReducer.milestones.map((milestone) => {
+                achievements.milestones.push({
+                    'id': milestone.id,
+                    'step': milestone.step,
+                    'complete_date': milestone.complete_date,
+                    'claim_date': milestone.claim_date,
+                });
+            });
+            achievementReducer.daily.map((quest) => {
+                achievements.daily.push({
+                    'id': quest.id,
+                    'step': quest.step,
+                    'complete_date': quest.complete_date,
+                    'claim_date': quest.claim_date,
+                    'list': quest.list
+                });
+            });
+            const apiRequest = getApi(props.config);
+            await apiRequest.customRequest(
+                "wp-json/onenergy/v1/statsUpdate",
+                "post",
+                {
+                    "progress": progressReducer,
+                    "achievements": achievements
+                },
+                null,
+                {},
+                false
+            ).then(response => {
+                if (response.data) {
+                    dispatch({
+                        type: 'ONENERGY_PROGRESS_UPLOADED'
+                    });
+                }
+            });
+        }
+    }
     const checkTodayDate = () => {
         const today = new moment().format('YYYY-MM-DD');
         console.log(today, progressReducer.latestUpdate, new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD'))
@@ -342,11 +330,11 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
         let bottomStyle = {};
         switch (item.index) {
             case 0:
-                cornerStyle = {borderTopLeftRadius: 9, borderTopRightRadius: 9, marginTop: 25};
+                cornerStyle = {borderTopLeftRadius: s(9), borderTopRightRadius: s(9), marginTop: mvs(25)};
                 bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
                 break;
             case 11:
-                cornerStyle = {borderBottomLeftRadius: 9, borderBottomRightRadius: 9, marginBottom: 25};
+                cornerStyle = {borderBottomLeftRadius: s(9), borderBottomRightRadius: s(9), marginBottom: mvs(25)};
                 break;
             default:
                 bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
@@ -393,8 +381,8 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                     <>
                         <View style={styles.topRow}>
                             <View style={{width: windowWidth * 2 / 3, justifyContent: "space-between"}}>
-                                <Text style={[global.textHeaderTitle, {fontSize: scale(16)}]}>{optionData.salute}, {user.name}</Text>
-                                <Text style={[global.title, {fontSize: scale(12)}]}>{optionData.greetings}</Text>
+                                <Text style={[global.textHeaderTitle, {fontSize: s(16)}]}>{optionData.salute}, {user.name}</Text>
+                                <Text style={[global.title, {fontSize: s(12)}]}>{optionData.greetings}</Text>
                             </View>
                             <View style={{justifyContent: "center", alignItems: "flex-end"}}>
                                 <TouchableOpacity
@@ -403,10 +391,10 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                                     <FastImage
                                         source={{uri: user && user.avatar_urls['full'] ? user.avatar_urls['full'] : user.avatar_urls['96']}}
                                         style={{
-                                            height: scale(50),
-                                            width: scale(50),
+                                            height: s(50),
+                                            width: s(50),
                                             borderRadius: 100,
-                                            margin: scale(10)
+                                            margin: s(10)
                                         }}
                                     />
                                     {user.membership&&user.membership.length?
@@ -415,7 +403,7 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        <View style={{flexDirection: 'row', justifyContent: "space-between", marginTop: scale(15)}}>
+                        <View style={{flexDirection: 'row', justifyContent: "space-between", marginTop: mvs(15)}}>
                             <TouchableScale
                                 onPress={
                                     () => {
@@ -428,8 +416,8 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                                 <View style={[styles.progressLeftRow, styles.boxShadow, {height: windowWidth * 3 / 5}]}>
                                     <View style={{
                                         width: "100%",
-                                        paddingTop: scale(10),
-                                        paddingLeft: scale(10),
+                                        paddingTop: s(10),
+                                        paddingLeft: s(10),
                                         alignItems: "flex-start"
                                     }}>
                                         <View style={{
@@ -438,10 +426,10 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                                             alignItems: "center"
                                         }}>
                                             <Text style={[global.itemTitle, {
-                                                fontSize: scale(14),
+                                                fontSize: s(14),
                                                 color: colors.primaryColor
                                             }]}>Daily Goal: </Text><Text style={[global.textAlt, {
-                                            fontSize: scale(12),
+                                            fontSize: s(12),
                                             color: colors.primaryColor
                                         }]}>{progressReducer.todayGoal ? Math.round(progressReducer.todayGoal) > 60 ? Math.round(progressReducer.todayGoal / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : progressReducer.todayGoal + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title : 0 + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                         </View>
@@ -449,23 +437,23 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                                             flexDirection: "row",
                                             justifyContent: "center",
                                             alignItems: "center",
-                                            marginBottom: scale(10)
+                                            marginBottom: mvs(10)
                                         }}>
                                             <Text style={[global.itemTitle, {
-                                                fontSize: scale(14),
+                                                fontSize: s(14),
                                                 color: colors.primaryColor
                                             }]}>Today: </Text><Text style={[global.textAlt, {
-                                            fontSize: scale(12),
+                                            fontSize: s(12),
                                             color: colors.primaryColor
                                         }]}>{progressReducer.todayDuration ? Math.round(progressReducer.todayDuration / 60) > 60 ? Math.round(progressReducer.todayDuration / 3600) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : Math.round(progressReducer.todayDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title : 0 + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                         </View>
                                     </View>
                                     <ProgressChart
                                         data={{data: [progressReducer.todayDuration / (progressReducer.todayGoal * 60) <= 1 ? progressReducer.todayDuration / (progressReducer.todayGoal * 60) : 1]}}
-                                        width={(windowWidth - scale(80)) / 2}
-                                        height={(windowWidth - scale(80)) / 2}
-                                        strokeWidth={scale(24)}
-                                        radius={scale(52)}
+                                        width={(windowWidth - s(80)) / 2}
+                                        height={(windowWidth - s(80)) / 2}
+                                        strokeWidth={s(24)}
+                                        radius={s(52)}
                                         chartConfig={{
                                             backgroundGradientFrom: "#FFF",
                                             backgroundGradientFromOpacity: 1,
@@ -478,7 +466,7 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                                         }}
                                         hideLegend={true}
                                         style={{
-                                            borderRadius: 9
+                                            borderRadius: s(9)
                                         }}
                                     />
                                     <View>
@@ -486,13 +474,13 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                                             style={{
                                                 alignItems: "center",
                                                 justifyContent: "center",
-                                                marginBottom: scale(10)
+                                                marginBottom: mvs(10)
                                             }}
                                             onPress={
                                                 () => {
                                                     this.todayGoalDialog.open();
                                                 }}>
-                                            <Text style={[global.linkWithArrow, {
+                                            <Text style={[global.link, {
                                                 fontWeight: "bold",
                                                 color: colors.primaryButtonBg
                                             }]}>Goal setting ></Text>
@@ -500,7 +488,7 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                                     </View>
                                 </View>
                             </TouchableScale>
-                            <View style={{marginRight: scale(15), justifyContent: "space-between"}}>
+                            <View style={{marginRight: s(15), justifyContent: "space-between"}}>
                                 <TouchableScale
                                     onPress={
                                         () => {
@@ -518,13 +506,13 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                                             alignItems: "center"
                                         }}>
                                             <Text style={[global.itemTitle, {
-                                                fontSize: scale(14),
+                                                fontSize: s(14),
                                                 color: colors.primaryColor
                                             }]}>courses{"\n"}in progress</Text>
                                         </View>
                                         <View style={{flexDirection: "row", justifyContent: "flex-start"}}>
                                             <Text style={[global.itemTitle, {
-                                                fontSize: scale(40),
+                                                fontSize: s(40),
                                                 color: colors.primaryButtonBg
                                             }]}>{progressReducer.enrolledCourses ? progressReducer.completedCourses ? progressReducer.enrolledCourses.length - progressReducer.completedCourses.length : progressReducer.enrolledCourses.length : 0}</Text>
                                         </View>
@@ -547,8 +535,8 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                                             alignItems: "center"
                                         }}>
                                             <Text style={[global.itemTitle, {
-                                                lineHeight: scale(14),
-                                                fontSize: scale(14),
+                                                lineHeight: s(14),
+                                                fontSize: s(14),
                                                 color: colors.primaryColor
                                             }]}>total{"\n"}practiced</Text>
                                         </View>
@@ -558,11 +546,11 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                                             alignItems: "baseline"
                                         }}>
                                             <Text style={[global.itemTitle, {
-                                                fontSize: scale(40),
+                                                fontSize: s(40),
                                                 color: colors.primaryButtonBg
                                             }]}>{progressReducer.totalDuration ? Math.round(progressReducer.totalDuration / 60) > 60 ? Math.round(progressReducer.totalDuration / 60 / 60) : Math.round(progressReducer.totalDuration / 60) : 0}</Text><Text
                                             style={[global.itemText, {
-                                                fontSize: scale(14),
+                                                fontSize: s(14),
                                                 color: colors.primaryButtonBg
                                             }]}>{progressReducer.totalDuration ? Math.round(progressReducer.totalDuration / 60) > 60 ? optionData.titles.find(el => el.id === 'stats_detail_hours').title : optionData.titles.find(el => el.id === 'stats_detail_minutes').title : ''}</Text>
                                         </View>
@@ -572,25 +560,26 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                         </View>
                     </>
                     :
-                    <View style={[styles.topRow, {marginTop: scale(15), justifyContent: 'space-evenly'}]}>
+                    <View style={[styles.topRow, {marginTop: mvs(15), justifyContent: 'space-evenly'}]}>
                         <TouchableWithoutFeedback onPress={() => {
                             navigation.navigate("MySignupScreen");
                         }}>
                             <View style={{
-                                paddingHorizontal: scale(10),
-                                paddingVertical: scale(5),
+                                paddingHorizontal: ms(10),
+                                paddingVertical: ms(5),
                                 backgroundColor: colors.primaryButtonBg,
-                                borderRadius: 9,
+                                borderRadius: s(9),
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'space-evenly'
                             }}>
                                 <View style={{flexDirection: "row", alignItems: "center"}}>
-                                    <SvgIconSignup color={colors.primaryButtonColor}/>
+                                    <SvgIconSignup size={s(24)} color={colors.primaryButtonColor}/>
                                     <Text
                                         style={[global.settingsItemTitle, {
+                                            fontSize: s(16),
                                             color: colors.primaryButtonColor,
-                                            marginLeft: scale(5)
+                                            marginLeft: ms(5)
                                         }]}>
                                         Create account
                                     </Text>
@@ -601,20 +590,21 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                             navigation.navigate("MyLoginScreen");
                         }}>
                             <View style={{
-                                paddingHorizontal: scale(10),
-                                paddingVertical: scale(5),
+                                paddingHorizontal: ms(10),
+                                paddingVertical: ms(5),
                                 backgroundColor: colors.secondaryButtonBg,
-                                borderRadius: 9,
+                                borderRadius: s(9),
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'space-evenly'
                             }}>
                                 <View style={{flexDirection: "row", alignItems: "center"}}>
-                                    <SvgIconLogin color={colors.secondaryButtonColor}/>
+                                    <SvgIconLogin size={s(24)} color={colors.secondaryButtonColor}/>
                                     <Text
                                         style={[global.settingsItemTitle, {
+                                            fontSize: s(16),
                                             color: colors.secondaryButtonColor,
-                                            marginLeft: scale(5)
+                                            marginLeft: s(5)
                                         }]}>
                                         Sign in
                                     </Text>
@@ -640,7 +630,7 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                                 <Text style={{
                                     fontFamily: "MontserratAlternates-SemiBold",
                                     fontWeight: "bold",
-                                    fontSize: scale(16),
+                                    fontSize: s(16),
                                     color: colors.textColor
                                 }}>{moment.utc(sunrise.sunrise).local().format('HH:mm')}</Text>
                                 <SvgIconSunrise/>
@@ -649,7 +639,7 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                                 <Text style={{
                                     fontFamily: "MontserratAlternates-SemiBold",
                                     fontWeight: "bold",
-                                    fontSize: scale(16),
+                                    fontSize: s(16),
                                     color: colors.textColor
                                 }}>{moment.utc(sunrise.sunset).local().format('HH:mm')}</Text>
                                 <SvgIconSunset/>
@@ -660,17 +650,17 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                             getLocation();
                         }}>
                             <View style={[styles.block_season_left, styles.boxShadow, {backgroundColor: colors.primaryButtonBg}]}>
-                                <View style={{justifyContent: "center", alignItems: "center", padding: scale(15)}}>
+                                <View style={{justifyContent: "center", alignItems: "center", padding: s(15)}}>
                                     <Text style={{
                                         fontFamily: "MontserratAlternates-SemiBold",
                                         fontWeight: "bold",
-                                        fontSize: scale(14),
+                                        fontSize: s(14),
                                         color: colors.primaryButtonColor
                                     }}>Tap Here</Text>
                                     <Text style={{
                                         fontFamily: "MontserratAlternates-Regular",
                                         fontWeight: "normal",
-                                        fontSize: scale(14),
+                                        fontSize: s(14),
                                         color: colors.primaryButtonColor
                                     }}>show sunrise/sunset time</Text>
                                 </View>
@@ -682,7 +672,7 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                             <Text style={{
                                 fontFamily: "MontserratAlternates-Regular",
                                 fontWeight: "normal",
-                                fontSize: scale(12),
+                                fontSize: s(12),
                                 color: "white"
                             }}>{phase}</Text>
                             <SvgIconMoonPhase moonPhase={phase}/>
@@ -691,13 +681,13 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                             <Text style={{
                                 fontFamily: "MontserratAlternates-SemiBold",
                                 fontWeight: "bold",
-                                fontSize: scale(14),
+                                fontSize: s(14),
                                 color: "white"
                             }}>{nextMoonPhase.phase}</Text>
                             <Text style={{
                                 fontFamily: "Montserrat-SemiBold",
                                 fontWeight: "bold",
-                                fontSize: scale(18),
+                                fontSize: s(18),
                                 color: "white"
                             }}>{nextMoonPhase.date}</Text>
                         </View>
@@ -731,44 +721,44 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                                 />
                                 <View style={{
                                     position: "absolute",
-                                    left: scale(12),
-                                    bottom: scale(3),
+                                    left: s(12),
+                                    bottom: s(3),
                                     justifyContent: "center",
                                     alignItems: "center"
                                 }}>
                                     <Text style={{
                                         fontFamily: "Montserrat-SemiBold",
                                         fontWeight: "bold",
-                                        fontSize: scale(16),
-                                        lineHeight: scale(16),
+                                        fontSize: s(16),
+                                        lineHeight: s(16),
                                         color: '#FFF'
                                     }}>{new moment(optionData.currentSolarTermStart).format('MMM')}</Text>
                                     <Text style={{
                                         fontFamily: "Montserrat-SemiBold",
                                         fontWeight: "bold",
-                                        fontSize: scale(22),
-                                        lineHeight: scale(22),
+                                        fontSize: s(22),
+                                        lineHeight: s(22),
                                         color: '#FFF'
                                     }}>{new moment(optionData.currentSolarTermStart).format('DD')}</Text></View>
                                 <View style={{
                                     position: "absolute",
-                                    right: scale(10),
-                                    bottom: scale(3),
+                                    right: s(10),
+                                    bottom: s(3),
                                     justifyContent: "center",
                                     alignItems: "center"
                                 }}>
                                     <Text style={{
                                         fontFamily: "Montserrat-SemiBold",
                                         fontWeight: "bold",
-                                        fontSize: scale(16),
-                                        lineHeight: scale(16),
+                                        fontSize: s(16),
+                                        lineHeight: s(16),
                                         color: '#FFF'
                                     }}>{new moment(optionData.currentSolarTermEnd).format('MMM')}</Text>
                                     <Text style={{
                                         fontFamily: "Montserrat-SemiBold",
                                         fontWeight: "bold",
-                                        fontSize: scale(22),
-                                        lineHeight: scale(22),
+                                        fontSize: s(22),
+                                        lineHeight: s(22),
                                         color: '#FFF'
                                     }}>{new moment(optionData.currentSolarTermEnd).format('DD')}</Text></View>
                             </View>
@@ -832,11 +822,11 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                 }}
                 modalStyle={{backgroundColor: colors.bodyFrontBg}}
                 modalHeight={windowHeight / 2}
-                childrenStyle={{marginBottom: scale(25)}}
+                childrenStyle={{marginBottom: mvs(25)}}
                 withHandle="false"
                 HeaderComponent={
                     <View style={{
-                        padding: scale(15),
+                        padding: s(15),
                         flexDirection: "row",
                         justifyContent: "space-between",
                         borderTopLeftRadius: 9,
@@ -846,7 +836,7 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                         borderBottomColor: colors.borderColor
                     }}>
                         <Text style={{
-                            fontSize: scale(24),
+                            fontSize: s(24),
                             color: colors.headerColor,
                             fontFamily: "MontserratAlternates-SemiBold",
                             fontWeight: "bold"
@@ -879,12 +869,12 @@ const styles = StyleSheet.create({
     },
     scroll_view: {
         flexGrow: 1,
-        paddingVertical: scale(15),
+        paddingVertical: s(15),
     },
     tapFinger: {
         position: "absolute",
-        width: scale(200),
-        height: scale(240),
+        width: s(200),
+        height: s(240),
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
@@ -893,34 +883,34 @@ const styles = StyleSheet.create({
     },
     topRow: {
         flexDirection: "row",
-        marginHorizontal: scale(15),
+        marginHorizontal: s(15),
         alignItems: 'center',
         justifyContent: 'space-between',
     },
     progressLeftRow: {
-        width: (windowWidth - scale(45)) * 5 / 8,
-        marginLeft: scale(15),
+        width: (windowWidth - s(45)) * 5 / 8,
+        marginLeft: s(15),
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 9,
+        borderRadius:s(9),
         backgroundColor: "#FFF",
     },
     progressRightRow: {
-        width: (windowWidth - scale(45)) * 3 / 8,
-        paddingVertical: scale(5),
-        height: (windowWidth * 3 / 5 - scale(15)) / 2,
+        width: (windowWidth - s(45)) * 3 / 8,
+        paddingVertical: s(5),
+        height: (windowWidth * 3 / 5 - s(15)) / 2,
         justifyContent: "space-between",
-        marginLeft: scale(15),
+        marginLeft: s(15),
         alignItems: 'center',
-        borderRadius: 9,
+        borderRadius:s(9),
         backgroundColor: "#FFF",
     },
     quoteRow: {
-        marginHorizontal: scale(15),
-        marginTop: scale(25),
+        marginHorizontal: s(15),
+        marginTop: mvs(25),
         alignItems: 'center',
         justifyContent: 'center',
-        height: (windowWidth - scale(30)) / 3.25,
+        height: (windowWidth - s(30)) / 3.25,
     },
     eventRow: {
         alignItems: 'center',
@@ -938,82 +928,82 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     bottomRow: {
-        minHeight: 50,
+        marginBottom: mvs(50),
     },
     view_title: {
         flex: 1,
         flexDirection: "row",
         justifyContent: "flex-start",
-        marginTop: scale(25),
+        marginTop: mvs(25),
     },
     view_blog_title: {
         flexDirection: 'row',
         left: 0,
         right: 0,
-        width: windowWidth - scale(30),
+        width: windowWidth - s(30),
         justifyContent: "space-between",
-        marginTop: scale(25),
+        marginTop: mvs(25),
     },
     heading: {
-        fontSize: scale(18),
+        fontSize: s(18),
         fontStyle: "italic",
         fontWeight: "normal",
         alignSelf: "baseline",
     },
     heading_more: {
-        fontSize: scale(13),
+        fontSize: s(13),
         fontWeight: "normal",
         alignSelf: "baseline",
         color: "#4942e1",
     },
     block_season_left: {
-        width: (windowWidth - scale(50)) / 3,
-        height: (windowWidth - scale(30)) / 2,
-        marginTop: scale(25),
-        marginLeft: 15,
-        borderRadius: 9,
+        width: (windowWidth - s(50)) / 3,
+        height: (windowWidth - s(30)) / 2,
+        marginTop: mvs(25),
+        marginLeft: s(15),
+        borderRadius: s(9),
         backgroundColor: '#ffeee7',
         alignItems: "center",
         justifyContent: "space-evenly"
     },
     block_season_center: {
-        width: (windowWidth - scale(50)) / 3,
-        height: (windowWidth - scale(30)) / 2,
-        marginTop: scale(25),
-        marginLeft: 10,
-        borderRadius: 9,
+        width: (windowWidth - s(50)) / 3,
+        height: (windowWidth - s(30)) / 2,
+        marginTop: mvs(25),
+        marginLeft: s(10),
+        borderRadius: s(9),
         backgroundColor: '#2e2e2e',
-        paddingTop: scale(10),
+        paddingTop: s(10),
         justifyContent: "space-evenly",
         alignItems: "center"
     },
     block_season_right: {
-        width: (windowWidth - scale(50)) / 3,
-        height: (windowWidth - scale(30)) / 2,
-        marginTop: scale(25),
-        marginLeft: 10,
-        marginRight: 15,
-        borderRadius: 9,
+        width: (windowWidth - s(50)) / 3,
+        height: (windowWidth - s(30)) / 2,
+        marginTop: mvs(25),
+        marginLeft: s(10),
+        marginRight: s(15),
+        borderRadius: s(9),
         backgroundColor: 'white',
         justifyContent: "center",
         alignItems: "center"
     },
     block_half_left: {
-        width: (windowWidth - scale(50)) / 2,
-        height: (windowWidth - scale(30)) / 2,
-        marginTop: scale(25),
+        width: (windowWidth - s(50)) / 2,
+        height: (windowWidth - s(30)) / 2,
+        marginTop: mvs(25),
         marginLeft: 15,
         marginRight: 10,
-        borderRadius: 9,
+        borderRadius:s(9),
         backgroundColor: 'white',
     },
     block_half: {
-        width: (windowWidth - scale(50)) / 2,
-        height: (windowWidth - scale(30)) / 2,
-        marginTop: scale(25),
+        width: (windowWidth - s(50)) / 2,
+        height: (windowWidth - s(30)) / 2,
+        marginTop: mvs(25),
         marginLeft: 10,
         marginRight: 15,
-        borderRadius: 9,
+        borderRadius:s(9),
         backgroundColor: 'white',
     },
     row_intro: {
@@ -1021,36 +1011,36 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     view_intro: {
-        marginTop: scale(25),
-        marginHorizontal: scale(15),
-        width: windowWidth - scale(30),
-        height: windowWidth - scale(30),
-        borderRadius: 9,
+        marginTop: mvs(25),
+        marginHorizontal: s(15),
+        width: windowWidth - s(30),
+        height: windowWidth - s(30),
+        borderRadius:s(9),
     },
     image_intro: {
-        width: windowWidth - scale(30),
-        height: windowWidth - scale(30),
-        borderRadius: 9,
+        width: windowWidth - s(30),
+        height: windowWidth - s(30),
+        borderRadius:s(9),
     },
     image_event: {
-        width: (windowWidth - scale(50)) / 3 * 2,
-        height: (windowWidth - scale(30)) / 2,
+        width: (windowWidth - s(50)) / 3 * 2,
+        height: (windowWidth - s(30)) / 2,
         flex: 1,
-        borderRadius: 9,
+        borderRadius:s(9),
         overflow: 'hidden',
     },
     image_season: {
-        width: (windowWidth - scale(50)) / 3,
-        height: (windowWidth - scale(30)) / 2,
+        width: (windowWidth - s(50)) / 3,
+        height: (windowWidth - s(30)) / 2,
         flex: 1,
-        borderRadius: 9,
+        borderRadius: s(9),
         overflow: 'hidden',
     },
     image_half: {
-        width: (windowWidth - scale(50)) / 2,
-        height: (windowWidth - scale(30)) / 2,
+        width: (windowWidth - s(50)) / 2,
+        height: (windowWidth - s(30)) / 2,
         flex: 1,
-        borderRadius: 9,
+        borderRadius:s(9),
         overflow: 'hidden',
     },
     boxShadow: {
@@ -1088,7 +1078,7 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
             >
                 <SvgIconMenu color={colors.headerIconColor}/>
                 <AuthWrapper actionOnGuestLogin={'hide'}>
-                    <NotificationTabBarIcon notificationID={'left_menu'} top={-5} right={-5} size={scale(10)}
+                    <NotificationTabBarIcon notificationID={'left_menu'} top={-5} right={-5} size={10}
                                             showNumber={false}/>
                 </AuthWrapper>
             </TouchableScale>,
@@ -1100,8 +1090,8 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
                             navigation.navigate("QuestsScreen")
                         }}
                     >
-                        <SvgIconQuest color={colors.headerIconColor}/>
-                        <NotificationTabBarIcon notificationID={'quest'} top={-5} right={5} size={scale(10)}
+                        <SvgIconQuest style={{marginRight:s(5)}} color={colors.headerIconColor}/>
+                        <NotificationTabBarIcon notificationID={'quest'} top={-5} right={5} size={10}
                                                 showNumber={false}/>
                     </TouchableScale>
                     <TouchableScale
@@ -1109,8 +1099,8 @@ HomeContent.navigationOptions = ({navigation, screenProps}) => {
                             navigation.navigate("MilestonesScreen")
                         }}
                     >
-                        <SvgIconMilestone color={colors.headerIconColor}/>
-                        <NotificationTabBarIcon notificationID={'milestone'} top={-5} right={5} size={scale(10)}
+                        <SvgIconMilestone style={{marginRight:s(5)}} color={colors.headerIconColor}/>
+                        <NotificationTabBarIcon notificationID={'milestone'} top={-5} right={5} size={10}
                                                 showNumber={false}/>
                     </TouchableScale>
                     <TouchableScale

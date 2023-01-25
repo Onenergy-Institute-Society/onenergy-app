@@ -13,9 +13,8 @@ import {
     View
 } from 'react-native';
 import {useSelector} from "react-redux";
-import {scale} from '../Utils/scale';
+import {ms, mvs, s, vs, windowWidth} from '../Utils/Scale';
 import AudioPlayer from './AudioPlayer';
-import {windowWidth} from "../Utils/Dimensions";
 import NotificationTabBarIcon from "./NotificationTabBarIcon";
 import AuthWrapper from "@src/components/AuthWrapper";
 
@@ -56,7 +55,7 @@ const TracksList = (props) => {
             item.show ?
                 <View style={[styles.trackItem, styles.boxShadow, {
                     backgroundColor: colors.bodyBg,
-                    height: showPlayer ? scale(120) : scale(80)
+                    height: showPlayer ? s(120) : s(80)
                 }]}
                       key={'practice-' + item.id}>
                     <TouchableOpacity
@@ -67,10 +66,10 @@ const TracksList = (props) => {
                     >
                         <ImageBackground style={styles.itemStyle}
                                          resizeMode={"cover"}
-                                         imageStyle={{borderTopLeftRadius: 9, borderTopRightRadius: 9, borderBottomLeftRadius: showPlayer?0:9, borderBottomRightRadius: showPlayer?0:9}}
+                                         imageStyle={{borderTopLeftRadius: s(9), borderTopRightRadius: s(9), borderBottomLeftRadius: showPlayer?0:s(9), borderBottomRightRadius: showPlayer?0:s(9)}}
                                          source={selectedTrack && selectedTrack.id === item.id ? require('../assets/images/1-1024x683.jpg') : require('../assets/images/7-1024x683.jpg')}>
                             <View style={styles.trackImgBox}>
-                                <ImageBackground style={styles.trackImg} imageStyle={{borderRadius: 9}}
+                                <ImageBackground style={styles.trackImg} imageStyle={{borderRadius: s(9)}}
                                                  source={{uri: item.artwork}}>
                                     <View style={styles.overlay_button}><Image style={styles.play}
                                                                                source={require('../assets/images/audio-play.png')}/></View>
@@ -78,7 +77,7 @@ const TracksList = (props) => {
                             </View>
                             <View style={styles.trackDescBox}>
                                 <View style={styles.titleBox}>
-                                    <Text style={[global.itemTitle, highlightColor]}>{item.title}</Text>
+                                    <Text style={[global.itemTitle, highlightColor, {fontSize: s(18.7)}]}>{item.title}</Text>
                                     {item.new ? (
                                         <View style={{
                                             height: 12,
@@ -93,7 +92,7 @@ const TracksList = (props) => {
                             </View>
                         </ImageBackground>
                         <AuthWrapper actionOnGuestLogin={'hide'}>
-                            <NotificationTabBarIcon notificationID={'practice'} top={3} right={3} size={scale(15)}
+                            <NotificationTabBarIcon notificationID={'practice'} top={3} right={3} size={15}
                                                     fontSize={10} showNumber={false} data={item.id}/>
                         </AuthWrapper>
                     </TouchableOpacity>
@@ -108,7 +107,8 @@ const TracksList = (props) => {
         return (
             section.section.data.find((item) => item.show) ?
                 <Text style={[global.screenTitle, {
-                    marginTop: scale(20),
+                    fontSize: s(20),
+                    marginTop: mvs(20),
                     textAlign: "center"
                 }]}>{section.section.title.toUpperCase()}</Text>
                 : null
@@ -119,7 +119,7 @@ const TracksList = (props) => {
             {tracks ?
                 <SectionList
                     stickySectionHeadersEnabled={false}
-                    contentContainerStyle={{paddingBottom: scale(20)}}
+                    contentContainerStyle={{paddingBottom: s(20)}}
                     style={styles.trackList}
                     sections={tracks}
                     renderItem={renderItem}
@@ -138,22 +138,22 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     trackList: {
-        paddingTop: scale(5),
+        paddingTop: mvs(5),
     },
     trackItem: {
-        borderRadius: 9,
+        borderRadius:s(9),
         paddingVertical: 0,
         paddingHorizontal: 0,
-        marginHorizontal: scale(15),
-        marginTop: scale(10),
-        marginBottom: scale(5),
+        marginHorizontal: s(15),
+        marginTop: mvs(10),
+        marginBottom: mvs(5),
         justifyContent: "flex-start",
     },
     trackItemInner: {
-        borderRadius: 9,
+        borderRadius:s(9),
         paddingVertical: 0,
         paddingHorizontal: 0,
-        width: windowWidth - scale(30),
+        width: windowWidth - s(30),
         overflow: "hidden",
     },
     boxShadow: {
@@ -172,27 +172,27 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.3)',
         position: 'absolute',
         opacity: 1,
-        borderRadius: 9,
+        borderRadius:s(9),
         alignItems: 'center',
         justifyContent: 'center',
     },
     play: {
         opacity: 0.6,
-        width: 32,
-        height: 32,
+        width: s(32),
+        height: vs(32),
         tintColor: "white"
     },
     playPauseIcon: {
         color: '#000',
     },
     itemStyle: {
-        width: windowWidth - scale(30),
-        paddingHorizontal: scale(8),
+        width: windowWidth - s(30),
+        paddingHorizontal: ms(8),
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'stretch',
-        height: scale(80),
+        height: s(80),
         borderBottomColor: '#333',
         borderWidth: 0,
     },
@@ -203,51 +203,51 @@ const styles = StyleSheet.create({
     },
     trackDescBox: {
         flex: 4,
-        paddingLeft: scale(10),
-        marginLeft: scale(10),
-        borderRadius: 9,
+        paddingLeft: ms(10),
+        marginLeft: s(10),
+        borderRadius:s(9),
         display: 'flex',
     },
     trackImg: {
-        width: scale(70),
-        height: scale(70),
-        marginLeft: scale(10),
-        borderRadius: 9,
+        width: s(70),
+        height: s(70),
+        marginLeft: s(10),
+        borderRadius:s(9),
     },
     titleBox: {
         flex: 2,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: 'flex-start',
-        marginTop: scale(5),
+        marginTop: mvs(5),
     },
     album: {
-        fontSize: scale(15),
+        fontSize: s(15),
         fontWeight: 'normal',
     },
     title: {
-        fontSize: scale(16),
+        fontSize: s(16),
         fontWeight: 'bold',
     },
     subTitle: {
-        fontSize: scale(15),
+        fontSize: s(15),
     },
     duration: {
         position: "absolute",
-        bottom: scale(5),
-        right: scale(15),
-        fontSize: scale(12),
+        bottom: s(5),
+        right: s(15),
+        fontSize: s(12),
     },
     listBox: {
         height: '100%',
         justifyContent: "flex-start",
         alignItems: "center",
-        paddingTop: scale(10),
+        paddingTop: mvs(10),
     },
     playerBox: {
         position: 'absolute',
         zIndex: 10,
-        height: scale(200),
+        height: s(200),
         width: '100%',
     },
 });

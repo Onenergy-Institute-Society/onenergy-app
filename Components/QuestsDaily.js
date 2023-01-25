@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {connect, useDispatch, useSelector} from "react-redux";
 import {
     FlatList,
@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
-import {scale} from "../Utils/scale";
+import {ms, mvs, s} from "../Utils/Scale";
 import AchievementItem from "./AchievementItem";
 import moment from 'moment';
 
@@ -25,12 +25,18 @@ const QuestsDaily = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyText = optionData.helps.find(el => el.name === 'achievement_quest_empty');
     const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
-    const uncompletedQuestReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.daily.filter(quest => quest.complete_date==='') : null);
-    const completedQuestReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.daily.filter(quest => quest.complete_date!==''&&quest.claim_date==='') : null);
-    const claimedQuestReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.daily.filter(quest => quest.claim_date!=='') : null);
-    const milestoneReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.milestones : null);
-    const [hideEmptyMessage, setHideEmptyMessage] = useState(false);
+    const questReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
+    const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
+    const [uncompletedQuests, setUncompletedQuests] = useState([]);
+    const [completedQuests, setCompletedQuests] = useState([]);
+    const [claimedQuests, setClaimedQuests] = useState([]);
     const dispatch = useDispatch();
+
+    useEffect(()=>{
+        setUncompletedQuests(questReducer.daily.filter(quest => quest.complete_date==='' && showItem(quest) !== -1));
+        setCompletedQuests(questReducer.daily.filter(quest => quest.complete_date!=='' && quest.claim_date==='' && showItem(quest) !== -1));
+        setClaimedQuests(questReducer.daily.filter(quest => quest.claim_date!=='' && showItem(quest) !== -1));
+    },[questReducer])
 
     const handleOnPress = (item, date, mode) => {
         switch (mode) {
@@ -64,11 +70,9 @@ const QuestsDaily = (props) => {
         }
     }
 
-    const renderItem = ({item}) => {
+    const showItem = (item) => {
         let show = -1;
-        let today = new moment().format('YYYY-MM-DD');
 
-        console.log(item.title, item)
         switch (item.show) {
             case 'course':
                 switch (item.showCourseOption) {
@@ -84,31 +88,31 @@ const QuestsDaily = (props) => {
                 show = progressReducer.completedLessons.length? progressReducer.completedLessons.findIndex(lesson => lesson.id === parseInt(item.showLesson)):-1;
                 break;
             case 'achievement':
-                show = milestoneReducer && milestoneReducer.findIndex(milestone => milestone.id === parseInt(item.showAchievement) && milestone.complete_date !== '');
+                show = achievementReducer.milestones && achievementReducer.milestones.findIndex(milestone => milestone.id === parseInt(item.showAchievement) && milestone.complete_date !== '');
                 break;
             default:
                 show = 1;
                 break;
         }
         if(item.complete_date) show = 1;
-        if(show >= 0)
-            setHideEmptyMessage(true);
+        return show;
+    }
+    const renderItem = ({item}) => {
+        let today = new moment().format('YYYY-MM-DD');
         return (
-            show >= 0 ?
-                <>
-                    <AchievementItem mode={'daily'} item={item} date={item.complete_date}
-                                     handleOnPress={handleOnPress} {...props}/>
-                    {item.list.map(date => {
-                        let dayDiff = moment(today).diff(moment(date), 'days');
-                        if (dayDiff <= 7 && dayDiff >= 1) {
-                            return (
-                                <AchievementItem mode={'past'} item={item} date={date}
-                                                 handleOnPress={handleOnPress} {...props}/>
-                            )
-                        }
-                    })}
-                </>
-                : null
+            <>
+                <AchievementItem mode={'daily'} item={item} date={item.complete_date}
+                                 handleOnPress={handleOnPress} {...props}/>
+                {item.list.map(date => {
+                    let dayDiff = moment(today).diff(moment(date), 'days');
+                    if (dayDiff <= 7 && dayDiff >= 1) {
+                        return (
+                            <AchievementItem mode={'past'} item={item} date={date}
+                                             handleOnPress={handleOnPress} {...props}/>
+                        )
+                    }
+                })}
+            </>
         );
     };
 
@@ -116,32 +120,32 @@ const QuestsDaily = (props) => {
         <SafeAreaView style={global.container}>
             {
                 <ScrollView style={styles.containerStyle} showsVerticalScrollIndicator={false}>
-                    {completedQuestReducer && completedQuestReducer.length ?
+                    {completedQuests.length ?
                         <FlatList
                             scrollEnabled={false}
-                            data={completedQuestReducer}
+                            data={completedQuests}
                             renderItem={renderItem}
                             keyExtractor={item => item.id}
                             showsVerticalScrollIndicator={false}
                         />
                         :null}
-                    {uncompletedQuestReducer && uncompletedQuestReducer.length ?
+                    {uncompletedQuests.length ?
                         <FlatList
                             scrollEnabled={false}
-                            data={uncompletedQuestReducer}
+                            data={uncompletedQuests}
                             renderItem={renderItem}
                             keyExtractor={item => item.id}
                             showsVerticalScrollIndicator={false}
                         />:null}
-                    {claimedQuestReducer && claimedQuestReducer.length ?
+                    {claimedQuests.length ?
                         <FlatList
                             scrollEnabled={false}
-                            data={claimedQuestReducer}
+                            data={claimedQuests}
                             renderItem={renderItem}
                             keyExtractor={item => item.id}
                             showsVerticalScrollIndicator={false}
                         />:null}
-                    {!hideEmptyMessage ?
+                    {!completedQuests.length&&!uncompletedQuests.length&&!claimedQuests.length ?
                         <View style={{flex: 1, backgroundColor: '#fff'}}>
                             <BlockScreen pageId={emptyText.id}
                                          contentInsetTop={0}
@@ -158,8 +162,8 @@ const QuestsDaily = (props) => {
 }
 const styles = StyleSheet.create({
     containerStyle: {
-        paddingTop: scale(15),
-        marginBottom: scale(25)
+        paddingTop: ms(15),
+        marginBottom: mvs(25)
     },
     boxShadow: {
         shadowColor: "#000",

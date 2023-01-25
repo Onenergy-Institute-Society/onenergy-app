@@ -1,14 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {ActivityIndicator, Dimensions, FlatList, Image, SafeAreaView, StyleSheet, Text, View} from "react-native";
+import {ActivityIndicator, FlatList, Image, SafeAreaView, StyleSheet, Text, View} from "react-native";
 import {connect, useDispatch, useSelector} from "react-redux";
 import {getApi} from "@src/services";
 import {NavigationActions, withNavigation} from "react-navigation";
-import Skeleton from './Loaders/PostsSkeletonLoading';
 import ImageCache from './ImageCache';
 import TouchableScale from './TouchableScale';
-import {scale} from '../Utils/scale';
-
-const {width} = Dimensions.get('window')
+import {ms, mvs, s, vs, windowWidth} from '../Utils/Scale';
 
 const PostList = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
@@ -168,11 +165,11 @@ const PostList = props => {
                             style={{
                                 color: '#FFFFFF',
                                 position: 'absolute',
-                                top: 3,
-                                right: 3,
-                                minWidth: 15,
-                                height: 15,
-                                borderRadius: 15,
+                                top: s(3),
+                                right: s(3),
+                                minWidth: s(15),
+                                height: s(15),
+                                borderRadius: s(15),
                                 borderWidth: 1,
                                 borderColor: "white",
                                 alignItems: 'center',
@@ -192,7 +189,7 @@ const PostList = props => {
         <SafeAreaView style={global.container}>
             {postsData && postsData.length ? (
                 <FlatList
-                    contentContainerStyle={{paddingBottom: scale(20)}}
+                    contentContainerStyle={{paddingBottom: mvs(20)}}
                     style={styles.scrollView}
                     data={postsData}
                     onEndReached={(d) => {
@@ -207,7 +204,7 @@ const PostList = props => {
                     keyExtractor={item => item.id}
                 />
             ) : (
-                <Skeleton/>
+                <ActivityIndicator style={styles.loading} size="large"/>
             )}
             {loadMore ? (
                 <ActivityIndicator style={styles.loading} size="large"/>
@@ -224,11 +221,11 @@ const styles = StyleSheet.create({
     },
     containerStyle: {
         backgroundColor: "#FFFFFF",
-        borderRadius: 9,
-        marginHorizontal: scale(15),
-        marginTop: scale(25),
-        width: width - scale(30),
-        height: scale(120),
+        borderRadius:s(9),
+        marginHorizontal: s(15),
+        marginTop: mvs(25),
+        width: windowWidth - s(30),
+        height: vs(120),
     },
     rowStyle: {
         overflow: 'hidden',
@@ -238,54 +235,54 @@ const styles = StyleSheet.create({
     scrollView: {
         justifyContent: 'flex-start',
         flexWrap: 'wrap',
-        paddingBottom: scale(60),
+        paddingBottom: ms(60),
     },
     image: {
-        marginTop: scale(15),
-        width: scale(120),
-        height: scale(60),
-        borderRadius: 9,
+        marginTop: mvs(15),
+        width: s(120),
+        height: vs(60),
+        borderRadius:s(9),
         overflow: 'hidden',
     },
     imageView: {
-        width: scale(150),
-        height: scale(120),
+        width: s(150),
+        height: vs(120),
         justifyContent: "space-between",
         alignItems: "center"
     },
     overlay: {
         alignItems: 'flex-start',
         justifyContent: 'space-between',
-        width: width - scale(180),
-        height: scale(120),
-        paddingVertical: scale(15),
-        paddingRight: scale(15),
-        marginRight: scale(20),
+        width: windowWidth - s(180),
+        height: s(120),
+        paddingVertical: mvs(15),
+        paddingRight: ms(15),
+        marginRight: ms(20),
     },
     title: {
         top: 0,
-        fontSize: scale(14),
+        fontSize: s(14),
         fontWeight: 'bold',
         textAlign: 'left',
         color: '#4A4D34',
         fontFamily: 'Montserrat-SemiBold',
     },
     metaRow: {
-        marginLeft: scale(30),
-        marginBottom: scale(15),
-        width: scale(150),
+        marginLeft: s(30),
+        marginBottom: mvs(15),
+        width: s(150),
         flexDirection: 'row',
         justifyContent: "flex-start",
         alignItems: "center",
     },
     avatar: {
-        width: scale(24),
-        height: scale(24),
-        borderRadius: scale(24),
+        width: s(24),
+        height: s(24),
+        borderRadius: s(24),
         marginRight: 5,
     },
     author: {
-        fontSize: scale(10),
+        fontSize: s(10),
         textAlign: 'left',
         textAlignVertical: 'center',
         color: 'black',
@@ -293,28 +290,28 @@ const styles = StyleSheet.create({
         fontFamily: 'Montserrat-Regular',
     },
     description: {
-        fontSize: scale(12),
+        fontSize: s(12),
         color: '#3c3c3c',
-        marginTop: scale(5),
-        marginBottom: scale(15),
+        marginTop: mvs(5),
+        marginBottom: mvs(15),
         backgroundColor: 'transparent',
         fontFamily: 'Montserrat-Regular',
     },
     loading: {
         textAlign: 'center',
-        height: scale(70),
-        marginBottom: scale(35),
+        height: s(70),
+        marginBottom: mvs(35),
     },
     overlay_button: {
         flex: 1,
         backgroundColor: 'rgba(0,0,0,0.2)',
         position: 'absolute',
         alignSelf: "center",
-        width: scale(120),
+        width: s(120),
         opacity: 1,
-        marginTop: scale(15),
-        height: scale(60),
-        borderRadius: 9,
+        marginTop: mvs(15),
+        height: s(60),
+        borderRadius:s(9),
         alignItems: 'center',
         justifyContent: 'center',
     },

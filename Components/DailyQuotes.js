@@ -1,8 +1,7 @@
 import React from 'react';
 import {ImageBackground, StyleSheet, Text} from 'react-native';
-import {windowWidth} from "../Utils/Dimensions";
 import {NavigationActions, withNavigation} from "react-navigation";
-import {scale} from '../Utils/scale';
+import {ms, s, windowWidth} from '../Utils/Scale';
 import TouchableScale from './TouchableScale';
 
 const DailyQuotes = (props) => {
@@ -38,15 +37,15 @@ const DailyQuotes = (props) => {
 }
 const styles = StyleSheet.create({
     image: {
-        width: windowWidth - scale(30),
-        height: (windowWidth - scale(30)) / 3.25,
-        borderRadius: 9,
+        width: windowWidth - s(30),
+        height: (windowWidth - s(30)) / 3.25,
+        borderRadius: s(9),
         overflow: 'hidden',
     },
     imageView: {
-        width: windowWidth - scale(30),
-        height: (windowWidth - scale(30)) / 3.25,
-        borderRadius: 9,
+        width: windowWidth - s(30),
+        height: (windowWidth - s(30)) / 3.25,
+        borderRadius: s(9),
         overflow: 'hidden',
         alignItems: 'center',
         justifyContent: 'center',
@@ -55,10 +54,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0,
     },
     title: {
-        paddingLeft: 40,
-        paddingRight: 40,
+        paddingLeft: ms(40),
+        paddingRight: ms(40),
         textAlign: 'center',
-        fontSize: scale(14)
+        fontSize: s(14)
     },
     boxShadow: {
         shadowColor: "#000",

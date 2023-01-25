@@ -4,8 +4,7 @@ import {useSelector} from "react-redux";
 import {NavigationActions, withNavigation} from "react-navigation";
 import ImageCache from './ImageCache';
 import TouchableScale from './TouchableScale';
-import {scale} from '../Utils/scale';
-import {windowWidth} from "../Utils/Dimensions";
+import {ms, s, windowWidth} from '../Utils/Scale';
 
 const RelatedPostsRow = props => {
     const {posts, navigation} = props;
@@ -84,31 +83,31 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         marginRight: 13,
         marginLeft: 2,
-        borderRadius: 9,
+        borderRadius:s(9),
     },
     container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingLeft: 15,
+        paddingLeft: ms(15),
     },
     scrollView: {
         flex: 1,
-        width: windowWidth - scale(30),
+        width: windowWidth - s(30),
         alignItems: "flex-start",
         justifyContent: "center",
     },
     image: {
         width: 150,
         height: 75,
-        borderTopLeftRadius: 9,
-        borderTopRightRadius: 9,
+        borderTopLeftRadius: s(9),
+        borderTopRightRadius: s(9),
         overflow: 'hidden',
     },
     imageView: {
         width: 150,
         height: 150,
-        borderRadius: 9,
+        borderRadius:s(9),
         overflow: 'hidden',
     },
     overlay: {
@@ -122,17 +121,17 @@ const styles = StyleSheet.create({
         right: 0,
         width: 150,
         marginRight: 0,
-        padding: 10,
+        padding: ms(10),
     },
     title: {
         top: 0,
-        fontSize: scale(11),
+        fontSize: s(11),
         textAlign: 'left',
         color: 'black',
         fontFamily: 'MontserratAlternates-SemiBold',
     },
     author: {
-        fontSize: scale(9),
+        fontSize: s(9),
         textAlign: 'left',
         fontStyle: 'italic',
         color: 'black',
@@ -148,8 +147,8 @@ const styles = StyleSheet.create({
         width: 150,
         opacity: 1,
         height: 75,
-        borderTopLeftRadius: 9,
-        borderTopRightRadius: 9,
+        borderTopLeftRadius: s(9),
+        borderTopRightRadius: s(9),
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -169,12 +168,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         left: 0,
         right: 0,
-        width: windowWidth - scale(30),
+        width: windowWidth - s(30),
         justifyContent: "flex-start",
         marginVertical: 10,
     },
     heading: {
-        fontSize: scale(18),
+        fontSize: s(18),
         fontStyle: "italic",
         fontWeight: "normal",
         alignSelf: "baseline",

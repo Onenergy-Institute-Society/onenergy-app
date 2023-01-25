@@ -15,8 +15,7 @@ import {withNavigation} from "react-navigation";
 import TrackPlayer from 'react-native-track-player';
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
-import {windowWidth} from "../Utils/Dimensions";
-import {scale} from "../Utils/scale";
+import {s, windowWidth} from "../Utils/Scale";
 import EventList from "../Components/EventList";
 import QiPointHeader from "../Components/QiPointHeader";
 import analytics from '@react-native-firebase/analytics';
@@ -98,7 +97,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
    },
     messageText:{
-      fontSize:scale(18),
+      fontSize:s(18),
         color: "white",
    },
     boxShadow: {
@@ -110,14 +109,14 @@ const styles = StyleSheet.create({
    },
     messageBar:{
         position: "absolute",
-        top:scale(15),
-        left:scale(15),
-        right:scale(15),
+        top:s(15),
+        left:s(15),
+        right:s(15),
         backgroundColor:"#737373",
         borderColor:"#404040",
-        borderRadius:9,
-        paddingVertical:scale(10),
-        paddingHorizontal:scale(15),
+        borderRadius:s(9),
+        paddingVertical:s(10),
+        paddingHorizontal:s(15),
    }
 });
 PracticePersonal.navigationOptions = ({navigation, screenProps}) => {

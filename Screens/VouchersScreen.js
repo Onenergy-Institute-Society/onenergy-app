@@ -13,8 +13,7 @@ import {
 } from 'react-native';
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
-import {scale} from "../Utils/scale";
-import {windowWidth} from "../Utils/Dimensions";
+import {mvs, s, windowWidth} from "../Utils/Scale";
 import moment from 'moment';
 import RNRestart from 'react-native-restart';
 import {BlurView} from "@react-native-community/blur";
@@ -161,9 +160,9 @@ const VouchersScreen = (props) => {
                 <View style={[styles.voucherItem,styles.boxShadow]}>
                     <ScalableImage
                         background={true}
-                        width={windowWidth-scale(30)}
+                        width={windowWidth-s(30)}
                         style={styles.list} source={{uri: item.image ? item.image : ''}}>
-                        <Text style={[styles.subTitle,{color:item.color, left:item.left?scale(item.left):null, top:item.top?scale(item.top):null, right:item.right?scale(item.right):null, bottom:item.bottom?scale(item.bottom):null,}]}>{moment(item.expireDate).format("MMMM Do, YYYY")}</Text>
+                        <Text style={[styles.subTitle,{color:item.color, left:item.left?s(item.left):null, top:item.top?s(item.top):null, right:item.right?s(item.right):null, bottom:item.bottom?s(item.bottom):null,}]}>{moment(item.expireDate).format("MMMM Do, YYYY")}</Text>
                         {item.redeemDate?
                             <Text style={styles.redeemedText}>REDEEMED</Text>
                         :null}
@@ -179,7 +178,7 @@ const VouchersScreen = (props) => {
                 :
                 vouchers.length?
                     <FlatList
-                        contentContainerStyle={{paddingBottom: scale(20)}}
+                        contentContainerStyle={{paddingBottom: mvs(20)}}
                         data={vouchers}
                         renderItem={renderItem}
                         keyExtractor = {(item, index) => `${item.title}-${index}`}
@@ -234,18 +233,18 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         paddingVertical: 0,
         paddingHorizontal: 0,
-        borderRadius: 9,
+        borderRadius:s(9),
         justifyContent:"center",
         alignItems:"center",
         overflow: "hidden"
    },
     subTitle:{
         position: "absolute",
-        fontSize:scale(14),
+        fontSize:s(14),
    },
     redeemedText:{
         position: "absolute",
-        fontSize:scale(44),
+        fontSize:s(44),
         borderStyle:"solid",
         borderWidth: 1,
         borderColor: "green",
@@ -254,13 +253,13 @@ const styles = StyleSheet.create({
    },
     redeem:{
         color:"white",
-        fontSize:scale(24),
+        fontSize:s(24),
    },
     voucherItem:{
-        marginTop:scale(20),
-        marginHorizontal:scale(15),
+        marginTop:mvs(20),
+        marginHorizontal:s(15),
         backgroundColor: 'white',
-        borderRadius: 9,
+        borderRadius:s(9),
         paddingVertical: 0,
         paddingHorizontal: 0,
    },

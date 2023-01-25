@@ -13,8 +13,7 @@ import {
 import {connect, useSelector} from "react-redux";
 import {getApi} from "@src/services";
 import {NavigationActions, withNavigation} from "react-navigation";
-import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import {scale} from "../Utils/scale";
+import {mvs, s, windowHeight, windowWidth} from "../Utils/Scale";
 import HTML from "react-native-render-html";
 import {Modalize} from 'react-native-modalize';
 import WaitingGroupPractice from "../Components/WaitingGroupPractice";
@@ -98,26 +97,26 @@ const PracticeGroup = props => {
         body: {height: 200, backgroundColor: colors.bodyFrontBg},
         img: {width: windowWidth - 80},
         a: {
-            fontSize: scale(14),
+            fontSize: s(14),
             color: colors.linkColor,
             fontFamily: "Montserrat-Regular",
             fontWeight: "normal",
         },
         li: {
-            fontSize: scale(14),
+            fontSize: s(14),
             fontFamily: "Montserrat-Regular",
             fontWeight: "normal",
         },
         p: {
             fontFamily: "Montserrat-Regular",
             fontWeight: "normal",
-            lineHeight: scale(14 * 1.47),
+            lineHeight: s(14 * 1.47),
             paddingLeft: 8,
             paddingRight: 8,
             fontSize: 20,
             color: colors.textColor,
             textAlign: 'left',
-            marginBottom: 25,
+            marginBottom: mvs(25),
         },
     };
     const renderItem = ({item}) => {
@@ -173,17 +172,17 @@ const PracticeGroup = props => {
                                      source={{uri: item.bg_image.full_url}}>
                         <View style={{
                             flexDirection: "row",
-                            height: scale(60),
+                            height: s(60),
                             justifyContent: "space-between",
                             alignItems: "center",
-                            width: windowWidth - scale(30)
+                            width: windowWidth - s(30)
                         }}>
                             <View>
                                 <Text style={styles.title}>{item.name}</Text>
                                 <View style={{
                                     flexDirection: "row",
                                     justifyContent: "space-between",
-                                    marginHorizontal: scale(15)
+                                    marginHorizontal: s(15)
                                 }}>
                                     <View style={{flexDirection: "row", justifyContent: "flex-start",}}>
                                         <FastImage tintColor={colors.primaryColor}
@@ -230,7 +229,7 @@ const PracticeGroup = props => {
                             :
                             <Text style={styles.subtitle}>Finish required lessons to unlock.</Text>
                         }
-                        <View style={{width:windowWidth-scale(60), flexDirection: "row", justifyContent:"space-between"}}>
+                        <View style={{width:windowWidth-s(60), flexDirection: "row", justifyContent:"space-between"}}>
                             <Text style={styles.description}>{practiceCount?practiceCount + 'times':null}</Text>
                             <Text style={styles.description}>tap to view detail</Text>
                         </View>
@@ -251,7 +250,7 @@ const PracticeGroup = props => {
                         : null
                     }
                     <FlatList
-                        contentContainerStyle={{paddingBottom: scale(20)}}
+                        contentContainerStyle={{paddingBottom: s(20)}}
                         style={styles.trackList}
                         data={groupReducer}
                         renderItem={renderItem}
@@ -274,7 +273,7 @@ const PracticeGroup = props => {
                 handlePosition="outside"
                 HeaderComponent={
                     <View style={{
-                        padding: scale(15),
+                        padding: s(15),
                         flexDirection: "row",
                         justifyContent: "space-between",
                         borderTopLeftRadius: 9,
@@ -284,7 +283,7 @@ const PracticeGroup = props => {
                         borderBottomColor: colors.borderColor
                     }}>
                         <Text style={{
-                            fontSize: scale(24),
+                            fontSize: s(24),
                             color: colors.headerColor,
                             fontFamily: "MontserratAlternates-SemiBold",
                             fontWeight: "bold"
@@ -339,15 +338,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         backgroundColor: '#f6f6f8',
-        width: windowWidth - scale(30),
-        height: scale(100),
-        marginHorizontal: scale(15),
-        marginTop: scale(20),
-        marginBottom: scale(5),
-        borderRadius: 9,
+        width: windowWidth - s(30),
+        height: s(100),
+        marginHorizontal: s(15),
+        marginTop: mvs(20),
+        marginBottom: mvs(5),
+        borderRadius:s(9),
     },
     trackList: {
-        paddingTop: scale(5),
+        paddingTop: s(5),
     },
     boxShadow: {
         shadowColor: "#000",
@@ -357,21 +356,21 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     scrollView: {
-        width: windowWidth - scale(30),
+        width: windowWidth - s(30),
         flexGrow: 1,
     },
     imageView: {
         justifyContent: "space-evenly",
         alignItems: "center",
-        width: windowWidth - scale(30),
-        height: scale(100),
-        borderRadius: 9,
+        width: windowWidth - s(30),
+        height: s(100),
+        borderRadius:s(9),
         overflow: 'hidden',
         opacity: 0.8,
     },
     title: {
-        marginLeft: scale(15),
-        fontSize: scale(18),
+        marginLeft: s(15),
+        fontSize: s(18),
         fontWeight: 'bold',
         textAlign: 'center',
         color: 'black',
@@ -379,15 +378,15 @@ const styles = StyleSheet.create({
     },
     description: {
         alignSelf: "center",
-        marginBottom: scale(5),
-        fontSize: scale(10),
+        marginBottom: mvs(5),
+        fontSize: s(10),
         fontStyle: "italic",
         color: '#000',
         backgroundColor: 'transparent',
         fontFamily: 'MontserratAlternates-RegularItalic',
     },
     subtitle: {
-        fontSize: scale(12),
+        fontSize: s(12),
         textAlign: "left",
         color: "black",
         fontWeight: "bold",
@@ -404,38 +403,38 @@ const styles = StyleSheet.create({
     },
     tapForDetail: {
         fontWeight: "normal",
-        fontSize: scale(10),
+        fontSize: s(10),
         fontStyle: "italic",
     },
     viewTop: {
         padding: 10,
-        width: windowWidth - scale(30),
+        width: windowWidth - s(30),
         alignItems: "center",
         justifyContent: "space-around",
     },
     viewTopInfo: {
-        width: windowWidth - scale(30),
+        width: windowWidth - s(30),
         alignItems: "center",
         justifyContent: "center",
     },
     viewDetail: {
-        width: windowWidth - scale(30),
+        width: windowWidth - s(30),
         justifyContent: "center",
         alignItems: "center",
     },
     viewBottom: {
-        height: scale(30),
-        width: windowWidth - scale(30),
+        height: s(30),
+        width: windowWidth - s(30),
         justifyContent: "center",
         alignItems: "center",
         padding: 10,
     },
     waitTimeLabel: {
-        fontSize: scale(14),
+        fontSize: s(14),
         fontWeight: "700",
     },
     waitTime: {
-        fontSize: scale(12),
+        fontSize: s(12),
         color: "black",
         fontWeight: "500",
         marginLeft: 5,
@@ -445,7 +444,7 @@ const styles = StyleSheet.create({
         flexDirection: "row", justifyContent: "flex-start", alignItems: "center"
     },
     waitingTextStyle: {
-        fontSize: scale(12),
+        fontSize: s(12),
         color: "black",
         fontWeight: "500",
         alignSelf: "center",
@@ -459,30 +458,30 @@ const styles = StyleSheet.create({
         height: 16,
     },
     btnJoin: {
-        fontSize: scale(20),
-        borderRadius: 9,
+        fontSize: s(20),
+        borderRadius:s(9),
         backgroundColor: "#4d2fde",
-        paddingVertical: scale(5),
-        paddingHorizontal: scale(15),
-        marginRight: scale(10),
+        paddingVertical: s(5),
+        paddingHorizontal: s(15),
+        marginRight: s(10),
     },
     txtJoin: {
         color: "white",
-        fontSize: scale(14),
+        fontSize: s(14),
         fontWeight: "700",
         fontFamily: 'MontserratAlternates-SemiBold',
     },
     btnOff: {
-        fontSize: scale(20),
-        borderRadius: 9,
+        fontSize: s(20),
+        borderRadius:s(9),
         backgroundColor: "#e6e6e8",
-        paddingVertical: scale(5),
-        paddingHorizontal: scale(15),
-        marginRight: scale(10),
+        paddingVertical: s(5),
+        paddingHorizontal: s(15),
+        marginRight: s(10),
     },
     txtOff: {
         color: "#ef713c",
-        fontSize: scale(14),
+        fontSize: s(14),
         fontWeight: "700",
         fontFamily: 'MontserratAlternates-SemiBold',
     }

@@ -14,8 +14,7 @@ import {
 import Share from "react-native-share";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {getApi} from "@src/services";
-import {windowWidth, windowHeight} from "../Utils/Dimensions";
-import {scale} from "../Utils/scale";
+import {s, windowWidth, windowHeight, mvs} from "../Utils/Scale";
 import ScalableImage from "../Components/ScalableImage";
 import RNFetchBlob from 'rn-fetch-blob';
 import analytics from '@react-native-firebase/analytics';
@@ -31,6 +30,7 @@ const QuotesScreen = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const quoteReducer = useSelector((state) => state.quoteReducer.quotes);
     const dispatch = useDispatch();
+
     analytics().logScreenView({
         screen_class: 'MainActivity',
         screen_name: 'Quotes Screen',
@@ -183,6 +183,7 @@ const QuotesScreen = props => {
             {item.share_url?
             <TouchableScale
                 onPress={() => {
+                    alert(item.share_url)
                     Share.open({
                         url: item.share_url,
                    })
@@ -190,7 +191,7 @@ const QuotesScreen = props => {
             >
                 <View style={[styles.buttonShare, styles.boxShadow]}>
                     <Text
-                        style={{fontSize: scale(20), color: '#FFF'}}
+                        style={{fontSize: s(20), color: '#FFF'}}
                     >
                         SHARE
                     </Text>
@@ -257,11 +258,11 @@ const styles = StyleSheet.create({
    },
     buttonShare: {
         marginVertical: 15,
-        borderRadius: 9,
+        borderRadius:s(9),
         alignItems: 'center',
         justifyContent: 'center',
-        width: scale(200),
-        height: scale(50),
+        width: s(200),
+        height: s(50),
         backgroundColor: '#8c79ea',
    },
     view: {
@@ -274,8 +275,8 @@ const styles = StyleSheet.create({
         width: windowWidth,
    },
     title: {
-        marginBottom:scale(25),
-        fontSize: scale(14),
+        marginBottom:mvs(25),
+        fontSize: s(14),
         textAlign: 'center',
         color: '#000',
         fontFamily: 'MontserratAlternates-SemiBold',

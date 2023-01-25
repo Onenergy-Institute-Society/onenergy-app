@@ -13,8 +13,7 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import Video from "react-native-video";
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
-import {windowHeight, windowWidth} from "../Utils/Dimensions";
-import {scale} from "../Utils/scale";
+import {mvs, s, windowHeight, windowWidth} from "../Utils/Scale";
 import ChooseSubtitle from "./ChooseSubtitle";
 import * as Progress from 'react-native-progress';
 import InteractiveTranscripts from "./InteractiveTranscripts";
@@ -191,7 +190,7 @@ const VimeoPlayer = (props) => {
                                 <View style={styles.progressView}>
                                     <Progress.Bar borderColor={"rgba(255,255,255,0.5)"} color={"rgba(255,255,255,0.5)"}
                                                   progress={currentTime / seekableDuration} width={windowHeight / 2}
-                                                  height={scale(10)}/>
+                                                  height={s(10)}/>
                                 </View>
                             </>
                             : null}
@@ -216,17 +215,17 @@ const VimeoPlayer = (props) => {
                                             flexGrow: 1,
                                             justifyContent: "center",
                                             alignItems: "center",
-                                            paddingTop: Platform.OS === "ios" ? scale(10) : 0,
+                                            paddingTop: Platform.OS === "ios" ? mvs(10) : 0,
                                         }
                                     }
                                     textStyle={
                                         {
-                                            fontSize: scale(16),
+                                            fontSize: s(16),
                                             textAlign: "center",
                                             alignItems: "center",
                                             justifyContent: "center",
                                             textAlignVertical: "center",
-                                            height: scale(40),
+                                            height: s(40),
                                             fontFamily: 'Montserrat-Regular',
                                         }
                                     }
@@ -239,12 +238,12 @@ const VimeoPlayer = (props) => {
                             <TouchableWithoutFeedback
                                 onPress={() => handleBackButtonClick()}
                             >
-                                <View style={[styles.buttonView, {right: scale(30)}]}>
+                                <View style={[styles.buttonView, {right: s(30)}]}>
                                     <Image
                                         tintColor={'#FFFFFF'}
                                         style={{
-                                            width: scale(36),
-                                            height: scale(36),
+                                            width: s(36),
+                                            height: s(36),
                                             tintColor: '#FFFFFF',
                                             opacity: 0.5
                                         }}
@@ -289,17 +288,17 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     subTitle: {
-        height: scale(40),
+        height: s(40),
         width: windowHeight,
         justifyContent: "center",
         alignItems: "center",
         position: "absolute",
         backgroundColor: 'rgba(0,0,0,0.5)',
-        top: windowWidth - scale(40),
+        top: windowWidth - s(40),
     },
     remainingView: {
         position: "absolute",
-        top: scale(10),
+        top: s(10),
         right: 0,
         left: 0,
         justifyContent: 'center',
@@ -309,7 +308,7 @@ const styles = StyleSheet.create({
         color: "white",
         fontFamily: "MontserratAlternates-SemiBold",
         fontWeight: "bold",
-        fontSize: scale(12),
+        fontSize: s(12),
         textShadowColor: 'grey',
         textShadowRadius: 1,
         textShadowOffset: {
@@ -318,7 +317,7 @@ const styles = StyleSheet.create({
         }
     },
     progressView: {
-        marginTop: 20,
+        marginTop: mvs(20),
         alignSelf: "center",
         justifyContent: "center",
         alignItems: "center",
@@ -339,7 +338,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: 'rgba(0,0,0,0.5)',
-        borderRadius: 96,
+        borderRadius: s(96),
         zIndex: 999,
     },
     buttonView: {
@@ -351,7 +350,7 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         zIndex: 999,
         position: "absolute",
-        top: scale(20),
+        top: s(20),
     }
 });
 VimeoPlayer.navigationOptions = {header: null};

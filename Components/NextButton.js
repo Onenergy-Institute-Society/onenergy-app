@@ -2,6 +2,7 @@ import React, {useEffect, useRef} from 'react';
 import {Animated, StyleSheet, TouchableOpacity, View} from "react-native";
 import Svg, {Circle, G} from 'react-native-svg';
 import IconButton from "@src/components/IconButton";
+import {ms} from "../Utils/Scale";
 
 const NextButton = ({percentage, scrollTo}) => {
     const size = 128;
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         backgroundColor: '#f4338f',
         borderRadius: 100,
-        padding: 20,
+        padding: ms(20),
     }
 })
 export default NextButton;

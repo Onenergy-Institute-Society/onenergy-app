@@ -12,7 +12,6 @@ export default function SortList(props) {
     const [lastShiftingItemIndex, setLastShiftingItemIndex] = React.useState(-1);
     const [alreadyHighlighted, setAlreadyHighlighted] = React.useState(true);
     const [isMoving, setIsMoving] = React.useState(false);
-    console.log('props', props)
     const initItems = (data) => {
         if (typeof (data) === 'undefined' || data === null || data.length <= 0)
             return [];
@@ -31,7 +30,6 @@ export default function SortList(props) {
         setItems(null);
     }, [props.refresh]);
     useEffect(() => {
-        console.log('items', items)
         if (items === null) {
             if (alreadyHighlighted === false)
                 setAlreadyHighlighted(true);
@@ -48,7 +46,6 @@ export default function SortList(props) {
     }, [items]);
 
     const getItem = (item, index) => {
-        console.log(item)
         return (
             <SortListItem
                 horizontal={props.horizontal}
@@ -90,6 +87,7 @@ export default function SortList(props) {
     };
 
     const onMove = (id, draggablePosition, itemSize, isEdging, scrollPos) => {
+        console.log(id, draggablePosition, scrollPos)
         if (isMoving === false)
             setIsMoving(true);
         const newItems = [...items];

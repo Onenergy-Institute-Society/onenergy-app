@@ -3,7 +3,7 @@ import {useSelector} from "react-redux";
 import TrackPlayer, {useProgress} from 'react-native-track-player';
 import {Text} from 'react-native';
 import Slider from 'react-native-slider';
-import {scale} from "../Utils/scale";
+import {ms, s, vs} from "../Utils/Scale";
 
 const TrackSlider = (props) => {
     const {type, totalDuration, pastPosition} = props;
@@ -37,18 +37,19 @@ const TrackSlider = (props) => {
             {type === 'routine' ?
                 <Text style={{
                     fontFamily:"Montserrat-Regular", fontWeight:"normal",
-                    marginLeft: 5,
-                    fontSize: scale(12),
+                    marginLeft: ms(5),
+                    fontSize: s(12),
+                    color: "#262626"
                 }}>{secondsToHHMMSS(Math.floor(type ? totalDuration - pastDuration - position : duration - position || 0))}</Text>
                 :
                 <><Text
-                    style={{marginRight: 5, fontSize: scale(12),}}>{secondsToHHMMSS(Math.floor(position || 0))}</Text>
+                    style={{marginRight: ms(5), fontSize: s(12),color: "#262626"}}>{secondsToHHMMSS(Math.floor(position || 0))}</Text>
                     <Slider
-                        style={{width: '70%', height: 40}}
+                        style={{width: '70%', height: vs(40)}}
                         value={position}
                         thumbTintColor='black'
                         minimumValue={0}
-                        thumbStyle={{width: 10, height: 10}}
+                        thumbStyle={{width: s(10), height: vs(10)}}
                         animationType='timing'
                         maximumValue={duration}
                         minimumTrackTintColor={'#4942E1'}
@@ -66,7 +67,7 @@ const TrackSlider = (props) => {
                             }
                         }}
                     />
-                    <Text style={{fontFamily:"Montserrat-Regular", fontWeight:"normal", marginLeft: 5, fontSize: scale(12),}}>{secondsToHHMMSS(duration || 0)}</Text>
+                    <Text style={{fontFamily:"Montserrat-Regular", fontWeight:"normal", marginLeft: ms(5), fontSize: s(12), color: "#262626"}}>{secondsToHHMMSS(duration || 0)}</Text>
                 </>
             }
         </>

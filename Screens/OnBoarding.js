@@ -3,9 +3,8 @@ import {connect, useSelector} from "react-redux";
 import {View, StyleSheet, FlatList, Animated, Text, SafeAreaView, TouchableOpacity,} from "react-native";
 import FastImage from 'react-native-fast-image';
 import {withNavigation} from 'react-navigation';
-import {FontWeights} from "@src/styles/global";
+import {s, windowWidth, windowHeight, ms} from "../Utils/Scale";
 
-import {scale, windowWidth, windowHeight} from "../Utils/scale";
 const OnBoarding = props => {
     const {screenProps} = props;
     const {colors, global} = screenProps;
@@ -48,7 +47,7 @@ const OnBoarding = props => {
             <View style={styles.bottomSlides}>
                 <FastImage style={styles.imageLeaves} source={require('../assets/images/leaves_yellow.png')} resizeMode="contain"/>
                 <View style={[styles.topPagerView, {backgroundColor: colors.primaryButtonBg}]}>
-                    <Text style={[global.textAlt, {color: colors.bodyFrontBg}]}>{currentIndex + 1} of {optionData.feature_slider.length}</Text>
+                    <Text style={[global.textAlt, {fontSize: s(14), color: colors.bodyFrontBg}]}>{currentIndex + 1} of {optionData.feature_slider.length}</Text>
                 </View>
                 <FlatList
                     data = {optionData.feature_slider}
@@ -80,8 +79,8 @@ const OnBoarding = props => {
                 <TouchableOpacity
                     onPress={scrollTo}
                 >
-                    <View style={{width:windowWidth-30, backgroundColor: colors.primaryButtonBg, justifyContent:"center", alignItems:"center", borderRadius:15, padding:20}}>
-                        <Text style={{color: '#ffffff', fontFamily: 'MontserratAlternates-SemiBold', fontSize:scale(16), fontWeight:'bold'}}>{currentIndex===0?'Get Started':'Continue'}</Text>
+                    <View style={{width:windowWidth-s(30), backgroundColor: colors.primaryButtonBg, justifyContent:"center", alignItems:"center", borderRadius:s(15), padding:ms(20)}}>
+                        <Text style={{color: '#ffffff', fontFamily: 'MontserratAlternates-SemiBold', fontSize:s(16), fontWeight:'bold'}}>{currentIndex===0?'Get Started':'Continue'}</Text>
                     </View>
                 </TouchableOpacity>
                 {currentIndex === 0 ?
@@ -94,7 +93,7 @@ const OnBoarding = props => {
                             alignItems: "center",
                             padding: 20
                        }}>
-                            <Text style={{color: colors.secondaryButtonColor, fontFamily: 'MontserratAlternates-Regular', fontSize: scale(16)}}>Create
+                            <Text style={{color: colors.secondaryButtonColor, fontFamily: 'MontserratAlternates-Regular', fontSize: s(16)}}>Create
                                 an account</Text>
                         </View>
                     </TouchableOpacity>
@@ -108,7 +107,7 @@ const OnBoarding = props => {
                             alignItems: "center",
                             padding: 20
                        }}>
-                            <Text style={{color: colors.secondaryButtonColor, fontFamily: 'MontserratAlternates-Regular', fontSize: scale(16)}}>Skip for now</Text>
+                            <Text style={{color: colors.secondaryButtonColor, fontFamily: 'MontserratAlternates-Regular', fontSize: s(16)}}>Skip for now</Text>
                         </View>
                     </TouchableOpacity>
                }
@@ -149,7 +148,7 @@ const styles = StyleSheet.create({
         bottom:0,
         borderTopLeftRadius: 25,
         borderTopRightRadius: 25,
-        padding: scale(15),
+        padding: s(15),
         flexDirection: "column",
         alignItems: "flex-start",
         justifyContent: 'space-evenly',
@@ -157,21 +156,21 @@ const styles = StyleSheet.create({
     topPagerView: {
         justifyContent: "center",
         alignItems: "center",
-        paddingHorizontal: scale(25),
-        paddingVertical: scale(5),
+        paddingHorizontal: s(25),
+        paddingVertical: s(5),
         borderRadius: 18,
    },
     title:{
         fontFamily: 'MontserratAlternates-SemiBold',
-        fontSize: scale(45),
+        fontSize: s(45),
         color: "#262626",
         fontWeight: 'bold',
    },
     subtitle:{
         fontFamily: 'MontserratAlternates-Regular',
-        width: windowWidth-scale(60),
-        lineHeight: scale(20),
-        fontSize: scale(20),
+        width: windowWidth-s(60),
+        lineHeight: s(20),
+        fontSize: s(20),
         color: "#262626"
    }
 });

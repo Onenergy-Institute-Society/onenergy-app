@@ -2,9 +2,8 @@ import React, {useEffect, useState} from "react";
 import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {useSelector} from "react-redux";
 import {NavigationActions, withNavigation} from "react-navigation";
-import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import ImageCache from "./ImageCache";
-import {scale} from "../Utils/scale";
+import {ms, mvs, s, windowHeight, windowWidth} from "../Utils/Scale";
 
 const VideoBlock = props => {
     const {block, navigation} = props;
@@ -69,7 +68,7 @@ const VideoBlock = props => {
                     <Text style={styles.duration}>{duration}</Text>
                     : null}
                 {!videoComplete && visualGuide ?
-                    <ImageCache style={[styles.tapFinger, {alignSelf: "center", marginTop: scale(60)}]}
+                    <ImageCache style={[styles.tapFinger, {alignSelf: "center", marginTop: mvs(60)}]}
                                 source={require('../assets/images/tapFinger.gif')}/>
                     : null
                 }
@@ -80,8 +79,8 @@ const VideoBlock = props => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: windowWidth - scale(30),
-        height: (windowWidth - scale(30)) * 9 / 16,
+        width: windowWidth - s(30),
+        height: (windowWidth - s(30)) * 9 / 16,
         alignSelf: "center",
         backgroundColor: '#ebebeb',
     },
@@ -95,17 +94,17 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         zIndex: 1,
-        width: windowWidth - scale(30),
-        height: (windowWidth - scale(30)) * (9 / 16),
+        width: windowWidth - s(30),
+        height: (windowWidth - s(30)) * (9 / 16),
         opacity: 1,
-        borderRadius: 9,
+        borderRadius:s(9),
         alignItems: 'center',
         justifyContent: 'center',
     },
     tapFinger: {
         position: "absolute",
-        width: scale(100),
-        height: scale(120),
+        width: s(100),
+        height: s(120),
         shadowColor: "#000",
         shadowOffset: {width: -2, height: 4},
         shadowOpacity: 0.2,
@@ -118,21 +117,21 @@ const styles = StyleSheet.create({
         height: 32
     },
     BackGroundImage: {
-        width: windowWidth - scale(30),
-        height: (windowWidth - scale(30)) * (9 / 16),
+        width: windowWidth - s(30),
+        height: (windowWidth - s(30)) * (9 / 16),
         justifyContent: 'center',
-        borderRadius: 9,
+        borderRadius:s(9),
     },
     duration: {
         position: "absolute",
-        top: scale(10),
-        left: scale(10),
+        top: s(10),
+        left: s(10),
         color: "white",
     },
     video: {
         position: 'relative',
-        height: (windowWidth - scale(30)) * (9 / 16),
-        width: windowWidth - scale(30),
+        height: (windowWidth - s(30)) * (9 / 16),
+        width: windowWidth - s(30),
         backgroundColor: 'black',
         justifyContent: "center",
         alignItems: "center"
@@ -148,7 +147,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
     },
     text: {
-        marginTop: 30,
+        marginTop: mvs(30),
         marginHorizontal: 20,
         fontSize: 15,
         textAlign: 'justify',
@@ -156,7 +155,7 @@ const styles = StyleSheet.create({
     normalViewStyle: {
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: 9,
+        borderRadius:s(9),
     },
     fullscreenButtonImage: {
         width: 32,
@@ -170,7 +169,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignSelf: 'flex-end',
         alignItems: 'center',
-        paddingRight: 10,
+        paddingRight: ms(10),
     },
 });
 export default withNavigation(VideoBlock);

@@ -6,7 +6,7 @@ import {withNavigation} from "react-navigation";
 import PostList from "../Components/PostList";
 import {useSelector} from "react-redux";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
-import {scale} from "../Utils/scale";
+import {s} from "../Utils/Scale";
 import AuthWrapper from "@src/components/AuthWrapper";
 import {SvgIconBack} from "../Utils/svg";
 
@@ -31,7 +31,7 @@ const CategoryPageWatch = (props) => {
 const TabTitle = ({tintColor, name}) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     return (
-        <Text style={{color: tintColor, fontFamily:"MontserratAlternates-SemiBold", fontWeight:"bold", fontSize: scale(16)}}>{optionData.titles.find(el => el.id === name).title}</Text>
+        <Text style={{color: tintColor, fontFamily:"MontserratAlternates-SemiBold", fontWeight:"bold", fontSize: s(16)}}>{optionData.titles.find(el => el.id === name).title}</Text>
     )
 }
 const Tabs = createMaterialTopTabNavigator(
@@ -43,7 +43,7 @@ const Tabs = createMaterialTopTabNavigator(
                     <View>
                         <TabTitle tintColor={tintColor} name={'blog_watch_tab'}/>
                         <AuthWrapper actionOnGuestLogin={'hide'}>
-                            <NotificationTabBarIcon notificationID={'blog_watch'} top={-10} right={-10} size={scale(10)} showNumber={false}/>
+                            <NotificationTabBarIcon notificationID={'blog_watch'} top={-10} right={-10} size={10} showNumber={false}/>
                         </AuthWrapper>
                     </View>
                 ),
@@ -56,7 +56,7 @@ const Tabs = createMaterialTopTabNavigator(
                     <View>
                         <TabTitle tintColor={tintColor} name={'blog_read_tab'}/>
                         <AuthWrapper actionOnGuestLogin={'hide'}>
-                            <NotificationTabBarIcon notificationID={'blog_read'} top={-10} right={-10} size={scale(10)} showNumber={false}/>
+                            <NotificationTabBarIcon notificationID={'blog_read'} top={-10} right={-10} size={10} showNumber={false}/>
                         </AuthWrapper>
                     </View>
                 ),
@@ -70,7 +70,7 @@ const Tabs = createMaterialTopTabNavigator(
         optimizationsEnabled: true,
         tabBarOptions: {
             style: {
-                height: scale(40),
+                height: s(40),
                 backgroundColor: '#f2f0fd',
                 marginTop: 0
            },

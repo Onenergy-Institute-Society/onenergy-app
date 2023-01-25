@@ -5,7 +5,7 @@ import {getApi} from "@src/services";
 import {NavigationActions, withNavigation} from "react-navigation";
 import ImageCache from './ImageCache';
 import TouchableScale from './TouchableScale';
-import {scale} from '../Utils/scale';
+import {ms, mvs, s, vs} from '../Utils/Scale';
 
 const PostRow = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
@@ -138,11 +138,11 @@ const PostRow = props => {
                         style={{
                             color: '#FFFFFF',
                             position: 'absolute',
-                            top: 3,
-                            right: 3,
-                            minWidth: 15,
-                            height: 15,
-                            borderRadius: 15,
+                            top: s(3),
+                            right: s(3),
+                            minWidth: s(15),
+                            height: s(15),
+                            borderRadius: s(15),
                             borderWidth: 1,
                             borderColor: "white",
                             alignItems: 'center',
@@ -181,11 +181,11 @@ const PostRow = props => {
 
 const styles = StyleSheet.create({
     containerStyle: {
-        marginTop: scale(15),
-        marginBottom: scale(10),
-        marginRight: 13,
-        marginLeft: 2,
-        borderRadius: 9,
+        marginTop: mvs(15),
+        marginBottom: mvs(10),
+        marginRight: s(13),
+        marginLeft: s(2),
+        borderRadius: s(9),
     },
     container: {
         flex: 1,
@@ -193,21 +193,21 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     scrollView: {
-        paddingLeft: scale(15),
+        paddingLeft: ms(15),
         justifyContent: 'flex-start',
         flexWrap: 'wrap',
     },
     image: {
-        width: 150,
-        height: 75,
-        borderTopLeftRadius: 9,
-        borderTopRightRadius: 9,
+        width: s(150),
+        height: vs(75),
+        borderTopLeftRadius: s(9),
+        borderTopRightRadius: s(9),
         overflow: 'hidden',
     },
     imageView: {
-        width: 150,
-        height: 150,
-        borderRadius: 9,
+        width: s(150),
+        height: vs(135),
+        borderRadius: s(9),
         overflow: 'hidden',
     },
     overlay: {
@@ -215,24 +215,24 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         flex: 1,
         position: 'absolute',
-        top: 75,
+        top: vs(75),
         bottom: 0,
         left: 0,
         right: 0,
-        width: 150,
+        width: s(150),
         marginRight: 0,
-        padding: 10,
+        padding: ms(10),
     },
     title: {
         top: 0,
-        fontSize: scale(10),
+        fontSize: s(12),
         textAlign: 'left',
         color: 'black',
         fontWeight: "bold",
         fontFamily: 'Montserrat-SemiBold',
     },
     author: {
-        fontSize: scale(9),
+        fontSize: s(9),
         textAlign: 'left',
         color: 'black',
         fontWeight: "normal",
@@ -243,20 +243,20 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.2)',
         position: 'absolute',
         top: 0,
-        bottom: 75,
+        bottom: s(60),
         left: 0,
-        width: 150,
+        width: s(135),
         opacity: 1,
-        height: 75,
-        borderTopLeftRadius: 9,
-        borderTopRightRadius: 9,
+        height: vs(75),
+        borderTopLeftRadius: s(9),
+        borderTopRightRadius: s(9),
         alignItems: 'center',
         justifyContent: 'center',
     },
     play: {
         opacity: 0.6,
-        width: 32,
-        height: 32
+        width: s(32),
+        height: s(32)
     },
     boxShadow: {
         shadowColor: "#000",

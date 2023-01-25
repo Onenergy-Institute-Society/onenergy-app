@@ -3,9 +3,8 @@ import {getApi} from "@src/services";
 import {SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {connect} from "react-redux";
 import ImageCache from '../Components/ImageCache';
-import {windowWidth} from "../Utils/Dimensions";
 import PostRow from "../Components/PostRow";
-import {scale} from "../Utils/scale";
+import {s, windowWidth} from "../Utils/Scale";
 import analytics from '@react-native-firebase/analytics';
 import {SvgIconBack} from "../Utils/svg";
 
@@ -70,9 +69,9 @@ const SolarTermScreen = props => {
 };
 const styles = StyleSheet.create({
     image: {
-        width: windowWidth - scale(30),
-        height: (windowWidth - scale(30)) / 2.5,
-        borderRadius: 9,
+        width: windowWidth - s(30),
+        height: (windowWidth - s(30)) / 2.5,
+        borderRadius:s(9),
         overflow: 'hidden',
         margin:15,
    },

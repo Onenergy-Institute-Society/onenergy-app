@@ -6,6 +6,7 @@ import ProgramsContent from './ProgramsContent';
 import MyLoginScreen from "../Components/MyLoginScreen";
 import MySignupScreen from "../Components/MySignupScreen";
 import DrawerContentComponent from "../Components/DrawerContentComponent";
+import {s, windowWidth} from "../Utils/Scale";
 
 const Home = createStackNavigator(
     {
@@ -19,12 +20,13 @@ const Drawer = createDrawerNavigator(
         Home: Home,
    },
     {
-        edgeWidth: 140,
-        minSwipeDistance: 3,
+        edgeWidth: s(140),
+        minSwipeDistance: s(3),
         contentOptions: {
             activeTintColor: '#4942e1',
        },
         drawerType: 'slide',
+        drawerWidth: windowWidth * 4 / 5,
         contentComponent: props => <DrawerContentComponent {...props}/>,
         navigationOptions : {header:null},
    }

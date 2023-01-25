@@ -1,11 +1,10 @@
 import React from "react";
 import {Image, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native";
 import {useSelector} from "react-redux";
-import {scale} from "../Utils/scale";
+import {ms, mvs, s, windowWidth} from "../Utils/Scale";
 import {NavigationActions, withNavigation} from "react-navigation";
 import LinearGradient from 'react-native-linear-gradient';
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
-import {windowWidth} from "../Utils/Dimensions";
 import HTML from "react-native-render-html";
 
 const systemFonts = ['Montserrat-Regular', 'Montserrat-SemiBold', 'Montserrat-SemiBold'];
@@ -53,7 +52,7 @@ const TextBlock = (props) => {
     }
     const htmlStyle = {
         a: {
-            fontSize: block.data.data.bodyFontSize ? scale(block.data.data.bodyFontSize) : scale(14),
+            fontSize: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize) : s(14),
             fontFamily: "Montserrat-Regular",
             fontWeight: "normal",
         },
@@ -61,24 +60,24 @@ const TextBlock = (props) => {
                     width:"100%",
                },*/
         li: {
-            lineHeight: block.data.data.bodyFontSize ? scale(block.data.data.bodyFontSize * 1.47) : scale(14 * 1.47),
-            fontSize: block.data.data.bodyFontSize ? scale(block.data.data.bodyFontSize) : scale(14),
+            lineHeight: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize * 1.47) : s(14 * 1.47),
+            fontSize: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize) : s(14),
             color: block.data.data.bodyColor ? block.data.data.bodyColor : "#000",
             textAlign: block.data.data.bodyAlign ? block.data.data.bodyAlign : "left",
             fontFamily: "Montserrat-Regular",
             fontWeight: "normal",
         },
         p: {
-            lineHeight: block.data.data.bodyFontSize ? scale(block.data.data.bodyFontSize * 1.47) : scale(14 * 1.47),
-            fontSize: block.data.data.bodyFontSize ? scale(block.data.data.bodyFontSize) : scale(14),
+            lineHeight: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize * 1.47) : s(14 * 1.47),
+            fontSize: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize) : s(14),
             color: block.data.data.bodyColor ? block.data.data.bodyColor : "#000",
             textAlign: block.data.data.bodyAlign ? block.data.data.bodyAlign : "left",
             fontFamily: "Montserrat-Regular",
             fontWeight: "normal",
         },
         rawtext: {
-            lineHeight: block.data.data.bodyFontSize ? scale(block.data.data.bodyFontSize * 1.47) : scale(14 * 1.47),
-            fontSize: block.data.data.bodyFontSize ? scale(block.data.data.bodyFontSize) : scale(14),
+            lineHeight: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize * 1.47) : s(14 * 1.47),
+            fontSize: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize) : s(14),
             color: block.data.data.bodyColor ? block.data.data.bodyColor : "#000",
             textAlign: block.data.data.bodyAlign ? block.data.data.bodyAlign : "left",
             fontFamily: "Montserrat-Regular",
@@ -97,7 +96,7 @@ const TextBlock = (props) => {
                     <Text style={[styles.title, {
                         flex: 1,
                         marginHorizontal: 0,
-                        fontSize: block.data.data.titleFontSize ? scale(block.data.data.titleFontSize) : scale(22),
+                        fontSize: block.data.data.titleFontSize ? s(block.data.data.titleFontSize) : s(22),
                         color: block.data.data.titleColor ? block.data.data.titleColor : "#000",
                         textAlign: block.data.data.titleAlign ? block.data.data.titleAlign : "left",
                     }]}>{block.data.data.title}</Text>
@@ -115,8 +114,8 @@ const TextBlock = (props) => {
                     /*                <Text style={[styles.body, {
                                         flex:1,
                                         marginHorizontal: 0,
-                                        fontSize:block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize):scale(14),
-                                        lineHeight:block.data.data.bodyFontSize?scale(block.data.data.bodyFontSize*1.47):scale(14*1.47),
+                                        fontSize:block.data.data.bodyFontSize?s(block.data.data.bodyFontSize):s(14),
+                                        lineHeight:block.data.data.bodyFontSize?s(block.data.data.bodyFontSize*1.47):s(14*1.47),
                                         color:block.data.data.bodyColor?block.data.data.bodyColor:"#000",
                                         textAlign:block.data.data.bodyAlign?block.data.data.bodyAlign:"left"
                                    }]}>{block.data.data.body}</Text>*/
@@ -182,7 +181,7 @@ const TextBlock = (props) => {
                 <View style={[block.data.data.shadow ? styles.boxShadow : null, {
                     margin: 15,
                     flex: 1,
-                    width: windowWidth - scale(30)
+                    width: windowWidth - s(30)
                 }]}>
                     <LinearGradient
                         style={[block.data.data.shadow ? styles.boxShadow : null, styles.container, {
@@ -209,19 +208,19 @@ const TextBlock = (props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: windowWidth - scale(30),
-        padding: 15,
+        width: windowWidth - s(30),
+        padding: ms(15),
         justifyContent: "center",
         alignSelf: "center",
-        borderRadius: 9,
+        borderRadius:s(9),
     },
     title: {
-        marginBottom: scale(20),
+        marginBottom: mvs(20),
         fontFamily: "MontserratAlternates-SemiBold",
         fontWeight: "bold",
     },
     image: {
-        borderRadius: 9,
+        borderRadius:s(9),
     },
     body: {},
     boxShadow: {

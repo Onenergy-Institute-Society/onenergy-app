@@ -1,9 +1,8 @@
 import React from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Image, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
-import {windowHeight} from "../Utils/Dimensions";
 import {Modalize} from 'react-native-modalize';
-import {scale} from "../Utils/scale";
+import {s, windowHeight} from "../Utils/Scale";
 import {SvgIconCheck} from "../Utils/svg";
 
 const ChooseSubtitle = (props) => {
@@ -34,7 +33,7 @@ const ChooseSubtitle = (props) => {
                     justifyContent: 'space-between'
                 }}>
                     <Text
-                        style={[global.itemTitle, {fontSize: scale(20)}]}>
+                        style={[global.itemTitle, {fontSize: s(20)}]}>
                         {item.item.title}
                     </Text>
                     {language.subtitle === item.item.language ? (
@@ -56,8 +55,8 @@ const ChooseSubtitle = (props) => {
                     <Image
                         tintColor={'#FFFFFF'}
                         style={{
-                            width: scale(36),
-                            height: scale(36),
+                            width: s(36),
+                            height: s(36),
                             tintColor: '#FFFFFF',
                             opacity: 0.5
                         }}
@@ -94,16 +93,16 @@ const ChooseSubtitle = (props) => {
 
 const styles = StyleSheet.create({
     buttonView: {
-        width: scale(36),
-        height: scale(36),
+        width: s(36),
+        height: s(36),
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: 'rgba(0,0,0,0.4)',
         borderRadius: 4,
         zIndex: 999,
         position: "absolute",
-        top: scale(20),
-        left: scale(30),
+        top: s(20),
+        left: s(30),
     }
 });
 export default ChooseSubtitle;

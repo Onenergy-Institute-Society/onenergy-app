@@ -4,7 +4,7 @@ import {useSelector} from "react-redux";
 import {NavigationActions, withNavigation} from "react-navigation";
 import ScalableImage from "../Components/ScalableImage";
 import TouchableScale from './TouchableScale';
-import {scale, windowWidth} from '../Utils/scale';
+import {mvs, s, windowWidth} from '../Utils/Scale';
 import AwesomeAlert from "../Components/AwesomeAlert";
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import moment from 'moment';
@@ -223,7 +223,7 @@ const EventList = props => {
                             }>
                             <View style={[styles.containerStyle, shadow ? styles.boxShadow : null]}>
                                 <ScalableImage
-                                    width={windowWidth - scale(30)}
+                                    width={windowWidth - s(30)}
                                     source={{uri: item.image ? item.image : null}}
                                     style={styles.image}
                                 />
@@ -233,8 +233,8 @@ const EventList = props => {
                                     bottom: 5,
                                     alignSelf: "center",
                                     position: "absolute",
-                                    width: scale(200),
-                                    height: scale(240),
+                                    width: s(200),
+                                    height: s(240),
                                     shadowColor: "#000",
                                     shadowOffset: {width: -2, height: 4},
                                     shadowOpacity: 0.2,
@@ -277,10 +277,10 @@ const styles = StyleSheet.create({
     },
     containerStyle: {
         backgroundColor: "white",
-        borderRadius: 9,
-        marginTop: scale(25),
-        marginHorizontal: scale(15),
-        width: windowWidth - scale(30),
+        borderRadius:s(9),
+        marginTop: mvs(25),
+        marginHorizontal: s(15),
+        width: windowWidth - s(30),
     },
     rowStyle: {
         overflow: 'hidden',
@@ -288,8 +288,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     image: {
-        width: 200,
-        borderRadius: 9,
+        borderRadius:s(9),
         marginLeft: 0,
         marginTop: 0,
         overflow: 'hidden',

@@ -1,6 +1,7 @@
 import React from 'react';
 import Slider from 'react-native-slider';
 import {StyleSheet, Text, View} from 'react-native';
+import {ms} from "../Utils/Scale";
 
 interface Props {
     currentTime: number;
@@ -63,19 +64,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 5,
+        paddingHorizontal: ms(5),
     },
     timeLeft: {
         flex: 1,
         fontSize: 16,
         color: '#FFFFFF',
-        paddingLeft: 10,
+        paddingLeft: ms(10),
     },
     timeRight: {
         flex: 1,
         fontSize: 16,
         color: '#FFFFFF',
         textAlign: 'right',
-        paddingRight: 10,
+        paddingRight: ms(10),
     },
 });

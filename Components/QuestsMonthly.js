@@ -1,8 +1,7 @@
 import React from 'react';
 import {connect, useDispatch, useSelector} from "react-redux";
 import {Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
-import {scale} from "../Utils/scale";
-import {windowWidth} from "../Utils/Dimensions";
+import {ms, mvs, s, windowWidth} from "../Utils/Scale";
 import moment from 'moment';
 
 const QuestsMonthly = (props) => {
@@ -16,11 +15,11 @@ const QuestsMonthly = (props) => {
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.containerStyle}>
                 <View style={{
-                    marginHorizontal: scale(15), paddingHorizontal: scale(10),
-                    paddingVertical: scale(10),
-                    borderRadius: 9, alignItems: 'center',
+                    marginHorizontal: s(15), paddingHorizontal: ms(10),
+                    paddingVertical: mvs(10),
+                    borderRadius:s(9), alignItems: 'center',
                     justifyContent: 'center', backgroundColor: colors.secondaryButtonBg,
-                    marginTop: scale(10),
+                    marginTop: mvs(10),
                 }}><Text style={[global.text, {color: colors.labelTextColor}]}>30 days streak REWARD +100
                     Qi</Text></View>
                 <View style={styles.daysContainer}>
@@ -39,14 +38,14 @@ const QuestsMonthly = (props) => {
                                 </View>
                                 <Text numberOfLines={1} style={[global.text, {
                                     fontWeight: "bold",
-                                    fontSize: scale(10),
+                                    fontSize: s(10),
                                     color: index === 30 ? colors.secondaryButtonColor : achievementReducer && achievementReducer.days && achievementReducer.days.length && achievementReducer.days[index] !== undefined && achievementReducer.days[index] !== null && achievementReducer.days[index] ? 'white' : colors.primaryButtonBg
                                 }]}>Day {day}</Text>
                             </View>
                         )
                     })}
                 </View>
-                <View style={{marginBottom: scale(20)}}>
+                <View style={{marginBottom: mvs(20)}}>
                     {achievementReducer.complete_date ?
                         achievementReducer.claim_date ?
                             <View style={[styles.boxShadow, styles.rowReward]}>
@@ -122,50 +121,50 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     daysContainer: {
-        marginTop: scale(10),
-        marginHorizontal: scale(15),
+        marginTop: mvs(10),
+        marginHorizontal: s(15),
         flexDirection: 'row',
         flexWrap: "wrap",
         justifyContent: "space-between",
     },
     row: {
-        paddingHorizontal: scale(10),
-        paddingVertical: scale(10),
-        borderRadius: 9,
+        paddingHorizontal: ms(10),
+        paddingVertical: mvs(10),
+        borderRadius:s(9),
         alignItems: 'center',
         justifyContent: 'center',
-        width: (windowWidth - 60) / 5,
+        width: (windowWidth - s(60)) / 5,
         backgroundColor: '#e6e6e8',
-        marginVertical: scale(5),
+        marginVertical: s(5),
     },
     rowReward: {
-        borderRadius: 9,
+        borderRadius:s(9),
         alignItems: 'center',
         justifyContent: 'space-between',
-        width: windowWidth - scale(30),
-        height: scale(60),
+        width: windowWidth - s(30),
+        height: s(60),
         flexDirection: 'row',
-        marginVertical: scale(15),
-        marginHorizontal: scale(15),
+        marginVertical: s(15),
+        marginHorizontal: s(15),
     },
     rowLeft: {
         marginVertical: 0,
-        paddingHorizontal: scale(10),
-        borderTopLeftRadius: 9,
-        borderBottomLeftRadius: 9,
+        paddingHorizontal: ms(10),
+        borderTopLeftRadius: s(9),
+        borderBottomLeftRadius: s(9),
         alignItems: 'center',
         justifyContent: 'center',
-        width: (windowWidth - scale(30)) * 2 / 3,
-        height: scale(70),
+        width: (windowWidth - s(30)) * 2 / 3,
+        height: s(70),
     },
     rowRight: {
         marginVertical: 0,
-        borderTopRightRadius: 9,
-        borderBottomRightRadius: 9,
+        borderTopRightRadius: s(9),
+        borderBottomRightRadius: s(9),
         alignItems: 'center',
         justifyContent: 'center',
-        width: (windowWidth - scale(30)) / 3,
-        height: scale(70),
+        width: (windowWidth - s(30)) / 3,
+        height: s(70),
         backgroundColor: '#8c79ea',
     },
     textSticker: {
@@ -175,24 +174,24 @@ const styles = StyleSheet.create({
         marginRight: 25,
     },
     pointText: {
-        fontSize: scale(14),
+        fontSize: s(14),
     },
     checklistItems: {
-        marginTop: scale(12),
-        paddingRight: scale(12),
-        maxHeight: scale(80),
+        marginTop: mvs(12),
+        paddingRight: ms(12),
+        maxHeight: s(80),
         flexDirection: "row",
     },
     calendarItems: {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        borderRadius: 9,
+        borderRadius:s(9),
         borderWidth: 1,
         borderColor: "blue",
-        marginBottom: 5,
-        height: scale(45),
-        width: scale(45),
+        marginBottom: mvs(5),
+        height: s(45),
+        width: s(45),
     },
     boxShadow: {
         shadowColor: "#000",
@@ -202,10 +201,10 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     titleText: {
-        width: windowWidth - scale(60),
-        marginHorizontal: scale(15),
-        marginVertical: scale(10),
-        fontSize: scale(14),
+        width: windowWidth - s(60),
+        marginHorizontal: s(15),
+        marginVertical: s(10),
+        fontSize: s(14),
         fontWeight: 'bold',
         color: "#5E5E5E",
     },

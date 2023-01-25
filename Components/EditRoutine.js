@@ -16,10 +16,9 @@ import {
 } from "react-native";
 import IconButton from "@src/components/IconButton";
 import {GestureHandlerRootView, Swipeable} from "react-native-gesture-handler";
-import {windowHeight, windowWidth} from "../Utils/Dimensions";
 import SortList from "./SortList";
 import {Modalize} from 'react-native-modalize';
-import {scale} from "../Utils/scale";
+import {ms, mvs, s, vs, windowHeight, windowWidth} from "../Utils/Scale";
 import analytics from '@react-native-firebase/analytics';
 import {SvgAddIcon, SvgIconBack, SvgIconCheck, SvgIconCross, SvgPlayIcon, SvgStopIcon} from "../Utils/svg";
 import Video from 'react-native-video';
@@ -327,7 +326,7 @@ const EditRoutine = props => {
                     tintColor={colors.headerIconColor}
                     style={{
                         alignSelf: "center",
-                        height: 24,
+                        height: s(24),
                     }}
                 />
             </TouchableOpacity>
@@ -356,7 +355,7 @@ const EditRoutine = props => {
                 onSwipeableLeftWillOpen={handleWillOpen(id)}
                 onSwipeableOpen={handleOpen(id)}
             >
-                <View style={{width: windowWidth - scale(30), flexDirection: "row", justifyContent: "flex-start"}}>
+                <View style={{width: windowWidth - s(30), flexDirection: "row", justifyContent: "flex-start"}}>
                     <View key={itemData.id} style={styles.listContainer}>
                         <View style={styles.content}>
                             <Text style={[global.text, styles.trackTitle]}>
@@ -405,11 +404,11 @@ const EditRoutine = props => {
                 }}>
                     <View style={{
                         backgroundColor: colors.bodyBg,
-                        paddingHorizontal: scale(25),
-                        paddingVertical: scale(15),
+                        paddingHorizontal: s(25),
+                        paddingVertical: s(15),
                         borderBottomWidth: 1,
                         borderBottomColor: '#ccc',
-                        borderTopRightRadius: 9,
+                        borderTopRightRadius: s(9),
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'space-between'
@@ -432,12 +431,12 @@ const EditRoutine = props => {
                                 </TouchableOpacity>
                                 : null}
                             <Text
-                                style={[global.text, {marginLeft: scale(5)}]}>
+                                style={[global.text, {marginLeft: s(5)}]}>
                                 {item.item.title}
                             </Text>
                         </View>
                         {index >= 0 ? (
-                            <SvgIconCheck size={24} color={colors.primaryColor}/>
+                            <SvgIconCheck size={s(24)} color={colors.primaryColor}/>
                         ) : null}
                     </View>
                 </TouchableWithoutFeedback>
@@ -449,11 +448,11 @@ const EditRoutine = props => {
         let bottomStyle = {};
         switch (item.index) {
             case 0:
-                cornerStyle = {borderTopLeftRadius: 9, borderTopRightRadius: 9, marginTop: 25};
+                cornerStyle = {borderTopLeftRadius: s(9), borderTopRightRadius: s(9), marginTop: mvs(25)};
                 bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
                 break;
             case 29:
-                cornerStyle = {borderBottomLeftRadius: 9, borderBottomRightRadius: 9, marginBottom: 25};
+                cornerStyle = {borderBottomLeftRadius: s(9), borderBottomRightRadius: s(9), marginBottom: mvs(25)};
                 break;
             default:
                 bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
@@ -477,13 +476,13 @@ const EditRoutine = props => {
                         style={{
                             fontFamily: "Montserrat-Regular",
                             fontWeight: "normal",
-                            fontSize: scale(18),
+                            fontSize: s(18),
                             color: colors.textColor
                         }}>
                         {item.item} {currentTrackState.item.mode === "1" ? item.index > 0 ? " minutes" : " minute" : item.index > 0 ? " times" : " time"}
                     </Text>
                     {currentTrackState.index !== -1 && parseInt(currentTrackState.item.count, 10) === parseInt(item.item, 10) ? (
-                        <SvgIconCheck size={24} color={colors.primaryColor}/>
+                        <SvgIconCheck size={s(24)} color={colors.primaryColor}/>
                     ) : null}
                 </View>
             </TouchableWithoutFeedback>
@@ -501,11 +500,11 @@ const EditRoutine = props => {
         console.log(soundUrl, playingSound)
         switch (item.index) {
             case 0:
-                cornerStyle = {borderTopLeftRadius: 9, borderTopRightRadius: 9};
+                cornerStyle = {borderTopLeftRadius: s(9), borderTopRightRadius: s(9)};
                 bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
                 break;
             case backgroundMusics.length - 1:
-                cornerStyle = {borderBottomLeftRadius: 9, borderBottomRightRadius: 9};
+                cornerStyle = {borderBottomLeftRadius: s(9), borderBottomRightRadius: s(9)};
                 break;
             default:
                 bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
@@ -546,12 +545,12 @@ const EditRoutine = props => {
                             </TouchableOpacity>
                             : null}
                         <Text
-                            style={[global.text, {marginLeft: scale(5)}]}>
+                            style={[global.text, {marginLeft: s(5)}]}>
                             {item.item.name}
                         </Text>
                     </View>
                     {routineDetailState.bgm === item.item.name ? (
-                        <SvgIconCheck size={24} color={colors.primaryColor}/>
+                        <SvgIconCheck size={s(24)} color={colors.primaryColor}/>
                     ) : null}
                 </View>
             </TouchableWithoutFeedback>
@@ -562,11 +561,11 @@ const EditRoutine = props => {
             section.section.data.find((item) => item.show) ?
                 <Text style={[global.settingsItemTitle, {
                     backgroundColor: '#e6e6e8',
-                    borderTopRightRadius: 9,
-                    borderTopLeftRadius: 9,
-                    paddingVertical: 10,
-                    fontSize: 24,
-                    marginTop: scale(15),
+                    borderTopRightRadius: s(9),
+                    borderTopLeftRadius: s(9),
+                    paddingVertical: mvs(10),
+                    fontSize: s(24),
+                    marginTop: mvs(15),
                     textAlign: "center"
                 }]}>{section.section.title.toUpperCase()}</Text>
                 : null
@@ -612,7 +611,7 @@ const EditRoutine = props => {
                 </View>
                 <View style={global.roundBox}>
                     <View style={{
-                        width: windowWidth - scale(35),
+                        width: windowWidth - s(35),
                         flexDirection: "row",
                         justifyContent: "flex-start",
                         alignItems: "center"
@@ -620,14 +619,14 @@ const EditRoutine = props => {
                         <Text style={global.settingsItemTitle}>Background Image</Text>
                     </View>
                     <View>
-                        <View style={{flexDirection: "row", justifyContent: "space-between", marginTop: 5}}>
+                        <View style={{flexDirection: "row", justifyContent: "space-between", marginTop: mvs(5)}}>
                             {renderColor()}
                         </View>
                     </View>
                 </View>
                 <View style={global.roundBox}>
                     <View style={{
-                        width: windowWidth - scale(35),
+                        width: windowWidth - s(35),
                         flexDirection: "row",
                         justifyContent: "flex-start",
                         alignItems: "center"
@@ -663,13 +662,13 @@ const EditRoutine = props => {
                         alignItems: "center"
                     }}>
                         <Text style={global.settingsItemTitle}>Practices</Text>
-                        <Text style={[global.text, {fontSize: scale(10)}]}>(swipe to delete, drag to sort)</Text>
+                        <Text style={[global.text, {fontSize: s(10)}]}>(swipe to delete, drag to sort)</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 this.addGuideModal.open();
                             }}
                         >
-                            <SvgAddIcon color={colors.primaryColor} size={scale(36)}/>
+                            <SvgAddIcon color={colors.primaryColor} size={s(36)}/>
                         </TouchableOpacity>
                     </View>
 
@@ -718,18 +717,18 @@ const EditRoutine = props => {
                 withHandle="false"
                 HeaderComponent={
                     <View style={{
-                        padding: scale(15),
+                        padding: s(15),
                         flexDirection: "row",
                         justifyContent: "space-between",
-                        borderTopLeftRadius: 9,
-                        borderTopRightRadius: 9,
+                        borderTopLeftRadius: s(9),
+                        borderTopRightRadius: s(9),
                         borderBottomWidth: StyleSheet.hairlineWidth,
                         backgroundColor: colors.bodyBg,
                         borderBottomColor: colors.borderColor
                     }}>
                         {currentTrackState.index !== -1 ? (
                             <Text style={{
-                                fontSize: scale(24),
+                                fontSize: s(24),
                                 color: colors.headerColor,
                                 fontFamily: "MontserratAlternates-SemiBold",
                                 fontWeight: "bold"
@@ -756,22 +755,22 @@ const EditRoutine = props => {
                     this.bgmDialog = bgmDialog;
                 }}
                 modalStyle={{backgroundColor: colors.bodyFrontBg}}
-                childrenStyle={{padding: scale(25)}}
+                childrenStyle={{padding: s(25)}}
                 adjustToContentHeight="true"
                 withHandle="false"
                 HeaderComponent={
                     <View style={{
-                        padding: scale(15),
+                        padding: s(15),
                         flexDirection: "row",
                         justifyContent: "space-between",
-                        borderTopLeftRadius: 9,
-                        borderTopRightRadius: 9,
+                        borderTopLeftRadius: s(9),
+                        borderTopRightRadius: s(9),
                         borderBottomWidth: StyleSheet.hairlineWidth,
                         backgroundColor: colors.bodyBg,
                         borderBottomColor: colors.borderColor
                     }}>
                         <Text style={{
-                            fontSize: scale(24),
+                            fontSize: s(24),
                             color: colors.headerColor,
                             fontFamily: "MontserratAlternates-SemiBold",
                             fontWeight: "bold"
@@ -801,22 +800,22 @@ const EditRoutine = props => {
                     this.addGuideModal = addGuideModal;
                 }}
                 modalStyle={{backgroundColor: colors.bodyFrontBg}}
-                childrenStyle={{paddingHorizontal: scale(25), paddingBottom: scale(25)}}
+                childrenStyle={{paddingHorizontal: s(25), paddingBottom: s(25)}}
                 modalHeight={windowHeight * 2 / 3}
                 handlePosition="outside"
                 HeaderComponent={
                     <View style={{
-                        padding: scale(15),
+                        padding: s(15),
                         flexDirection: "row",
                         justifyContent: "space-between",
-                        borderTopLeftRadius: 9,
-                        borderTopRightRadius: 9,
+                        borderTopLeftRadius: s(9),
+                        borderTopRightRadius: s(9),
                         borderBottomWidth: StyleSheet.hairlineWidth,
                         backgroundColor: colors.bodyBg,
                         borderBottomColor: colors.borderColor
                     }}>
                         <Text style={{
-                            fontSize: scale(24),
+                            fontSize: s(24),
                             color: colors.headerColor,
                             fontFamily: "MontserratAlternates-SemiBold",
                             fontWeight: "bold"
@@ -852,25 +851,25 @@ const styles = StyleSheet.create({
     ScrollContainer: {
         height: "100%",
         flexGrow: 1,
-        paddingHorizontal: scale(15),
+        paddingHorizontal: s(15),
     },
     list: {
-        width: windowWidth - scale(30),
+        width: windowWidth - s(30),
         flex: 1,
         justifyContent: 'center',
         alignItems: 'flex-start',
         overflow: 'scroll',
     },
     contentContainer: {
-        width: windowWidth - scale(30),
+        width: windowWidth - s(30),
     },
     index: {},
     listContainer: {
-        width: windowWidth - scale(30),
+        width: windowWidth - s(30),
         aspectRatio: 8,
         flexDirection: 'row',
-        marginBottom: 5,
-        borderRadius: 9,
+        marginBottom: mvs(5),
+        borderRadius:s(9),
         borderWidth: 1,
         borderColor: "#8c79ea",
         backgroundColor: "#fffdff",
@@ -889,7 +888,7 @@ const styles = StyleSheet.create({
         flex: 0.2,
         height: "100%",
         aspectRatio: 0.5,
-        marginHorizontal: 10,
+        marginHorizontal: vs(10),
         justifyContent: 'center',
         alignItems: 'flex-end',
         overflow: 'hidden',
@@ -900,11 +899,11 @@ const styles = StyleSheet.create({
         borderBottomWidth: 3
     },
     title: {
-        fontSize: 24,
+        fontSize: s(24),
         fontWeight: "800",
         color: "black",
-        marginTop: 10,
-        marginBottom: 5,
+        marginTop: mvs(10),
+        marginBottom: mvs(5),
     },
     footer: {
         paddingVertical: 32,
@@ -912,21 +911,21 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     inputName: {
-        height: 50,
-        borderRadius: 9,
+        height: vs(50),
+        borderRadius:s(9),
         borderWidth: 1,
         borderColor: "#8c79ea",
         backgroundColor: "#ffffff",
         paddingLeft: 15
     },
     trackTitle: {
-        fontSize: scale(12),
+        fontSize: s(12),
         paddingLeft: 10,
         flex: 0.7,
     },
     trackCount: {
         flex: 0.3,
-        width: scale(50),
+        width: s(50),
         flexDirection: "row",
         justifyContent: "flex-end",
         alignItems: "center",
@@ -935,10 +934,10 @@ const styles = StyleSheet.create({
         alignContent: "flex-end",
     },
     colorSelect: {
-        width: 36,
-        height: 36,
-        borderRadius: 4,
-        marginHorizontal: 5
+        width: s(36),
+        height: vs(36),
+        borderRadius: s(4),
+        marginHorizontal: ms(5)
     },
 })
 EditRoutine.navigationOptions = ({navigation, screenProps}) => {
@@ -953,7 +952,7 @@ EditRoutine.navigationOptions = ({navigation, screenProps}) => {
         headerTitleStyle: global.appHeaderTitle,
         headerLeft:
             params.saving ?
-                <View style={{marginLeft:scale(15)}}>
+                <View style={{marginLeft:s(15)}}>
                     <ActivityIndicator size={"small"} color={screenProps.colors.headerIconColor}/>
                 </View>
                 :
@@ -966,7 +965,7 @@ EditRoutine.navigationOptions = ({navigation, screenProps}) => {
                     <SvgIconBack color={colors.headerIconColor}/>
                     <Text style={{
                         fontFamily: "Montserrat-Regular",
-                        fontSize: scale(16),
+                        fontSize: s(16),
                         color: screenProps.colors.headerIconColor
                     }}>{params.backButtonTitle}</Text>
                     </View>
@@ -978,9 +977,9 @@ EditRoutine.navigationOptions = ({navigation, screenProps}) => {
                     }}
                 >
                     <Text style={{
-                        marginRight: scale(15),
+                        marginRight: s(15),
                         fontFamily: "Montserrat-Regular",
-                        fontSize: scale(16),
+                        fontSize: s(16),
                         color: screenProps.colors.headerIconColor
                     }}>Cancel</Text>
                 </TouchableOpacity>
