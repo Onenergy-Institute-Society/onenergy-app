@@ -186,37 +186,37 @@ const StatsScreen = (props) => {
                             colors={['#a5f3fc', '#cffafe']}>
                             <View style={styles.row}>
                                 <Text style={[global.title, styles.title]}>Course Enrolled:</Text>
-                                <Text style={global.textAlt}> {progressReducer.enrolledCourses?progressReducer.enrolledCourses.length:0}</Text>
+                                <Text style={[global.text,styles.text]}> {progressReducer.enrolledCourses?progressReducer.enrolledCourses.length:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                             <View style={styles.row}>
                                 <Text style={[global.title, styles.title]}>Course Completed:</Text>
-                                <Text style={global.textAlt}> {progressReducer.completedCourses?progressReducer.completedCourses.length:0}</Text>
+                                <Text style={[global.text,styles.text]}> {progressReducer.completedCourses?progressReducer.completedCourses.length:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                             <View style={styles.row}>
                                 <Text style={[global.title, styles.title]}>Lesson Completed:</Text>
-                                <Text style={global.textAlt}> {progressReducer.completedLessons?progressReducer.completedLessons.length:0}</Text>
+                                <Text style={[global.text,styles.text]}> {progressReducer.completedLessons?progressReducer.completedLessons.length:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                            <View style={styles.row}>
                                 <Text style={[global.title, styles.title]}>Today Practice:</Text>
-                                <Text style={global.textAlt}> {progressReducer.todayDuration?Math.round(progressReducer.todayDuration / 60 )>60?Math.round(progressReducer.todayDuration /3600)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.todayDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
+                                <Text style={[global.text,styles.text]}> {progressReducer.todayDuration?Math.round(progressReducer.todayDuration / 60 )>60?Math.round(progressReducer.todayDuration /3600)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.todayDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                             <View style={styles.row}>
                                 <Text style={[global.title, styles.title]}>Weekly Practice:</Text>
-                                <Text style={global.textAlt}> {progressReducer.weekDuration?Math.round(progressReducer.weekDuration / 60 )>60?Math.round(progressReducer.weekDuration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.weekDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
+                                <Text style={[global.text,styles.text]}> {progressReducer.weekDuration?Math.round(progressReducer.weekDuration / 60 )>60?Math.round(progressReducer.weekDuration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.weekDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                             <View style={styles.row}>
                                 <Text style={[global.title, styles.title]}>Total Practice:</Text>
-                                <Text style={global.textAlt}> {progressReducer.totalDuration?Math.round(progressReducer.totalDuration / 60 )>60?Math.round(progressReducer.totalDuration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.totalDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
+                                <Text style={[global.text,styles.text]}> {progressReducer.totalDuration?Math.round(progressReducer.totalDuration / 60 )>60?Math.round(progressReducer.totalDuration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.totalDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                             <View style={[styles.row, styles.lastRow]}>
                                 <Text style={[global.title, styles.title]}>Total Practice Days:</Text>
-                                <Text style={global.textAlt}> {progressReducer.totalPracticeDays?progressReducer.totalPracticeDays+' '+optionData.titles.find(el => el.id === 'stats_detail_days').title:0}</Text>
+                                <Text style={[global.text,styles.text]}> {progressReducer.totalPracticeDays?progressReducer.totalPracticeDays+' '+optionData.titles.find(el => el.id === 'stats_detail_days').title:0}</Text>
                             </View>
                         </LinearGradient>
                     </View>
@@ -239,17 +239,17 @@ const StatsScreen = (props) => {
                                 colors={['#fed7aa', '#ffedd5']}>
                                 <View style={styles.row}>
                                     <Text style={[global.title, styles.title]}>Membership:</Text>
-                                    <Text style={global.textAlt}> {user.membership[0].plan.name}</Text>
+                                    <Text style={[global.text,styles.text]}> {user.membership[0].plan.name}</Text>
                                 </View>
                                 <View style={[styles.rowHr, {backgroundColor: "#fdba74"}]}/>
                                 <View style={styles.row}>
                                     <Text style={[global.title, styles.title]}>Since:</Text>
-                                    <Text style={global.textAlt}> {user.membership[0].post.post_date}</Text>
+                                    <Text style={[global.text,styles.text]}> {user.membership[0].post.post_date}</Text>
                                 </View>
                                 <View style={[styles.rowHr, {backgroundColor: "#fdba74"}]}/>
                                 <View style={[styles.row, styles.lastRow]}>
                                     <Text style={[global.title, styles.title]}>Customized Routine:</Text>
-                                    <Text style={global.textAlt}> {practiceReducer.routines?practiceReducer.routines.length:''}</Text>
+                                    <Text style={[global.text,styles.text]}> {practiceReducer.routines?practiceReducer.routines.length:''}</Text>
                                 </View>
                             </LinearGradient>
                         </View>
@@ -276,13 +276,13 @@ const StatsScreen = (props) => {
                                             <>
                                                 <View style={styles.row}>
                                                     <Text style={[global.title, styles.title, {fontSize:s(14), flex: 0.6}]}>{practiceReducer.routines.find(routine => routine.id === item.routine_id)?practiceReducer.routines.find(routine => routine.id === item.routine_id).title:''}</Text>
-                                                    <Text style={[global.textAlt, {
+                                                    <Text style={[global.text,styles.text, {
                                                         flex: 0.2,
                                                         alignSelf: "flex-end",
                                                         textAlign: "right",
                                                         alignItems: "flex-end"
                                                    }]}>{item.routine_count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
-                                                    <Text style={[global.textAlt, {
+                                                    <Text style={[global.text,styles.text, {
                                                         flex: 0.2,
                                                         alignSelf: "flex-end",
                                                         textAlign: "right",
@@ -327,8 +327,8 @@ const StatsScreen = (props) => {
                                     <>
                                         <View style={styles.row}>
                                             <Text style={[global.title, styles.title,{flex:0.6}]}>{groupName}</Text>
-                                            <Text style={[global.textAlt,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.group_count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
-                                            <Text style={[global.textAlt,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.group_duration / 60 )>60?Math.round(item.group_duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.group_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                            <Text style={[global.text,styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.group_count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
+                                            <Text style={[global.text,styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.group_duration / 60 )>60?Math.round(item.group_duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.group_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                         </View>
                                         {index<progressReducer.groupStats.length-1?
                                             <View style={[styles.rowHr, {backgroundColor: "#c4b5fd"}]}/>
@@ -362,8 +362,8 @@ const StatsScreen = (props) => {
                                         <>
                                             <View style={styles.row}>
                                                 <Text style={[global.title,styles.title,{flex:0.5}]}>{practiceReducer.guides.find(section => section.id === item.section_id).title}</Text>
-                                                <Text style={[global.textAlt,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.section_count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
-                                                <Text style={[global.textAlt,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.section_duration / 60 )>60?Math.round(item.section_duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.section_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                                <Text numberOfLines={1} style={[global.text,styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.section_count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
+                                                <Text style={[global.text,styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.section_duration / 60 )>60?Math.round(item.section_duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.section_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
                                                 <Svg
                                                     width="24"
                                                     height="24"
@@ -439,10 +439,7 @@ const styles = StyleSheet.create({
         fontSize: s(14),
    },
     text:{
-        fontFamily: "MontserratAlternates-Regular",
-        fontWeight: "normal",
-        fontSize: s(14),
-        color: "#27272a",
+        fontSize: s(12),
    },
     boxShadow: {
         shadowColor: "#000",

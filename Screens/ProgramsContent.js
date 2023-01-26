@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {
     StyleSheet,
     View,
@@ -32,15 +32,16 @@ const ProgramsContent = props => {
 
     const onFocusHandler = async () => {
         try {
-            if (user && progressReducer.latestUpdate && checkTodayDate()) {
-                console.log('Daily Initialize')
-                dispatch({
-                    type: 'ONENERGY_DAILY_UPDATE',
-                });
-            }
-            await updateStatus();
             navigation.closeDrawer();
-
+            if(user){
+                if (progressReducer.latestUpdate && checkTodayDate()) {
+                    console.log('Daily Initialize')
+                    dispatch({
+                        type: 'ONENERGY_DAILY_UPDATE',
+                    });
+                }
+                await updateStatus();
+            }
         } catch (e) {
 
         }

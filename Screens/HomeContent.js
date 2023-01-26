@@ -60,15 +60,16 @@ const HomeContent = (props) => {
 
     const onFocusHandler = async () => {
         try {
-            console.log('Focus changed')
-            if (user && progressReducer.latestUpdate && checkTodayDate()) {
-                console.log('Daily Initialize')
-                dispatch({
-                    type: 'ONENERGY_DAILY_UPDATE',
-                });
-            }
-            await updateStatus();
             navigation.closeDrawer();
+            if(user){
+                if (progressReducer.latestUpdate && checkTodayDate()) {
+                    console.log('Daily Initialize')
+                    dispatch({
+                        type: 'ONENERGY_DAILY_UPDATE',
+                    });
+                }
+                await updateStatus();
+            }
         } catch (e) {
         }
     }
@@ -246,6 +247,7 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
 
     useEffect(() => {
         const unsubscribe = messaging().onMessage(async remoteMessage => {
+            console.log(remoteMessage)
             const data = remoteMessage.data;
             if (data.notification_type && data.notification_type === 'pn_functions') {
                 switch (data.function_type) {

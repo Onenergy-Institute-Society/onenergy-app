@@ -7,7 +7,6 @@ import {s, windowWidth} from "../Utils/Scale";
 
 const VimeoBlockLoader = (props) => {
     const {block} = props;
-    console.log(props)
     const language = useSelector((state) => state.settingsReducer.languages);
     const no_skip_forward = block.data.no_skip_forward;
     const lesson_video = block.data.lesson_video;
@@ -29,7 +28,6 @@ const VimeoBlockLoader = (props) => {
                     'Referrer-Policy': 'strict-origin-when-cross-origin'
                 }
             });
-            console.log(result)
             setVimeoConfig(result.data);
         } catch (e) {
             console.error(e);

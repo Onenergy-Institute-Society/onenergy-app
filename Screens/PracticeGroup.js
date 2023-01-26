@@ -70,9 +70,9 @@ const PracticeGroup = props => {
         let min = new Date().getMinutes();
         let sec = new Date().getSeconds();
 
-        if (min < gp_minute) {
-            min = 30 - gp_minute + min;
-        } else {
+        if (min <= gp_minute) {
+            min = 29 - gp_minute + min;
+        } else if (min > gp_minute) {
             min = min - gp_minute - 30;
         }
         let seek = min * 60 + sec;
@@ -224,7 +224,7 @@ const PracticeGroup = props => {
                             }
                         </View>
                         {conditionLessons || user.test_mode ?
-                            <Text style={styles.subtitle}>last for {new Date(item.duration * 1000).toISOString().substring(14, 19)}, repeat
+                            <Text style={styles.subtitle}>duration: {new Date(item.duration * 1000).toISOString().substring(14, 19)}, repeat
                                 every {loop} mins</Text>
                             :
                             <Text style={styles.subtitle}>Finish required lessons to unlock.</Text>

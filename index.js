@@ -2567,7 +2567,6 @@ console.log(ors_tempPracticeState)
             </>
         );
     })
-
     externalCodeSetup.pageScreenHooksApi.setOnShouldStartLoadWithRequest(props => {
         const {
             index,

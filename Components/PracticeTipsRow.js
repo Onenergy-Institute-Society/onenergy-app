@@ -11,12 +11,13 @@ const PracticeTipsRow = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
     const postReducer = useSelector((state) => state.postReducer);
+    const routineTipsReducer = useSelector((state) => state.postReducer.posts.filter((post) => post.categories.includes(258)));
     const [dataPosts, setPostsData] = useState([]);
-    const [showTitle, setShowTitle] = useState(false);
     const {navigation, screenProps} = props;
     const {global} = screenProps;
     const dispatch = useDispatch();
     const categoryIndex = postReducer.lastView && postReducer.lastView.length ? postReducer.lastView.findIndex(lv => lv.category === 258) : null;
+    console.log(routineTipsReducer, progressReducer)
     const fetchPostsData = async () => {
         try {
             let notify = false;
@@ -31,7 +32,7 @@ const PracticeTipsRow = props => {
             ).then(response => response.data);
             let posts = [];
             data.map((item) => {
-                if (!postReducer.posts.length || postReducer.posts.filter(post => post.id === item.id).length === 0) {
+                if (!routineTipsReducer.length || routineTipsReducer.filter(post => post.id === item.id).length === 0) {
                     if (categoryIndex && categoryIndex >= 0) {
                         if (new Date(item.date) > new Date(postReducer.lastView[categoryIndex].date)) {
                             notify = true;
@@ -53,6 +54,7 @@ const PracticeTipsRow = props => {
                 }
             })
             if (posts && posts.length > 0) {
+                setPostsData(posts.filter(post => showItem(post)));
                 dispatch({
                     type: 'ONENERGY_POSTS_ADD',
                     payload: posts,
@@ -64,13 +66,13 @@ const PracticeTipsRow = props => {
         }
     }
     useEffect(() => {
+        console.log(routineTipsReducer)
         let loadPosts = false;
         if (categoryIndex && categoryIndex >= 0) {
-            let postCount = postReducer.posts.filter((post) => post.categories.includes(258)).length
+            let postCount = routineTipsReducer.length
             if (!postCount) {
                 loadPosts = true
             } else {
-                setPostsData(postReducer.posts.filter((post) => post.categories.includes(258)));
                 if (new Date(postReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[258])) {
                     loadPosts = true;
                 }
@@ -80,56 +82,58 @@ const PracticeTipsRow = props => {
         }
         if (loadPosts) {
             fetchPostsData().then();
+        }else{
+            if(routineTipsReducer && routineTipsReducer.length)
+                setPostsData(routineTipsReducer.filter(post => showItem(post)));
         }
-    }, []);
-    const renderItem = ({item}) => {
-        let show = false;
+    }, [progressReducer]);
+    const showItem = (item) => {
+        let show = true;
         if (item.meta_box.course) {
             item.meta_box.course.map((course_item) => {
-                if (progressReducer.completedCourses && progressReducer.completedCourses.find(course => course.id === parseInt(course_item))) {
-                    setShowTitle(true);
-                    show = true;
-                }
+                let coursePass = progressReducer.completedCourses && progressReducer.completedCourses.findIndex(course => course.id === parseInt(course_item));
+                if(coursePass<0) show = false;
+                console.log('course', course_item, show)
             })
         }
+        console.log(item, show)
+        return show;
+    }
+    const renderItem = ({item}) => {
+
         return (
-            show ?
-                <TouchableScale
-                    key={item.id + 'img'}
-                    onPress={() => {
-                        try {
-                            navigation.dispatch(
-                                NavigationActions.navigate({
-                                    routeName: "BlogScreen",
-                                    params: {
-                                        blogId: item.id,
-                                        title: item.title.rendered
-                                    }
-                                })
-                            );
-                        } catch (err) {
-                            console.log(`${err}`);
-                        }
-                    }}>
-                    <View style={[styles.containerStyle, styles.boxShadow]} key={'post-' + item.id}>
-                        <View style={styles.imageView}>
-                            <ImageCache style={styles.image} source={{uri: item.image ? item.image : ''}}/>
-                        </View>
+            <TouchableScale
+                key={item.id + 'img'}
+                onPress={() => {
+                    try {
+                        navigation.dispatch(
+                            NavigationActions.navigate({
+                                routeName: "BlogScreen",
+                                params: {
+                                    blogId: item.id,
+                                    title: item.title.rendered
+                                }
+                            })
+                        );
+                    } catch (err) {
+                        console.log(`${err}`);
+                    }
+                }}>
+                <View style={[styles.containerStyle, styles.boxShadow]} key={'post-' + item.id}>
+                    <View style={styles.imageView}>
+                        <ImageCache style={styles.image} source={{uri: item.image ? item.image : ''}}/>
                     </View>
-                </TouchableScale>
-                : null
+                </View>
+            </TouchableScale>
         );
     }
 
     return (
         dataPosts && dataPosts.length ?
             <View style={styles.ScrollView}>
-                {showTitle ?
-                    <View style={styles.view_blog_title}>
-                        <Text style={global.widgetTitle}>Routine Tips</Text>
-                    </View>
-                    : null
-                }
+                <View style={styles.view_blog_title}>
+                    <Text style={global.widgetTitle}>Routine Tips</Text>
+                </View>
                 <FlatList
                     style={styles.postsTips}
                     data={dataPosts}

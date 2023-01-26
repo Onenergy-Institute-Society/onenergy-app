@@ -39,14 +39,16 @@ const PracticesContent = props => {
         const dispatch = useDispatch();
         const onFocusHandler = async () => {
             try {
-                if (user && progressReducer.latestUpdate && checkTodayDate()) {
-                    console.log('Daily Initialize')
-                    dispatch({
-                        type: 'ONENERGY_DAILY_UPDATE',
-                    });
-                }
-                await updateStatus();
                 navigation.closeDrawer();
+                if(user){
+                    if (progressReducer.latestUpdate && checkTodayDate()) {
+                        console.log('Daily Initialize')
+                        dispatch({
+                            type: 'ONENERGY_DAILY_UPDATE',
+                        });
+                    }
+                    await updateStatus();
+                }
             } catch (e) {
 
             }

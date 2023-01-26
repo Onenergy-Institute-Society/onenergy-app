@@ -181,8 +181,8 @@ const EditRoutine = props => {
                 id: 1,
                 title: 'Opening',
                 url: 'https://cdn.onenergy.institute/audios/preparatory_practices/members/Opening_Member.mp3',
-                artist: '',
-                artwork: '',
+                artist: 'Onenergy Institute',
+                artwork: 'https://cdn.onenergy.institute/images/logo.png',
                 duration: 25,
             });
             routine.map(item => {
@@ -194,8 +194,8 @@ const EditRoutine = props => {
                             id: id,
                             title: item.title,
                             url: part.start,
-                            artist: '',
-                            artwork: '',
+                            artist: 'Onenergy Institute',
+                            artwork: 'https://cdn.onenergy.institute/images/logo.png',
                             duration: parseInt(part.start_duration),
                         });
                         switch (item.mode) {
@@ -207,8 +207,8 @@ const EditRoutine = props => {
                                             id: id,
                                             title: item.title,
                                             url: part.repeat,
-                                            artist: '',
-                                            artwork: '',
+                                            artist: 'Onenergy Institute',
+                                            artwork: 'https://cdn.onenergy.institute/images/logo.png',
                                             duration: parseInt(part.repeat_duration),
                                         });
                                     }
@@ -221,8 +221,8 @@ const EditRoutine = props => {
                                         id: id,
                                         title: item.title,
                                         url: min1,
-                                        artist: '',
-                                        artwork: '',
+                                        artist: 'Onenergy Institute',
+                                        artwork: 'https://cdn.onenergy.institute/images/logo.png',
                                         duration: 60,
                                     });
                                 }
@@ -236,8 +236,8 @@ const EditRoutine = props => {
                         id: id,
                         title: item.title,
                         url: item.ending,
-                        artist: '',
-                        artwork: '',
+                        artist: 'Onenergy Institute',
+                        artwork: 'https://cdn.onenergy.institute/images/logo.png',
                         duration: parseInt(item.endDuration),
                     });
                 }
@@ -248,8 +248,8 @@ const EditRoutine = props => {
                 id: id,
                 title: 'Closing',
                 url: 'https://cdn.onenergy.institute/audios/preparatory_practices/members/Closing_Member.mp3',
-                artist: '',
-                artwork: '',
+                artist: 'Onenergy Institute',
+                artwork: 'https://cdn.onenergy.institute/images/logo.png',
                 duration: 13,
             });
         }
