@@ -87,7 +87,6 @@ export default function SortList(props) {
     };
 
     const onMove = (id, draggablePosition, itemSize, isEdging, scrollPos) => {
-        console.log(id, draggablePosition, scrollPos)
         if (isMoving === false)
             setIsMoving(true);
         const newItems = [...items];

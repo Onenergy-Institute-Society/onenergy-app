@@ -7,6 +7,7 @@ import {s} from '../Utils/Scale';
 import Video from 'react-native-video';
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 import TrackSlider from "./TrackSlider";
+import * as Analytics from "../Utils/Analytics";
 
 const AudioPlayerRoutine = (props) => {
     const {screenProps} = props;
@@ -39,6 +40,10 @@ const AudioPlayerRoutine = (props) => {
                     data: routine.id
                 }
             });
+            Analytics.segmentClient.track('End Routine Practice', {
+                id: routine.id,
+                title: routine.title
+            }).then();
             setMessageBarDisplay(true);
         } catch (e) {
             console.error(e);
@@ -59,7 +64,6 @@ const AudioPlayerRoutine = (props) => {
     }
 
     useTrackPlayerEvents([Event.PlaybackState, Event.RemotePlay, Event.RemotePause, Event.RemoteStop], async (event) => {
-        console.log(event.type, event.state, State)
         if ((event.type === Event.PlaybackState) && ((event.state === State.Stopped) || (event.state === State.None))) {
             setTrackTitle('');
             deactivateKeepAwake();
@@ -126,7 +130,6 @@ const AudioPlayerRoutine = (props) => {
 
     const onPlayPausePress = async () => {
         const state = await TrackPlayer.getState();
-        console.log(state, State)
         if (state === State.Playing) {
             await TrackPlayer.pause();
             setPlaying(false);
@@ -147,7 +150,6 @@ const AudioPlayerRoutine = (props) => {
             }
         }
         if ((state === State.Stopped) || (state === State.None)) {
-            console.log('stopped', routine.tracks)
             addTrack(routine.tracks).then(async () => {
                 await TrackPlayer.play();
                 setPlaying(true);

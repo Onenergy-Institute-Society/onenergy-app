@@ -9,9 +9,11 @@ import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import {s} from "../Utils/Scale";
 import AuthWrapper from "@src/components/AuthWrapper";
 import {SvgIconBack} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 const CategoryPageRead = (props) => {
     try {
+        Analytics.segmentClient.screen('Blogs', {type: 'Read'}).then();
         return (
             <PostList postCategory={'105'} postPerPage={'10'} postOrder={'desc'} postOrderBy={'date'} useLoadMore={true} {...props}/>
         )
@@ -21,6 +23,7 @@ const CategoryPageRead = (props) => {
 }
 const CategoryPageWatch = (props) => {
     try {
+        Analytics.segmentClient.screen('Blogs', {type: 'Watch'}).then();
         return (
             <PostList postCategory={'103'} postPerPage={'10'} postOrder={'desc'} postOrderBy={'date'} useLoadMore={true} {...props}/>
         )

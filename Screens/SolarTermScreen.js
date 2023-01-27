@@ -5,8 +5,8 @@ import {connect} from "react-redux";
 import ImageCache from '../Components/ImageCache';
 import PostRow from "../Components/PostRow";
 import {s, windowWidth} from "../Utils/Scale";
-import analytics from '@react-native-firebase/analytics';
 import {SvgIconBack} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 const SolarTermScreen = props => {
     const {navigation, screenProps} = props;
@@ -14,10 +14,8 @@ const SolarTermScreen = props => {
     const [postData, setPostData] = useState([]);
     const [currentTermBanner, setCurrentTermBanner] = useState('');
     const [nextTermBanner, setNextTermBanner] = useState('');
-    analytics().logScreenView({
-        screen_class: 'MainActivity',
-        screen_name: 'Solar Term Screen',
-   });
+    Analytics.segmentClient.screen('Solar').then();
+
     const fetchPostData = async () => {
         try {
             const apiPage = getApi(props.config);

@@ -8,8 +8,8 @@ import {NavigationActions, withNavigation} from "react-navigation";
 import {s, windowWidth} from "../Utils/Scale";
 import TrackPlayer from 'react-native-track-player';
 import EventList from "../Components/EventList";
-import analytics from '@react-native-firebase/analytics';
 import {SvgIconBack, SvgAddIcon} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 const PracticeMember = props => {
     const {navigation, screenProps} = props;
@@ -20,11 +20,7 @@ const PracticeMember = props => {
     const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
-
-    analytics().logScreenView({
-        screen_class: 'MainActivity',
-        screen_name: 'Custom Routine Screen',
-    });
+    Analytics.segmentClient.screen('Practices Customized').then();
 
     const removeRoutine = async (item) => {
         try {

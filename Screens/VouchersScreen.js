@@ -18,9 +18,9 @@ import moment from 'moment';
 import RNRestart from 'react-native-restart';
 import {BlurView} from "@react-native-community/blur";
 import ScalableImage from "../Components/ScalableImage";
-import analytics from '@react-native-firebase/analytics';
 import {SvgIconBack} from "../Utils/svg";
 import AwesomeAlert from "../Components/AwesomeAlert";
+import * as Analytics from "../Utils/Analytics";
 
 const VouchersScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
@@ -34,11 +34,8 @@ const VouchersScreen = (props) => {
     const [alertBody, setAlertBody] = useState('');
     const [alertConfirmText, setAlertConfirmText] = useState('');
     const dispatch = useDispatch();
+    Analytics.segmentClient.screen('Voucher').then();
 
-    analytics().logScreenView({
-        screen_class: 'MainActivity',
-        screen_name: 'Voucher Screen',
-   });
     const fetchVoucherData = async () => {
         try {
             const apiVoucher = getApi(props.config);
@@ -74,7 +71,6 @@ const VouchersScreen = (props) => {
             false
         ).then(response => {
             if(response.data){
-                console.log("response.data", response.data)
                 dispatch({
                     type: 'USER_UPDATE_MEMBERSHIP',
                     payload: response.data.membership

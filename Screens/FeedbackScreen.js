@@ -18,8 +18,8 @@ import {Modalize} from 'react-native-modalize';
 import {ms, mvs, s, windowWidth} from '../Utils/Scale';
 import Recaptcha from "../Components/Recaptcha";
 import {BlurView} from "@react-native-community/blur";
-import analytics from '@react-native-firebase/analytics';
 import {SvgIconBack, SvgIconCheck, SvgIconCross} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 const FeedbackScreen = props => {
     const {screenProps} = props;
@@ -30,10 +30,8 @@ const FeedbackScreen = props => {
     const [department, setDepartment] = useState(null);
     const [subject, setSubject] = useState('');
     const recaptcha = useRef();
-    analytics().logScreenView({
-        screen_class: 'MainActivity',
-        screen_name: 'Feedback Screen',
-   });
+    Analytics.segmentClient.screen('Feedback').then();
+
     const departments = optionData.departments;
 
     const sendFeedback = async () => {

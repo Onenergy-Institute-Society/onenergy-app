@@ -16,8 +16,6 @@ const PracticeTipsRow = props => {
     const {navigation, screenProps} = props;
     const {global} = screenProps;
     const dispatch = useDispatch();
-    const categoryIndex = postReducer.lastView && postReducer.lastView.length ? postReducer.lastView.findIndex(lv => lv.category === 258) : null;
-    console.log(routineTipsReducer, progressReducer)
     const fetchPostsData = async () => {
         try {
             let notify = false;
@@ -32,12 +30,7 @@ const PracticeTipsRow = props => {
             ).then(response => response.data);
             let posts = [];
             data.map((item) => {
-                if (!routineTipsReducer.length || routineTipsReducer.filter(post => post.id === item.id).length === 0) {
-                    if (categoryIndex && categoryIndex >= 0) {
-                        if (new Date(item.date) > new Date(postReducer.lastView[categoryIndex].date)) {
-                            notify = true;
-                        }
-                    }
+                if (!routineTipsReducer.length || !postReducer.posts.find(post => post.id === item.id)) {
                     posts.push({
                         id: item.id,
                         date: item.date,
@@ -49,7 +42,7 @@ const PracticeTipsRow = props => {
                         avatar: item._embedded['author'][0].avatar_urls['24'],
                         image: item._embedded['wp:featuredmedia'][0].source_url,
                         meta_box: item.meta_box,
-                        notify: notify
+                        notify: false
                     })
                 }
             })
@@ -66,19 +59,10 @@ const PracticeTipsRow = props => {
         }
     }
     useEffect(() => {
-        console.log(routineTipsReducer)
         let loadPosts = false;
-        if (categoryIndex && categoryIndex >= 0) {
-            let postCount = routineTipsReducer.length
-            if (!postCount) {
-                loadPosts = true
-            } else {
-                if (new Date(postReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[258])) {
-                    loadPosts = true;
-                }
-            }
-        } else {
-            loadPosts = true;
+        let postCount = routineTipsReducer.length
+        if (!postCount) {
+            loadPosts = true
         }
         if (loadPosts) {
             fetchPostsData().then();
@@ -93,10 +77,8 @@ const PracticeTipsRow = props => {
             item.meta_box.course.map((course_item) => {
                 let coursePass = progressReducer.completedCourses && progressReducer.completedCourses.findIndex(course => course.id === parseInt(course_item));
                 if(coursePass<0) show = false;
-                console.log('course', course_item, show)
             })
         }
-        console.log(item, show)
         return show;
     }
     const renderItem = ({item}) => {

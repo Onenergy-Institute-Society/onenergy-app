@@ -6,6 +6,7 @@ import IconButton from "@src/components/IconButton";
 import {s} from '../Utils/Scale';
 import TrackSlider from "./TrackSlider";
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
+import * as Analytics from "../Utils/Analytics";
 
 const AudioPlayer = (props) => {
     const {screenProps} = props;
@@ -25,6 +26,10 @@ const AudioPlayer = (props) => {
                     data: track.id
                 }
             });
+            Analytics.segmentClient.track('End Guided Practice', {
+                id: track.id,
+                title: track.title
+            }).then();
             setMessageBarDisplay(true);
         } catch (e) {
             console.error(e);
@@ -86,15 +91,10 @@ const AudioPlayer = (props) => {
             deactivateKeepAwake();
         }
         if (event.type === 'playback-queue-ended') {
-            console.log(event.type)
             TrackPlayer.reset();
-            console.log('after reset')
             setPlaying(false);
-            console.log('after play false')
             setStopped(true);
-            console.log('after step')
             updateProgress();
-            console.log('after update')
         }
     });
 

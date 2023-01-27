@@ -17,9 +17,8 @@ import {getApi} from "@src/services";
 import {s, windowWidth, windowHeight, mvs} from "../Utils/Scale";
 import ScalableImage from "../Components/ScalableImage";
 import RNFetchBlob from 'rn-fetch-blob';
-import analytics from '@react-native-firebase/analytics';
-import TouchableScale from "../Components/TouchableScale";
 import {SvgIconBack} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 const QuotesScreen = props => {
     const {screenProps} = props;
@@ -31,10 +30,7 @@ const QuotesScreen = props => {
     const quoteReducer = useSelector((state) => state.quoteReducer.quotes);
     const dispatch = useDispatch();
     const [options, setOptions] = useState({});
-    analytics().logScreenView({
-        screen_class: 'MainActivity',
-        screen_name: 'Quotes Screen',
-    });
+    Analytics.segmentClient.screen('Quotes').then();
 
     const fetchQuote = async () => {
         const api = getApi(props.config);
@@ -90,7 +86,6 @@ const QuotesScreen = props => {
                 );
                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                     // Once user grant the permission start downloading
-                    console.log('Storage Permission Granted.');
                     downloadImage(image_URL);
                 } else {
                     // If permission denied then show alert
@@ -136,7 +131,6 @@ const QuotesScreen = props => {
                     RNFetchBlob.ios.openDocument(res.data);
                 } else {
                     // Showing alert after successful downloading
-                    console.log('res -> ', JSON.stringify(res));
                     Alert.alert('Thank you', 'Quote Image Downloaded Successfully.');
                 }
             });
@@ -181,7 +175,6 @@ const QuotesScreen = props => {
         await Share.open(options);
     }, [options])
     const renderItem = ({item}) => {
-        console.log(item)
         return (
             <View style={styles.container}>
                 <ScalableImage width={windowWidth} source={{uri: item.image ? item.image : ''}}/>

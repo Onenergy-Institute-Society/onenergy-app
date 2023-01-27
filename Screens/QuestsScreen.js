@@ -12,9 +12,11 @@ import MonthlyQuests from "../Components/QuestsMonthly";
 import QiPointHeader from "../Components/QiPointHeader";
 import AuthWrapper from "@src/components/AuthWrapper";
 import {SvgIconBack} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 const QuestsDaily = (props) => {
     try {
+        Analytics.segmentClient.screen('Quests', {type: 'Daily'}).then();
         return (
             <DailyQuests {...props}/>
         )
@@ -24,6 +26,7 @@ const QuestsDaily = (props) => {
 }
 const QuestsWeekly = (props) => {
     try {
+        Analytics.segmentClient.screen('Quests', {type: 'Weekly'}).then();
         return (
             <WeeklyQuests {...props}/>
         )
@@ -33,6 +36,7 @@ const QuestsWeekly = (props) => {
 }
 const QuestsMonthly = (props) => {
     try {
+        Analytics.segmentClient.screen('Quests', {type: 'Monthly'}).then();
         return (
             <MonthlyQuests {...props}/>
         )

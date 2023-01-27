@@ -18,6 +18,7 @@ import AudioPlayerRoutine from './AudioPlayerRoutine';
 import {Swipeable} from "react-native-gesture-handler";
 import IconButton from "@src/components/IconButton";
 import {SvgMoreVertical} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 if (Platform.OS === "android") {
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -35,13 +36,16 @@ const MemberTracksList = (props) => {
             LayoutAnimation.Presets.spring
         );
         if (!selectedRoutine || routine.id !== selectedRoutine.id) {
-
             if (routine.bgm !== 'No Sound') {
                 routine.bgm_url = optionData.routine_bgm.find(el => el.name === routine.bgm).bgm;
             } else {
                 routine.bgm_url = '';
             }
             setSelectedRoutine(routine);
+            Analytics.segmentClient.track('Start Routine Practice', {
+                id: routine.id,
+                title: routine.title
+            }).then();
         }
     };
 

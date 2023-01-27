@@ -2,17 +2,14 @@ import React from 'react';
 import {TouchableOpacity, View} from "react-native";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {windowWidth} from "../Utils/Scale";
-import analytics from '@react-native-firebase/analytics';
 import {SvgIconBack} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 const AppPageScreen = (props) => {
     if (!props.isFocused)
         return null;
     const {navigation} = props;
-    analytics().logScreenView({
-        screen_class: 'MainActivity',
-        screen_name: 'App Page: ' + navigation.getParam('title'),
-    });
+    Analytics.segmentClient.screen('Page', {title: navigation.getParam('title')}).then();
 
     return (
         <View style={{

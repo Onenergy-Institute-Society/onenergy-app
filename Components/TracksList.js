@@ -17,6 +17,7 @@ import {ms, mvs, s, vs, windowWidth} from '../Utils/Scale';
 import AudioPlayer from './AudioPlayer';
 import NotificationTabBarIcon from "./NotificationTabBarIcon";
 import AuthWrapper from "@src/components/AuthWrapper";
+import * as Analytics from "../Utils/Analytics";
 
 if (Platform.OS === "android") {
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -33,6 +34,10 @@ const TracksList = (props) => {
         );
         if (!selectedTrack || track.id !== selectedTrack.id) {
             setSelectedTrack(track);
+            Analytics.segmentClient.track('Start Guided Practice', {
+                id: track.id,
+                title: track.title
+            }).then();
         }
     };
 

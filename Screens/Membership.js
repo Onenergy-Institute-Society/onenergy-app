@@ -11,16 +11,14 @@ import {ms, mvs, s, windowWidth} from "../Utils/Scale";
 import moment from 'moment';
 import AuthWrapper from "@src/components/AuthWrapper"; //This line is a workaround while we figure out the cause of the error
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
-import analytics from '@react-native-firebase/analytics';
 import {SvgIconBack} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 const Membership = (props) => {
     const {navigation} = props;
     const user = useSelector((state) => state.user.userObject);
-    analytics().logScreenView({
-        screen_class: 'MainActivity',
-        screen_name: 'Membership Screen',
-   });
+    Analytics.segmentClient.screen('Membership').then();
+
     let start_date;
     let expiry_date;
     if(user.membership.length > 0){
@@ -78,7 +76,10 @@ const Membership = (props) => {
                         </View>
                     </View>
                     <TouchableOpacity style={styles.btnUpgrade}
-                                      onPress={async () => {await props.attemptDeepLink(false)(null, 'https://app.onenergy.institute/bbapp/screen/iap_products');}}
+                      onPress={async () => {
+                          Analytics.segmentClient.screen('Membership IAP').then();
+                          await props.attemptDeepLink(false)(null, 'https://app.onenergy.institute/bbapp/screen/iap_products');}
+                        }
                     >
                         <Text style={{color: "white", fontSize:s(18), paddingHorizontal:15, fontWeight: "700"}}>UPGRADE NOW</Text>
                     </TouchableOpacity>

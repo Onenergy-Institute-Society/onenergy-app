@@ -81,6 +81,7 @@ import {
     SvgIconWisdomFocused,
     SvgIconWisdomUnfocused
 } from "./Utils/svg";
+import * as Analytics from "./Utils/Analytics";
 
 export const applyCustomCode = (externalCodeSetup: any) => {
     externalCodeSetup.topicsApi.setTopicItemComponent(props => {
@@ -677,29 +678,24 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         }, action) => {
             switch (action.type) {
                 case "ONENERGY_INIT_DATA":
-                    console.log('1')
                     const data = action.payload.data;
                     const loadGroup = action.payload.loadGroup;
                     const loadGuide = action.payload.loadGuide;
                     const loadRoutine = action.payload.loadRoutine;
                     const loadAchievement = action.payload.loadAchievement;
                     const loadProgress = action.payload.loadProgress;
-                    console.log('2')
                     const idPracticeReducer = {...state.practiceReducer};
                     const idAchievementReducer = {...state.achievementReducer};
                     const idProgressReducer = {...state.progressReducer};
 
                     const oidToday = new moment().format('YYYY-MM-DD');
                     const oidUpdateDaily = data.progress.latestUpdate===0 || (data.progress.latestUpdate && oidToday !== new moment.unix(data.progress.latestUpdate).format('YYYY-MM-DD'));
-                    console.log('oidUpdateDaily', oidUpdateDaily)
-                    console.log('3')
                     if (loadGroup) {
                         if (data.groups) {
                             idPracticeReducer.groups = data.groups;
                         }
                         idPracticeReducer.groupUpdate = new Date().toISOString();
                     }
-                    console.log('4')
                     if (loadGuide) {
                         if (data.guides) {
                             idPracticeReducer.guides = data.guides;
@@ -712,7 +708,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         }
                         idPracticeReducer.routineUpdate = new Date().toISOString();
                     }
-                    console.log('5')
                     if (loadAchievement) {
                         if (data.achievements) {
                             idAchievementReducer.milestones = data.achievements.milestones;
@@ -736,9 +731,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         }
                         idAchievementReducer.achievementUpdate = new Date().toISOString();
                     }
-                    console.log('6')
                     if (loadProgress) {
-                        console.log('data.progress', data.progress)
                         if (data.progress) {
                             Object.keys(data.progress.points).map(key =>
                                 idProgressReducer.points[key] = parseInt(data.progress.points[key])
@@ -770,7 +763,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             idProgressReducer.completedLessons = data.progress.completedLessons ? data.progress.completedLessons : [];
                             idProgressReducer.enrolledCourses = data.progress.enrolledCourses ? data.progress.enrolledCourses : [];
                             idProgressReducer.completedCourses = data.progress.completedCourses ? data.progress.completedCourses : [];
-                            console.log(idProgressReducer)
                         } else {
                             idProgressReducer.points = {'qi': 0};
                             idProgressReducer.totalDuration = 0;
@@ -794,7 +786,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         idProgressReducer.actionList = [];
                         idProgressReducer.progressUpdate = new Date().toISOString();
                     }
-                    console.log('7', idPracticeReducer, idAchievementReducer, idProgressReducer)
                     return {
                         ...state,
                         practiceReducer: idPracticeReducer,
@@ -813,7 +804,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 case "ONENERGY_ROUTINE_SAVE":
                     let orsRoutine = action.payload;
                     const ors_tempPracticeState = {...state.practiceReducer};
-console.log(ors_tempPracticeState)
 
                     if(ors_tempPracticeState.routines) {
                         if (ors_tempPracticeState.routines.length) {
@@ -872,7 +862,7 @@ console.log(ors_tempPracticeState)
                     }
                     break;
                 case "ONENERGY_PROGRESS_UPLOADED":
-                    console.log('upload_done')
+
                     const opuTempProgressState = {...state.progressReducer};
                     opuTempProgressState.actionList = [];
                     opuTempProgressState.lastUpload = Math.floor(new Date().getTime() / 1000);
@@ -918,6 +908,9 @@ console.log(ors_tempPracticeState)
                                 acpTempAchievementState.milestones[tempIndex].step += 1;
                                 if (parseInt(item.total) <= acpTempProgressState.totalPracticeDays) {
                                     acpTempAchievementState.milestones[tempIndex].complete_date = acpToday;
+                                    Analytics.segmentClient.track('Achievement Completed', {
+                                        id: item.id,
+                                    }).then();
                                     acpTempProgressState.actionList.push({
                                         'mode': 'CA',
                                         'data': {'id': item.id, 'points': item.awards},
@@ -928,14 +921,11 @@ console.log(ors_tempPracticeState)
                         })
                         //weekly
                         if (acpTempAchievementState.weekly.days && acpTempAchievementState.weekly.days.length) {
-                            console.log('w1')
                             let lastDay = acpTempAchievementState.weekly.days[acpTempAchievementState.weekly.days.length - 1];
                             if (moment(acpToday).diff(moment(lastDay), 'days') > 1) {
-                                console.log('w2')
                                 acpTempAchievementState.weekly.days = [];
                                 acpTempAchievementState.weekly.days.push(acpToday);
                             } else if (acpTempAchievementState.weekly.days.length > 7) {
-                                console.log('w3')
                                 acpTempAchievementState.weekly.days = [];
                                 acpTempAchievementState.weekly.days.push(acpToday);
                             } else if (acpToday !== lastDay){
@@ -946,7 +936,6 @@ console.log(ors_tempPracticeState)
                                 }
                             }
                         } else {
-                            console.log('w5')
                             acpTempAchievementState.weekly.days = [];
                             acpTempAchievementState.weekly.days.push(acpToday);
                         }
@@ -976,35 +965,22 @@ console.log(ors_tempPracticeState)
                     let tempArray = [];
                     switch (acpMode) {
                         case 'PP':
-                            console.log('31')
                             tempArray.push({'id': acpData, 'count': 1});
                             break;
                         case 'PR':
-                            console.log('32')
-
                             let routineIndex;
-                            console.log('33')
                             routineIndex = state.practiceReducer.routines.findIndex((temp) => temp.id === acpData);
-                            console.log('34')
                             tempArray = state.practiceReducer.routines[routineIndex].routine;
-                            console.log('35')
                             let tempTracks = state.practiceReducer.routines[routineIndex].tracks;
-                            console.log('36')
                             let routineDuration = 0;
-                            console.log('37')
                             tempTracks.map(track => {
                                 routineDuration = routineDuration + parseInt(track.duration);
                             })
-                            console.log('38')
-
                             acpTempIndex = acpTempProgressState.routineStats.findIndex(item => item.routine_id === acpData)
-                            console.log('39')
                             if (acpTempIndex >= 0) {
-                                console.log('40')
                                 acpTempProgressState.routineStats[acpTempIndex].routine_count += 1;
                                 acpTempProgressState.routineStats[acpTempIndex].routine_duration += routineDuration;
                             } else {
-                                console.log('41')
                                 acpTempProgressState.routineStats.push({
                                     'routine_id': acpData,
                                     'routine_count': 1,
@@ -1013,8 +989,6 @@ console.log(ors_tempPracticeState)
                             }
                             break;
                         case 'PG':
-                            console.log('33')
-
                             let groupIndex;
                             groupIndex = state.practiceReducer.groups.findIndex((temp) => temp.id === acpData);
                             state.practiceReducer.groups[groupIndex].guides.map(tempGuide => {
@@ -1032,6 +1006,9 @@ console.log(ors_tempPracticeState)
                                 if (acpTempAchievementState.milestones[tempIndex].total <= acpTempAchievementState.milestones[tempIndex].step) {
                                     acpTempAchievementState.milestones[tempIndex].complete_date = acpToday;
                                     acpTempAchievementState.milestones[tempIndex].claim_date = '';
+                                    Analytics.segmentClient.track('Achievement Completed', {
+                                        id: item.id,
+                                    }).then();
                                     acpTempProgressState.actionList.push({
                                         'mode': 'CA',
                                         'data': {'id': item.id, 'points': item.awards},
@@ -1052,6 +1029,9 @@ console.log(ors_tempPracticeState)
                                     acpTempAchievementState.daily[tempIndex].complete_date = acpToday
                                     acpTempAchievementState.daily[tempIndex].claim_date = '';
                                     acpTempAchievementState.daily[tempIndex].list.push(acpTempAchievementState.daily[tempIndex].complete_date);
+                                    Analytics.segmentClient.track('Achievement Completed', {
+                                        id: item.id,
+                                    }).then();
                                     acpTempProgressState.actionList.push({
                                         'mode': 'CA',
                                         'data': {'id': item.id, 'points': item.awards},
@@ -1087,7 +1067,6 @@ console.log(ors_tempPracticeState)
                             if (section.data.find(guide => guide.id === tempGuide.id))
                                 return true
                         });
-                        console.log('41', tempSection)
 
                         //milestones
                         tmpAchievements = state.achievementReducer.milestones.filter((item) => {
@@ -1100,7 +1079,6 @@ console.log(ors_tempPracticeState)
                                 return true;
                             }
                         });
-                        console.log('42', state.achievementReducer.milestones, tmpAchievements)
 
                         tmpAchievements.map((item) => {
                             let tempIndex = acpTempAchievementState.milestones.findIndex(achievement => achievement.id === item.id);
@@ -1108,6 +1086,9 @@ console.log(ors_tempPracticeState)
                             if (acpTempAchievementState.milestones[tempIndex].total <= acpTempAchievementState.milestones[tempIndex].step) {
                                 acpTempAchievementState.milestones[tempIndex].complete_date = acpToday;
                                 acpTempAchievementState.milestones[tempIndex].claim_date = '';
+                                Analytics.segmentClient.track('Achievement Completed', {
+                                    id: item.id,
+                                }).then();
                                 acpTempProgressState.actionList.push({
                                     'mode': 'CA',
                                     'data': {'id': item.id, 'points': item.awards},
@@ -1126,7 +1107,6 @@ console.log(ors_tempPracticeState)
                                 return true;
                             }
                         });
-                        console.log('42', state.achievementReducer.daily, tmpAchievements)
 
                         tmpAchievements.map((item) => {
                             let tempIndex = acpTempAchievementState.daily.findIndex(achievement => achievement.id === item.id);
@@ -1135,6 +1115,9 @@ console.log(ors_tempPracticeState)
                                 acpTempAchievementState.daily[tempIndex].complete_date = acpToday;
                                 acpTempAchievementState.daily[tempIndex].claim_date = '';
                                 acpTempAchievementState.daily[tempIndex].list.push(acpTempAchievementState.daily[tempIndex].complete_date);
+                                Analytics.segmentClient.track('Achievement Completed', {
+                                    id: item.id,
+                                }).then();
                                 acpTempProgressState.actionList.push({
                                     'mode': 'CA',
                                     'data': {'id': item.id, 'points': item.awards},
@@ -1142,21 +1125,20 @@ console.log(ors_tempPracticeState)
                                 });
                             }
                         })
-                        console.log('43')
 
                         acpTempPracticeState.guides.map((section, acpSectionIndex) => {
                             let acpGuideIndex = section.data.findIndex(item => item.id === tempGuide.id);
                             if (acpGuideIndex >= 0) {
-                                console.log('44')
+
                                 acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].new = false;
                                 acpTempProgressState.totalDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
                                 acpTempProgressState.todayDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
                                 acpTempProgressState.weekDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
-                                console.log('45', acpTempProgressState.guideStats)
+
                                 if (acpTempProgressState.guideStats && acpTempProgressState.guideStats.length) {
-                                    console.log('46')
+
                                     acpTempIndex = acpTempProgressState.guideStats.findIndex(item => item.guide_id === acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].id)
-                                    console.log('47')
+
                                     if (acpTempIndex >= 0) {
                                         acpTempProgressState.guideStats[acpTempIndex].guide_count += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count;
                                         acpTempProgressState.guideStats[acpTempIndex].guide_duration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
@@ -1167,19 +1149,18 @@ console.log(ors_tempPracticeState)
                                             'guide_duration': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count
                                         })
                                     }
-                                    console.log('48')
+
                                 } else {
-                                    console.log('49')
+
                                     acpTempProgressState.guideStats = [];
                                     acpTempProgressState.guideStats.push({
                                         'guide_id': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].id,
                                         'guide_count': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count,
                                         'guide_duration': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count
                                     })
-                                    console.log('48')
+
                                 }
-                                console.log('52')
-                                console.log(acpTempPracticeState.guides[acpSectionIndex])
+
                                 acpTempIndex = acpTempProgressState.sectionStats.findIndex(item => item.section_id === acpTempPracticeState.guides[acpSectionIndex].id)
                                 if (acpTempIndex >= 0) {
                                     acpTempProgressState.sectionStats[acpTempIndex].section_count += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count;
@@ -1195,7 +1176,6 @@ console.log(ors_tempPracticeState)
                             }
                         });
                     })
-                    console.log('5', acpTempProgressState)
 
                     let todayProgressIndex = acpTempProgressState.progress && acpTempProgressState.progress.findIndex(item => item.date === acpToday);
                     if (acpTempProgressState.progress && todayProgressIndex >= 0) {
@@ -1219,7 +1199,7 @@ console.log(ors_tempPracticeState)
                         'data': acpData,
                         'time': Math.floor(new Date().getTime() / 1000)
                     });
-                    console.log('6')
+
                     acpTempProgressState.lastPractice = acpToday;
                     acpTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
 
@@ -1248,6 +1228,10 @@ console.log(ors_tempPracticeState)
                             mcTempProgressState.points[award.name] = parseInt(award.point);
                         }
                     })
+                    Analytics.segmentClient.track('Milestone Claimed', {
+                        id:mcTempMilestoneState.milestones[mcMilestoneIndex].id,
+                        title: mcTempMilestoneState.milestones[mcMilestoneIndex].title,
+                    }).then();
                     mcTempProgressState.actionList.push({
                         'mode': 'CM',
                         'data': {'id': action.payload.id, 'points': mcTempMilestoneState.milestones[mcMilestoneIndex].awards},
@@ -1278,7 +1262,10 @@ console.log(ors_tempPracticeState)
                             dcTempProgressState.points[award.name] = parseInt(award.point);
                         }
                     })
-
+                    Analytics.segmentClient.track('Quest Claimed', {
+                        id:dcTempDailyState.daily[dcDailyIndex].id,
+                        title: dcTempDailyState.milestones[dcDailyIndex].title,
+                    }).then();
                     dcTempProgressState.actionList.push({
                         'mode': 'CM',
                         'data': {'id': action.payload.id, 'points': dcTempDailyState.daily[dcDailyIndex].awards},
@@ -1307,6 +1294,10 @@ console.log(ors_tempPracticeState)
                                 awcTempProgressState.points[award.name] = parseInt(award.point);
                             }
                         })
+                        Analytics.segmentClient.track('Past Quest Claimed', {
+                            id: action.payload.id,
+                            title: awcTempQuestState.daily[awcAchievementIndex].title,
+                        }).then();
                         awcTempProgressState.actionList.push({
                             'mode': 'CM',
                             'data': {'id': action.payload.id, 'points': awcTempQuestState.daily[awcAchievementIndex].awards},
@@ -1326,6 +1317,9 @@ console.log(ors_tempPracticeState)
                         case 'weekly':
                             acwTempAchievementState.weekly.claim_date = new moment().format('YYYY-MM-DD');
                             acwTempProgressState.points.qi += 20;
+                            Analytics.segmentClient.track('Weekly Quest Claimed', {
+                                date: new moment().format('YYYY-MM-DD')
+                            }).then();
                             acwTempProgressState.actionList.push({
                                 'mode': 'CM',
                                 'data': {'id': action.payload.id, 'points': {'qi': 20}},
@@ -1335,6 +1329,9 @@ console.log(ors_tempPracticeState)
                         case 'monthly':
                             acwTempAchievementState.monthly.claim_date = new moment().format('YYYY-MM-DD');
                             acwTempProgressState.points.qi += 100;
+                            Analytics.segmentClient.track('Monthly Quest Claimed', {
+                                date: new moment().format('YYYY-MM-DD')
+                            }).then();
                             acwTempProgressState.actionList.push({
                                 'mode': 'CM',
                                 'data': {'id': action.payload.id, 'points': {'qi': 100}},
@@ -1363,11 +1360,13 @@ console.log(ors_tempPracticeState)
                         let tempIndex = olcTempMilestone.findIndex(achievement => achievement.id === item.id);
                         let tempLessonIndex = olcTempMilestone[tempIndex].step.findIndex(item => item.id === lesson.id);
                         olcTempMilestone[tempIndex].step[tempLessonIndex].completed = 1;
-                        console.log('3', lesson.settings.next_lesson);
 
                         if (!lesson.settings.next_lesson) {
                             olcTempMilestone[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
                             olcTempMilestone[tempIndex].claim_date = '';
+                            Analytics.segmentClient.track('Achievement Completed', {
+                                id: item.id
+                            }).then();
                             olcTempProgressState.actionList.push({
                                 'mode': 'CA',
                                 'data': {'id': item.id, 'points': item.awards},
@@ -1375,7 +1374,6 @@ console.log(ors_tempPracticeState)
                             });
                         }
                     })
-                    console.log('5')
                     olcTempProgressState.completedLessons.push({
                         "id": lesson.id,
                         "date": Math.floor(new Date().getTime() / 1000)
@@ -1385,12 +1383,14 @@ console.log(ors_tempPracticeState)
                         'data': lesson.id,
                         'time': Math.floor(new Date().getTime() / 1000)
                     });
-                    console.log('6')
                     if (!lesson.settings.next_lesson) {
                         olcTempProgressState.completedCourses.push({
                             "id": lesson.parent.id,
                             "date": Math.floor(new Date().getTime() / 1000)
                         });
+                        Analytics.segmentClient.track('Course Completed', {
+                            id: lesson.parent.id,
+                        }).then();
                         olcTempProgressState.actionList.push({
                             'mode': 'CC',
                             'data': lesson.parent.id,
@@ -1409,6 +1409,9 @@ console.log(ors_tempPracticeState)
                         "id": action.payload,
                         "date": Math.floor(new Date().getTime() / 1000)
                     });
+                    Analytics.segmentClient.track('Course Enrolled', {
+                        "id": action.payload,
+                    }).then();
                     oceTempProgressState.actionList.push({
                         'mode': 'CE',
                         'data': action.payload,
@@ -1475,7 +1478,6 @@ console.log(ors_tempPracticeState)
             case "USER_UPDATE_MEMBERSHIP":
                 let umTempUser = state.userObject;
                 umTempUser.membership = action.payload;
-                console.log(umTempUser)
                 const umNewState = {
                     ...state,
                     userObject: umTempUser
@@ -2357,33 +2359,6 @@ console.log(ors_tempPracticeState)
         //Pass the necessary props to the custom component
         return null;
     })
-   /* externalCodeSetup.cssApi.addGlobalStyle("boxTitle", {"fontWeight": "bold"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("appHeaderTitle", {"fontWeight": "bold"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("forumListTitle", {"fontWeight": "bold"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("subForumTitle", {"fontWeight": "bold"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("subTitle", {"fontWeight": "normal"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("textItemSubTitle", {"fontWeight": "normal"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("settingsItemTitle", {"fontWeight": "bold"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("textHeaderTitle", {"fontWeight": "bold"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("textAlt", {"fontWeight": "normal"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("textAltMedium", {"fontWeight": "normal"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("textAltSemi", {"fontWeight": "bold"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("textMeta", {"fontWeight": "normal"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("topicSingleTitle", {"fontWeight": "bold"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("topicTagText", {"fontWeight": "normal"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("widgetTitle", {"fontWeight": "bold"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("itemTitle", {"fontWeight": "bold"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("itemTopicTitle", {"fontWeight": "normal"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("pointTitle", {"fontWeight": "medium"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("itemMeta", {"fontWeight": "normal"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("courseRoundBoxTitleAbove", {"fontWeight": "bold"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("bodyText", {"fontWeight": "normal"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("heading", {"fontWeight": "normal"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("text", {"fontWeight": "normal"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("semiBoldText", {"fontWeight": "bold"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("boldText", {"fontWeight": "bold"}, false);
-    externalCodeSetup.cssApi.addGlobalStyle("text", {"fontWeight": "normal"}, false);*/
-
     externalCodeSetup.cssApi.addGlobalStyle("appHeaderTitle", {"fontSize": s(17)}, false);
     externalCodeSetup.cssApi.addGlobalStyle("textHeaderTitle", {"fontSize": s(28)}, false);
     externalCodeSetup.cssApi.addGlobalStyle("heading", {"fontSize": s(17.6)}, false);

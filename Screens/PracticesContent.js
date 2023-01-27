@@ -15,7 +15,6 @@ import {Modalize} from 'react-native-modalize';
 import {ms, mvs, s, windowHeight, windowWidth} from "../Utils/Scale";
 import EventList from "../Components/EventList";
 import LoginScreen from "@src/containers/Custom/LoginScreen";
-import analytics from '@react-native-firebase/analytics';
 import AuthWrapper from "@src/components/AuthWrapper";
 import moment from 'moment';
 import {
@@ -26,6 +25,7 @@ import {
     SvgIconQuest,
     SvgIconBack
 } from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 const PracticesContent = props => {
     try {
@@ -42,7 +42,6 @@ const PracticesContent = props => {
                 navigation.closeDrawer();
                 if(user){
                     if (progressReducer.latestUpdate && checkTodayDate()) {
-                        console.log('Daily Initialize')
                         dispatch({
                             type: 'ONENERGY_DAILY_UPDATE',
                         });
@@ -53,10 +52,8 @@ const PracticesContent = props => {
 
             }
         }
-        analytics().logScreenView({
-            screen_class: 'PracticeScreen',
-            screen_name: 'Practice Screen',
-        });
+        Analytics.segmentClient.screen('Practices').then();
+
         useEffect(() => {
             props.navigation.setParams({
                 title: optionData.titles.find(el => el.id === 'practices_title').title,
@@ -115,7 +112,6 @@ const PracticesContent = props => {
         }
         const checkTodayDate = () => {
             const today = new moment().format('YYYY-MM-DD');
-            console.log(today, progressReducer.latestUpdate, new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD'))
             if (progressReducer.latestUpdate !== 0)
                 return today !== new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD');
         }

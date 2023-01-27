@@ -19,9 +19,9 @@ import {GestureHandlerRootView, Swipeable} from "react-native-gesture-handler";
 import SortList from "./SortList";
 import {Modalize} from 'react-native-modalize';
 import {ms, mvs, s, vs, windowHeight, windowWidth} from "../Utils/Scale";
-import analytics from '@react-native-firebase/analytics';
 import {SvgAddIcon, SvgIconBack, SvgIconCheck, SvgIconCross, SvgPlayIcon, SvgStopIcon} from "../Utils/svg";
 import Video from 'react-native-video';
+import * as Analytics from "../Utils/Analytics";
 
 const EditRoutine = props => {
     const {navigation, screenProps} = props;
@@ -54,10 +54,6 @@ const EditRoutine = props => {
     const [cancelContentTouches, setCancelContentTouches] = useState(true);
     const row = [];
     const [key, setKey] = useState('');
-    analytics().logScreenView({
-        screen_class: 'MainActivity',
-        screen_name: 'Routine Edit Screen',
-    });
 
     const updateTracks = async () => {
         try {
@@ -88,6 +84,9 @@ const EditRoutine = props => {
                 false
             ).then(response => response.data);
             if (data) {
+                Analytics.segmentClient.track('Create Routine', {
+                    id: data
+                }).then();
                 setWaitingGetID(false);
                 setRoutineDetailState(prevState => ({...prevState, id: data}));
             }
@@ -164,6 +163,9 @@ const EditRoutine = props => {
                     type: "ONENERGY_ROUTINE_SAVE",
                     payload: routineDetailState
                 })
+                Analytics.segmentClient.track('Edit Routing', {
+                    id: routineDetailState.id
+                }).then();
                 navigation.goBack();
             } else {
                 addTracks().then();
@@ -187,7 +189,6 @@ const EditRoutine = props => {
             });
             routine.map(item => {
                 item.parts.map(part => {
-                    console.log(item.title, part)
                     if (part.start) {
                         id++;
                         tracks.push({
@@ -319,6 +320,10 @@ const EditRoutine = props => {
     const rightActions = (dragX, item) => {
         return (
             <TouchableOpacity style={{justifyContent: "center", alignItems: "center"}} onPress={() => {
+                Analytics.segmentClient.track('Tap Button', {
+                    type: 'Delete Routine',
+                    id: item.id
+                }).then();
                 removeItem(item.id)
             }}>
                 <IconButton
@@ -390,7 +395,6 @@ const EditRoutine = props => {
     };
 
     const renderGuides = (item) => {
-        console.log(item)
         let index = routineDetailState.routine.findIndex(el => el.id === item.item.id);
         let track;
         track = item.item.parts[0].start;
@@ -404,11 +408,10 @@ const EditRoutine = props => {
                 }}>
                     <View style={{
                         backgroundColor: colors.bodyBg,
-                        paddingHorizontal: s(25),
-                        paddingVertical: s(15),
+                        paddingHorizontal: s(5),
+                        paddingVertical: s(5),
                         borderBottomWidth: 1,
                         borderBottomColor: '#ccc',
-                        borderTopRightRadius: s(9),
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'space-between'
@@ -431,7 +434,7 @@ const EditRoutine = props => {
                                 </TouchableOpacity>
                                 : null}
                             <Text
-                                style={[global.text, {marginLeft: s(5)}]}>
+                                style={[global.text, {fontSize:s(15),marginLeft: s(5)}]}>
                                 {item.item.title}
                             </Text>
                         </View>
@@ -497,7 +500,6 @@ const EditRoutine = props => {
         } else {
             bgmTrack = '';
         }
-        console.log(soundUrl, playingSound)
         switch (item.index) {
             case 0:
                 cornerStyle = {borderTopLeftRadius: s(9), borderTopRightRadius: s(9)};
@@ -531,10 +533,8 @@ const EditRoutine = props => {
                             <TouchableOpacity
                                 onPress={() => {
                                     if (playingSound && bgmTrack === soundUrl) {
-                                        console.log('stop')
                                         setPlayingSound(false);
                                     } else {
-                                        console.log('play')
                                         setSoundUrl(bgmTrack);
                                         setPlayingSound(true);
                                     }
@@ -564,7 +564,7 @@ const EditRoutine = props => {
                     borderTopRightRadius: s(9),
                     borderTopLeftRadius: s(9),
                     paddingVertical: mvs(10),
-                    fontSize: s(24),
+                    fontSize: s(20),
                     marginTop: mvs(15),
                     textAlign: "center"
                 }]}>{section.section.title.toUpperCase()}</Text>
@@ -911,7 +911,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     inputName: {
-        height: vs(50),
+        height: vs(40),
         borderRadius:s(9),
         borderWidth: 1,
         borderColor: "#8c79ea",
@@ -919,7 +919,7 @@ const styles = StyleSheet.create({
         paddingLeft: 15
     },
     trackTitle: {
-        fontSize: s(12),
+        fontSize: s(14),
         paddingLeft: 10,
         flex: 0.7,
     },

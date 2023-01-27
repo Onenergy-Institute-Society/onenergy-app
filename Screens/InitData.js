@@ -4,17 +4,22 @@ import {
     SafeAreaView, Text, ImageBackground, BackHandler, ActivityIndicator
 } from "react-native";
 import {getApi} from "@src/services";
+import * as Analytics from "../Utils/Analytics";
 
 const InitData = (props) => {
     const {navigation, screenProps} = props;
     const {global} = screenProps;
+    const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
     const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
     const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
     const postReducer = useSelector((state) => state.postReducer ? state.postReducer : null);
     const dispatch = useDispatch();
-
+    Analytics.segmentClient.identify(user.id, {
+        username: user.slug,
+        name: user.name,
+    }).then();
     const fetchInitDate = async (loadGroup, loadGuide, loadRoutine, loadAchievement, loadProgress) => {
         try {
             const api = getApi(props.config);
@@ -82,23 +87,18 @@ const InitData = (props) => {
 
     useEffect(() => {
         let loaded = true;
-        console.log(achievementReducer.achievementUpdate, optionData.cache.achievement)
         if (achievementReducer.achievementUpdate < optionData.cache.achievement) {
             loaded = false;
         }
-        console.log(progressReducer.progressUpdate, optionData.cache.progress)
         if (progressReducer.progressUpdate < optionData.cache.progress) {
             loaded = false;
         }
-        console.log(practiceReducer.guideUpdate, optionData.cache.guide)
         if (practiceReducer.guideUpdate < optionData.cache.guide) {
             loaded = false;
         }
-        console.log(practiceReducer.groupUpdate, optionData.cache.group)
         if (practiceReducer.groupUpdate < optionData.cache.group) {
             loaded = false;
         }
-        console.log(practiceReducer.routineUpdate, optionData.cache.routine)
         if (practiceReducer.routineUpdate < optionData.cache.routine) {
             loaded = false;
         }

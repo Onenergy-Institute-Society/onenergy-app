@@ -22,8 +22,8 @@ import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHand
 import EventList from "../Components/EventList";
 import {BlurView} from "@react-native-community/blur";
 import FastImage from "react-native-fast-image";
-import analytics from '@react-native-firebase/analytics';
 import {SvgIconBack, SvgIconCross} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 const PracticeGroup = props => {
     const {navigation, screenProps} = props;
@@ -35,11 +35,8 @@ const PracticeGroup = props => {
     const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
     const [groupPracticeDetail, setGroupPracticeDetail] = useState(0);
     const [currentMinutes, setCurrentMinutes] = useState(new Date().getMinutes());
+    Analytics.segmentClient.screen('Practices Group').then();
 
-    analytics().logScreenView({
-        screen_class: 'MainActivity',
-        screen_name: 'Group Practice Screen',
-    });
     const JoinGroupPractice = async (gp_id, gp_time) => {
         try {
             const api = getApi(props.config);

@@ -60,7 +60,6 @@ const Milestones = (props) => {
                 break;
             case 'achievement':
                 show = achievementReducer.milestones && achievementReducer.milestones.findIndex(milestone => (milestone.id === parseInt(item.showAchievement) && milestone.complete_date));
-                console.log(show)
                 break;
             default:
                 show = -1;

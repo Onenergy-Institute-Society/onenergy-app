@@ -20,11 +20,8 @@ import AuthWrapper from "@src/components/AuthWrapper";
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import EventList from "../Components/EventList";
-import analytics from '@react-native-firebase/analytics';
 import ForumsScreen from "@src/containers/Custom/ForumsScreen";
-import {
-    ProgressChart,
-} from "react-native-chart-kit";
+import {ProgressChart} from "react-native-chart-kit";
 import {Modalize} from 'react-native-modalize';
 import moment from 'moment';
 import SunCalc from "suncalc";
@@ -40,6 +37,7 @@ import {
 } from "../Utils/svg";
 import messaging from '@react-native-firebase/messaging';
 import { SetupService } from '../Services';
+import * as Analytics from "../Utils/Analytics";
 
 this.todayGoalDialog = undefined;
 const HomeContent = (props) => {
@@ -57,13 +55,14 @@ const HomeContent = (props) => {
     const [sunrise, setSunrise] = useState('');
     const [phase, setPhase] = useState('');
     const [nextMoonPhase, setNextMoonPhase] = useState({});
+    console.log(user)
+    Analytics.segmentClient.screen('Home').then();
 
     const onFocusHandler = async () => {
         try {
             navigation.closeDrawer();
             if(user){
                 if (progressReducer.latestUpdate && checkTodayDate()) {
-                    console.log('Daily Initialize')
                     dispatch({
                         type: 'ONENERGY_DAILY_UPDATE',
                     });
@@ -73,16 +72,10 @@ const HomeContent = (props) => {
         } catch (e) {
         }
     }
-    analytics().logScreenView({
-        screen_class: 'MainActivity',
-        screen_name: 'Home Screen',
-    });
 
     const _handleAppStateChange = async () => {
         if (user && progressReducer.latestUpdate) {
-            console.log('state changed', AppState.currentState)
             if (AppState.currentState === 'active' && checkTodayDate()) {
-                console.log('Daily Initialize')
                 dispatch({
                     type: 'ONENERGY_DAILY_UPDATE',
                 });
@@ -140,7 +133,6 @@ const HomeContent = (props) => {
     }
     const checkTodayDate = () => {
         const today = new moment().format('YYYY-MM-DD');
-        console.log(today, progressReducer.latestUpdate, new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD'))
         if(progressReducer.latestUpdate!==0)
             return today !== new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD');
     }
@@ -172,7 +164,6 @@ const HomeContent = (props) => {
         const moonIllumination = SunCalc.getMoonIllumination(new Date());
         const phaseNumber = moonIllumination.phase * 200;
         let phaseName = '';
-console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonIllumination.phase, phaseNumber)
         if (phaseNumber >= 0 && phaseNumber <= 2 || phaseNumber >= 198 && phaseNumber <= 200) {
             phaseName = 'New Moon';
         } else if (phaseNumber > 2 && phaseNumber < 48) {
@@ -247,7 +238,6 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
 
     useEffect(() => {
         const unsubscribe = messaging().onMessage(async remoteMessage => {
-            console.log(remoteMessage)
             const data = remoteMessage.data;
             if (data.notification_type && data.notification_type === 'pn_functions') {
                 switch (data.function_type) {
@@ -351,6 +341,9 @@ console.log('moonIllumination', moonIllumination, 'moonIllumination.phase',moonI
                         'data': item.item
                     }
                 });
+                Analytics.segmentClient.track('Set Daily Goal', {
+                    time: item.item
+                }).then();
                 this.todayGoalDialog.close();
             }}>
                 <View style={[cornerStyle, bottomStyle, {

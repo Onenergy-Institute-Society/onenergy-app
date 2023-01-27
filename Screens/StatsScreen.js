@@ -9,11 +9,11 @@ import {
 } from 'react-native';
 import {ms, mvs, s, windowWidth} from "../Utils/Scale";
 import LinearGradient from 'react-native-linear-gradient';
-import analytics from '@react-native-firebase/analytics';
 import Svg, {Circle} from "react-native-svg";
 import {LineChart, PieChart, ContributionGraph} from "react-native-chart-kit";
 import moment from 'moment';
 import {SvgIconBack} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 const StatsScreen = (props) => {
     const {screenProps} = props;
@@ -22,11 +22,7 @@ const StatsScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
-
-    analytics().logScreenView({
-        screen_class: 'MainActivity',
-        screen_name: 'Progress Screen',
-   });
+    Analytics.segmentClient.screen('Home').then();
 
     let tmpWeek=[];
     let today = new Date();
@@ -64,7 +60,6 @@ const StatsScreen = (props) => {
     if(progressReducer.sectionStats&&progressReducer.sectionStats.length) {
         progressReducer.sectionStats.map((item, index) => {
             if(item.section_id) {
-                console.log(item)
                 let section = practiceReducer.guides.find(section => section.id === item.section_id);
                 pieData.push(
                     {

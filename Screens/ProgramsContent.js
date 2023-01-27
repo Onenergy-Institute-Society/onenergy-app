@@ -15,11 +15,11 @@ import TouchableScale from "../Components/TouchableScale";
 import {ms, mvs, s, windowWidth} from '../Utils/Scale';
 import EventList from "../Components/EventList";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
-import analytics from '@react-native-firebase/analytics';
 import AuthWrapper from "@src/components/AuthWrapper";
 import moment from 'moment';
 import PracticeTipsRow from "../Components/PracticeTipsRow";
 import {SvgIconBack, SvgIconMenu, SvgIconMilestone, SvgIconProgress, SvgIconQuest} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 const ProgramsContent = props => {
     const {navigation, screenProps} = props;
@@ -35,7 +35,6 @@ const ProgramsContent = props => {
             navigation.closeDrawer();
             if(user){
                 if (progressReducer.latestUpdate && checkTodayDate()) {
-                    console.log('Daily Initialize')
                     dispatch({
                         type: 'ONENERGY_DAILY_UPDATE',
                     });
@@ -46,10 +45,8 @@ const ProgramsContent = props => {
 
         }
     }
-    analytics().logScreenView({
-        screen_class: 'ProgramsScreen',
-        screen_name: 'Program Screen',
-    });
+    Analytics.segmentClient.screen('Programs').then();
+
     useEffect(() => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'programs_title').title,
@@ -108,7 +105,6 @@ const ProgramsContent = props => {
     }
     const checkTodayDate = () => {
         const today = new moment().format('YYYY-MM-DD');
-        console.log(today, progressReducer.latestUpdate, new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD'))
         if (progressReducer.latestUpdate !== 0)
             return today !== new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD');
     }

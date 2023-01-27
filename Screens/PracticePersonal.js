@@ -18,8 +18,8 @@ import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {s, windowWidth} from "../Utils/Scale";
 import EventList from "../Components/EventList";
 import QiPointHeader from "../Components/QiPointHeader";
-import analytics from '@react-native-firebase/analytics';
 import {SvgIconBack} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 const PracticePersonal = props => {
     const {screenProps} = props;
@@ -30,11 +30,7 @@ const PracticePersonal = props => {
     const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
-
-    analytics().logScreenView({
-        screen_class: 'MainActivity',
-        screen_name: 'Personal Practice Screen',
-   });
+    Analytics.segmentClient.screen('Practices Guided').then();
 
     useEffect(() => {
         props.navigation.setParams({

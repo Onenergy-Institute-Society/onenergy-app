@@ -5,8 +5,8 @@ import {connect,} from "react-redux";
 import ImageCache from '../Components/ImageCache';
 import PostList from "../Components/PostList";
 import {mvs, s, windowWidth} from "../Utils/Scale";
-import analytics from '@react-native-firebase/analytics';
 import {SvgIconBack} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 const CategoryScreen = props => {
     const {navigation, screenProps} = props;
@@ -14,10 +14,7 @@ const CategoryScreen = props => {
     const [categoryData, setCategoryData] = useState([]);
     const [categoryBanner, setCategoryBanner] = useState('');
     const category = navigation.getParam('category')
-    analytics().logScreenView({
-        screen_class: 'MainActivity',
-        screen_name: 'Category: '+ navigation.getParam("name"),
-   });
+    Analytics.segmentClient.screen('Category', {title: navigation.getParam('name')}).then();
 
     const fetchCategoryData = async () => {
         try {

@@ -2,6 +2,7 @@ import React from 'react';
 import LoginScreen from "@src/containers/Custom/LoginScreen";
 import {TouchableOpacity} from "react-native";
 import {SvgIconBack} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 const MyLoginScreen = (props) => {
     return (
@@ -11,6 +12,7 @@ const MyLoginScreen = (props) => {
 
 MyLoginScreen.navigationOptions = ({navigation, screenProps}) => {
     const {global, colors} = screenProps;
+    Analytics.segmentClient.screen('Login').then();
     let headerLeft =
         <TouchableOpacity
             onPress={() => {
