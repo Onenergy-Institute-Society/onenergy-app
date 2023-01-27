@@ -1348,11 +1348,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 case "ONENERGY_LESSON_COMPLETED":
                     const olcTempProgressState = {...state.progressReducer};
                     const olcTempMilestoneState = {...state.achievementReducer};
-                    let lesson = action.payload;
+                    let lesson = action.payload.lesson;
+                    let course = action.payload.course;
                     let olcTempMilestone = olcTempMilestoneState.milestones.filter(item =>
                         (item.trigger === 'course' &&
                             (
-                                parseInt(item.triggerCourse) === lesson.parent.id || !item.triggerCourse
+                                parseInt(item.triggerCourse) === course.id || !item.triggerCourse
                             ) &&
                             !item.complete_date)
                     );
@@ -1361,7 +1362,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         let tempLessonIndex = olcTempMilestone[tempIndex].step.findIndex(item => item.id === lesson.id);
                         olcTempMilestone[tempIndex].step[tempLessonIndex].completed = 1;
 
-                        if (!lesson.settings.next_lesson) {
+                        if (course.completed) {
                             olcTempMilestone[tempIndex].complete_date = new moment().format('YYYY-MM-DD');
                             olcTempMilestone[tempIndex].claim_date = '';
                             Analytics.segmentClient.track('Achievement Completed', {
@@ -1383,17 +1384,17 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         'data': lesson.id,
                         'time': Math.floor(new Date().getTime() / 1000)
                     });
-                    if (!lesson.settings.next_lesson) {
+                    if (course.completed) {
                         olcTempProgressState.completedCourses.push({
-                            "id": lesson.parent.id,
+                            "id": course.id,
                             "date": Math.floor(new Date().getTime() / 1000)
                         });
                         Analytics.segmentClient.track('Course Completed', {
-                            id: lesson.parent.id,
+                            id: course.id,
                         }).then();
                         olcTempProgressState.actionList.push({
                             'mode': 'CC',
-                            'data': lesson.parent.id,
+                            'data': course.id,
                             'time': Math.floor(new Date().getTime() / 1000)
                         });
                     }
@@ -1675,7 +1676,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         const diffHours = lesson_time.diff(current_time, 'hours');
         const diffDays = lesson_time.diff(current_time, 'days');
         const dispatch = useDispatch();
-        const [visualGuide, setVisualGuide] = useState(false);
 
         let diffTime;
         if (diffMinutes < 60) {
@@ -1792,7 +1792,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     }}>
                         <CourseActionButton
                             onPress={() => {
-                                setVisualGuide(false);
                                 setButtonEnroll('Enrolling, please wait...');
                                 startCourse();
                                 dispatch({
@@ -1802,33 +1801,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             }}
                             title={buttonEnroll}
                         />
-                        {visualGuide ?
-                            <TouchableWithoutFeedback
-                                onPress={() => {
-                                    setVisualGuide(false);
-                                    setButtonEnroll('Enrolling, please wait...');
-                                    startCourse();
-                                    dispatch({
-                                        type: 'ONENERGY_COURSE_ENROLLED',
-                                        payload: courseVM.id
-                                    });
-                                }}>
-                                <FastImage style={{
-                                    bottom: s(-80),
-                                    right: s(80),
-                                    position: "absolute",
-                                    transform: [{rotate: '180deg'}],
-                                    width: s(200),
-                                    height: s(240),
-                                    shadowColor: "#000",
-                                    shadowOffset: {width: 2, height: -4},
-                                    shadowOpacity: 0.2,
-                                    shadowRadius: 3,
-                                    elevation: 4,
-                                }} source={require('./assets/images/tapFinger.gif')}/>
-                            </TouchableWithoutFeedback>
-                            : null
-                        }
                     </View>
                 ]
             }

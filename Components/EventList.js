@@ -20,14 +20,9 @@ const EventList = props => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertTitle, setAlertTitle] = useState('');
     const [alertBody, setAlertBody] = useState('');
-    const [visualGuide, setVisualGuide] = useState(false);
     const current_time = new moment.utc();
     let displayGroup = [];
-    useEffect(() => {
-        setTimeout(function () {
-            setVisualGuide(true);
-        }, 10000);
-    }, [])
+
     const renderItem = () => {
         return optionData.goalCards.map((item) => {
             let showDate = null;
@@ -252,21 +247,6 @@ const EventList = props => {
                                     style={styles.image}
                                 />
                             </View>
-                            {visualGuide && item.showGuide === "1" ?
-                                <FastImage style={{
-                                    bottom: 5,
-                                    alignSelf: "center",
-                                    position: "absolute",
-                                    width: s(200),
-                                    height: s(240),
-                                    shadowColor: "#000",
-                                    shadowOffset: {width: -2, height: 4},
-                                    shadowOpacity: 0.2,
-                                    shadowRadius: 3,
-                                    elevation: 4,
-                                }} source={require('../assets/images/tapFinger.gif')}/>
-                                : null
-                            }
                         </TouchableScale>
                         <AwesomeAlert
                             show={showAlert}

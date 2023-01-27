@@ -20,89 +20,98 @@ const LessonButton = (props) => {
     const [alertBody, setAlertBody] = useState('');
     const [alertConfirmType, setAlertConfirmType] = useState('');
     const [alertConfirmText, setAlertConfirmText] = useState('');
-    const [visualGuideForButton, setVisualGuideForButton] = useState(false);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        setTimeout(function () {
-            setVisualGuideForButton(true);
-        }, 5000);
-    }, [])
     const completeLesson = async () => {
         try {
-            dispatch({
-                type: 'ONENERGY_LESSON_COMPLETED',
-                payload: lesson,
-            });
-            if (lesson.settings.guide) {
-                dispatch({
-                    type: 'ONENERGY_GUIDE_UPDATE',
-                    payload: lesson.settings.guide,
-                });
-                if (lesson.settings.no_popup) {
-                    props.navigation.goBack();
-                } else {
-                    setAlertTitle(optionData.titles.find(el => el.id === 'alert_guide_activated_title').title);
-                    setAlertBody(optionData.titles.find(el => el.id === 'alert_guide_activated_body').title + ' ' + lesson.title);
-                    setAlertConfirmType(lesson.settings.open_screen ? lesson.settings.open_screen : lesson.settings.back_to);
-                    setAlertConfirmText(optionData.titles.find(el => el.id === 'alert_guide_activated_button').title);
-                    setShowAlert(true);
-                }
-            } else {
-                if (lesson.settings.no_popup) {
-                    if (lesson.settings.open_screen) {
-                        switch (lesson.settings.open_screen) {
-                            case "guided-practices":
-                                props.navigation.dispatch(
-                                    NavigationActions.navigate({
-                                        routeName: "PracticesScreen",
-                                    }));
-                                break;
-                            case "group-practices":
-                                props.navigation.dispatch(
-                                    NavigationActions.navigate({
-                                        routeName: "PracticeGroup",
-                                    }));
-                                break;
-                            case "programs":
-                                props.navigation.dispatch(
-                                    NavigationActions.navigate({
-                                        routeName: "ProgramsScreen",
-                                    }));
-                                break
-                        }
-                    } else {
-                        switch (lesson.settings.back_to) {
-                            case "top":
-                                props.navigation.dispatch(StackActions.popToTop());
-                                break;
-                            case "parent":
-                                props.navigation.goBack();
-                                break
-                        }
-                    }
-                } else {
-                    setAlertTitle(optionData.titles.find(el => el.id === 'alert_course_completed_title').title);
-                    setAlertBody(optionData.titles.find(el => el.id === 'alert_course_completed_body').title + ' ' + lesson.title);
-                    setAlertConfirmType(lesson.settings.open_screen ? lesson.settings.open_screen : lesson.settings.back_to);
-                    setAlertConfirmText(optionData.titles.find(el => el.id === 'alert_course_completed_button').title);
-                    setShowAlert(true);
-                }
-            }
-
             const apiRequest = getApi(props.config);
-            apiRequest.customRequest(
+            let course;
+            const data = await apiRequest.customRequest(
                 "wp-json/buddyboss-app/learndash/v1/lessons/" + lesson.id + "/complete",
                 "post",
                 {"course_id": lesson.parent.id},
                 null,
                 {},
                 false
-            );
-            dispatch({
-                type: 'ONENERGY_VIDEO_RESET',
-            });
-            setCompleting(false);
+            ).then(response => response.data);
+            if (data) {
+                 course = await apiRequest.customRequest(
+                    "wp-json/buddyboss-app/learndash/v1/courses/" + lesson.parent.id,
+                    "get",
+                    {},
+                    null,
+                    {},
+                    false
+                ).then(response => response.data);
+                dispatch({
+                    type: 'ONENERGY_LESSON_COMPLETED',
+                    payload: {
+                        lesson: lesson,
+                        course: course,
+                    },
+                });
+
+                if (lesson.settings.guide) {
+                    dispatch({
+                        type: 'ONENERGY_GUIDE_UPDATE',
+                        payload: lesson.settings.guide,
+                    });
+                    if (lesson.settings.no_popup) {
+                        props.navigation.goBack();
+                    } else {
+                        setAlertTitle(optionData.titles.find(el => el.id === 'alert_guide_activated_title').title);
+                        setAlertBody(optionData.titles.find(el => el.id === 'alert_guide_activated_body').title + ' ' + lesson.title);
+                        setAlertConfirmType(lesson.settings.open_screen ? lesson.settings.open_screen : lesson.settings.back_to);
+                        setAlertConfirmText(optionData.titles.find(el => el.id === 'alert_guide_activated_button').title);
+                        setShowAlert(true);
+                    }
+                } else {
+                    if (lesson.settings.no_popup) {
+                        if (lesson.settings.open_screen) {
+                            switch (lesson.settings.open_screen) {
+                                case "guided-practices":
+                                    props.navigation.dispatch(
+                                        NavigationActions.navigate({
+                                            routeName: "PracticesScreen",
+                                        }));
+                                    break;
+                                case "group-practices":
+                                    props.navigation.dispatch(
+                                        NavigationActions.navigate({
+                                            routeName: "PracticeGroup",
+                                        }));
+                                    break;
+                                case "programs":
+                                    props.navigation.dispatch(
+                                        NavigationActions.navigate({
+                                            routeName: "ProgramsScreen",
+                                        }));
+                                    break
+                            }
+                        } else {
+                            switch (lesson.settings.back_to) {
+                                case "top":
+                                    props.navigation.dispatch(StackActions.popToTop());
+                                    break;
+                                case "parent":
+                                    props.navigation.goBack();
+                                    break
+                            }
+                        }
+                    } else {
+                        setAlertTitle(optionData.titles.find(el => el.id === 'alert_course_completed_title').title);
+                        setAlertBody(optionData.titles.find(el => el.id === 'alert_course_completed_body').title + ' ' + lesson.title);
+                        setAlertConfirmType(lesson.settings.open_screen ? lesson.settings.open_screen : lesson.settings.back_to);
+                        setAlertConfirmText(optionData.titles.find(el => el.id === 'alert_course_completed_button').title);
+                        setShowAlert(true);
+                    }
+                }
+
+                dispatch({
+                    type: 'ONENERGY_VIDEO_RESET',
+                });
+                setCompleting(false);
+            }
         } catch (e) {
             console.error(e);
         }
@@ -192,22 +201,6 @@ const LessonButton = (props) => {
                                     : null}
                             </View>
                         </View>
-                        {visualGuideForButton ?
-                            <ImageCache style={{
-                                bottom: s(-80),
-                                alignSelf: "center",
-                                position: "absolute",
-                                transform: [{rotate: '180deg'}],
-                                width: s(200),
-                                height: s(240),
-                                shadowColor: "#000",
-                                shadowOffset: {width: 2, height: -4},
-                                shadowOpacity: 0.2,
-                                shadowRadius: 3,
-                                elevation: 4,
-                            }} source={require('../assets/images/tapFinger.gif')}/>
-                            : null
-                        }
                     </TouchableOpacity>
                     :
                     <View style={[

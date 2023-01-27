@@ -9,13 +9,6 @@ const VimeoBlock = props => {
     const {
         navigation, video, videoId, duration, thumbnail, textTracks, no_skip_forward, lesson_video, selectedCCUrl
     } = props;
-    const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
-    const [visualGuide, setVisualGuide] = useState(false);
-    useEffect(() => {
-        setTimeout(function () {
-            setVisualGuide(true);
-        }, 5000);
-    }, [])
     return (
         <View
             style={{flex: 1}}>
@@ -45,11 +38,6 @@ const VimeoBlock = props => {
                 {duration ?
                     <Text style={styles.duration}>{duration}</Text>
                     : null}
-                {!videoComplete && visualGuide ?
-                    <ImageCache style={[styles.tapFinger, {alignSelf: "center", marginTop: mvs(60)}]}
-                                source={require('../assets/images/tapFinger.gif')}/>
-                    : null
-                }
             </TouchableOpacity>
         </View>
     )

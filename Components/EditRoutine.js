@@ -521,9 +521,9 @@ const EditRoutine = props => {
                 this.bgmDialog.close();
             }}>
                 <View style={[cornerStyle, bottomStyle, {
-                    paddingHorizontal: 25,
+                    paddingHorizontal: 5,
                     backgroundColor: colors.bodyBg,
-                    paddingVertical: 15,
+                    paddingVertical: 5,
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between'
@@ -545,7 +545,7 @@ const EditRoutine = props => {
                             </TouchableOpacity>
                             : null}
                         <Text
-                            style={[global.text, {marginLeft: s(5)}]}>
+                            style={[global.text, {fontSize:s(15),marginLeft: s(5)}]}>
                             {item.item.name}
                         </Text>
                     </View>

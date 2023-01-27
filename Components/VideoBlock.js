@@ -18,7 +18,7 @@ const VideoBlock = props => {
     const [textTracks, setTextTracks] = useState({title: "No Subtitle", language: "", uri: "", type: ""});
     const [selectedCCUrl, setSelectedCCUrl] = useState('');
     const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
-    const [visualGuide, setVisualGuide] = useState(false);
+
     useEffect(() => {
         setTextTracks(subtitles.map((item) => {
             if (item.lang === language.subtitle) {
@@ -35,9 +35,6 @@ const VideoBlock = props => {
             ...previousState,
             {title: "No Subtitle", language: "", uri: "", type: ""}
         ]);
-        setTimeout(function () {
-            setVisualGuide(true);
-        }, 5000);
     }, [])
     return (
         <View style={styles.container}>
@@ -67,11 +64,6 @@ const VideoBlock = props => {
                 {duration ?
                     <Text style={styles.duration}>{duration}</Text>
                     : null}
-                {!videoComplete && visualGuide ?
-                    <ImageCache style={[styles.tapFinger, {alignSelf: "center", marginTop: mvs(60)}]}
-                                source={require('../assets/images/tapFinger.gif')}/>
-                    : null
-                }
             </TouchableOpacity>
         </View>
     )
