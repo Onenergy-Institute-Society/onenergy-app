@@ -408,8 +408,8 @@ const EditRoutine = props => {
                 }}>
                     <View style={{
                         backgroundColor: colors.bodyBg,
-                        paddingHorizontal: s(5),
-                        paddingVertical: s(5),
+                        paddingHorizontal: ms(5),
+                        paddingVertical: mvs(10),
                         borderBottomWidth: 1,
                         borderBottomColor: '#ccc',
                         flexDirection: 'row',
@@ -468,9 +468,9 @@ const EditRoutine = props => {
                 <View style={[cornerStyle, bottomStyle, {
                     width: windowWidth - 50,
                     marginHorizontal: 25,
-                    paddingHorizontal: 25,
+                    paddingHorizontal: ms(25),
                     backgroundColor: colors.bodyBg,
-                    paddingVertical: 15,
+                    paddingVertical: mvs(15),
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between'
@@ -479,7 +479,7 @@ const EditRoutine = props => {
                         style={{
                             fontFamily: "Montserrat-Regular",
                             fontWeight: "normal",
-                            fontSize: s(18),
+                            fontSize: s(15),
                             color: colors.textColor
                         }}>
                         {item.item} {currentTrackState.item.mode === "1" ? item.index > 0 ? " minutes" : " minute" : item.index > 0 ? " times" : " time"}
@@ -521,9 +521,9 @@ const EditRoutine = props => {
                 this.bgmDialog.close();
             }}>
                 <View style={[cornerStyle, bottomStyle, {
-                    paddingHorizontal: 5,
+                    paddingHorizontal: ms(5),
                     backgroundColor: colors.bodyBg,
-                    paddingVertical: 5,
+                    paddingVertical: mvs(10),
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between'
