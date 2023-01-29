@@ -55,8 +55,6 @@ const HomeContent = (props) => {
     const [sunrise, setSunrise] = useState('');
     const [phase, setPhase] = useState('');
     const [nextMoonPhase, setNextMoonPhase] = useState({});
-    console.log(user)
-    Analytics.segmentClient.screen('Home').then();
 
     const onFocusHandler = async () => {
         try {
@@ -154,6 +152,7 @@ const HomeContent = (props) => {
     }
 
     useEffect(() => {
+        Analytics.segmentClient.screen('Home').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
         });

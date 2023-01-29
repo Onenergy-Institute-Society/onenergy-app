@@ -2002,7 +2002,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         "documents",
         "gamipress_points",
         "gamipress_achievements",
-        "gamipress_ranks"
+        "gamipress_ranks",
+        "forums"
     ])
 
     externalCodeSetup.indexJsApi.addIndexJsFunction(() => {

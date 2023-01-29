@@ -7,7 +7,6 @@ import ActionSheetButton from "@src/components/ActionButtons/ActionSheetButton";
 import {getForumAvatarSource, shortContent} from "@src/utils";
 import AuthWrapper from "@src/components/AuthWrapper";
 import {ms, mvs, s, windowWidth} from "../Utils/Scale";
-import * as Analytics from "../Utils/Analytics";
 
 const ForumItem = ({
                        forum,
@@ -22,7 +21,7 @@ const ForumItem = ({
         <View style={[styles.boxShadow, styles.containerStyle, {backgroundColor: colors.bodyBg}]}>
             <AppTouchableOpacity
                 style={[global.forumListItem, {flexDirection: "row"}]}
-                onPress={()=>{Analytics.segmentClient.screen('Forum',{forum:forum.title});forum.toSingle}}
+                onPress={forum.toSingle}
             >
                 <AppAvatar
                     size={s(50)}

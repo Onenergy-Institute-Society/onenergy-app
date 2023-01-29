@@ -7,7 +7,6 @@ import AuthWrapper from "@src/components/AuthWrapper";
 import ActionSheetButton from "@src/components/ActionButtons/ActionSheetButton";
 import {GUTTER} from "@src/styles/global";
 import {ms, mvs, s} from "../Utils/Scale";
-import * as Analytics from "../Utils/Analytics";
 
 const TopicItem = (props) => {
 
@@ -22,7 +21,7 @@ const TopicItem = (props) => {
 
     if (!topic.actionStates.open) rootStyle = [global.itemClosed];
 
-    return <AppTouchableOpacity onPress={()=>{Analytics.segmentClient.screen('Topic',{title:topic.title});topic.toSingle}} style={[rootStyle]}>
+    return <AppTouchableOpacity onPress={topic.toSingle} style={[rootStyle]}>
         <Animated.View
             style={{
                 ...StyleSheet.absoluteFillObject
