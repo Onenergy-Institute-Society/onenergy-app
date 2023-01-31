@@ -30,7 +30,7 @@ const CustomDrawerContentComponent = (props) => {
     const {navigation, screenProps} = props;
     const {colors, global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
-    const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
+    const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: colors.bodyFrontBg}}>
@@ -97,6 +97,7 @@ const CustomDrawerContentComponent = (props) => {
                                         </View>
                                     </View>
                                 )) : null}
+                                {user.rank&&optionData.ranks[parseInt(user.rank)]?
                                 <View style={{
                                     flexDirection: "row",
                                     justifyContent: "flex-end",
@@ -118,6 +119,7 @@ const CustomDrawerContentComponent = (props) => {
                                         {optionData.ranks[parseInt(user.rank)].rankName}
                                     </Text>
                                 </View>
+                                    :null}
                             </View>
                         </View>
                         {user.membership.length > 0 ?

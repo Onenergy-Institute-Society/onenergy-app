@@ -12,9 +12,9 @@ const PostRow = props => {
     const [postsData, setPostsData] = useState([]);
     const {navigation, postType, postCategory, postPerPage, postOrder, postOrderBy, showAuthor, screenProps} = props;
     const {colors, global} = screenProps;
-    const postReducer = useSelector((state) => state.postReducer);
+    const postsReducer = useSelector((state) => state.postsReducer);
     const dispatch = useDispatch();
-    const categoryIndex = postReducer.lastView && postReducer.lastView.length ? postReducer.lastView.findIndex(lv => lv.category === postCategory) : null;
+    const categoryIndex = postsReducer.lastView && postsReducer.lastView.length ? postsReducer.lastView.findIndex(lv => lv.category === postCategory) : null;
     const fetchPostsData = async () => {
         try {
             let notify = false;
@@ -29,9 +29,9 @@ const PostRow = props => {
             ).then(response => response.data);
             let posts = [];
             data.map((item) => {
-                if (!postReducer.posts.find(post => post.id === item.id)) {
+                if (!postsReducer.posts.find(post => parseInt(post.id) === parseInt(item.id))) {
                     if (categoryIndex && categoryIndex >= 0) {
-                        if (new Date(item.date) > new Date(postReducer.lastView[categoryIndex].date)) {
+                        if (new Date(item.date) > new Date(postsReducer.lastView[categoryIndex].date)) {
                             notify = true;
                         }
                     }
@@ -64,16 +64,16 @@ const PostRow = props => {
     }
     useEffect(() => {
         let loadPosts = false;
-        if (postReducer.postUpdate && optionData.cache.post > postReducer.postUpdate || !postReducer.postUpdate) {
+        if (postsReducer.postUpdate && optionData.cache.post > postsReducer.postUpdate || !postsReducer.postUpdate) {
             loadPosts = true;
         } else {
             if (categoryIndex && categoryIndex >= 0) {
-                let postCount = postReducer.posts.filter((post) => post.categories.includes(parseInt(postCategory))).length;
+                let postCount = postsReducer.posts.filter((post) => post.categories.includes(parseInt(postCategory))).length;
                 if (!postCount) {
                     loadPosts = true
                 } else {
-                    setPostsData(postReducer.posts.filter((post) => post.categories.includes(parseInt(postCategory))).slice(0, postPerPage));
-                    if (new Date(postReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[postCategory])) {
+                    setPostsData(postsReducer.posts.filter((post) => post.categories.includes(parseInt(postCategory))).slice(0, postPerPage));
+                    if (new Date(postsReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[postCategory])) {
                         loadPosts = true;
                     }
                 }
@@ -85,9 +85,9 @@ const PostRow = props => {
             fetchPostsData().then();
     }, []);
     useEffect(() => {
-        if (postReducer.posts && postReducer.posts.length)
-            setPostsData(postReducer.posts.filter((post) => post.categories.includes(parseInt(postCategory))).slice(0, postPerPage));
-    }, [postReducer.posts])
+        if (postsReducer.posts && postsReducer.posts.length)
+            setPostsData(postsReducer.posts.filter((post) => post.categories.includes(parseInt(postCategory))).slice(0, postPerPage));
+    }, [postsReducer.posts])
     const renderOverlayImage = (format) => {
         switch (format) {
             case 'video':

@@ -11,10 +11,10 @@ const InitData = (props) => {
     const {global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
-    const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
-    const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
-    const postReducer = useSelector((state) => state.postReducer ? state.postReducer : null);
+    const practiceReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null);
+    const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
+    const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
+    const postsReducer = useSelector((state) => state.postsReducer ? state.postsReducer : null);
     const dispatch = useDispatch();
     Analytics.segmentClient.identify(user.id, {
         username: user.slug,
@@ -37,6 +37,7 @@ const InitData = (props) => {
                 {},               // request headers object
                 false   // true - if full url is given, false if you use the suffix for the url. False is default.
             ).then(response => response.data);
+            console.log('data', data)
             dispatch({
                 type: "ONENERGY_INIT_DATA",
                 payload:
@@ -72,10 +73,11 @@ const InitData = (props) => {
         if (optionData.cache.progress && progressReducer.progressUpdate && optionData.cache.progress > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
             loadProgress = true;
         }
+        console.log('loadGuide', loadGuide , 'loadGroup',  loadGroup , 'loadRoutine', loadRoutine ,'loadAchievement', loadAchievement , 'loadProgress', loadProgress);
         if (loadGuide || loadGroup || loadRoutine || loadAchievement || loadProgress) {
             fetchInitDate(loadGroup, loadGuide, loadRoutine, loadAchievement, loadProgress).then();
         }
-        if (optionData.cache.post && postReducer.postUpdate && optionData.cache.post > postReducer.postUpdate || !postReducer.postUpdate) {
+        if (optionData.cache.post && postsReducer.postUpdate && optionData.cache.post > postsReducer.postUpdate || !postsReducer.postUpdate) {
             dispatch({
                 type: 'ONENERGY_POSTS_RESET',
             });
@@ -87,29 +89,30 @@ const InitData = (props) => {
 
     useEffect(() => {
         let loaded = true;
+        console.log('achievementUpdate', achievementReducer.achievementUpdate, optionData.cache.achievement);
         if (achievementReducer.achievementUpdate < optionData.cache.achievement) {
             loaded = false;
         }
+        console.log('progressUpdate', achievementReducer.progressUpdate, optionData.cache.progress);
         if (progressReducer.progressUpdate < optionData.cache.progress) {
             loaded = false;
         }
+        console.log('guideUpdate', achievementReducer.guideUpdate, optionData.cache.guide);
         if (practiceReducer.guideUpdate < optionData.cache.guide) {
             loaded = false;
         }
+        console.log('groupUpdate', achievementReducer.groupUpdate, optionData.cache.group);
         if (practiceReducer.groupUpdate < optionData.cache.group) {
             loaded = false;
         }
+        console.log('routineUpdate', achievementReducer.routineUpdate, optionData.cache.routine);
         if (practiceReducer.routineUpdate < optionData.cache.routine) {
             loaded = false;
         }
         if (loaded) {
-            dispatch({
-                type: 'TEMP_INIT_LOADED',
-                payload: 'done'
-            });
             navigation.goBack();
         }
-    }, [achievementReducer.achievementUpdate, progressReducer.progressUpdate, practiceReducer.groupUpdate, practiceReducer.guideUpdate])
+    }, [achievementReducer.achievementUpdate, progressReducer.progressUpdate, practiceReducer.routineUpdate, practiceReducer.groupUpdate, practiceReducer.guideUpdate])
 
     return (
         <SafeAreaView style={global.container}>

@@ -7,7 +7,7 @@ import moment from 'moment';
 const QuestsWeekly = (props) => {
     const {screenProps} = props;
     const {colors, global} = screenProps;
-    const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.weekly : null);
+    const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer.weekly : null);
     const [weekly, setWeekly] = useState(achievementReducer);
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();

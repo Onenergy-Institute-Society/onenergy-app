@@ -513,7 +513,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
 
     //Add Blog reducer
     externalCodeSetup.reduxApi.addReducer(
-        "postReducer",
+        "postsReducer",
         (state = {posts: [], lastView: [], postUpdate: ''}, action) => {
             const currentDate = new Date().toISOString();
             switch (action.type) {
@@ -540,7 +540,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             return 0
                         }
                     })
-                    let categoryIndex = state.lastView.findIndex(lv => lv.category === action.category);
+                    let categoryIndex = state.lastView.findIndex(lv => parseInt(lv.category) === parseInt(action.category));
 
                     if (categoryIndex && categoryIndex >= 0) {
                         return {
@@ -571,7 +571,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         };
                     }
                 case "ONENERGY_POSTS_REMOVE_NOTIFY":
-                    let postIndex = state.posts.findIndex(post => post.id === action.payload);
+                    let postIndex = state.posts.findIndex(post => parseInt(post.id) === parseInt(action.payload));
                     return {
                         ...state,
                         posts: [
@@ -636,7 +636,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
 
     //Add Progress reducer
     externalCodeSetup.reduxApi.addReducer(
-        "onenergyReducer",
+        "onenergyAppReducer",
         (state = {
             practiceReducer: {
                 routines: [],
@@ -690,24 +690,31 @@ export const applyCustomCode = (externalCodeSetup: any) => {
 
                     const oidToday = new moment().format('YYYY-MM-DD');
                     const oidUpdateDaily = data.progress.latestUpdate===0 || (data.progress.latestUpdate && oidToday !== new moment.unix(data.progress.latestUpdate).format('YYYY-MM-DD'));
+                    console.log('loadGroup', loadGroup )
                     if (loadGroup) {
                         if (data.groups) {
                             idPracticeReducer.groups = data.groups;
                         }
                         idPracticeReducer.groupUpdate = new Date().toISOString();
+                        console.log('groupUpdate', idPracticeReducer.groupUpdate )
                     }
+                    console.log('loadGuide', loadGuide )
                     if (loadGuide) {
                         if (data.guides) {
                             idPracticeReducer.guides = data.guides;
                         }
                         idPracticeReducer.guideUpdate = new Date().toISOString();
+                        console.log('guideUpdate', idPracticeReducer.guideUpdate  )
                     }
+                    console.log('loadRoutine', loadRoutine )
                     if (loadRoutine) {
                         if (data.routines) {
                             idPracticeReducer.routines = data.routines;
                         }
                         idPracticeReducer.routineUpdate = new Date().toISOString();
+                        console.log('routineUpdate', idPracticeReducer.routineUpdate  )
                     }
+                    console.log('loadAchievement', loadAchievement )
                     if (loadAchievement) {
                         if (data.achievements) {
                             idAchievementReducer.milestones = data.achievements.milestones;
@@ -730,7 +737,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             }
                         }
                         idAchievementReducer.achievementUpdate = new Date().toISOString();
+                        console.log('achievementUpdate', idPracticeReducer.achievementUpdate  )
                     }
+                    console.log('loadProgress', loadProgress )
                     if (loadProgress) {
                         if (data.progress) {
                             Object.keys(data.progress.points).map(key =>
@@ -785,6 +794,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         }
                         idProgressReducer.actionList = [];
                         idProgressReducer.progressUpdate = new Date().toISOString();
+                        console.log('progressUpdate', idPracticeReducer.progressUpdate  )
                     }
                     return {
                         ...state,
@@ -1642,7 +1652,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     );
     // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
-        let whiteList = [...props.whitelist, "settingsReducer", "postReducer", "onenergyReducer", "videoReducer"];
+        let whiteList = [...props.whitelist, "settingsReducer", "postsReducer", "onenergyAppReducer", "videoReducer"];
 
         return {
             ...props,
@@ -1669,7 +1679,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         priceComponentRender) => {
 
         const user = useSelector((state) => state.user.userObject);
-        const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
+        const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
         const lesson_time = new moment.utc(courseVM.date);
         const current_time = new moment.utc();
         const diffMinutes = lesson_time.diff(current_time, 'minutes');
@@ -2075,7 +2085,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         return defaultValue;
     });
     const AfterDetailsComponent = () => {
-        const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
+        const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
         const optionData = useSelector((state) => state.settings.settings.onenergy_option);
         const user = useSelector((state) => state.user.userObject);
         return (
@@ -2110,6 +2120,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         </Text>
                     </View>
                 )) : null}
+                {user.rank&&optionData.ranks[parseInt(user.rank)]?
                 <View style={{
                     flexDirection: "row",
                     justifyContent: "flex-start",
@@ -2138,6 +2149,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         {optionData.ranks[parseInt(user.rank)].rankName}
                     </Text>
                 </View>
+                    :null}
                 {user.membership.length > 0 ?
                     <Text style={{color: "#262626",fontWeight: "normal",
                         alignItems:"flex-start",
@@ -2159,8 +2171,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         const dispatch = useDispatch();
 
         const config = useSelector((state) => state.config ? state.config : null);
-        const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
-        const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
+        const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
+        const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
         const user = useSelector((state) => state.user.userObject);
         return (
             user ?

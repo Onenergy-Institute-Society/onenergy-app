@@ -26,8 +26,8 @@ const PracticePersonal = props => {
     const {global} = screenProps;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const helpPageData = optionData.helps.find(el => el.name === 'practice_guided_empty');
-    const guideReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer.guides:null);
-    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
+    const guideReducer = useSelector((state) => state.onenergyAppReducer?state.onenergyAppReducer.practiceReducer.guides:null);
+    const progressReducer = useSelector((state) => state.onenergyAppReducer?state.onenergyAppReducer.progressReducer:null);
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
     Analytics.segmentClient.screen('Practices Guided').then();

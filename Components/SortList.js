@@ -73,13 +73,13 @@ export default function SortList(props) {
         if (isMoving === true)
             setIsMoving(false);
         const itemsWithoutCorrectIndexes = items.sort((x, y) => x.index - y.index);
-        const shiftingItem = itemsWithoutCorrectIndexes.filter(x => x.id === id)[0];
+        const shiftingItem = itemsWithoutCorrectIndexes.filter(x => parseInt((x.id)) === parseInt(id))[0];
         itemsWithoutCorrectIndexes.forEach((r, i) => {
             r.index = i;
         });
         const shiftingItemIndex = shiftingItem.index;
         const newItems = JSON.parse(JSON.stringify(itemsWithoutCorrectIndexes));
-        const posToScrollTo = Math.max(0, (newItems.filter(x => x.id === id)[0].index * itemSize) - (containerSize / 2));
+        const posToScrollTo = Math.max(0, (newItems.filter(x => parseInt(x.id) === parseInt(id))[0].index * itemSize) - (containerSize / 2));
         setLastScrollPosition(posToScrollTo);
         setLastShiftingItemIndex(shiftingItemIndex);
         setAlreadyHighlighted(false);
@@ -90,7 +90,7 @@ export default function SortList(props) {
         if (isMoving === false)
             setIsMoving(true);
         const newItems = [...items];
-        let shiftingItem = newItems.filter(x => x.id === id)[0];
+        let shiftingItem = newItems.filter(x => parseInt(x.id) === parseInt(id))[0];
         // Calculate shiftingItem new index
         let shiftingItemIndex = Math.trunc((draggablePosition + (itemSize / 2)) / itemSize);
         shiftingItemIndex = Math.max(0, shiftingItemIndex);

@@ -31,8 +31,8 @@ const PracticeGroup = props => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [loading, setLoading] = useState(false);
-    const groupReducer = useSelector((state) => state.onenergyReducer.practiceReducer.groups);
-    const progressReducer = useSelector((state) => state.onenergyReducer.progressReducer);
+    const groupReducer = useSelector((state) => state.onenergyAppReducer.practiceReducer.groups);
+    const progressReducer = useSelector((state) => state.onenergyAppReducer.progressReducer);
     const [groupPracticeDetail, setGroupPracticeDetail] = useState(0);
     const [currentMinutes, setCurrentMinutes] = useState(new Date().getMinutes());
     Analytics.segmentClient.screen('Practices Group').then();
@@ -119,7 +119,7 @@ const PracticeGroup = props => {
     const renderItem = ({item}) => {
 
         let detail = item.detail;
-        const conditionLessons = item.lessons.every(value => progressReducer.completedLessons && progressReducer.completedLessons.some(lesson => lesson.id === value));
+        const conditionLessons = item.lessons.every(value => progressReducer.completedLessons && progressReducer.completedLessons.some(lesson => parseInt(lesson.id) === parseInt(value)));
         user && progressReducer.completedLessons && progressReducer.completedLessons.map((lesson) => {
             detail = detail.replace('<span id="' + lesson.id + '"></span>', '<span style="color:green">(Passed)</span>')
         })
@@ -156,7 +156,7 @@ const PracticeGroup = props => {
         }
         CurrentStartTime = year + '-' + month + '-' + date + ' ' + hour + ":" + startMinutes;
         let practiceCount = 0;
-        let groupStatsIndex = progressReducer.groupStats.findIndex(group => group.group_id === item.id);
+        let groupStatsIndex = progressReducer.groupStats.findIndex(group => parseInt(group.group_id) === parseInt(item.id));
         if (groupStatsIndex >= 0) {
             practiceCount = progressReducer.groupStats[groupStatsIndex].group_count;
         }

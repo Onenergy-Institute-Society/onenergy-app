@@ -15,8 +15,8 @@ const Milestones = (props) => {
     const {global} = screenProps;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyText = optionData.helps.find(el => el.name === 'achievement_milestone_empty');
-    const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
-    const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer: null);
+    const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
+    const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer: null);
     const [uncompletedMilestones, setUncompletedMilestones] = useState([]);
     const [completedMilestones, setCompletedMilestones] = useState([]);
     const [claimedMilestones, setClaimedMilestones] = useState([]);

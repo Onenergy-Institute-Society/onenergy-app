@@ -26,8 +26,9 @@ if (Platform.OS === "android") {
 const MemberTracksList = (props) => {
     const {setMessageBarDisplay, screenProps} = props;
     const {global, colors} = screenProps;
+    const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
+    const practiceReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null);
     const [selectedRoutine, setSelectedRoutine] = useState(null);
 
     // state vars
@@ -35,12 +36,7 @@ const MemberTracksList = (props) => {
         LayoutAnimation.configureNext(
             LayoutAnimation.Presets.spring
         );
-        if (!selectedRoutine || routine.id !== selectedRoutine.id) {
-            if (routine.bgm !== 'No Sound') {
-                routine.bgm_url = optionData.routine_bgm.find(el => el.name === routine.bgm).bgm;
-            } else {
-                routine.bgm_url = '';
-            }
+        if (!selectedRoutine || parseInt(routine.id) !== parseInt(selectedRoutine.id)) {
             setSelectedRoutine(routine);
             Analytics.segmentClient.track('Start Routine Practice', {
                 id: routine.id,
@@ -77,10 +73,13 @@ const MemberTracksList = (props) => {
     const renderItem = ({item, index}) => {
         let showPlayer = !!(selectedRoutine && selectedRoutine.id === item.id);
         let totalDuration = 0;
+        console.log('item', item)
         item.tracks.map((item) => {
             totalDuration += item.duration;
         })
+        let itemRank = !item.level?0:practiceReducer.guides.find(level=>level.id===item.level).rank;
         return (
+            itemRank<=user.rank?
             <Swipeable
                 ref={ref => row[index] = ref}
                 friction={2}
@@ -107,9 +106,11 @@ const MemberTracksList = (props) => {
                                 <Text
                                     style={styles.duration}>{new Date(totalDuration * 1000).toISOString().substring(14, 19)}</Text>
                             </View>
-                            <View style={styles.subTitleBox}><Text
-                                style={styles.subTitle}>Practices: {item.routine.length}</Text><Text
-                                style={styles.subTitle}>Background: {item.bgm}</Text></View>
+                            <View style={styles.subTitleBox}>
+                                <Text style={styles.subTitle}>{item.level?practiceReducer.guides.find(level=>level.id===item.level).title:'Preparatory Practices'}</Text>
+                                <Text style={styles.subTitle}>Practices: {item.routine.length}</Text>
+                                <Text style={styles.subTitle}>Background: {optionData.bgm.find(el => el.id === item.bgm_id).name}</Text>
+                            </View>
                             <SvgMoreVertical color={"#fff"}
                                              style={{position: "absolute", right: s(10), bottom: s(10),                                         textShadowColor: 'grey',
                                                  textShadowRadius: 1,
@@ -127,6 +128,24 @@ const MemberTracksList = (props) => {
                     ) : null}
                 </View>
             </Swipeable>
+            :
+            <View style={[styles.trackItem, styles.boxShadow, {backgroundColor: colors.bodyBg}]}>
+                <ImageBackground style={styles.itemStyle}
+                                 source={{uri: "https://cdn.onenergy.institute/images/0.jpg"}}
+                                 resizeMode={"cover"}
+                                 imageStyle={{borderTopLeftRadius: s(9), borderTopRightRadius: s(9), borderBottomLeftRadius: showPlayer?0:s(9), borderBottomRightRadius: showPlayer?0:s(9)}}>
+                    <View style={styles.titleBox}>
+                        <Text style={[styles.title, {color:'grey'}]}>{item.title}</Text>
+                        <Text
+                            style={[styles.duration, {color:'grey'}]}>{new Date(totalDuration * 1000).toISOString().substring(14, 19)}</Text>
+                    </View>
+                    <View style={styles.subTitleBox}>
+                        <Text style={[styles.subTitle, {color:'grey'}]}>{item.level?practiceReducer.guides.find(level=>level.id===item.level).title:'Preparatory Practices'}</Text>
+                        <Text style={[styles.subTitle, {color:'grey'}]}>Practices: {item.routine.length}</Text>
+                        <Text style={[styles.subTitle, {color:'grey'}]}>Background: {optionData.bgm.find(el => el.id === item.bgm_id).name}</Text>
+                    </View>
+                </ImageBackground>
+            </View>
         );
     };
 

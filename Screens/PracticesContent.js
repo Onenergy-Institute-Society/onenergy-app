@@ -34,8 +34,8 @@ const PracticesContent = props => {
         const user = useSelector((state) => state.user.userObject);
         const [helpModal, setHelpModal] = useState({title: '', id: 0});
         const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-        const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
-        const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
+        const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
+        const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
         const dispatch = useDispatch();
         const onFocusHandler = async () => {
             try {

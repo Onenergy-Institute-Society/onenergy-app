@@ -10,14 +10,14 @@ import {ms, mvs, s, vs, windowWidth} from '../Utils/Scale';
 const PostList = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const [postsData, setPostsData] = useState([]);
-    const postSelector = state => ({postReducer: state.postReducer})
-    const {postReducer} = useSelector(postSelector);
+    const postSelector = state => ({postsReducer: state.postsReducer})
+    const {postsReducer} = useSelector(postSelector);
     const [loadMore, setLoadMore] = useState(false);
     const [page, setPage] = useState(1);
     const {navigation, postCategory, postPerPage, postOrder, postOrderBy, useLoadMore, screenProps} = props;
     const {global} = screenProps;
     const dispatch = useDispatch();
-    const categoryIndex = postReducer.lastView && postReducer.lastView.length ? postReducer.lastView.findIndex(lv => lv.category === parseInt(postCategory)) : null;
+    const categoryIndex = postsReducer.lastView && postsReducer.lastView.length ? postsReducer.lastView.findIndex(lv => parseInt(lv.category) === parseInt(postCategory)) : null;
 
     const fetchPostsData = async () => {
         try {
@@ -37,9 +37,9 @@ const PostList = props => {
                             payload: data,
                        });*/
             data.map((item) => {
-                if (!postReducer.posts.length || !postReducer.posts.find(post => post.id === item.id)) {
+                if (!postsReducer.posts.length || !postsReducer.posts.find(post => parseInt(post.id) === parseInt(item.id))) {
                     if (categoryIndex && categoryIndex >= 0) {
-                        if (new Date(item.date) > new Date(postReducer.lastView[categoryIndex].date)) {
+                        if (new Date(item.date) > new Date(postsReducer.lastView[categoryIndex].date)) {
                             notify = true;
                         }
                     }
@@ -74,12 +74,12 @@ const PostList = props => {
     useEffect(() => {
         let loadPosts = false;
         if (categoryIndex && categoryIndex >= 0) {
-            let postCount = postReducer.posts.filter((post) => post.categories.includes(parseInt(postCategory))).length
+            let postCount = postsReducer.posts.filter((post) => post.categories.includes(parseInt(postCategory))).length
             if (postCount < parseInt(postPerPage) * page) {
                 loadPosts = true
             } else {
-                setPostsData((current) => [...current, ...postReducer.posts.filter((post) => post.categories.includes(parseInt(postCategory))).slice((page - 1) * postPerPage, page * postPerPage)]);
-                if (new Date(postReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[postCategory])) {
+                setPostsData((current) => [...current, ...postsReducer.posts.filter((post) => post.categories.includes(parseInt(postCategory))).slice((page - 1) * postPerPage, page * postPerPage)]);
+                if (new Date(postsReducer.lastView[categoryIndex].date) < new Date(optionData.last_post[postCategory])) {
                     loadPosts = true;
                 }
             }
@@ -90,8 +90,8 @@ const PostList = props => {
             fetchPostsData().then();
     }, [page]);
     useEffect(() => {
-        setPostsData(postReducer.posts.filter((post) => post.categories.includes(parseInt(postCategory))).slice(0, postPerPage * page));
-    }, [postReducer.posts])
+        setPostsData(postsReducer.posts.filter((post) => post.categories.includes(parseInt(postCategory))).slice(0, postPerPage * page));
+    }, [postsReducer.posts])
     const handleLoadMore = () => {
         if (useLoadMore) {
             setPage(page + 1);

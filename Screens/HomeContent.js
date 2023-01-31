@@ -46,10 +46,10 @@ const HomeContent = (props) => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const allowLocation = useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings.allowLocation : null);
-    const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
-    const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
-    const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
-    const postReducer = useSelector((state) => state.postReducer ? state.postReducer : null);
+    const practiceReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null);
+    const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
+    const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
+    const postsReducer = useSelector((state) => state.postsReducer ? state.postsReducer : null);
     const dispatch = useDispatch();
     const [location, setLocation] = useState(null);
     const [sunrise, setSunrise] = useState('');
@@ -208,7 +208,7 @@ const HomeContent = (props) => {
             if (optionData.cache.routine && practiceReducer.routineUpdate && optionData.cache.routine > practiceReducer.routineUpdate || !practiceReducer.routineUpdate) {
                 load = 1;
             }
-            if (optionData.cache.post && postReducer.postUpdate && optionData.cache.post > postReducer.postUpdate || !postReducer.postUpdate) {
+            if (optionData.cache.post && postsReducer.postUpdate && optionData.cache.post > postsReducer.postUpdate || !postsReducer.postUpdate) {
                 dispatch({
                     type: 'ONENERGY_POSTS_RESET',
                 });

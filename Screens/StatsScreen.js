@@ -20,8 +20,8 @@ const StatsScreen = (props) => {
     const {global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const progressReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.progressReducer:null);
-    const practiceReducer = useSelector((state) => state.onenergyReducer?state.onenergyReducer.practiceReducer:null);
+    const progressReducer = useSelector((state) => state.onenergyAppReducer?state.onenergyAppReducer.progressReducer:null);
+    const practiceReducer = useSelector((state) => state.onenergyAppReducer?state.onenergyAppReducer.practiceReducer:null);
     Analytics.segmentClient.screen('Home').then();
 
     let tmpWeek=[];
@@ -60,7 +60,7 @@ const StatsScreen = (props) => {
     if(progressReducer.sectionStats&&progressReducer.sectionStats.length) {
         progressReducer.sectionStats.map((item, index) => {
             if(item.section_id) {
-                let section = practiceReducer.guides.find(section => section.id === item.section_id);
+                let section = practiceReducer.guides.find(section => parseInt(section.id) === parseInt(item.section_id));
                 pieData.push(
                     {
                         name: section.name,
@@ -265,12 +265,12 @@ const StatsScreen = (props) => {
                                 colors={['#fbcfe8', '#fce7f3']}>
                                 {progressReducer.routineStats&&progressReducer.routineStats.length ?
                                     progressReducer.routineStats.map((item, index) => {
-                                        const show = practiceReducer.routines.findIndex(routine => routine.id === item.routine_id);
+                                        const show = practiceReducer.routines.findIndex(routine => parseInt(routine.id) === parseInt(item.routine_id));
                                         return (
                                             show >= 0?
                                             <>
                                                 <View style={styles.row}>
-                                                    <Text style={[global.title, styles.title, {fontSize:s(14), flex: 0.6}]}>{practiceReducer.routines.find(routine => routine.id === item.routine_id)?practiceReducer.routines.find(routine => routine.id === item.routine_id).title:''}</Text>
+                                                    <Text style={[global.title, styles.title, {fontSize:s(14), flex: 0.6}]}>{practiceReducer.routines.find(routine => parseInt(routine.id) === parseInt(item.routine_id))?practiceReducer.routines.find(routine => parseInt(routine.id) === parseInt(item.routine_id)).title:''}</Text>
                                                     <Text style={[global.text,styles.text, {
                                                         flex: 0.2,
                                                         alignSelf: "flex-end",

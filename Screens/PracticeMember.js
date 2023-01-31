@@ -17,11 +17,12 @@ const PracticeMember = props => {
     const dispatch = useDispatch();
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyData = optionData.helps.find(el => el.name === 'practice_customize_empty_member');
-    const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
+    const practiceReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null);
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
-    Analytics.segmentClient.screen('Practices Customized').then();
+    console.log(optionData)
 
+    Analytics.segmentClient.screen('Practices Customized').then();
     const removeRoutine = async (item) => {
         try {
             const apiSlide = getApi(props.config);

@@ -5,9 +5,9 @@ import {useSelector} from "react-redux";
 const NotificationTabBarIcon = props => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
-    const guideReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer.guides : null);
-    const postReducer = useSelector((state) => state.postReducer ? state.postReducer : null);
+    const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
+    const guideReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer.guides : null);
+    const postsReducer = useSelector((state) => state.postsReducer ? state.postsReducer : null);
     const vouchers = useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings.vouchers : null);
     const {notificationID, top, right, size, fontSize = 8, showNumber = false, data = ''} = props;
 
@@ -16,25 +16,30 @@ const NotificationTabBarIcon = props => {
         switch (notificationID) {
             case 'guide_personal':
                 if (guideReducer) {
-                    guideReducer.map(section => {
-                        notificationCount += section.data.filter(item => item.new).length
+                    guideReducer.map(level => {
+                        level.sections?level.sections.map(section=> {
+                            notificationCount += section.data ? section.data.filter(item => item.new).length : 0;
+                        }):notificationCount=0;
                     })
                 }
+
                 break;
             case 'guide_page':
                 if (guideReducer) {
-                    guideReducer.map(section => {
-                        notificationCount += section.data.filter(item => item.new).length
+                    guideReducer.map(level => {
+                        level.sections?level.sections.map(section=> {
+                            notificationCount += section.data ? section.data.filter(item => item.new).length : 0;
+                        }):notificationCount=0;
                     })
                 }
                 break;
             case 'blog_read':
-                if (postReducer) {
-                    notificationCount = postReducer.posts.filter((post) => post.categories.includes(105) && post.notify === true).length;
+                if (postsReducer) {
+                    notificationCount = postsReducer.posts?postsReducer.posts.filter((post) => post.categories.includes(105) && post.notify === true).length:0;
                     if (notificationCount === 0) {
-                        let categoryIndex = postReducer.lastView.findIndex(lv => lv.category === 105);
+                        let categoryIndex = postsReducer.lastView.findIndex(lv => lv.category === 105);
                         if (categoryIndex && categoryIndex >= 0) {
-                            const dateTime = new Date(postReducer.lastView[categoryIndex].date);
+                            const dateTime = new Date(postsReducer.lastView[categoryIndex].date);
                             const datePost = new Date(optionData.latest_post_read);
                             if (datePost > dateTime) {
                                 notificationCount = 1;
@@ -44,12 +49,12 @@ const NotificationTabBarIcon = props => {
                 }
                 break;
             case 'blog_watch':
-                if (postReducer) {
-                    notificationCount = postReducer.posts.filter((post) => post.categories.includes(103) && post.notify === true).length;
+                if (postsReducer) {
+                    notificationCount = postsReducer.posts?postsReducer.posts.filter((post) => post.categories.includes(103) && post.notify === true).length:0;
                     if (notificationCount === 0) {
-                        let categoryIndex = postReducer.lastView.findIndex(lv => lv.category === 103);
+                        let categoryIndex = postsReducer.lastView.findIndex(lv => lv.category === 103);
                         if (categoryIndex && categoryIndex >= 0) {
-                            const dateTime = new Date(postReducer.lastView[categoryIndex].date);
+                            const dateTime = new Date(postsReducer.lastView[categoryIndex].date);
                             const datePost = new Date(optionData.latest_post_watch);
                             if (datePost > dateTime) {
                                 notificationCount = 1;
@@ -59,26 +64,26 @@ const NotificationTabBarIcon = props => {
                 }
                 break;
             case 'blog':
-                if (postReducer) {
-                    notificationCount = postReducer.posts.filter((post) => post.categories.includes(103) && post.notify === true).length;
+                if (postsReducer) {
+                    notificationCount = postsReducer.posts?postsReducer.posts.filter((post) => post.categories.includes(103) && post.notify === true).length:0;
 
                     if (!notificationCount) {
-                        notificationCount = postReducer.posts.filter((post) => post.categories.includes(105) && post.notify === true).length;
+                        notificationCount = postsReducer.posts?postsReducer.posts.filter((post) => post.categories.includes(105) && post.notify === true).length:0;
                     }
 
                     if (notificationCount === 0) {
-                        let categoryIndex = postReducer.lastView.findIndex(lv => lv.category === 103);
+                        let categoryIndex = postsReducer.lastView?postsReducer.lastView.findIndex(lv => lv.category === 103):0;
                         if (categoryIndex && categoryIndex >= 0) {
-                            const dateTime = new Date(postReducer.lastView[categoryIndex].date);
+                            const dateTime = new Date(postsReducer.lastView[categoryIndex].date);
                             const datePost = new Date(optionData.latest_post_watch);
                             if (datePost > dateTime) {
                                 notificationCount = 1;
                             }
                         }
                         if (notificationCount === 0) {
-                            categoryIndex = postReducer.lastView.findIndex(lv => lv.category === 105);
+                            categoryIndex = postsReducer.lastView?postsReducer.lastView.findIndex(lv => lv.category === 105):0;
                             if (categoryIndex && categoryIndex >= 0) {
-                                const dateTime = new Date(postReducer.lastView[categoryIndex].date);
+                                const dateTime = new Date(postsReducer.lastView[categoryIndex].date);
                                 const datePost = new Date(optionData.latest_post_read);
                                 if (datePost > dateTime) {
                                     notificationCount = 1;
@@ -94,17 +99,17 @@ const NotificationTabBarIcon = props => {
                 break;
             case 'quest_weekly':
                 if (user && achievementReducer)
-                    notificationCount = achievementReducer.weekly.complete_date && !achievementReducer.weekly.claim_date;
+                    notificationCount = achievementReducer.weekly ? achievementReducer.weekly.complete_date && !achievementReducer.weekly.claim_date:0;
                 break;
             case 'quest_monthly':
                 if (user && achievementReducer)
-                    notificationCount = achievementReducer.monthly.complete_date && !achievementReducer.monthly.claim_date;
+                    notificationCount =achievementReducer.monthly ? achievementReducer.monthly.complete_date && !achievementReducer.monthly.claim_date:0;
                 break;
             case 'quest':
                 if (user && achievementReducer) {
                     let dailyCount = achievementReducer.daily ? achievementReducer.daily.filter(item => item.complete_date && !item.claim_date).length : 0;
-                    let weeklyCount = achievementReducer.weekly.complete_date && !achievementReducer.weekly.claim_date;
-                    let monthlyCount = achievementReducer.monthly.complete_date && !achievementReducer.monthly.claim_date;
+                    let weeklyCount = achievementReducer.weekly ? achievementReducer.weekly.complete_date && !achievementReducer.weekly.claim_date:0;
+                    let monthlyCount = achievementReducer.monthly ? achievementReducer.monthly.complete_date && !achievementReducer.monthly.claim_date:0;
                     notificationCount = dailyCount + weeklyCount + monthlyCount;
                 }
                 break;
@@ -127,17 +132,19 @@ const NotificationTabBarIcon = props => {
             case 'left_menu':
                 if (user && achievementReducer) {
                     let dailyCount = achievementReducer.daily ? achievementReducer.daily.filter(item => item.complete_date && !item.claim_date).length : 0;
-                    let weeklyCount = achievementReducer.weekly.complete_date && !achievementReducer.weekly.claim_date;
-                    let monthlyCount = achievementReducer.monthly.complete_date && !achievementReducer.monthly.claim_date;
+                    let weeklyCount = achievementReducer.weekly ? achievementReducer.weekly.complete_date && !achievementReducer.weekly.claim_date:0;
+                    let monthlyCount = achievementReducer.monthly ? achievementReducer.monthly.complete_date && !achievementReducer.monthly.claim_date:0;
                     let milestoneCount = achievementReducer.milestones ? achievementReducer.milestones.filter(item => item.complete_date && !item.claim_date).length : 0;
                     notificationCount = dailyCount + weeklyCount + monthlyCount + milestoneCount;
                 }
                 break;
             case 'practice':
                 if (guideReducer) {
-                    guideReducer.map((section) => {
-                        notificationCount = section.data.find(item => item.id === data && item.show && item.new);
-                    });
+                    guideReducer.map(level => {
+                        level.sections?level.sections.map(section=> {
+                            notificationCount = section.data?section.data.find(item => item.id === data && item.show && item.new):0;
+                        }):notificationCount=0;
+                    })
                 }
                 break;
             case 'voucher':

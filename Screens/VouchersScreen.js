@@ -114,7 +114,7 @@ const VouchersScreen = (props) => {
                                             ).then(response => {
                                                 if (response.data) {
                                                     if (response.data.result) {
-                                                        let voucherIndex = vouchers.findIndex(voucher => voucher.id === item.id);
+                                                        let voucherIndex = vouchers.findIndex(voucher => parseInt(voucher.id) === parseInt(item.id));
                                                         let tempVouchers = vouchers;
                                                         tempVouchers[voucherIndex].redeemDate = new moment().format('YYYY-MM-DD');
                                                         setVouchersLoading(true);

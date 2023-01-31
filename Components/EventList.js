@@ -15,8 +15,8 @@ const EventList = props => {
     const {navigation, location} = props;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
-    const milestoneReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer.milestones : null);
+    const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
+    const milestoneReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer.milestones : null);
     const [showAlert, setShowAlert] = useState(false);
     const [alertTitle, setAlertTitle] = useState('');
     const [alertBody, setAlertBody] = useState('');
@@ -59,7 +59,7 @@ const EventList = props => {
                         break;
                     case 'course':
                         if (item.showCourseOption === 'enrolled') {
-                            let showCourse = progressReducer.enrolledCourses && progressReducer.enrolledCourses.find(course => course.id === parseInt(item.showCourse));
+                            let showCourse = progressReducer.enrolledCourses && progressReducer.enrolledCourses.find(course => parseInt(course.id) === parseInt(item.showCourse));
                             if (showCourse) {
                                 showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
                                 if (current_time > showDate) {
@@ -67,7 +67,7 @@ const EventList = props => {
                                 }
                             }
                         } else if (item.showCourseOption === 'completed') {
-                            let showCourse = progressReducer.completedCourses && progressReducer.completedCourses.find(course => course.id === parseInt(item.showCourse));
+                            let showCourse = progressReducer.completedCourses && progressReducer.completedCourses.find(course => parseInt(course.id) === parseInt(item.showCourse));
                             if (showCourse) {
                                 showDate = new moment.unix(showCourse['date']).add(item.delay, 'd');
                                 if (current_time > showDate) {
@@ -77,13 +77,13 @@ const EventList = props => {
                         }
                         break;
                     case 'lesson':
-                        let showLesson = progressReducer.completedLessons && progressReducer.completedLessons.find(lesson => lesson.id === parseInt(item.showLesson));
+                        let showLesson = progressReducer.completedLessons && progressReducer.completedLessons.find(lesson => parseInt(lesson.id) === parseInt(item.showLesson));
                         if (showLesson) {
                             show = true;
                         }
                         break;
                     case 'achievement':
-                        let showAchievement = user && milestoneReducer && milestoneReducer.find(milestone => milestone.complete_date && milestone.id === parseInt(item.showAchievement));
+                        let showAchievement = user && milestoneReducer && milestoneReducer.find(milestone => milestone.complete_date && parseInt(milestone.id) === parseInt(item.showAchievement));
                         if (showAchievement) {
                             show = true;
                         }

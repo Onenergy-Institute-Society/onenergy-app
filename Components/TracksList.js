@@ -24,15 +24,15 @@ if (Platform.OS === "android") {
 }
 const TracksList = (props) => {
     const {tracks, setMessageBarDisplay, screenProps} = props;
-    const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
     const {colors, global} = screenProps;
+    const user = useSelector((state) => state.user.userObject);
     const [selectedTrack, setSelectedTrack] = useState(null);
-
+console.log(tracks)
     const onTrackItemPress = async (track) => {
         LayoutAnimation.configureNext(
             LayoutAnimation.Presets.spring
         );
-        if (!selectedTrack || track.id !== selectedTrack.id) {
+        if (!selectedTrack || parseInt(track.id) !== parseInt(selectedTrack.id)) {
             setSelectedTrack(track);
             Analytics.segmentClient.track('Start Guided Practice', {
                 id: track.id,
@@ -51,13 +51,8 @@ const TracksList = (props) => {
             highlightColor = {color: colors.textColor};
             showPlayer = false;
         }
-        let practiceCount = 0;
-        let guideStatsIndex = progressReducer.guideStats.findIndex(guide => guide.guide_id === item.id);
-        if (guideStatsIndex >= 0) {
-            practiceCount = progressReducer.guideStats[guideStatsIndex].guide_count;
-        }
         return (
-            item.show ?
+            item.show&&item.url ?
                 <View style={[styles.trackItem, styles.boxShadow, {
                     backgroundColor: colors.bodyBg,
                     height: showPlayer ? s(120) : s(80)
@@ -122,16 +117,20 @@ const TracksList = (props) => {
     return (
         <SafeAreaView style={styles.container}>
             {tracks ?
-                <SectionList
-                    stickySectionHeadersEnabled={false}
-                    contentContainerStyle={{paddingBottom: s(20)}}
-                    style={styles.trackList}
-                    sections={tracks}
-                    renderItem={renderItem}
-                    renderSectionHeader={renderSectionHeader}
-                    keyExtractor={(item, index) => `${item.title}-${index}`}
-                />
-                : null}
+                tracks.map(track=> {
+                    if(user.rank >= track.rank && track.sections.length)
+                        return (
+                        <SectionList
+                            stickySectionHeadersEnabled={false}
+                            style={styles.trackList}
+                            sections={track.sections}
+                            renderItem={renderItem}
+                            renderSectionHeader={renderSectionHeader}
+                            keyExtractor={(item, index) => `${item.title}-${index}`}
+                        />)
+                })
+                : null
+            }
         </SafeAreaView>
     );
 };
@@ -141,6 +140,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        paddingBottom: mvs(25),
     },
     trackList: {
         paddingTop: mvs(5),

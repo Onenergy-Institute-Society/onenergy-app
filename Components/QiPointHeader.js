@@ -7,7 +7,7 @@ import {s} from '../Utils/Scale';
 
 const QiPointHeader = (screenProps) => {
     const {colors} = screenProps;
-    const progressReducer = useSelector((state) => state.onenergyReducer && state.onenergyReducer.progressReducer.points.qi ? state.onenergyReducer.progressReducer.points.qi : 0);
+    const progressReducer = useSelector((state) => state.onenergyAppReducer && state.onenergyAppReducer.progressReducer.points.qi ? state.onenergyAppReducer.progressReducer.points.qi : 0);
     return (
         <View style={{flexDirection: "row", justifyContent: "flex-end", alignItems: "center", marginRight: s(15)}}>
             <FastImage source={require('../assets/images/icon-ray.png')}

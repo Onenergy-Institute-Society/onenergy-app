@@ -45,7 +45,7 @@ const QuotesScreen = props => {
         let quotes = [];
         if (data && data.length) {
             data.map((item) => {
-                if (!quoteReducer.length || quoteReducer.filter(quote => quote.id === item.id).length === 0) {
+                if (!quoteReducer.length || quoteReducer.filter(quote => parseInt(quote.id) === parseInt(item.id)).length === 0) {
                     quotes.push({
                         id: item.id,
                         date: item.date,

@@ -9,9 +9,9 @@ import {ms, s, windowWidth} from '../Utils/Scale';
 
 const PracticeTipsRow = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
-    const postReducer = useSelector((state) => state.postReducer);
-    const routineTipsReducer = useSelector((state) => state.postReducer.posts.filter((post) => post.categories.includes(258)));
+    const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
+    const postsReducer = useSelector((state) => state.postsReducer);
+    const routineTipsReducer = useSelector((state) => state.postsReducer.posts.filter((post) => post.categories.includes(258)));
     const [dataPosts, setPostsData] = useState([]);
     const {navigation, screenProps} = props;
     const {global} = screenProps;
@@ -30,7 +30,7 @@ const PracticeTipsRow = props => {
             ).then(response => response.data);
             let posts = [];
             data.map((item) => {
-                if (!routineTipsReducer.length || !postReducer.posts.find(post => post.id === item.id)) {
+                if (!routineTipsReducer.length || !postsReducer.posts.find(post => post.id === item.id)) {
                     posts.push({
                         id: item.id,
                         date: item.date,

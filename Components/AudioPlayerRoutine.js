@@ -13,6 +13,7 @@ const AudioPlayerRoutine = (props) => {
     const {screenProps} = props;
     const {colors} = screenProps;
     const user = useSelector((state) => state.user.userObject);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const {routine, setMessageBarDisplay, totalDuration} = props;
     const [playing, setPlaying] = useState(false);
     const [stopped, setStopped] = useState(true)
@@ -20,17 +21,7 @@ const AudioPlayerRoutine = (props) => {
     const [nextTrack, setNextTrack] = useState(0);
     const [pastPosition, setPastPosition] = useState(0);
     const dispatch = useDispatch();
-    const secondsToHHMMSS = (seconds: number | string) => {
-        seconds = Number(seconds);
-        const h = Math.floor(seconds / 3600);
-        const m = Math.floor((seconds % 3600) / 60);
-        const s = Math.floor((seconds % 3600) % 60);
 
-        const hrs = h > 0 ? (h < 10 ? `0${h}:` : `${h}:`) : '';
-        const mins = m > 0 ? (m < 10 ? `0${m}:` : `${m}:`) : '00:';
-        const scnds = s > 0 ? (s < 10 ? `0${s}` : s) : '00';
-        return `${hrs}${mins}${scnds}`;
-    };
     const updateProgress = async () => {
         try {
             dispatch({
@@ -169,7 +160,6 @@ const AudioPlayerRoutine = (props) => {
             this.videoPlayer.seek(0);
         }
     };
-
     return (
         <>
             <View style={[styles.playerMaxView, {backgroundColor: colors.secondaryButtonBg}]}>
@@ -203,7 +193,7 @@ const AudioPlayerRoutine = (props) => {
                 </View>
                 <View style={styles.progressBarSection}>
                     <TrackSlider type={"routine"} pastPosition={pastPosition} totalDuration={totalDuration}/>
-                    {!!routine.bgm ? (
+                    {routine.bgm_id ? (
                         <Video
                             ref={videoPlayer => this.videoPlayer = videoPlayer}
                             audioOnly={true}
@@ -211,8 +201,9 @@ const AudioPlayerRoutine = (props) => {
                             playWhenInactive={true}
                             ignoreSilentSwitch={"ignore"}
                             repeat={true}
+                            volume={0.5}
                             paused={!playing}
-                            source={{uri: routine.bgm_url}}   // Can be a URL or a local file.
+                            source={{uri: optionData.bgm.find(el => el.id === routine.bgm_id).url}}
                         />
                     ) : null}
                 </View>

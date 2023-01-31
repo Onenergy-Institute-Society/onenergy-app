@@ -12,7 +12,7 @@ const LessonButton = (props) => {
     const {global, colors, lesson} = props;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
+    const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
     const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
     const [completing, setCompleting] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
@@ -148,7 +148,7 @@ const LessonButton = (props) => {
                 break;
         }
     }
-
+console.log(videoComplete , lesson.settings.no_video , user.test_mode)
     return (
         <View style={[global.row, {paddingHorizontal: 20, paddingVertical: 15}]}>
             {progressReducer.completedLessons && progressReducer.completedLessons.includes(lesson.id) ?

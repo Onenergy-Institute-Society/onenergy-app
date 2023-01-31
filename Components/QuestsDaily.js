@@ -24,9 +24,9 @@ const QuestsDaily = (props) => {
     const {global} = screenProps;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const emptyText = optionData.helps.find(el => el.name === 'achievement_quest_empty');
-    const progressReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.progressReducer : null);
-    const questReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
-    const achievementReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.achievementReducer : null);
+    const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
+    const questReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
+    const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
     const [uncompletedQuests, setUncompletedQuests] = useState([]);
     const [completedQuests, setCompletedQuests] = useState([]);
     const [claimedQuests, setClaimedQuests] = useState([]);

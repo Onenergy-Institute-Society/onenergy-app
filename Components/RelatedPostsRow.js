@@ -8,7 +8,7 @@ import {ms, s, windowWidth} from '../Utils/Scale';
 
 const RelatedPostsRow = props => {
     const {posts, navigation} = props;
-    const postReducer = useSelector((state) => state.postReducer.posts.filter((post) => posts.includes(post.id)));
+    const postsReducer = useSelector((state) => state.postsReducer.posts.filter((post) => posts.includes(post.id)));
     const renderOverlayImage = (format) => {
         switch (format) {
             case 'video':
@@ -57,13 +57,13 @@ const RelatedPostsRow = props => {
 
     return (
         <SafeAreaView style={styles.container}>
-            {postReducer.posts && postReducer.posts.length ?
+            {postsReducer.posts && postsReducer.posts.length ?
                 <View style={styles.ScrollView}>
                     <View style={styles.view_blog_title}>
                         <Text style={styles.heading}>Related Posts</Text>
                     </View>
                     <FlatList
-                        data={postReducer.posts}
+                        data={postsReducer.posts}
                         renderItem={renderItem}
                         extraData={this.props}
                         keyExtractor={item => item.id}

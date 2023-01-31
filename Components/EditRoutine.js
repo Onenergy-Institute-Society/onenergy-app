@@ -31,24 +31,27 @@ const EditRoutine = props => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const backgroundImages = optionData.routine_image;
-    const backgroundMusics = optionData.routine_bgm;
+    const backgroundMusics = optionData.bgm;
     const [playingSound, setPlayingSound] = useState(false);
     const [waitingGetID, setWaitingGetID] = useState(null);
     const [saving, setSaving] = useState(false);
     const [soundUrl, setSoundUrl] = useState('');
-    const routinesReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer.routines : []);
+    const routinesReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer.routines : []);
     const [routineDetailState, setRoutineDetailState] = useState(routineIndex >= 0 ? routinesReducer[routineIndex] : {
         id: 0,
         title: '',
         image: optionData.routine_image[0],
-        bgm: optionData.routine_bgm[0].name,
+        bgm_id: 0,
+        level: 0,
         tracks: [],
         routine: []
     });
     const [routines, setRoutines] = useState(routineIndex >= 0 ? routinesReducer[routineIndex].routine : []);
     const [refresh, setRefresh] = useState(0);
-    const [selectBgm, setSelectBgm] = useState('');
-    const practiceReducer = useSelector((state) => state.onenergyReducer ? state.onenergyReducer.practiceReducer : null);
+    const [selectBgm, setSelectBgm] = useState([]);
+    const [selectLevel, setSelectLevel] = useState('');
+    const practiceReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null);
+    const [sections, setSections] = useState([]);
     const [currentTrackState, setCurrentTrackState] = useState({index: -1, detail: {}});
     const [changedStatus, setChangedStatus] = useState(false);
     const [cancelContentTouches, setCancelContentTouches] = useState(true);
@@ -105,11 +108,7 @@ const EditRoutine = props => {
             }
         }
     }, [waitingGetID, routineDetailState]);
-    useEffect(() => {
-        props.navigation.setParams({
-            title: optionData.titles.find(el => el.id === 'home_title').title,
-        });
-    }, [])
+
     useEffect(() => {
         props.navigation.setParams({
             saving: saving,
@@ -128,13 +127,19 @@ const EditRoutine = props => {
                 changeStatus: changedStatus,
                 backButtonTitle: changedStatus ? 'Save' : '',
             });
-            backgroundMusics.map(bgm => {
-                if (bgm.name === routineDetailState.bgm) {
-                    setSelectBgm(bgm.name);
-                }
-            });
-        } else {
-            setSelectBgm(backgroundMusics[0].name);
+            if(routineDetailState.id>0){
+                backgroundMusics.map(bgm => {
+                    if (bgm.id === routineDetailState.bgm_id) {
+                        setSelectBgm(bgm);
+                    }
+                });
+                setSelectLevel(practiceReducer.guides.find(level=>level.id===routineDetailState.level).title);
+                setSections(practiceReducer.guides.find(level=>level.id===routineDetailState.level).sections);
+            } else {
+                setSelectBgm(backgroundMusics[0]);
+                setSelectLevel(practiceReducer.guides.find(level => level.rank === 0).title)
+                setSections(practiceReducer.guides.find(level => level.rank === 0).sections);
+            }
         }
 
     }, [routineDetailState])
@@ -177,15 +182,23 @@ const EditRoutine = props => {
     const createTracks = (routine) => {
         let tracks = [];
         let id = 1;
+
+        const opening = practiceReducer.guides.find(level => parseInt(level.id) === parseInt(routineDetailState.level)).opening;
+        const closing = practiceReducer.guides.find(level => parseInt(level.id) === parseInt(routineDetailState.level)).closing;
+        const opening_duration = practiceReducer.guides.find(level => parseInt(level.id) === parseInt(routineDetailState.level)).opening_duration;
+        const closing_duration = practiceReducer.guides.find(level => parseInt(level.id) === parseInt(routineDetailState.level)).closing_duration;
+
         const min1 = "https://cdn.onenergy.institute/audios/preparatory_practices/members/1min.mp3";
+        const artist = 'Onenergy Institute';
+        const artwork = 'https://cdn.onenergy.institute/images/logo.png';
         if (routine.length > 0) {
             tracks.push({
                 id: 1,
                 title: 'Opening',
-                url: 'https://cdn.onenergy.institute/audios/preparatory_practices/members/Opening_Member.mp3',
-                artist: 'Onenergy Institute',
-                artwork: 'https://cdn.onenergy.institute/images/logo.png',
-                duration: 25,
+                url: opening,
+                artist: artist,
+                artwork: artwork,
+                duration: opening_duration,
             });
             routine.map(item => {
                 item.parts.map(part => {
@@ -195,8 +208,8 @@ const EditRoutine = props => {
                             id: id,
                             title: item.title,
                             url: part.start,
-                            artist: 'Onenergy Institute',
-                            artwork: 'https://cdn.onenergy.institute/images/logo.png',
+                            artist: artist,
+                            artwork: artwork,
                             duration: parseInt(part.start_duration),
                         });
                         switch (item.mode) {
@@ -208,8 +221,8 @@ const EditRoutine = props => {
                                             id: id,
                                             title: item.title,
                                             url: part.repeat,
-                                            artist: 'Onenergy Institute',
-                                            artwork: 'https://cdn.onenergy.institute/images/logo.png',
+                                            artist: artist,
+                                            artwork: artwork,
                                             duration: parseInt(part.repeat_duration),
                                         });
                                     }
@@ -222,8 +235,8 @@ const EditRoutine = props => {
                                         id: id,
                                         title: item.title,
                                         url: min1,
-                                        artist: 'Onenergy Institute',
-                                        artwork: 'https://cdn.onenergy.institute/images/logo.png',
+                                        artist: artist,
+                                        artwork: artwork,
                                         duration: 60,
                                     });
                                 }
@@ -237,8 +250,8 @@ const EditRoutine = props => {
                         id: id,
                         title: item.title,
                         url: item.ending,
-                        artist: 'Onenergy Institute',
-                        artwork: 'https://cdn.onenergy.institute/images/logo.png',
+                        artist: artist,
+                        artwork: artwork,
                         duration: parseInt(item.endDuration),
                     });
                 }
@@ -248,10 +261,10 @@ const EditRoutine = props => {
             tracks.push({
                 id: id,
                 title: 'Closing',
-                url: 'https://cdn.onenergy.institute/audios/preparatory_practices/members/Closing_Member.mp3',
-                artist: 'Onenergy Institute',
-                artwork: 'https://cdn.onenergy.institute/images/logo.png',
-                duration: 13,
+                url: closing,
+                artist: artist,
+                artwork: artwork,
+                duration: closing_duration,
             });
         }
         return tracks;
@@ -395,11 +408,13 @@ const EditRoutine = props => {
     };
 
     const renderGuides = (item) => {
-        let index = routineDetailState.routine.findIndex(el => el.id === item.item.id);
+        console.log('guideitem', item, routineDetailState)
+        let index = routineDetailState.routine.findIndex(el => parseInt(el.id) === parseInt(item.item.id));
         let track;
-        track = item.item.parts[0].start;
+        track = item.item.parts.length?item.item.parts[0].start:'';
+        console.log('track', track)
         return (
-            item.item.show ?
+            item.item.show && item.item.parts.length ?
                 <TouchableWithoutFeedback onPress={() => {
                     if (index === -1) {
                         addGuideToRoutine(item.item);
@@ -463,7 +478,9 @@ const EditRoutine = props => {
         }
         return (
             <TouchableWithoutFeedback onPress={() => {
-                changeCount(item);
+                if(parseInt(currentTrackState.item.count, 10) !== parseInt(item.item, 10)) {
+                    changeCount(item);
+                }
             }}>
                 <View style={[cornerStyle, bottomStyle, {
                     width: windowWidth - 50,
@@ -492,11 +509,12 @@ const EditRoutine = props => {
         )
     }
     const renderBGM = (item) => {
+
         let cornerStyle = {};
         let bottomStyle = {};
         let bgmTrack;
-        if (item.item.name !== 'No Sound') {
-            bgmTrack = optionData.routine_bgm.find(el => el.name === item.item.name).bgm;
+        if (item.item.id !== 0) {
+            bgmTrack = optionData.bgm.find(el => el.id === item.item.id).url;
         } else {
             bgmTrack = '';
         }
@@ -514,11 +532,15 @@ const EditRoutine = props => {
         }
         return (
             <TouchableWithoutFeedback onPress={() => {
-                setRoutineDetailState(prevState => ({...prevState, bgm: item.item.name}));
-                setSelectBgm(item.item.name);
-                setChangedStatus(true);
-                setPlayingSound(false);
-                this.bgmDialog.close();
+                if(routineDetailState.bgm_id !== item.item.id) {
+                    setSelectBgm(item.item);
+                    setRoutineDetailState(prevState => {
+                        return {...prevState, bgm_id: item.item.id}
+                    });
+                    setChangedStatus(true);
+                    setPlayingSound(false);
+                    this.bgmDialog.close();
+                }
             }}>
                 <View style={[cornerStyle, bottomStyle, {
                     paddingHorizontal: ms(5),
@@ -549,7 +571,72 @@ const EditRoutine = props => {
                             {item.item.name}
                         </Text>
                     </View>
-                    {routineDetailState.bgm === item.item.name ? (
+                    {routineDetailState.bgm_id === item.item.id ? (
+                        <SvgIconCheck size={s(24)} color={colors.primaryColor}/>
+                    ) : null}
+                </View>
+            </TouchableWithoutFeedback>
+        )
+    }
+    const renderLevel = (item) => {
+
+        let cornerStyle = {};
+        let bottomStyle = {};
+        switch (item.index) {
+            case 0:
+                cornerStyle = {borderTopLeftRadius: s(9), borderTopRightRadius: s(9)};
+                bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
+                break;
+            case practiceReducer.guides.length - 1:
+                cornerStyle = {borderBottomLeftRadius: s(9), borderBottomRightRadius: s(9)};
+                break;
+            default:
+                bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
+                break;
+        }
+        return (
+            <TouchableWithoutFeedback onPress={() => {
+                if(user.rank>=practiceReducer.guides.find(level=>parseInt(level.id)===parseInt(item.item.id)).rank&&parseInt(routineDetailState.level) !== parseInt(item.item.id)) {
+                    Alert.alert('Change Level', 'Practices will be cleared, are you sure you want to change?',
+                        [
+                            {
+                                text: "Cancel",
+                                style: "cancel"
+                            },
+                            {
+                                text: "OK", onPress: () => {
+                                    setSelectLevel(item.item.title);
+                                    setRoutineDetailState(prevState => {
+                                        return {...prevState, routine: [], tracks: [], level: item.item.id}
+                                    });
+                                    setRoutines([]);
+                                    setChangedStatus(true);
+                                    this.levelDialog.close();
+                                }
+                            }
+                        ]
+                    )
+
+                }
+            }}>
+                <View style={[cornerStyle, bottomStyle, {
+                    paddingHorizontal: ms(5),
+                    backgroundColor: user.rank>=practiceReducer.guides.find(level=>parseInt(level.id)===parseInt(item.item.id)).rank?colors.bodyBg:colors.secondaryButtonBg,
+                    paddingVertical: mvs(10),
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                }]}>
+                    <View style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
+                        <Text
+                            style={[global.text, {fontSize:s(15),marginLeft: s(5), color:user.rank>=practiceReducer.guides.find(level=>parseInt(level.id)===parseInt(item.item.id)).rank?colors.textColor:colors.descLightTextColor}]}>
+                            {item.item.title}
+                        </Text>
+                    </View>
+                    {user.rank<practiceReducer.guides.find(level=>parseInt(level.id)===parseInt(item.item.id)).rank?
+                        <Text style={[global.text, {fontSize:s(15),color:colors.secondaryButtonColor}]}>LOCKED</Text>
+                        :null}
+                    {routineDetailState.level === item.item.id ? (
                         <SvgIconCheck size={s(24)} color={colors.primaryColor}/>
                     ) : null}
                 </View>
@@ -557,6 +644,7 @@ const EditRoutine = props => {
         )
     }
     const renderSectionHeader = (section) => {
+        console.log('section', section)
         return (
             section.section.data.find((item) => item.show) ?
                 <Text style={[global.settingsItemTitle, {
@@ -606,7 +694,7 @@ const EditRoutine = props => {
                             setChangedStatus(true);
                             setRoutineDetailState(prevState => ({...prevState, title: text}));
                         }}
-                        value={routineDetailState ? routineDetailState.title : ''}
+                        value={routineDetailState.title ? routineDetailState.title : ''}
                     />
                 </View>
                 <View style={global.roundBox}>
@@ -642,7 +730,7 @@ const EditRoutine = props => {
                                 <View style={styles.content}>
                                     {selectBgm ? (
                                         <Text style={[global.text, styles.trackTitle]}>
-                                            {selectBgm}
+                                            {selectBgm.name}
                                         </Text>
                                     ) : null}
                                     <View>
@@ -654,6 +742,36 @@ const EditRoutine = props => {
                         </View>
                     </View>
                 </View>
+                {user.rank>=1?
+                <View style={global.roundBox}>
+                    <View style={{
+                        width: windowWidth - s(35),
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                        alignItems: "center"
+                    }}>
+                        <Text style={global.settingsItemTitle}>Practice Level</Text>
+                    </View>
+                    <View>
+                        <View style={styles.listContainer}>
+                            <TouchableWithoutFeedback
+                                onPress={() => {
+                                    this.levelDialog.open();
+                                }}>
+                                <View style={styles.content}>
+                                    <Text style={[global.text, styles.trackTitle]}>
+                                        {selectLevel}
+                                    </Text>
+                                    <View>
+                                        <Image style={{marginRight: 25, tintColor: colors.primaryColor}}
+                                               source={require("@src/assets/img/arrow-down.png")}/>
+                                    </View>
+                                </View>
+                            </TouchableWithoutFeedback>
+                        </View>
+                    </View>
+                </View>
+                    :null}
                 <View style={global.roundBox}>
                     <View style={{
                         width: "100%",
@@ -796,6 +914,51 @@ const EditRoutine = props => {
                 }}
             />
             <Modalize
+                ref={(levelDialog) => {
+                    this.levelDialog = levelDialog;
+                }}
+                modalStyle={{backgroundColor: colors.bodyFrontBg}}
+                childrenStyle={{padding: s(25)}}
+                adjustToContentHeight="true"
+                withHandle="false"
+                HeaderComponent={
+                    <View style={{
+                        padding: s(15),
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        borderTopLeftRadius: s(9),
+                        borderTopRightRadius: s(9),
+                        borderBottomWidth: StyleSheet.hairlineWidth,
+                        backgroundColor: colors.bodyBg,
+                        borderBottomColor: colors.borderColor
+                    }}>
+                        <Text style={{
+                            fontSize: s(24),
+                            color: colors.headerColor,
+                            fontFamily: "MontserratAlternates-SemiBold",
+                            fontWeight: "bold"
+                        }}>Practice Level</Text>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.levelDialog.close();
+                                setPlayingSound(false);
+                            }}
+                        >
+                            <SvgIconCross/>
+                        </TouchableOpacity>
+                    </View>
+                }
+                FooterComponent={
+                    <View style={{height: 25}}/>
+                }
+                flatListProps={{
+                    data: practiceReducer.guides,
+                    renderItem: renderLevel,
+                    keyExtractor: (item, index) => `${item.title}-${index}`,
+                    showsVerticalScrollIndicator: false,
+                }}
+            />
+            <Modalize
                 ref={(addGuideModal) => {
                     this.addGuideModal = addGuideModal;
                 }}
@@ -832,7 +995,7 @@ const EditRoutine = props => {
                 }
                 sectionListProps={{
                     stickySectionHeadersEnabled: false,
-                    sections: practiceReducer.guides,
+                    sections: sections,
                     renderItem: renderGuides,
                     renderSectionHeader: renderSectionHeader,
                     keyExtractor: (item, index) => `${item.title}-${index}`,
