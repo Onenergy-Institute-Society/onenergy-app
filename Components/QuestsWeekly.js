@@ -3,6 +3,7 @@ import {connect, useDispatch, useSelector} from "react-redux";
 import {Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {ms, mvs, s, windowWidth} from "../Utils/Scale";
 import moment from 'moment';
+import * as Analytics from "../Utils/Analytics";
 
 const QuestsWeekly = (props) => {
     const {screenProps} = props;
@@ -13,6 +14,7 @@ const QuestsWeekly = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        Analytics.segmentClient.screen('Quests', {type: 'Weekly'}).then();
         setWeekly(achievementReducer);
     },[])
 

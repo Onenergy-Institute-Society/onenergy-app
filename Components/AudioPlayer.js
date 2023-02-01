@@ -23,7 +23,7 @@ const AudioPlayer = (props) => {
                 type: 'ONENERGY_PRACTICE_COMPLETED',
                 payload: {
                     mode: 'PP',
-                    data: track.id
+                    data: track
                 }
             });
             Analytics.segmentClient.track('End Guided Practice', {
@@ -128,12 +128,9 @@ const AudioPlayer = (props) => {
     };
 
     const onStopPress = async () => {
-        const state = await TrackPlayer.getState();
-        if ((state === State.Playing) || (state === State.Paused)) {
-            await TrackPlayer.reset();
-            setPlaying(false);
-            setStopped(true);
-        }
+        await TrackPlayer.reset();
+        setPlaying(false);
+        setStopped(true);
     };
 
     return (

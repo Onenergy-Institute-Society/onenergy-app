@@ -15,12 +15,12 @@ const PracticePlayer = (props) => {
     const gp_time = navigation.getParam('gp_time');
     const user = useSelector((state) => state.user.userObject);
     const dispatch = useDispatch();
-    Analytics.segmentClient.track('Start Group Practice', {
-        id: groupPractice.id,
-        title: groupPractice.name,
-        }
-    ).then();
     useEffect(() => {
+        Analytics.segmentClient.track('Start Group Practice', {
+                id: groupPractice.id,
+                title: groupPractice.name,
+            }
+        ).then();
         activateKeepAwake();
         const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
         return () => {

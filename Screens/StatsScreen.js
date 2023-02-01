@@ -22,7 +22,6 @@ const StatsScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const progressReducer = useSelector((state) => state.onenergyAppReducer?state.onenergyAppReducer.progressReducer:null);
     const practiceReducer = useSelector((state) => state.onenergyAppReducer?state.onenergyAppReducer.practiceReducer:null);
-    Analytics.segmentClient.screen('Home').then();
 
     let tmpWeek=[];
     let today = new Date();
@@ -56,23 +55,42 @@ const StatsScreen = (props) => {
         ],
    };
     let pieData=[];
-    let pieLegend=['#093423', '#157d54', '#1eb478', '#22cc89', '#2edc97', '#65e5b2', '#95eecb', '#b4f3da', '#ccf7e6', '#fdfffe', '#ffffff'];
+    let colors = [
+        ['#093423', '#157d54', '#1eb478', '#22cc89', '#2edc97', '#65e5b2', '#95eecb', '#b4f3da', '#ccf7e6', '#fdfffe', '#ffffff'],
+        ['#200506', '#701014', '#a8191e', '#d92026', '#c11c22', '#e54d52', '#eb7579', '#ed8488', '#ef9497', '#f4b6b8', '#fceeee'],
+        ['#050520', '#111070', '#1a19a8', '#1d1cc1', '#2120d9', '#4e4de5', '#7675eb', '#8584ed', '#9494ef', '#b7b6f4', '#eeeefc'],
+        ['#200905', '#702110', '#c1381c', '#e04a2b', '#e5674d', '#eb8975', '#ed9684', '#efa494', '#f1ac9d', '#2edc97', '#f7cec5'],
+    ]
+    let pieLegend=[];
+    practiceReducer.guides.map((level, index) => {
+        pieLegend.push({id:level.id, colors:colors[index]})
+    })
+    console.log(pieLegend)
     if(progressReducer.sectionStats&&progressReducer.sectionStats.length) {
-        progressReducer.sectionStats.map((item, index) => {
-            if(item.section_id) {
-                let section = practiceReducer.guides.find(section => parseInt(section.id) === parseInt(item.section_id));
-                pieData.push(
-                    {
-                        name: section.name,
-                        duration: item.section_duration,
-                        color: pieLegend[index],
-                        legendFontColor: "#262626",
-                        legendFontSize: s(10)
+        practiceReducer.guides.forEach(level => {
+            if(user.rank>=level.rank&&level.sections.length) {
+                let sectionIndex = 0;
+                level.sections.forEach(section=> {
+                    for(let item of progressReducer.sectionStats){
+                        if (item.section_id === section.id) {
+                            sectionIndex++;
+                            pieData.push(
+                                {
+                                    name: section.title,
+                                    duration: item.section_duration,
+                                    color: pieLegend.find(color => color.id===level.id).colors[sectionIndex],
+                                    legendFontColor: "#262626",
+                                    legendFontSize: s(10)
+                                }
+                            )
+                            break;
+                        }
                     }
-                )
+                })
             }
        })
    }
+    console.log(practiceReducer, pieData)
     const chartConfig = {
         backgroundGradientFrom: "#FFEEE7",
         backgroundGradientFromOpacity: 1,
@@ -104,6 +122,7 @@ const StatsScreen = (props) => {
         )
    });
     useEffect(() => {
+        Analytics.segmentClient.screen('Progress').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'progress_title').title,
        });
@@ -263,33 +282,33 @@ const StatsScreen = (props) => {
                                     borderBottomLeftRadius:9,
                                }]}
                                 colors={['#fbcfe8', '#fce7f3']}>
-                                {progressReducer.routineStats&&progressReducer.routineStats.length ?
-                                    progressReducer.routineStats.map((item, index) => {
-                                        const show = practiceReducer.routines.findIndex(routine => parseInt(routine.id) === parseInt(item.routine_id));
+                                {
+
+                                    practiceReducer.routines&&practiceReducer.routines.length ?
+                                        practiceReducer.routines.map((item, index) => {
+                                        const routineStats = progressReducer.routineStats.find(routine => parseInt(routine.routine_id) === parseInt(item.id));
                                         return (
-                                            show >= 0?
                                             <>
                                                 <View style={styles.row}>
-                                                    <Text style={[global.title, styles.title, {fontSize:s(14), flex: 0.6}]}>{practiceReducer.routines.find(routine => parseInt(routine.id) === parseInt(item.routine_id))?practiceReducer.routines.find(routine => parseInt(routine.id) === parseInt(item.routine_id)).title:''}</Text>
+                                                    <Text style={[global.title, styles.title, {fontSize:s(14), flex: 0.6}]}>{item.title}</Text>
                                                     <Text style={[global.text,styles.text, {
                                                         flex: 0.2,
                                                         alignSelf: "flex-end",
                                                         textAlign: "right",
                                                         alignItems: "flex-end"
-                                                   }]}>{item.routine_count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
+                                                   }]}>{routineStats&&routineStats.routine_count?routineStats.routine_count:0} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
                                                     <Text style={[global.text,styles.text, {
                                                         flex: 0.2,
                                                         alignSelf: "flex-end",
                                                         textAlign: "right",
                                                         alignItems: "flex-end"
-                                                   }]}>{item.routine_duration?Math.round(item.routine_duration / 60) > 60 ? Math.round(item.routine_duration / 60 / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : Math.round(item.routine_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
+                                                   }]}>{routineStats&&routineStats.routine_duration?Math.round(routineStats.routine_duration / 60) > 60 ? Math.round(routineStats.routine_duration / 60 / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : Math.round(routineStats.routine_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
                                                 </View>
-                                                {index < progressReducer.routineStats.length - 1 ?
+                                                {index < practiceReducer.routines.length - 1 ?
                                                     <View style={[styles.rowHr, {backgroundColor: "#f9a8d4"}]}/>
                                                     :
                                                     <View style={{marginBottom: mvs(10)}}/>}
                                             </>
-                                                :null
                                         )
                                    }) :
                                     <View style={[styles.row, styles.lastRow]}>
@@ -352,31 +371,54 @@ const StatsScreen = (props) => {
                             colors={['#d1fae5', '#a7f3d0']}>
                             {progressReducer.sectionStats&&progressReducer.sectionStats.length?
                                 <>
-                                {progressReducer.sectionStats.map((item, index)=> {
-                                    return (
-                                        <>
-                                            <View style={styles.row}>
-                                                <Text style={[global.title,styles.title,{flex:0.5}]}>{practiceReducer.guides.find(section => section.id === item.section_id).title}</Text>
-                                                <Text numberOfLines={1} style={[global.text,styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{item.section_count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
-                                                <Text style={[global.text,styles.text,{flex:0.2, alignSelf:"flex-end", textAlign:"right", alignItems:"flex-end"}]}>{Math.round(item.section_duration / 60 )>60?Math.round(item.section_duration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(item.section_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
-                                                <Svg
-                                                    width="24"
-                                                    height="24"
-                                                    viewBox="0 0 24 24"
-                                                    style={{flex:0.1}}
-                                                >
-                                                    <Circle cx="12" cy="12" r="8"
-                                                            fill={pieLegend[index]}
-                                                   />
-                                                </Svg>
-                                            </View>
-                                            {index<progressReducer.sectionStats.length-1?
-                                            <View style={[styles.rowHr, {backgroundColor: "#6ee7b7"}]}/>
-                                                :
-                                            <View style={{marginBottom:mvs(10)}}/>}
-                                        </>
-                                    )
-                               })}
+                                {practiceReducer.guides.map(level => {
+                                    if(user.rank>=level.rank&&level.sections.length) {
+                                        let sectionIndex = 0;
+                                        return (
+                                            level.sections.map(section=>{
+                                                return (
+                                                    progressReducer.sectionStats.map((item, index) => {
+                                                        console.log(item.section_id , section.id)
+                                                        if(item.section_id === section.id){
+                                                            sectionIndex++;
+                                                        return (
+                                                            <>
+                                                                <View style={styles.row}>
+                                                                    <Text
+                                                                        style={[global.title, styles.title, {flex: 0.5}]}>{section.title}</Text>
+                                                                    <Text numberOfLines={1} style={[global.text, styles.text, {
+                                                                        flex: 0.2,
+                                                                        alignSelf: "flex-end",
+                                                                        textAlign: "right",
+                                                                        alignItems: "flex-end"
+                                                                    }]}>{item.section_count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
+                                                                    <Text style={[global.text, styles.text, {
+                                                                        flex: 0.2,
+                                                                        alignSelf: "flex-end",
+                                                                        textAlign: "right",
+                                                                        alignItems: "flex-end"
+                                                                    }]}>{Math.round(item.section_duration / 60) > 60 ? Math.round(item.section_duration / 60 / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : Math.round(item.section_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                                                    <Svg
+                                                                        width="24"
+                                                                        height="24"
+                                                                        viewBox="0 0 24 24"
+                                                                        style={{flex: 0.1}}
+                                                                    >
+                                                                        <Circle cx="12" cy="12" r="8"
+                                                                                fill={pieLegend.find(color => color.id === level.id).colors[sectionIndex]}
+                                                                        />
+                                                                    </Svg>
+                                                                </View>
+                                                                <View style={[styles.rowHr, {backgroundColor: "#6ee7b7"}]}/>
+                                                            </>
+                                                        )}
+                                                    })
+                                                )
+                                            })
+                                        )
+                                    }
+                                })
+                                }
                                     <PieChart
                                         data={pieData}
                                         accessor={"duration"}

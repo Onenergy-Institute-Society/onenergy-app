@@ -92,7 +92,7 @@ const HomeContent = (props) => {
                 'weekly': achievementReducer.weekly,
                 'monthly': achievementReducer.monthly
             }
-            achievementReducer.milestones.map((milestone) => {
+            achievementReducer.milestones.forEach((milestone) => {
                 achievements.milestones.push({
                     'id': milestone.id,
                     'step': milestone.step,
@@ -100,7 +100,7 @@ const HomeContent = (props) => {
                     'claim_date': milestone.claim_date,
                 });
             });
-            achievementReducer.daily.map((quest) => {
+            achievementReducer.daily.forEach((quest) => {
                 achievements.daily.push({
                     'id': quest.id,
                     'step': quest.step,
@@ -391,6 +391,8 @@ const HomeContent = (props) => {
                                             margin: s(10)
                                         }}
                                     />
+                                    <FastImage source={{uri: optionData.ranks[parseInt(user.rank)].rankImage}}
+                                               style={{position:"absolute", bottom:0, right:10, width: 24, height: 24, alignSelf: "center"}}/>
                                     {user.membership&&user.membership.length?
                                     <SvgVIPMedal style={{position:"absolute", top:0, right:-10}} />
                                         :null}

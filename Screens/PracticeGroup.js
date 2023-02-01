@@ -35,7 +35,6 @@ const PracticeGroup = props => {
     const progressReducer = useSelector((state) => state.onenergyAppReducer.progressReducer);
     const [groupPracticeDetail, setGroupPracticeDetail] = useState(0);
     const [currentMinutes, setCurrentMinutes] = useState(new Date().getMinutes());
-    Analytics.segmentClient.screen('Practices Group').then();
 
     const JoinGroupPractice = async (gp_id, gp_time) => {
         try {
@@ -54,6 +53,7 @@ const PracticeGroup = props => {
     }
 
     useEffect(() => {
+        Analytics.segmentClient.screen('Practices Group').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'practices_group').title,
         });

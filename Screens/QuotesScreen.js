@@ -30,7 +30,6 @@ const QuotesScreen = props => {
     const quoteReducer = useSelector((state) => state.quoteReducer.quotes);
     const dispatch = useDispatch();
     const [options, setOptions] = useState({});
-    Analytics.segmentClient.screen('Quotes').then();
 
     const fetchQuote = async () => {
         const api = getApi(props.config);
@@ -44,7 +43,7 @@ const QuotesScreen = props => {
         ).then(response => response.data);
         let quotes = [];
         if (data && data.length) {
-            data.map((item) => {
+            data.forEach((item) => {
                 if (!quoteReducer.length || quoteReducer.filter(quote => parseInt(quote.id) === parseInt(item.id)).length === 0) {
                     quotes.push({
                         id: item.id,
@@ -145,6 +144,7 @@ const QuotesScreen = props => {
             inViewPort.item.image ? checkPermission(inViewPort.item.image) : null;
     };
     useEffect(() => {
+        Analytics.segmentClient.screen('Quotes').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'quote_title').title,
             downloadCurrentQuote: downloadCurrentQuote,

@@ -52,9 +52,9 @@ const PracticesContent = props => {
 
             }
         }
-        Analytics.segmentClient.screen('Practices').then();
 
         useEffect(() => {
+            Analytics.segmentClient.screen('Practices').then();
             props.navigation.setParams({
                 title: optionData.titles.find(el => el.id === 'practices_title').title,
             });
@@ -73,7 +73,7 @@ const PracticesContent = props => {
                     'weekly': achievementReducer.weekly,
                     'monthly': achievementReducer.monthly
                 }
-                achievementReducer.milestones.map((milestone) => {
+                achievementReducer.milestones.forEach((milestone) => {
                     achievements.milestones.push({
                         'id': milestone.id,
                         'step': milestone.step,
@@ -81,7 +81,7 @@ const PracticesContent = props => {
                         'claim_date': milestone.claim_date,
                     });
                 });
-                achievementReducer.daily.map((quest) => {
+                achievementReducer.daily.forEach((quest) => {
                     achievements.daily.push({
                         'id': quest.id,
                         'step': quest.step,

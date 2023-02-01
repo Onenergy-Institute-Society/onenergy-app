@@ -30,7 +30,6 @@ const FeedbackScreen = props => {
     const [department, setDepartment] = useState(null);
     const [subject, setSubject] = useState('');
     const recaptcha = useRef();
-    Analytics.segmentClient.screen('Feedback').then();
 
     const departments = optionData.departments;
 
@@ -62,6 +61,7 @@ const FeedbackScreen = props => {
        }
    }
     useEffect(() => {
+        Analytics.segmentClient.screen('Feedback').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'feedback_title').title,
             onSendPress: onSendPress

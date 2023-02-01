@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {TouchableOpacity, View} from "react-native";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {windowWidth} from "../Utils/Scale";
@@ -9,8 +9,9 @@ const AppPageScreen = (props) => {
     if (!props.isFocused)
         return null;
     const {navigation} = props;
-    Analytics.segmentClient.screen('Page', {title: navigation.getParam('title')}).then();
-
+    useEffect(()=>{
+        Analytics.segmentClient.screen('Page', {title: navigation.getParam('title')}).then();
+    },[]);
     return (
         <View style={{
             flex: 1,

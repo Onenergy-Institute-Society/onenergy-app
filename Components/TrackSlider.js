@@ -49,7 +49,7 @@ const TrackSlider = (props) => {
                         value={position}
                         thumbTintColor='black'
                         minimumValue={0}
-                        thumbStyle={{width: s(10), height: vs(10)}}
+                        thumbStyle={{width: s(10), height: s(10)}}
                         animationType='timing'
                         maximumValue={duration}
                         minimumTrackTintColor={'#4942E1'}

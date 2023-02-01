@@ -16,8 +16,8 @@ const NotificationTabBarIcon = props => {
         switch (notificationID) {
             case 'guide_personal':
                 if (guideReducer) {
-                    guideReducer.map(level => {
-                        level.sections?level.sections.map(section=> {
+                    guideReducer.forEach(level => {
+                        level.sections?level.sections.forEach(section=> {
                             notificationCount += section.data ? section.data.filter(item => item.new).length : 0;
                         }):notificationCount=0;
                     })
@@ -26,8 +26,8 @@ const NotificationTabBarIcon = props => {
                 break;
             case 'guide_page':
                 if (guideReducer) {
-                    guideReducer.map(level => {
-                        level.sections?level.sections.map(section=> {
+                    guideReducer.forEach(level => {
+                        level.sections?level.sections.forEach(section=> {
                             notificationCount += section.data ? section.data.filter(item => item.new).length : 0;
                         }):notificationCount=0;
                     })
@@ -140,8 +140,8 @@ const NotificationTabBarIcon = props => {
                 break;
             case 'practice':
                 if (guideReducer) {
-                    guideReducer.map(level => {
-                        level.sections?level.sections.map(section=> {
+                    guideReducer.forEach(level => {
+                        level.sections?level.sections.forEach(section=> {
                             notificationCount = section.data?section.data.find(item => item.id === data && item.show && item.new):0;
                         }):notificationCount=0;
                     })

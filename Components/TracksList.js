@@ -23,11 +23,12 @@ if (Platform.OS === "android") {
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 const TracksList = (props) => {
-    const {tracks, setMessageBarDisplay, screenProps} = props;
+    const {setMessageBarDisplay, screenProps} = props;
     const {colors, global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
+    const guideReducer = useSelector((state) => state.onenergyAppReducer?state.onenergyAppReducer.practiceReducer.guides:null);
     const [selectedTrack, setSelectedTrack] = useState(null);
-console.log(tracks)
+
     const onTrackItemPress = async (track) => {
         LayoutAnimation.configureNext(
             LayoutAnimation.Presets.spring
@@ -41,7 +42,7 @@ console.log(tracks)
         }
     };
 
-    const renderItem = ({item}) => {
+    const renderItem = ({item, index}) => {
         let highlightColor;
         let showPlayer;
         if (selectedTrack && selectedTrack.id === item.id) {
@@ -88,6 +89,8 @@ console.log(tracks)
                                     ) : null}
                                 </View>
                                 <Text
+                                    style={[styles.subTitle, highlightColor]}>count: x{item.count}</Text>
+                                <Text
                                     style={[styles.duration, highlightColor]}>{new Date(item.duration * 1000).toISOString().substring(14, 19)}</Text>
                             </View>
                         </ImageBackground>
@@ -116,20 +119,30 @@ console.log(tracks)
     }
     return (
         <SafeAreaView style={styles.container}>
-            {tracks ?
-                tracks.map(track=> {
-                    if(user.rank >= track.rank && track.sections.length)
+            {
+                guideReducer.sort((a,b)=>b.slug.localeCompare(a.slug)).map(level=> {
+                    if(user.rank >= level.rank && level.sections.length) {
+                        let sections = level.sections.filter(section => {
+                            let showGuide = section.data.filter(guide => guide.show);
+                            if(showGuide && showGuide.length)
+                            return {
+                                id: section.id,
+                                rank: section.rank,
+                                title: section.title,
+                                data: showGuide
+                            }
+                        })
                         return (
-                        <SectionList
-                            stickySectionHeadersEnabled={false}
-                            style={styles.trackList}
-                            sections={track.sections}
-                            renderItem={renderItem}
-                            renderSectionHeader={renderSectionHeader}
-                            keyExtractor={(item, index) => `${item.title}-${index}`}
-                        />)
+                            <SectionList
+                                stickySectionHeadersEnabled={false}
+                                style={styles.trackList}
+                                sections={sections}
+                                renderItem={renderItem}
+                                renderSectionHeader={renderSectionHeader}
+                                keyExtractor={(item, index) => `${item.title}-${index}`}
+                            />)
+                    }
                 })
-                : null
             }
         </SafeAreaView>
     );
@@ -235,7 +248,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     subTitle: {
-        fontSize: s(15),
+        position: "absolute",
+        bottom: s(5),
+        left: s(15),
+        fontSize: s(12),
     },
     duration: {
         position: "absolute",

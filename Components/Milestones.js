@@ -6,6 +6,7 @@ import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {s} from "../Utils/Scale";
 import MilestonesAccordian from "./MilestonesAccordian";
 import AchievementItem from "./AchievementItem";
+import * as Analytics from "../Utils/Analytics";
 
 if (Platform.OS === "android") {
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -21,6 +22,10 @@ const Milestones = (props) => {
     const [completedMilestones, setCompletedMilestones] = useState([]);
     const [claimedMilestones, setClaimedMilestones] = useState([]);
     const dispatch = useDispatch();
+
+    useEffect(()=>{
+        Analytics.segmentClient.screen('Milestones', {type: type}).then();
+    },[]);
 
     useEffect(()=>{
         setUncompletedMilestones(achievementReducer.milestones.filter(achievement => achievement.type === type && achievement.complete_date==='' && showItem(achievement) !== -1));

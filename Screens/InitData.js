@@ -16,10 +16,7 @@ const InitData = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
     const postsReducer = useSelector((state) => state.postsReducer ? state.postsReducer : null);
     const dispatch = useDispatch();
-    Analytics.segmentClient.identify(user.id, {
-        username: user.slug,
-        name: user.name,
-    }).then();
+
     const fetchInitDate = async (loadGroup, loadGuide, loadRoutine, loadAchievement, loadProgress) => {
         try {
             const api = getApi(props.config);
@@ -37,7 +34,6 @@ const InitData = (props) => {
                 {},               // request headers object
                 false   // true - if full url is given, false if you use the suffix for the url. False is default.
             ).then(response => response.data);
-            console.log('data', data)
             dispatch({
                 type: "ONENERGY_INIT_DATA",
                 payload:
@@ -56,6 +52,10 @@ const InitData = (props) => {
     }
 
     useEffect(() => {
+        Analytics.segmentClient.identify(user.id, {
+            username: user.slug,
+            name: user.name,
+        }).then();
         const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
         let loadGroup = false, loadGuide = false, loadRoutine = false, loadAchievement = false, loadProgress = false;
         if (optionData.cache.guide && practiceReducer.guideUpdate && optionData.cache.guide > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {

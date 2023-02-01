@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from "react";
-import {StyleSheet, View,} from "react-native";
+import {StyleSheet, Text, View,} from "react-native";
 import {useSelector} from "react-redux";
 import {NavigationActions, withNavigation} from "react-navigation";
 import ScalableImage from "../Components/ScalableImage";
 import TouchableScale from './TouchableScale';
-import {mvs, s, windowWidth} from '../Utils/Scale';
+import {mvs, s, vs, windowWidth} from '../Utils/Scale';
 import AwesomeAlert from "../Components/AwesomeAlert";
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import moment from 'moment';
 import FastImage from "react-native-fast-image";
 import * as Analytics from "../Utils/Analytics";
+import Blink from "../Utils/Blink";
 
 const EventList = props => {
     const {navigation, location} = props;
@@ -167,6 +168,10 @@ const EventList = props => {
                                                 setShowAlert(true);
                                                 break;
                                             case 'app':
+                                                Analytics.segmentClient.track('Tap Goal Card', {
+                                                    action: 'open app page',
+                                                    pageId: item.param
+                                                }).then();
                                                 navigation.dispatch(
                                                     NavigationActions.navigate({
                                                         routeName: "AppPageScreen",
@@ -176,12 +181,12 @@ const EventList = props => {
                                                         }
                                                     })
                                                 )
-                                                Analytics.segmentClient.track('Tap Goal Card', {
-                                                    action: 'open app page',
-                                                    pageId: item.param
-                                                }).then();
                                                 break;
                                             case 'blog':
+                                                Analytics.segmentClient.track('Tap Goal Card', {
+                                                    action: 'open blog page',
+                                                    blogId: item.param
+                                                }).then();
                                                 navigation.dispatch(
                                                     NavigationActions.navigate({
                                                         routeName: "BlogScreen",
@@ -191,12 +196,12 @@ const EventList = props => {
                                                         }
                                                     })
                                                 )
-                                                Analytics.segmentClient.track('Tap Goal Card', {
-                                                    action: 'open blog page',
-                                                    blogId: item.param
-                                                }).then();
                                                 break;
                                             case 'course':
+                                                Analytics.segmentClient.track('Tap Goal Card', {
+                                                    action: 'open course',
+                                                    courseId: item.param
+                                                }).then();
                                                 navigation.dispatch(
                                                     NavigationActions.navigate({
                                                         routeName: "CourseScreen",
@@ -205,31 +210,24 @@ const EventList = props => {
                                                         }
                                                     })
                                                 )
-                                                Analytics.segmentClient.track('Tap Goal Card', {
-                                                    action: 'open course',
-                                                    courseId: item.param
-                                                }).then();
-
                                                 break;
                                             case 'link':
-                                                await props.attemptDeepLink(false)(null, item.param);
                                                 Analytics.segmentClient.track('Tap Goal Card', {
                                                     action: 'open link',
                                                     pageId: item.param
                                                 }).then();
-
+                                                await props.attemptDeepLink(false)(null, item.param);
                                                 break;
                                             case 'screen':
+                                                Analytics.segmentClient.track('Tap Goal Card', {
+                                                    action: 'open screen',
+                                                    screen: item.param
+                                                }).then();
                                                 navigation.dispatch(
                                                     NavigationActions.navigate({
                                                         routeName: item.param
                                                     })
                                                 )
-                                                Analytics.segmentClient.track('Tap Goal Card', {
-                                                    action: 'open screen',
-                                                    screen: item.param
-                                                }).then();
-
                                                 break;
                                             default:
                                                 break;
@@ -245,7 +243,23 @@ const EventList = props => {
                                     width={windowWidth - s(30)}
                                     source={{uri: item.image ? item.image : null}}
                                     style={styles.image}
-                                />
+                                >
+
+                                </ScalableImage>
+                                {item.showGuide?
+                                    <Blink duration={500} style={{position: 'absolute', top: vs(5), right: s(5),}}>
+                                        <View
+                                            style={{
+                                                width: s(10),
+                                                height: s(10),
+                                                borderRadius: s(10),
+                                                borderWidth: 1,
+                                                borderColor: "white",
+                                                backgroundColor: '#FF0000',
+                                            }}
+                                        />
+                                    </Blink>
+                                :null}
                             </View>
                         </TouchableScale>
                         <AwesomeAlert

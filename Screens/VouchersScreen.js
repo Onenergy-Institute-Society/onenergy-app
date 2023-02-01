@@ -34,7 +34,6 @@ const VouchersScreen = (props) => {
     const [alertBody, setAlertBody] = useState('');
     const [alertConfirmText, setAlertConfirmText] = useState('');
     const dispatch = useDispatch();
-    Analytics.segmentClient.screen('Voucher').then();
 
     const fetchVoucherData = async () => {
         try {
@@ -55,6 +54,7 @@ const VouchersScreen = (props) => {
        }
    }
     useEffect(()=>{
+        Analytics.segmentClient.screen('Voucher').then();
         fetchVoucherData().then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'voucher_title').title,

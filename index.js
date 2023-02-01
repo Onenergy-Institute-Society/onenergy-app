@@ -730,7 +730,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 claim_date: ''
                             };
                             if(oidUpdateDaily){
-                                idAchievementReducer.daily.map((item, tempIndex) => {
+                                idAchievementReducer.daily.forEach((item, tempIndex) => {
                                     idAchievementReducer.daily[tempIndex].complete_date = '';
                                     idAchievementReducer.daily[tempIndex].claim_date = '';
                                 })
@@ -742,7 +742,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     console.log('loadProgress', loadProgress )
                     if (loadProgress) {
                         if (data.progress) {
-                            Object.keys(data.progress.points).map(key =>
+                            Object.keys(data.progress.points).forEach(key =>
                                 idProgressReducer.points[key] = parseInt(data.progress.points[key])
                             )
                             idProgressReducer.lastPractice = data.progress.lastPractice ? parseInt(data.progress.lastPractice) : '';
@@ -754,7 +754,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             idProgressReducer.weekDuration = oidUpdateDaily && (new Date().getDay() === 1) ? 0 : data.progress.weekDuration ? parseInt(data.progress.weekDuration) : 0;
                             idProgressReducer.progress = [];
                             if (data.progress.progress) {
-                                data.progress.progress.map(progress => {
+                                data.progress.progress.forEach(progress => {
                                     idProgressReducer.progress.push({
                                         'date': progress.date,
                                         'duration': parseInt(progress.duration)
@@ -847,13 +847,18 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 case "ONENERGY_GUIDE_UPDATE":
                     let lessonGuides = action.payload;
                     let tempGuides = {...state.practiceReducer};
-                    state.practiceReducer.guides.map((section, index) => {
-                        let tempIndex = section.data.findIndex(item => lessonGuides.includes(item.id));
-                        if (tempIndex >= 0) {
-                            tempGuides.guides[index].data[tempIndex].show = true;
-                            tempGuides.guides[index].data[tempIndex].new = true;
-                        }
-                    });
+                    loop1:
+                    for(let [levelIndex, level] of state.practiceReducer.guides.entries()) {
+                        loop2:
+                            for (let [sectionIndex, section] of level.sections.entries()) {
+                                let tempIndex = section.data.findIndex(item => lessonGuides.includes(item.id));
+                                if (tempIndex >= 0) {
+                                    tempGuides.guides[levelIndex].sections[sectionIndex].data[tempIndex].show = true;
+                                    tempGuides.guides[levelIndex].sections[sectionIndex].data[tempIndex].new = true;
+                                    break loop1;
+                                }
+                            }
+                    }
                     return {
                         ...state,
                         practiceReducer: tempGuides
@@ -889,7 +894,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     if (new Date().getDay() === 1) {
                         oduTempProgressState.weekDuration = 0;
                     }
-                    oduTempDailyState.daily.map((item, tempIndex) => {
+                    oduTempDailyState.daily.forEach((item, tempIndex) => {
                         oduTempDailyState.daily[tempIndex].complete_date = '';
                         oduTempDailyState.daily[tempIndex].claim_date = '';
                     })
@@ -907,13 +912,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     let acpMode = action.payload.mode;
                     let acpData = action.payload.data;
                     let acpToday = new moment().format('YYYY-MM-DD');
-                    let tempSection;
                     let tmpAchievements;
                     let acpTempIndex;
 
                     if (acpToday > acpTempProgressState.lastPractice) {
                         acpTempProgressState.totalPracticeDays += 1;
-                        acpTempAchievementState.milestones.map((item, tempIndex) => {
+                        acpTempAchievementState.milestones.forEach((item, tempIndex) => {
                             if (item.trigger === 'progress' && item.triggerField === 'totalDays' && item.complete_date !== acpToday) {
                                 acpTempAchievementState.milestones[tempIndex].step += 1;
                                 if (parseInt(item.total) <= acpTempProgressState.totalPracticeDays) {
@@ -975,16 +979,16 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     let tempArray = [];
                     switch (acpMode) {
                         case 'PP':
-                            tempArray.push({'id': acpData, 'count': 1});
+                            tempArray.push({'guide': acpData, 'count': 1});
                             break;
                         case 'PR':
                             let routineIndex;
                             routineIndex = state.practiceReducer.routines.findIndex((temp) => temp.id === acpData);
-                            tempArray = state.practiceReducer.routines[routineIndex].routine;
                             let tempTracks = state.practiceReducer.routines[routineIndex].tracks;
                             let routineDuration = 0;
-                            tempTracks.map(track => {
+                            tempTracks.forEach(track => {
                                 routineDuration = routineDuration + parseInt(track.duration);
+                                tempArray.push({'guide': track, 'count': track.count});
                             })
                             acpTempIndex = acpTempProgressState.routineStats.findIndex(item => item.routine_id === acpData)
                             if (acpTempIndex >= 0) {
@@ -1001,8 +1005,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         case 'PG':
                             let groupIndex;
                             groupIndex = state.practiceReducer.groups.findIndex((temp) => temp.id === acpData);
-                            state.practiceReducer.groups[groupIndex].guides.map(tempGuide => {
-                                tempArray.push({'id': tempGuide, 'count': 1});
+                            state.practiceReducer.groups[groupIndex].guides.forEach(tempGuide => {
+                                tempArray.push({'guide': tempGuide, 'count': 1});
                             });
                             tmpAchievements = state.achievementReducer.milestones.filter((item) =>
                                 (item.trigger === 'practice' &&
@@ -1010,7 +1014,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                         (item.triggerPracticeOption === 'group' && (parseInt(item.triggerGroupPractice) === acpData || !item.triggerGroupPractice))
                                     ) &&
                                     !item.complete_date));
-                            tmpAchievements.map((item) => {
+                            tmpAchievements.forEach((item) => {
                                 let tempIndex = acpTempAchievementState.milestones.findIndex(achievement => achievement.id === item.id);
                                 acpTempAchievementState.milestones[tempIndex].step += 1;
                                 if (acpTempAchievementState.milestones[tempIndex].total <= acpTempAchievementState.milestones[tempIndex].step) {
@@ -1032,7 +1036,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                         (item.triggerPracticeOption === 'group' && (parseInt(item.triggerGroupPractice) === acpData || !item.triggerGroupPractice))
                                     ) &&
                                     !item.complete_date));
-                            tmpAchievements.map((item) => {
+                            tmpAchievements.forEach((item) => {
                                 let tempIndex = acpTempAchievementState.daily.findIndex(achievement => achievement.id === item.id);
                                 acpTempAchievementState.daily[tempIndex].step += 1;
                                 if (acpTempAchievementState.daily[tempIndex].total <= acpTempAchievementState.daily[tempIndex].step) {
@@ -1053,7 +1057,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 acpTempIndex = acpTempProgressState.groupStats.findIndex(item => item.group_id === acpData);
                                 if (acpTempIndex >= 0) {
                                     acpTempProgressState.groupStats[acpTempIndex].group_count += 1;
-                                    acpTempProgressState.groupStats[acpTempIndex].group_duration += acpTempPracticeState.groups[groupIndex].duration;
+                                    acpTempProgressState.groupStats[acpTempIndex].group_duration += parseInt(acpTempPracticeState.groups[groupIndex].duration);
                                 } else {
                                     acpTempProgressState.groupStats.push({
                                         'group_id': acpData,
@@ -1070,27 +1074,20 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             }
                             break;
                     }
-
-                    tempArray.map(tempGuide => {
-                        //Get the section ID from the guide ID
-                        tempSection = state.practiceReducer.guides.find((section) => {
-                            if (section.data.find(guide => guide.id === tempGuide.id))
-                                return true
-                        });
-
+                    tempArray.forEach(tempGuide => {
                         //milestones
                         tmpAchievements = state.achievementReducer.milestones.filter((item) => {
                             if (item.trigger === 'practice' &&
                                 (
-                                    (item.triggerPracticeOption === 'single' && (parseInt(item.triggerSinglePractice) === tempGuide.id || !item.triggerSinglePractice)) ||
-                                    (item.triggerPracticeOption === 'section' && (parseInt(item.triggerSectionPractice) === tempSection.id))
+                                    (item.triggerPracticeOption === 'single' && (parseInt(item.triggerSinglePractice) === tempGuide.guide.id || !item.triggerSinglePractice)) ||
+                                    (item.triggerPracticeOption === 'section' && (parseInt(item.triggerSectionPractice) === tempGuide.guide.sectionId))
                                 ) &&
                                 !item.complete_date) {
                                 return true;
                             }
                         });
-
-                        tmpAchievements.map((item) => {
+console.log('1')
+                        tmpAchievements.forEach((item) => {
                             let tempIndex = acpTempAchievementState.milestones.findIndex(achievement => achievement.id === item.id);
                             acpTempAchievementState.milestones[tempIndex].step += 1;
                             if (acpTempAchievementState.milestones[tempIndex].total <= acpTempAchievementState.milestones[tempIndex].step) {
@@ -1106,19 +1103,21 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 });
                             }
                         })
+                        console.log('2')
 
                         tmpAchievements = state.achievementReducer.daily.filter((item) => {
                             if (item.trigger === 'practice' &&
                                 (
-                                    (item.triggerPracticeOption === 'single' && (parseInt(item.triggerSinglePractice) === tempGuide.id || !item.triggerSinglePractice)) ||
-                                    (item.triggerPracticeOption === 'section' && (parseInt(item.triggerSectionPractice) === tempSection.id))
+                                    (item.triggerPracticeOption === 'single' && (parseInt(item.triggerSinglePractice) === tempGuide.guide.id || !item.triggerSinglePractice)) ||
+                                    (item.triggerPracticeOption === 'section' && (parseInt(item.triggerSectionPractice) === tempGuide.guide.sectionId))
                                 ) &&
                                 !item.complete_date) {
                                 return true;
                             }
                         });
+                        console.log('3')
 
-                        tmpAchievements.map((item) => {
+                        tmpAchievements.forEach((item) => {
                             let tempIndex = acpTempAchievementState.daily.findIndex(achievement => achievement.id === item.id);
                             acpTempAchievementState.daily[tempIndex].step += 1;
                             if (acpTempAchievementState.daily[tempIndex].total <= acpTempAchievementState.daily[tempIndex].step) {
@@ -1135,57 +1134,62 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 });
                             }
                         })
+                        console.log('4')
 
-                        acpTempPracticeState.guides.map((section, acpSectionIndex) => {
-                            let acpGuideIndex = section.data.findIndex(item => item.id === tempGuide.id);
-                            if (acpGuideIndex >= 0) {
+                        let acpLevelIndex = acpTempPracticeState.guides.findIndex(level => level.id === tempGuide.guide.levelId);
+                        let acpSectionIndex = acpTempPracticeState.guides[acpLevelIndex].sections.findIndex(section => section.id = tempGuide.guide.sectionId);
+                        let acpGuideIndex = acpTempPracticeState.guides[acpLevelIndex].sections[acpSectionIndex].data.findIndex(guide => guide.id = tempGuide.guide.id);
+                        console.log('5')
+                        if (acpGuideIndex >= 0) {
+                            let tempGuideDuration = parseInt(tempGuide.guide.duration) * parseInt(tempGuide.count);
+                            let tempGuideCount = parseInt(tempGuide.guide.count) * parseInt(tempGuide.count);
 
-                                acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].new = false;
-                                acpTempProgressState.totalDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
-                                acpTempProgressState.todayDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
-                                acpTempProgressState.weekDuration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
+                            acpTempPracticeState.guides[acpLevelIndex].sections[acpSectionIndex].data[acpGuideIndex].new = false;
+                            acpTempProgressState.totalDuration += tempGuideDuration;
+                            acpTempProgressState.todayDuration += tempGuideDuration;
+                            acpTempProgressState.weekDuration += tempGuideDuration;
+                            console.log('6')
+                            if (acpTempProgressState.guideStats && acpTempProgressState.guideStats.length) {
 
-                                if (acpTempProgressState.guideStats && acpTempProgressState.guideStats.length) {
-
-                                    acpTempIndex = acpTempProgressState.guideStats.findIndex(item => item.guide_id === acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].id)
-
-                                    if (acpTempIndex >= 0) {
-                                        acpTempProgressState.guideStats[acpTempIndex].guide_count += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count;
-                                        acpTempProgressState.guideStats[acpTempIndex].guide_duration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
-                                    } else {
-                                        acpTempProgressState.guideStats.push({
-                                            'guide_id': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].id,
-                                            'guide_count': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count,
-                                            'guide_duration': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count
-                                        })
-                                    }
-
-                                } else {
-
-                                    acpTempProgressState.guideStats = [];
-                                    acpTempProgressState.guideStats.push({
-                                        'guide_id': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].id,
-                                        'guide_count': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count,
-                                        'guide_duration': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count
-                                    })
-
-                                }
-
-                                acpTempIndex = acpTempProgressState.sectionStats.findIndex(item => item.section_id === acpTempPracticeState.guides[acpSectionIndex].id)
+                                acpTempIndex = acpTempProgressState.guideStats.findIndex(item => parseInt(item.guide_id) === parseInt(tempGuide.guide.id))
+                                console.log('7')
                                 if (acpTempIndex >= 0) {
-                                    acpTempProgressState.sectionStats[acpTempIndex].section_count += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count;
-                                    acpTempProgressState.sectionStats[acpTempIndex].section_duration += acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count;
+                                    acpTempProgressState.guideStats[acpTempIndex].guide_count += tempGuideCount;
+                                    acpTempProgressState.guideStats[acpTempIndex].guide_duration += tempGuideDuration;
                                 } else {
-                                    acpTempProgressState.sectionStats.push({
-                                        'section_id': acpTempPracticeState.guides[acpSectionIndex].id,
-                                        'section_count': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].count * tempGuide.count,
-                                        'section_duration': acpTempPracticeState.guides[acpSectionIndex].data[acpGuideIndex].duration * tempGuide.count
+                                    acpTempProgressState.guideStats.push({
+                                        'guide_id': tempGuide.guide.id,
+                                        'guide_count': tempGuideCount,
+                                        'guide_duration': tempGuideDuration
                                     })
                                 }
+
+                            } else {
+                                console.log('8')
+                                acpTempProgressState.guideStats = [];
+                                acpTempProgressState.guideStats.push({
+                                    'guide_id': tempGuide.guide.id,
+                                    'guide_count': tempGuideCount,
+                                    'guide_duration': tempGuideDuration
+                                })
 
                             }
-                        });
+                            console.log('9')
+                            acpTempIndex = acpTempProgressState.sectionStats.findIndex(item => item.section_id === tempGuide.guide.sectionId)
+                            if (acpTempIndex >= 0) {
+                                acpTempProgressState.sectionStats[acpTempIndex].section_count += tempGuideCount;
+                                acpTempProgressState.sectionStats[acpTempIndex].section_duration += tempGuideDuration;
+                            } else {
+                                acpTempProgressState.sectionStats.push({
+                                    'section_id': tempGuide.guide.sectionId,
+                                    'section_count': tempGuideCount,
+                                    'section_duration': tempGuideDuration
+                                })
+                            }
+
+                        }
                     })
+                    console.log('10')
 
                     let todayProgressIndex = acpTempProgressState.progress && acpTempProgressState.progress.findIndex(item => item.date === acpToday);
                     if (acpTempProgressState.progress && todayProgressIndex >= 0) {
@@ -1203,6 +1207,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             }]
                         }
                     }
+                    console.log('11')
 
                     acpTempProgressState.actionList.push({
                         'mode': acpMode,
@@ -1212,7 +1217,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
 
                     acpTempProgressState.lastPractice = acpToday;
                     acpTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
-
+console.log('7')
                     return {
                         ...state,
                         achievementReducer: {
@@ -1231,7 +1236,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     let mcMilestoneIndex = mcTempMilestoneState.milestones.findIndex(achievement => achievement.id === action.payload.id);
 
                     mcTempMilestoneState.milestones[mcMilestoneIndex].claim_date = new moment().format('YYYY-MM-DD');
-                    mcTempMilestoneState.milestones[mcMilestoneIndex].awards.map(award => {
+                    mcTempMilestoneState.milestones[mcMilestoneIndex].awards.forEach(award => {
                         if (mcTempProgressState.points[award.name]) {
                             mcTempProgressState.points[award.name] += parseInt(award.point);
                         } else {
@@ -1265,7 +1270,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     if (dailyListItemIndex >= 0) {
                         dcTempDailyState.daily[dcDailyIndex].list.splice(dailyListItemIndex, 1);
                     }
-                    dcTempDailyState.daily[dcDailyIndex].awards.map(award => {
+                    dcTempDailyState.daily[dcDailyIndex].awards.forEach(award => {
                         if (dcTempProgressState.points[award.name]) {
                             dcTempProgressState.points[award.name] += parseInt(award.point);
                         } else {
@@ -1297,7 +1302,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
 
                     if (awcAchievementIndex >= 0) {
                         awcTempQuestState.daily[awcAchievementIndex].list.splice(awcWaitItemIndex, 1);
-                        awcTempQuestState.daily[awcAchievementIndex].awards.map(award => {
+                        awcTempQuestState.daily[awcAchievementIndex].awards.forEach(award => {
                             if (awcTempProgressState.points[award.name]) {
                                 awcTempProgressState.points[award.name] += parseInt(award.point);
                             } else {
@@ -1367,7 +1372,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             ) &&
                             !item.complete_date)
                     );
-                    olcTempMilestone.map((item) => {
+                    olcTempMilestone.forEach((item) => {
                         let tempIndex = olcTempMilestone.findIndex(achievement => achievement.id === item.id);
                         let tempLessonIndex = olcTempMilestone[tempIndex].step.findIndex(item => item.id === lesson.id);
                         olcTempMilestone[tempIndex].step[tempLessonIndex].completed = 1;
@@ -2196,7 +2201,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                                         'weekly': achievementReducer.weekly,
                                                         'monthly': achievementReducer.monthly
                                                     }
-                                                    achievementReducer.milestones.map((milestone) => {
+                                                    achievementReducer.milestones.forEach((milestone) => {
                                                         achievements.milestones.push({
                                                             'id': milestone.id,
                                                             'step': milestone.step,
@@ -2204,7 +2209,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                                             'claim_date': milestone.claim_date,
                                                         });
                                                     });
-                                                    achievementReducer.daily.map((quest) => {
+                                                    achievementReducer.daily.forEach((quest) => {
                                                         achievements.daily.push({
                                                             'id': quest.id,
                                                             'step': quest.step,

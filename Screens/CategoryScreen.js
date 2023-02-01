@@ -14,7 +14,6 @@ const CategoryScreen = props => {
     const [categoryData, setCategoryData] = useState([]);
     const [categoryBanner, setCategoryBanner] = useState('');
     const category = navigation.getParam('category')
-    Analytics.segmentClient.screen('Category', {title: navigation.getParam('name')}).then();
 
     const fetchCategoryData = async () => {
         try {
@@ -33,6 +32,7 @@ const CategoryScreen = props => {
    }
 
     useEffect(()=>{
+        Analytics.segmentClient.screen('Category', {title: navigation.getParam('name')}).then();
         fetchCategoryData().then();
    }, []);
     useEffect(()=>{

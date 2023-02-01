@@ -74,7 +74,7 @@ const PracticeTipsRow = props => {
     const showItem = (item) => {
         let show = true;
         if (item.meta_box.course) {
-            item.meta_box.course.map((course_item) => {
+            item.meta_box.course.forEach((course_item) => {
                 let coursePass = progressReducer.completedCourses && progressReducer.completedCourses.findIndex(course => course.id === parseInt(course_item));
                 if(coursePass<0) show = false;
             })

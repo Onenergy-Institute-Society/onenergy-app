@@ -14,7 +14,6 @@ const SolarTermScreen = props => {
     const [postData, setPostData] = useState([]);
     const [currentTermBanner, setCurrentTermBanner] = useState('');
     const [nextTermBanner, setNextTermBanner] = useState('');
-    Analytics.segmentClient.screen('Solar').then();
 
     const fetchPostData = async () => {
         try {
@@ -32,6 +31,7 @@ const SolarTermScreen = props => {
        }
    }
     useEffect(()=>{
+        Analytics.segmentClient.screen('Solar').then();
         fetchPostData().then();
    }, []);
     useEffect(()=>{

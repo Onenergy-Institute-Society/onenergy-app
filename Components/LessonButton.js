@@ -148,7 +148,6 @@ const LessonButton = (props) => {
                 break;
         }
     }
-console.log(videoComplete , lesson.settings.no_video , user.test_mode)
     return (
         <View style={[global.row, {paddingHorizontal: 20, paddingVertical: 15}]}>
             {progressReducer.completedLessons && progressReducer.completedLessons.includes(lesson.id) ?

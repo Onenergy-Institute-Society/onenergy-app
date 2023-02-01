@@ -150,15 +150,12 @@ const AudioPlayerRoutine = (props) => {
     };
 
     const onStopPress = async () => {
-        const state = await TrackPlayer.getState();
-        if ((state === State.Playing) || (state === State.Paused)) {
-            await TrackPlayer.reset();
-            setNextTrack(0);
-            setPastPosition(0);
-            setPlaying(false);
-            setStopped(true);
-            this.videoPlayer.seek(0);
-        }
+        await TrackPlayer.reset();
+        setNextTrack(0);
+        setPastPosition(0);
+        setPlaying(false);
+        setStopped(true);
+        this.videoPlayer.seek(0);
     };
     return (
         <>
@@ -201,7 +198,7 @@ const AudioPlayerRoutine = (props) => {
                             playWhenInactive={true}
                             ignoreSilentSwitch={"ignore"}
                             repeat={true}
-                            volume={0.5}
+                            volume={routine.bgm_volume?routine.bgm_volume/100:0.5}
                             paused={!playing}
                             source={{uri: optionData.bgm.find(el => el.id === routine.bgm_id).url}}
                         />

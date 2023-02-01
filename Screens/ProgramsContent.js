@@ -45,9 +45,9 @@ const ProgramsContent = props => {
 
         }
     }
-    Analytics.segmentClient.screen('Programs').then();
 
     useEffect(() => {
+        Analytics.segmentClient.screen('Programs').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'programs_title').title,
         });
@@ -66,7 +66,7 @@ const ProgramsContent = props => {
                 'weekly': achievementReducer.weekly,
                 'monthly': achievementReducer.monthly
             }
-            achievementReducer.milestones.map((milestone) => {
+            achievementReducer.milestones.forEach((milestone) => {
                 achievements.milestones.push({
                     'id': milestone.id,
                     'step': milestone.step,
@@ -74,7 +74,7 @@ const ProgramsContent = props => {
                     'claim_date': milestone.claim_date,
                 });
             });
-            achievementReducer.daily.map((quest) => {
+            achievementReducer.daily.forEach((quest) => {
                 achievements.daily.push({
                     'id': quest.id,
                     'step': quest.step,

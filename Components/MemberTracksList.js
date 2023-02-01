@@ -13,7 +13,7 @@ import {
     View
 } from 'react-native';
 import {useSelector} from "react-redux";
-import {mvs, s, windowWidth} from '../Utils/Scale';
+import {mvs, s, vs, windowWidth} from '../Utils/Scale';
 import AudioPlayerRoutine from './AudioPlayerRoutine';
 import {Swipeable} from "react-native-gesture-handler";
 import IconButton from "@src/components/IconButton";
@@ -73,9 +73,8 @@ const MemberTracksList = (props) => {
     const renderItem = ({item, index}) => {
         let showPlayer = !!(selectedRoutine && selectedRoutine.id === item.id);
         let totalDuration = 0;
-        console.log('item', item)
-        item.tracks.map((item) => {
-            totalDuration += item.duration;
+        item.tracks.forEach((item) => {
+            totalDuration += parseInt(item.duration);
         })
         let itemRank = !item.level?0:practiceReducer.guides.find(level=>level.id===item.level).rank;
         return (
@@ -103,8 +102,10 @@ const MemberTracksList = (props) => {
                                          imageStyle={{borderTopLeftRadius: s(9), borderTopRightRadius: s(9), borderBottomLeftRadius: showPlayer?0:s(9), borderBottomRightRadius: showPlayer?0:s(9)}}>
                             <View style={styles.titleBox}>
                                 <Text style={styles.title}>{item.title}</Text>
+{/*
                                 <Text
                                     style={styles.duration}>{new Date(totalDuration * 1000).toISOString().substring(14, 19)}</Text>
+*/}
                             </View>
                             <View style={styles.subTitleBox}>
                                 <Text style={styles.subTitle}>{item.level?practiceReducer.guides.find(level=>level.id===item.level).title:'Preparatory Practices'}</Text>
@@ -221,7 +222,7 @@ const styles = StyleSheet.create({
         width: windowWidth - s(30),
         justifyContent: 'space-between',
         alignItems: 'center',
-        height: s(80),
+        height: vs(90),
     },
     titleBox: {
         width: windowWidth - s(30),
@@ -233,7 +234,7 @@ const styles = StyleSheet.create({
     },
     subTitleBox: {
         width: windowWidth - s(30),
-        marginBottom: mvs(5),
+        marginBottom: mvs(15),
         paddingHorizontal: s(15),
         justifyContent: "center",
         alignItems: 'flex-start',

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useSelector} from "react-redux";
 import {
     StyleSheet,
@@ -17,7 +17,10 @@ import * as Analytics from "../Utils/Analytics";
 const Membership = (props) => {
     const {navigation} = props;
     const user = useSelector((state) => state.user.userObject);
-    Analytics.segmentClient.screen('Membership').then();
+
+    useEffect(()=>{
+        Analytics.segmentClient.screen('Membership').then();
+    },[])
 
     let start_date;
     let expiry_date;

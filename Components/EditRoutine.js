@@ -21,6 +21,7 @@ import {Modalize} from 'react-native-modalize';
 import {ms, mvs, s, vs, windowHeight, windowWidth} from "../Utils/Scale";
 import {SvgAddIcon, SvgIconBack, SvgIconCheck, SvgIconCross, SvgPlayIcon, SvgStopIcon} from "../Utils/svg";
 import Video from 'react-native-video';
+import Slider from 'react-native-slider';
 import * as Analytics from "../Utils/Analytics";
 
 const EditRoutine = props => {
@@ -42,6 +43,7 @@ const EditRoutine = props => {
         title: '',
         image: optionData.routine_image[0],
         bgm_id: 0,
+        bgm_volume: 100,
         level: 0,
         tracks: [],
         routine: []
@@ -49,6 +51,7 @@ const EditRoutine = props => {
     const [routines, setRoutines] = useState(routineIndex >= 0 ? routinesReducer[routineIndex].routine : []);
     const [refresh, setRefresh] = useState(0);
     const [selectBgm, setSelectBgm] = useState([]);
+    const [selectBgmVolume, setSelectBgmVolume] = useState(routineIndex >= 0 ? routinesReducer[routineIndex].bgm_volume: 100);
     const [selectLevel, setSelectLevel] = useState('');
     const practiceReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null);
     const [sections, setSections] = useState([]);
@@ -127,21 +130,28 @@ const EditRoutine = props => {
                 changeStatus: changedStatus,
                 backButtonTitle: changedStatus ? 'Save' : '',
             });
-            if(routineDetailState.id>0){
-                backgroundMusics.map(bgm => {
+            if(routineDetailState.bgm_id) {
+                backgroundMusics.forEach(bgm => {
                     if (bgm.id === routineDetailState.bgm_id) {
                         setSelectBgm(bgm);
                     }
-                });
-                setSelectLevel(practiceReducer.guides.find(level=>level.id===routineDetailState.level).title);
-                setSections(practiceReducer.guides.find(level=>level.id===routineDetailState.level).sections);
-            } else {
+                })
+            }else{
                 setSelectBgm(backgroundMusics[0]);
-                setSelectLevel(practiceReducer.guides.find(level => level.rank === 0).title)
+            }
+            if(routineDetailState.bgm_volume) {
+                setSelectBgmVolume(routineDetailState.bgm_volume);
+            }else{
+                setSelectBgmVolume(100);
+            }
+            if(routineDetailState.level) {
+                setSelectLevel(practiceReducer.guides.find(level => level.id === routineDetailState.level).title);
+                setSections(practiceReducer.guides.find(level => level.id === routineDetailState.level).sections);
+            }else {
+                setSelectLevel(practiceReducer.guides.find(level => level.rank === 0).title);
                 setSections(practiceReducer.guides.find(level => level.rank === 0).sections);
             }
         }
-
     }, [routineDetailState])
     const onBackPressed = () => {
         if (changedStatus) {
@@ -200,8 +210,8 @@ const EditRoutine = props => {
                 artwork: artwork,
                 duration: opening_duration,
             });
-            routine.map(item => {
-                item.parts.map(part => {
+            routine.forEach(item => {
+                item.parts.forEach(part => {
                     if (part.start) {
                         id++;
                         tracks.push({
@@ -408,21 +418,21 @@ const EditRoutine = props => {
     };
 
     const renderGuides = (item) => {
-        console.log('guideitem', item, routineDetailState)
         let index = routineDetailState.routine.findIndex(el => parseInt(el.id) === parseInt(item.item.id));
         let track;
         track = item.item.parts.length?item.item.parts[0].start:'';
-        console.log('track', track)
         return (
-            item.item.show && item.item.parts.length ?
+            item.item.parts.length?
                 <TouchableWithoutFeedback onPress={() => {
-                    if (index === -1) {
-                        addGuideToRoutine(item.item);
-                        setChangedStatus(true);
+                    if(item.item.show && item.item.parts.length) {
+                        if (index === -1) {
+                            addGuideToRoutine(item.item);
+                            setChangedStatus(true);
+                        }
                     }
                 }}>
                     <View style={{
-                        backgroundColor: colors.bodyBg,
+                        backgroundColor: item.item.show && item.item.parts.length?colors.bodyBg:colors.secondaryButtonBg,
                         paddingHorizontal: ms(5),
                         paddingVertical: mvs(10),
                         borderBottomWidth: 1,
@@ -432,7 +442,7 @@ const EditRoutine = props => {
                         justifyContent: 'space-between'
                     }}>
                         <View style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
-                            {track ?
+                            {item.item.show && item.item.parts.length && track ?
                                 <TouchableOpacity
                                     onPress={() => {
                                         if (playingSound && track === soundUrl) {
@@ -453,12 +463,15 @@ const EditRoutine = props => {
                                 {item.item.title}
                             </Text>
                         </View>
+                        {!(item.item.show && item.item.parts.length) ?
+                            <Text style={[global.text, {fontSize:s(15),color:colors.secondaryButtonColor}]}>LOCKED</Text>
+                            :null}
                         {index >= 0 ? (
                             <SvgIconCheck size={s(24)} color={colors.primaryColor}/>
                         ) : null}
                     </View>
                 </TouchableWithoutFeedback>
-                : null
+                :null
         )
     }
     const renderCount = (item) => {
@@ -509,7 +522,6 @@ const EditRoutine = props => {
         )
     }
     const renderBGM = (item) => {
-
         let cornerStyle = {};
         let bottomStyle = {};
         let bgmTrack;
@@ -532,26 +544,28 @@ const EditRoutine = props => {
         }
         return (
             <TouchableWithoutFeedback onPress={() => {
-                if(routineDetailState.bgm_id !== item.item.id) {
-                    setSelectBgm(item.item);
-                    setRoutineDetailState(prevState => {
-                        return {...prevState, bgm_id: item.item.id}
-                    });
-                    setChangedStatus(true);
-                    setPlayingSound(false);
-                    this.bgmDialog.close();
+                if(user.rank>=item.item.rank) {
+                    if (routineDetailState.bgm_id !== item.item.id) {
+                        setRoutineDetailState(prevState => {
+                            return {...prevState, bgm_id: item.item.id}
+                        });
+                        setSelectBgm(item.item);
+                        setChangedStatus(true);
+                        setPlayingSound(false);
+                        this.bgmDialog.close();
+                    }
                 }
             }}>
                 <View style={[cornerStyle, bottomStyle, {
                     paddingHorizontal: ms(5),
-                    backgroundColor: colors.bodyBg,
+                    backgroundColor: user.rank>=item.item.rank?colors.bodyBg:colors.secondaryButtonBg,
                     paddingVertical: mvs(10),
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between'
                 }]}>
                     <View style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
-                        {bgmTrack ?
+                        {user.rank>=item.item.rank&&bgmTrack ?
                             <TouchableOpacity
                                 onPress={() => {
                                     if (playingSound && bgmTrack === soundUrl) {
@@ -571,7 +585,58 @@ const EditRoutine = props => {
                             {item.item.name}
                         </Text>
                     </View>
+                    {user.rank<item.item.rank?
+                        <Text style={[global.text, {fontSize:s(15),color:colors.secondaryButtonColor}]}>LOCKED</Text>
+                        :null}
                     {routineDetailState.bgm_id === item.item.id ? (
+                        <SvgIconCheck size={s(24)} color={colors.primaryColor}/>
+                    ) : null}
+                </View>
+            </TouchableWithoutFeedback>
+        )
+    }
+    const renderBGMVolume = (item) => {
+        let cornerStyle = {};
+        let bottomStyle = {};
+        switch (item.index) {
+            case 0:
+                cornerStyle = {borderTopLeftRadius: s(9), borderTopRightRadius: s(9)};
+                bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
+                break;
+            case backgroundMusics.length - 1:
+                cornerStyle = {borderBottomLeftRadius: s(9), borderBottomRightRadius: s(9)};
+                break;
+            default:
+                bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
+                break;
+        }
+        return (
+            <TouchableWithoutFeedback onPress={() => {
+                if (routineDetailState.bgm_volume !== item.item) {
+                    setRoutineDetailState(prevState => {
+                        return {...prevState, bgm_volume: item.item}
+                    });
+                    setSelectBgmVolume(item.item);
+                    setChangedStatus(true);
+                    setPlayingSound(false);
+                    this.bgmVolumeDialog.close();
+                }
+            }}>
+                <View style={[cornerStyle, bottomStyle, {
+                    paddingHorizontal: ms(5),
+                    backgroundColor: colors.bodyBg,
+                    paddingVertical: mvs(10),
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                }]}>
+                    <View style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
+                        <Text
+                            style={[global.text, {fontSize:s(15),marginLeft: s(5)}]}>
+                            {item.item}
+                        </Text>
+                    </View>
+                    {routineDetailState.bgm_volume === item.item ? (
                         <SvgIconCheck size={s(24)} color={colors.primaryColor}/>
                     ) : null}
                 </View>
@@ -644,19 +709,16 @@ const EditRoutine = props => {
         )
     }
     const renderSectionHeader = (section) => {
-        console.log('section', section)
         return (
-            section.section.data.find((item) => item.show) ?
-                <Text style={[global.settingsItemTitle, {
-                    backgroundColor: '#e6e6e8',
-                    borderTopRightRadius: s(9),
-                    borderTopLeftRadius: s(9),
-                    paddingVertical: mvs(10),
-                    fontSize: s(20),
-                    marginTop: mvs(15),
-                    textAlign: "center"
-                }]}>{section.section.title.toUpperCase()}</Text>
-                : null
+            <Text style={[global.settingsItemTitle, {
+                backgroundColor: '#e6e6e8',
+                borderTopRightRadius: s(9),
+                borderTopLeftRadius: s(9),
+                paddingVertical: mvs(10),
+                fontSize: s(20),
+                marginTop: mvs(15),
+                textAlign: "center"
+            }]}>{section.section.title.toUpperCase()}</Text>
         );
     }
     const renderColor = () => {
@@ -716,13 +778,14 @@ const EditRoutine = props => {
                     <View style={{
                         width: windowWidth - s(35),
                         flexDirection: "row",
-                        justifyContent: "flex-start",
+                        justifyContent: "space-between",
                         alignItems: "center"
                     }}>
                         <Text style={global.settingsItemTitle}>Background Music</Text>
+                        <Text style={[global.settingsItemTitle, {fontSize: s(14)}]}>Volume</Text>
                     </View>
-                    <View>
-                        <View style={styles.listContainer}>
+                    <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                        <View style={[styles.listContainer, {width: "75%"}]}>
                             <TouchableWithoutFeedback
                                 onPress={() => {
                                     this.bgmDialog.open();
@@ -734,7 +797,25 @@ const EditRoutine = props => {
                                         </Text>
                                     ) : null}
                                     <View>
-                                        <Image style={{marginRight: 25, tintColor: colors.primaryColor}}
+                                        <Image style={{marginRight: 10, tintColor: colors.primaryColor}}
+                                               source={require("@src/assets/img/arrow-down.png")}/>
+                                    </View>
+                                </View>
+                            </TouchableWithoutFeedback>
+                        </View>
+                        <View style={[styles.listContainer, {width: "20%"}]}>
+                            <TouchableWithoutFeedback
+                                onPress={() => {
+                                    this.bgmVolumeDialog.open();
+                                }}>
+                                <View style={styles.content}>
+                                    {selectBgmVolume ? (
+                                        <Text style={[global.text, styles.trackTitle]}>
+                                            {selectBgmVolume}
+                                        </Text>
+                                    ) : null}
+                                    <View>
+                                        <Image style={{marginRight: 10, tintColor: colors.primaryColor}}
                                                source={require("@src/assets/img/arrow-down.png")}/>
                                     </View>
                                 </View>
@@ -742,7 +823,6 @@ const EditRoutine = props => {
                         </View>
                     </View>
                 </View>
-                {user.rank>=1?
                 <View style={global.roundBox}>
                     <View style={{
                         width: windowWidth - s(35),
@@ -763,7 +843,7 @@ const EditRoutine = props => {
                                         {selectLevel}
                                     </Text>
                                     <View>
-                                        <Image style={{marginRight: 25, tintColor: colors.primaryColor}}
+                                        <Image style={{marginRight: 10, tintColor: colors.primaryColor}}
                                                source={require("@src/assets/img/arrow-down.png")}/>
                                     </View>
                                 </View>
@@ -771,7 +851,6 @@ const EditRoutine = props => {
                         </View>
                     </View>
                 </View>
-                    :null}
                 <View style={global.roundBox}>
                     <View style={{
                         width: "100%",
@@ -826,6 +905,62 @@ const EditRoutine = props => {
                     />
                     : null}
             </ScrollView>
+            <Modalize
+                ref={(bgmVolumeDialog) => {
+                    this.bgmVolumeDialog = bgmVolumeDialog;
+                }}
+                modalStyle={{backgroundColor: colors.bodyFrontBg}}
+                childrenStyle={{padding: s(25)}}
+                modalHeight={windowHeight / 4}
+                withHandle="false"
+                withReactModal={true}
+                HeaderComponent={
+                    <View style={{
+                        padding: s(15),
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        borderTopLeftRadius: s(9),
+                        borderTopRightRadius: s(9),
+                        borderBottomWidth: StyleSheet.hairlineWidth,
+                        backgroundColor: colors.bodyBg,
+                        borderBottomColor: colors.borderColor
+                    }}>
+                        <Text style={{
+                            fontSize: s(24),
+                            color: colors.headerColor,
+                            fontFamily: "MontserratAlternates-SemiBold",
+                            fontWeight: "bold"
+                        }}>Choose volume</Text>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.bgmVolumeDialog.close();
+                            }}
+                        >
+                            <SvgIconCross/>
+                        </TouchableOpacity>
+                    </View>
+                }
+            >
+                <View style={[global.container, {justifyContent:"center", alignItems:"center"}]}>
+                    <Slider
+                        style={{width: '100%', height: vs(60)}}
+                        value={selectBgmVolume}
+                        thumbTintColor={colors.headerIconColor}
+                        step={10}
+                        minimumValue={10}
+                        thumbStyle={{width: s(15), height: s(15)}}
+                        maximumValue={100}
+                        minimumTrackTintColor={'#692be0'}
+                        maximumTrackTintColor={'#d6c5f7'}
+                        disabled={false}
+                        onValueChange={val =>{setSelectBgmVolume(val)}}
+                        onSlidingComplete={val=> {
+                            this.bgmVolumeDialog.close();
+                        }}
+                    />
+                    <Text style={global.text}>{selectBgmVolume}</Text>
+                </View>
+            </Modalize>
             <Modalize
                 ref={(countDialog) => {
                     this.countDialog = countDialog;
@@ -1029,7 +1164,7 @@ const styles = StyleSheet.create({
     index: {},
     listContainer: {
         width: windowWidth - s(30),
-        aspectRatio: 8,
+        height: vs(35),
         flexDirection: 'row',
         marginBottom: mvs(5),
         borderRadius:s(9),
@@ -1084,10 +1219,10 @@ const styles = StyleSheet.create({
     trackTitle: {
         fontSize: s(14),
         paddingLeft: 10,
-        flex: 0.7,
+        flex: 0.8,
     },
     trackCount: {
-        flex: 0.3,
+        flex: 0.2,
         width: s(50),
         flexDirection: "row",
         justifyContent: "flex-end",

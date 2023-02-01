@@ -10,11 +10,9 @@ import {s} from "../Utils/Scale";
 import QiPointHeader from "../Components/QiPointHeader";
 import AuthWrapper from "@src/components/AuthWrapper";
 import {SvgIconBack} from "../Utils/svg";
-import * as Analytics from "../Utils/Analytics";
 
 const MilestonesLearn = (props) => {
     try {
-        Analytics.segmentClient.screen('Milestones', {type: 'Learn'}).then();
         return (
             <Milestones type={'learn'} {...props}/>
         )
@@ -25,7 +23,6 @@ const MilestonesLearn = (props) => {
 
 const MilestonesStartup = (props) => {
     try {
-        Analytics.segmentClient.screen('Milestones', {type: 'Startup'}).then();
         return (
             <Milestones type={'startup'} {...props}/>
         )
@@ -35,7 +32,6 @@ const MilestonesStartup = (props) => {
 }
 const MilestonesStamina = (props) => {
     try {
-        Analytics.segmentClient.screen('Milestones', {type: 'Endurance'}).then();
         return (
             <Milestones type={'endurance'} {...props}/>
         )

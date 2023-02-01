@@ -26,13 +26,12 @@ const PracticePersonal = props => {
     const {global} = screenProps;
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const helpPageData = optionData.helps.find(el => el.name === 'practice_guided_empty');
-    const guideReducer = useSelector((state) => state.onenergyAppReducer?state.onenergyAppReducer.practiceReducer.guides:null);
     const progressReducer = useSelector((state) => state.onenergyAppReducer?state.onenergyAppReducer.progressReducer:null);
     const [messageBarDisplay, setMessageBarDisplay] = useState(false);
     const [fadeAnim] = useState(new Animated.Value(0));
-    Analytics.segmentClient.screen('Practices Guided').then();
 
     useEffect(() => {
+        Analytics.segmentClient.screen('Practices Guided').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'practices_basic').title,
        });
@@ -60,7 +59,7 @@ const PracticePersonal = props => {
                         </View>
                         : null
                    }
-                    <TracksList tracks={guideReducer} setMessageBarDisplay={setMessageBarDisplay} {...props}/>
+                    <TracksList setMessageBarDisplay={setMessageBarDisplay} {...props}/>
                 </ScrollView>
             :
                 <View style={{
