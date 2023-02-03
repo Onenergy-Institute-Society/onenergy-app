@@ -2042,7 +2042,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         "gamipress_ranks",
         "forums"
     ])
-    externalCodeSetup.configApi.setTrackPlayerEnabled();
     externalCodeSetup.indexJsApi.addIndexJsFunction(() => {
         Orientation.lockToPortrait();
         TrackPlayer.registerPlaybackService(() => PlaybackService);
