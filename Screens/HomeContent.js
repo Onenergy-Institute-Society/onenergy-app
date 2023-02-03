@@ -165,30 +165,30 @@ const HomeContent = (props) => {
     useEffect(async () => {
         if(user) {
             let load;
-            console.log('optionData.cache.guide', optionData.cache.guide, 'practiceReducer.guideUpdate', practiceReducer.guideUpdate)
-            if (optionData.cache.guide && practiceReducer.guideUpdate && optionData.cache.guide > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
+            console.log('optionData.cache.guideCache', optionData.cache.guideCache, 'practiceReducer.guideUpdate', practiceReducer.guideUpdate)
+            if (optionData.cache.guideCache && practiceReducer.guideUpdate && optionData.cache.guideCache > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
                 load = 1;
             }
-            console.log('optionData.cache.group', optionData.cache.group, 'practiceReducer.groupUpdate', practiceReducer.groupUpdate)
-            if (optionData.cache.group && practiceReducer.groupUpdate && optionData.cache.group > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
+            console.log('optionData.cache.groupCache', optionData.cache.groupCache, 'practiceReducer.groupUpdate', practiceReducer.groupUpdate)
+            if (optionData.cache.groupCache && practiceReducer.groupUpdate && optionData.cache.groupCache > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
                 load = 1;
             }
-            console.log('optionData.cache.routine', optionData.cache.routine, 'practiceReducer.routineUpdate', practiceReducer.routineUpdate)
-            if (optionData.cache.routine && practiceReducer.routineUpdate && optionData.cache.routine > practiceReducer.routineUpdate || !practiceReducer.routineUpdate) {
+            console.log('optionData.cache.routineCache', optionData.cache.routineCache, 'practiceReducer.routineUpdate', practiceReducer.routineUpdate)
+            if (optionData.cache.routineCache && practiceReducer.routineUpdate && optionData.cache.routineCache > practiceReducer.routineUpdate || !practiceReducer.routineUpdate) {
                 load = 1;
             }
-            console.log('optionData.cache.post', optionData.cache.post, 'postsReducer.postUpdate', postsReducer.postUpdate)
-            if (optionData.cache.post && postsReducer.postUpdate && optionData.cache.post > postsReducer.postUpdate || !postsReducer.postUpdate) {
+            console.log('optionData.cache.postCache', optionData.cache.postCache, 'postsReducer.postUpdate', postsReducer.postUpdate)
+            if (optionData.cache.postCache && postsReducer.postUpdate && optionData.cache.postCache > postsReducer.postUpdate || !postsReducer.postUpdate) {
                 dispatch({
                     type: 'ONENERGY_POSTS_RESET',
                 });
             }
-            console.log('optionData.cache.achievement', optionData.cache.achievement, 'achievementReducer.achievementUpdate', achievementReducer.achievementUpdate)
-            if (optionData.cache.achievement && achievementReducer.achievementUpdate && optionData.cache.achievement > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
+            console.log('optionData.cache.achievementCache', optionData.cache.achievementCache, 'achievementReducer.achievementUpdate', achievementReducer.achievementUpdate)
+            if (optionData.cache.achievementCache && achievementReducer.achievementUpdate && optionData.cache.achievementCache > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
                 load = 1;
             }
-            console.log('optionData.cache.progress', optionData.cache.progress, 'progressReducer.progressUpdate', progressReducer.progressUpdate)
-            if (optionData.cache.progress && progressReducer.progressUpdate && optionData.cache.progress > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
+            console.log('optionData.cache.progressCache', optionData.cache.progressCache, 'progressReducer.progressUpdate', progressReducer.progressUpdate)
+            if (optionData.cache.progressCache && progressReducer.progressUpdate && optionData.cache.progressCache > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
                 load = 1;
             }
             if (load === 1) {

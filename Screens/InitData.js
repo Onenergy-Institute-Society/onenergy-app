@@ -59,26 +59,26 @@ const InitData = (props) => {
             }).then();
         const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
         let loadGroup = false, loadGuide = false, loadRoutine = false, loadAchievement = false, loadProgress = false;
-        if (optionData.cache.guide && practiceReducer.guideUpdate && optionData.cache.guide > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
+        if (optionData.cache.guideCache && practiceReducer.guideUpdate && optionData.cache.guideCache > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
             loadGuide = true;
         }
-        if (optionData.cache.group && practiceReducer.groupUpdate && optionData.cache.group > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
+        if (optionData.cache.groupCache && practiceReducer.groupUpdate && optionData.cache.groupCache > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
             loadGroup = true;
         }
-        if (optionData.cache.routine && practiceReducer.routineUpdate && optionData.cache.routine > practiceReducer.routineUpdate || !practiceReducer.routineUpdate) {
+        if (optionData.cache.routineCache && practiceReducer.routineUpdate && optionData.cache.routineCache > practiceReducer.routineUpdate || !practiceReducer.routineUpdate) {
             loadRoutine = true;
         }
-        if (optionData.cache.achievement && achievementReducer.achievementUpdate && optionData.cache.achievement > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
+        if (optionData.cache.achievementCache && achievementReducer.achievementUpdate && optionData.cache.achievementCache > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
             loadAchievement = true;
         }
-        if (optionData.cache.progress && progressReducer.progressUpdate && optionData.cache.progress > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
+        if (optionData.cache.progressCache && progressReducer.progressUpdate && optionData.cache.progressCache > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
             loadProgress = true;
         }
         console.log('loadGuide', loadGuide , 'loadGroup',  loadGroup , 'loadRoutine', loadRoutine ,'loadAchievement', loadAchievement , 'loadProgress', loadProgress);
         if (loadGuide || loadGroup || loadRoutine || loadAchievement || loadProgress) {
             fetchInitDate(loadGroup, loadGuide, loadRoutine, loadAchievement, loadProgress).then();
         }
-        if (optionData.cache.post && postsReducer.postUpdate && optionData.cache.post > postsReducer.postUpdate || !postsReducer.postUpdate) {
+        if (optionData.cache.postCache && postsReducer.postUpdate && optionData.cache.postCache > postsReducer.postUpdate || !postsReducer.postUpdate) {
             dispatch({
                 type: 'ONENERGY_POSTS_RESET',
             });
@@ -90,24 +90,24 @@ const InitData = (props) => {
 
     useEffect(() => {
         let loaded = true;
-        console.log('achievementUpdate', achievementReducer.achievementUpdate, optionData.cache.achievement);
-        if (achievementReducer.achievementUpdate < optionData.cache.achievement) {
+        console.log('achievementUpdate', achievementReducer.achievementUpdate, optionData.cache.achievementCache);
+        if (achievementReducer.achievementUpdate < optionData.cache.achievementCache) {
             loaded = false;
         }
-        console.log('progressUpdate', progressReducer.progressUpdate, optionData.cache.progress);
-        if (progressReducer.progressUpdate < optionData.cache.progress) {
+        console.log('progressUpdate', progressReducer.progressUpdate, optionData.cache.progressCache);
+        if (progressReducer.progressUpdate < optionData.cache.progressCache) {
             loaded = false;
         }
-        console.log('guideUpdate', practiceReducer.guideUpdate, optionData.cache.guide);
-        if (practiceReducer.guideUpdate < optionData.cache.guide) {
+        console.log('guideUpdate', practiceReducer.guideUpdate, optionData.cache.guideCache);
+        if (practiceReducer.guideUpdate < optionData.cache.guideCache) {
             loaded = false;
         }
-        console.log('groupUpdate', practiceReducer.groupUpdate, optionData.cache.group);
-        if (practiceReducer.groupUpdate < optionData.cache.group) {
+        console.log('groupUpdate', practiceReducer.groupUpdate, optionData.cache.groupCache);
+        if (practiceReducer.groupUpdate < optionData.cache.groupCache) {
             loaded = false;
         }
-        console.log('routineUpdate', practiceReducer.routineUpdate, optionData.cache.routine);
-        if (practiceReducer.routineUpdate < optionData.cache.routine) {
+        console.log('routineUpdate', practiceReducer.routineUpdate, optionData.cache.routineCache);
+        if (practiceReducer.routineUpdate < optionData.cache.routineCache) {
             loaded = false;
         }
         if (loaded) {

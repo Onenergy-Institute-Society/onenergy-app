@@ -64,7 +64,7 @@ const PostRow = props => {
     }
     useEffect(() => {
         let loadPosts = false;
-        if (postsReducer.postUpdate && optionData.cache.post > postsReducer.postUpdate || !postsReducer.postUpdate) {
+        if (postsReducer.postUpdate && optionData.cache.postCache > postsReducer.postUpdate || !postsReducer.postUpdate) {
             loadPosts = true;
         } else {
             if (categoryIndex && categoryIndex >= 0) {
