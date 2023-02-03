@@ -164,7 +164,7 @@ const PracticesContent = props => {
                 <ScrollView style={{flexGrow: 1}} showsVerticalScrollIndicator={false}>
                     {(optionData.goalCards && optionData.goalCards.length) ?
                         <View>
-                            <EventList location={'practice'} {...props}/>
+                            <EventList location={'practice'} {...props} extraStyle={{marginTop:mvs(20)}}/>
                         </View>
                         : null
                     }

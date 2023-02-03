@@ -45,7 +45,7 @@ const EditRoutine = props => {
         bgm_id: 0,
         bgm_volume: 100,
         level: 0,
-        tracks: [],
+        audioTracks: [],
         routine: []
     });
     const [routines, setRoutines] = useState(routineIndex >= 0 ? routinesReducer[routineIndex].routine : []);
@@ -287,7 +287,7 @@ const EditRoutine = props => {
             setRoutines(newRoutines);
             let tracks = createTracks(newRoutines);
             setRoutineDetailState(prevState => {
-                return {...prevState, routine: newRoutines, tracks: tracks}
+                return {...prevState, routine: newRoutines, audioTracks: tracks}
             });
             setChangedStatus(true);
             setRefresh(refresh + 1);
@@ -315,7 +315,7 @@ const EditRoutine = props => {
             return {
                 ...prevState,
                 routine: newRoutines,
-                tracks: tracks
+                audioTracks: tracks
             }
         });
         setChangedStatus(true);
@@ -332,7 +332,7 @@ const EditRoutine = props => {
             return {
                 ...prevState,
                 routine: newRoutines,
-                tracks: tracks
+                audioTracks: tracks
             }
         });
         setChangedStatus(true);
@@ -479,11 +479,11 @@ const EditRoutine = props => {
         let bottomStyle = {};
         switch (item.index) {
             case 0:
-                cornerStyle = {borderTopLeftRadius: s(9), borderTopRightRadius: s(9), marginTop: mvs(25)};
+                cornerStyle = {borderTopLeftRadius: s(9), borderTopRightRadius: s(9), marginTop: mvs(20)};
                 bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
                 break;
             case 29:
-                cornerStyle = {borderBottomLeftRadius: s(9), borderBottomRightRadius: s(9), marginBottom: mvs(25)};
+                cornerStyle = {borderBottomLeftRadius: s(9), borderBottomRightRadius: s(9), marginBottom: mvs(20)};
                 break;
             default:
                 bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
@@ -595,54 +595,6 @@ const EditRoutine = props => {
             </TouchableWithoutFeedback>
         )
     }
-    const renderBGMVolume = (item) => {
-        let cornerStyle = {};
-        let bottomStyle = {};
-        switch (item.index) {
-            case 0:
-                cornerStyle = {borderTopLeftRadius: s(9), borderTopRightRadius: s(9)};
-                bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
-                break;
-            case backgroundMusics.length - 1:
-                cornerStyle = {borderBottomLeftRadius: s(9), borderBottomRightRadius: s(9)};
-                break;
-            default:
-                bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
-                break;
-        }
-        return (
-            <TouchableWithoutFeedback onPress={() => {
-                if (routineDetailState.bgm_volume !== item.item) {
-                    setRoutineDetailState(prevState => {
-                        return {...prevState, bgm_volume: item.item}
-                    });
-                    setSelectBgmVolume(item.item);
-                    setChangedStatus(true);
-                    setPlayingSound(false);
-                    this.bgmVolumeDialog.close();
-                }
-            }}>
-                <View style={[cornerStyle, bottomStyle, {
-                    paddingHorizontal: ms(5),
-                    backgroundColor: colors.bodyBg,
-                    paddingVertical: mvs(10),
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
-                }]}>
-                    <View style={{flexDirection: "row", justifyContent: "flex-start", alignItems: "center"}}>
-                        <Text
-                            style={[global.text, {fontSize:s(15),marginLeft: s(5)}]}>
-                            {item.item}
-                        </Text>
-                    </View>
-                    {routineDetailState.bgm_volume === item.item ? (
-                        <SvgIconCheck size={s(24)} color={colors.primaryColor}/>
-                    ) : null}
-                </View>
-            </TouchableWithoutFeedback>
-        )
-    }
     const renderLevel = (item) => {
 
         let cornerStyle = {};
@@ -672,7 +624,7 @@ const EditRoutine = props => {
                                 text: "OK", onPress: () => {
                                     setSelectLevel(item.item.title);
                                     setRoutineDetailState(prevState => {
-                                        return {...prevState, routine: [], tracks: [], level: item.item.id}
+                                        return {...prevState, routine: [], audioTracks: [], level: item.item.id}
                                     });
                                     setRoutines([]);
                                     setChangedStatus(true);
@@ -911,7 +863,7 @@ const EditRoutine = props => {
                 }}
                 modalStyle={{backgroundColor: colors.bodyFrontBg}}
                 childrenStyle={{padding: s(25)}}
-                modalHeight={windowHeight / 4}
+                modalHeight={windowHeight / 3}
                 withHandle="false"
                 withReactModal={true}
                 HeaderComponent={
@@ -942,6 +894,7 @@ const EditRoutine = props => {
                 }
             >
                 <View style={[global.container, {justifyContent:"center", alignItems:"center"}]}>
+                    <Text style={global.text}>{selectBgmVolume}</Text>
                     <Slider
                         style={{width: '100%', height: vs(60)}}
                         value={selectBgmVolume}
@@ -958,7 +911,6 @@ const EditRoutine = props => {
                             this.bgmVolumeDialog.close();
                         }}
                     />
-                    <Text style={global.text}>{selectBgmVolume}</Text>
                 </View>
             </Modalize>
             <Modalize

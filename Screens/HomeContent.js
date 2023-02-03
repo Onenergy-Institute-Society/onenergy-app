@@ -25,7 +25,6 @@ import {ProgressChart} from "react-native-chart-kit";
 import {Modalize} from 'react-native-modalize';
 import moment from 'moment';
 import SunCalc from "suncalc";
-import GetLocation from 'react-native-get-location'
 import {
     SvgIconCheck,
     SvgIconCross,
@@ -45,13 +44,12 @@ const HomeContent = (props) => {
     const {global, colors} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const allowLocation = useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings.allowLocation : null);
+    const settings = useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings : null);
     const practiceReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null);
     const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
     const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
     const postsReducer = useSelector((state) => state.postsReducer ? state.postsReducer : null);
     const dispatch = useDispatch();
-    const [location, setLocation] = useState(null);
     const [sunrise, setSunrise] = useState('');
     const [phase, setPhase] = useState('');
     const [nextMoonPhase, setNextMoonPhase] = useState({});
@@ -134,31 +132,76 @@ const HomeContent = (props) => {
         if(progressReducer.latestUpdate!==0)
             return today !== new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD');
     }
-    const getLocation = () => {
-        GetLocation.getCurrentPosition({
-            enableHighAccuracy: true,
-            timeout: 15000,
-        }).then(location => {
-            setLocation(location);
-            const sunTimes = SunCalc.getTimes(new Date(), location.latitude, location.longitude, 0);
-            setSunrise(sunTimes);
-            if(!allowLocation) {
+
+    const fetchIpAndLocation = async () => {
+        try {
+            const api = getApi(props.config);
+            const localInfo = await api.customRequest(
+                "wp-json/onenergy/v1/getLocalInfo/",
+                "get",       // get, post, patch, delete etc.
+                {},               // JSON, FormData or any other type of payload you want to send in a body of request
+                null,             // validation function or null
+                {},               // request headers object
+                false   // true - if full url is given, false if you use the suffix for the url. False is default.
+            ).then(response => response.data);
+            if(localInfo) {
                 dispatch({
-                    type: 'SETTINGS_ALLOW_LOCATION',
-                    payload: true,
+                    type: 'SETTINGS_LOCAL_INFO',
+                    payload: localInfo
                 });
             }
-        })
+        } catch (e) {
+            console.error(e);
+        }
     }
-
-    useEffect(() => {
+    useEffect(()=>{
+        console.log(settings.latitude, settings.longitude)
+        if(settings.latitude&&settings.longitude){
+            const sunTimes = SunCalc.getTimes(new Date(), settings.latitude, settings.longitude, 0);
+            console.log(sunTimes)
+            setSunrise(sunTimes);
+        }
+    },[settings.latitude])
+    useEffect(async () => {
+        if(user) {
+            let load;
+            console.log('optionData.cache.guide', optionData.cache.guide, 'practiceReducer.guideUpdate', practiceReducer.guideUpdate)
+            if (optionData.cache.guide && practiceReducer.guideUpdate && optionData.cache.guide > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
+                load = 1;
+            }
+            console.log('optionData.cache.group', optionData.cache.group, 'practiceReducer.groupUpdate', practiceReducer.groupUpdate)
+            if (optionData.cache.group && practiceReducer.groupUpdate && optionData.cache.group > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
+                load = 1;
+            }
+            console.log('optionData.cache.routine', optionData.cache.routine, 'practiceReducer.routineUpdate', practiceReducer.routineUpdate)
+            if (optionData.cache.routine && practiceReducer.routineUpdate && optionData.cache.routine > practiceReducer.routineUpdate || !practiceReducer.routineUpdate) {
+                load = 1;
+            }
+            console.log('optionData.cache.post', optionData.cache.post, 'postsReducer.postUpdate', postsReducer.postUpdate)
+            if (optionData.cache.post && postsReducer.postUpdate && optionData.cache.post > postsReducer.postUpdate || !postsReducer.postUpdate) {
+                dispatch({
+                    type: 'ONENERGY_POSTS_RESET',
+                });
+            }
+            console.log('optionData.cache.achievement', optionData.cache.achievement, 'achievementReducer.achievementUpdate', achievementReducer.achievementUpdate)
+            if (optionData.cache.achievement && achievementReducer.achievementUpdate && optionData.cache.achievement > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
+                load = 1;
+            }
+            console.log('optionData.cache.progress', optionData.cache.progress, 'progressReducer.progressUpdate', progressReducer.progressUpdate)
+            if (optionData.cache.progress && progressReducer.progressUpdate && optionData.cache.progress > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
+                load = 1;
+            }
+            if (load === 1) {
+                props.navigation.navigate("InitData", {transition: 'fade'});
+            }
+        }
         Analytics.segmentClient.screen('Home').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
         });
-
-        if(allowLocation) {
-            getLocation();
+        console.log('ip',settings.ip)
+        if(!settings.ip){
+            fetchIpAndLocation().then();
         }
         const moonIllumination = SunCalc.getMoonIllumination(new Date());
         const phaseNumber = moonIllumination.phase * 200;
@@ -193,35 +236,9 @@ const HomeContent = (props) => {
             dateDiff = 29.530 - lunarAge;
             moonPhase = 'New Moon';
         }
-
         moonPhaseDate = moment.utc().add(dateDiff, 'days').format('MMM DD');
         setNextMoonPhase({'date': moonPhaseDate, 'phase': moonPhase});
         if(user) {
-            let load;
-
-            if (optionData.cache.guide && practiceReducer.guideUpdate && optionData.cache.guide > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
-                load = 1;
-            }
-            if (optionData.cache.group && practiceReducer.groupUpdate && optionData.cache.group > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
-                load = 1;
-            }
-            if (optionData.cache.routine && practiceReducer.routineUpdate && optionData.cache.routine > practiceReducer.routineUpdate || !practiceReducer.routineUpdate) {
-                load = 1;
-            }
-            if (optionData.cache.post && postsReducer.postUpdate && optionData.cache.post > postsReducer.postUpdate || !postsReducer.postUpdate) {
-                dispatch({
-                    type: 'ONENERGY_POSTS_RESET',
-                });
-            }
-            if (optionData.cache.achievement && achievementReducer.achievementUpdate && optionData.cache.achievement > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
-                load = 1;
-            }
-            if (optionData.cache.progress && progressReducer.progressUpdate && optionData.cache.progress > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
-                load = 1;
-            }
-            if(load === 1){
-                props.navigation.navigate("InitData", {transition: 'fade'});
-            }
             async function run() {
                 await SetupService();
             }
@@ -321,11 +338,11 @@ const HomeContent = (props) => {
         let bottomStyle = {};
         switch (item.index) {
             case 0:
-                cornerStyle = {borderTopLeftRadius: s(9), borderTopRightRadius: s(9), marginTop: mvs(25)};
+                cornerStyle = {borderTopLeftRadius: s(9), borderTopRightRadius: s(9), marginTop: mvs(20)};
                 bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
                 break;
             case 11:
-                cornerStyle = {borderBottomLeftRadius: s(9), borderBottomRightRadius: s(9), marginBottom: mvs(25)};
+                cornerStyle = {borderBottomLeftRadius: s(9), borderBottomRightRadius: s(9), marginBottom: mvs(20)};
                 break;
             default:
                 bottomStyle = {borderBottomWidth: 1, borderBottomColor: '#E6E6E8'};
@@ -611,8 +628,8 @@ const HomeContent = (props) => {
                 }
                 {optionData.goalCards && optionData.goalCards.length ?
                     <View style={styles.programRow}>
-                        <EventList location={'top'} {...props}/>
-                        <EventList location={'home'} {...props}/>
+                        <EventList location={'top'} {...props} extraStyle={{marginTop:mvs(20)}}/>
+                        <EventList location={'home'} {...props} extraStyle={{marginTop:mvs(20)}}/>
                     </View> : null}
                 {optionData.quote && (
                     <View style={[styles.quoteRow, styles.boxShadow]}>
@@ -620,7 +637,7 @@ const HomeContent = (props) => {
                     </View>
                 )}
                 <View style={styles.eventRow}>
-                    {allowLocation||location?
+                    {settings.latitude&&settings.longitude?
                         <View style={[styles.block_season_left, styles.boxShadow]}>
                             <View style={{justifyContent: "center", alignItems: "center"}}>
                                 <Text style={{
@@ -643,7 +660,7 @@ const HomeContent = (props) => {
                         </View>
                         :
                         <TouchableScale onPress={() => {
-                            getLocation();
+                            fetchIpAndLocation().then();
                         }}>
                             <View style={[styles.block_season_left, styles.boxShadow, {backgroundColor: colors.primaryButtonBg}]}>
                                 <View style={{justifyContent: "center", alignItems: "center", padding: s(15)}}>
@@ -818,7 +835,7 @@ const HomeContent = (props) => {
                 }}
                 modalStyle={{backgroundColor: colors.bodyFrontBg}}
                 modalHeight={windowHeight / 2}
-                childrenStyle={{marginBottom: mvs(25)}}
+                childrenStyle={{marginBottom: mvs(20)}}
                 withHandle="false"
                 HeaderComponent={
                     <View style={{
@@ -903,7 +920,7 @@ const styles = StyleSheet.create({
     },
     quoteRow: {
         marginHorizontal: s(15),
-        marginTop: mvs(25),
+        marginTop: mvs(20),
         alignItems: 'center',
         justifyContent: 'center',
         height: (windowWidth - s(30)) / 3.25,
@@ -930,7 +947,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         justifyContent: "flex-start",
-        marginTop: mvs(25),
+        marginTop: mvs(20),
     },
     view_blog_title: {
         flexDirection: 'row',
@@ -938,7 +955,7 @@ const styles = StyleSheet.create({
         right: 0,
         width: windowWidth - s(30),
         justifyContent: "space-between",
-        marginTop: mvs(25),
+        marginTop: mvs(20),
     },
     heading: {
         fontSize: s(18),
@@ -955,7 +972,7 @@ const styles = StyleSheet.create({
     block_season_left: {
         width: (windowWidth - s(50)) / 3,
         height: (windowWidth - s(30)) / 2,
-        marginTop: mvs(25),
+        marginTop: mvs(20),
         marginLeft: s(15),
         borderRadius: s(9),
         backgroundColor: '#ffeee7',
@@ -965,7 +982,7 @@ const styles = StyleSheet.create({
     block_season_center: {
         width: (windowWidth - s(50)) / 3,
         height: (windowWidth - s(30)) / 2,
-        marginTop: mvs(25),
+        marginTop: mvs(20),
         marginLeft: s(10),
         borderRadius: s(9),
         backgroundColor: '#2e2e2e',
@@ -976,7 +993,7 @@ const styles = StyleSheet.create({
     block_season_right: {
         width: (windowWidth - s(50)) / 3,
         height: (windowWidth - s(30)) / 2,
-        marginTop: mvs(25),
+        marginTop: mvs(20),
         marginLeft: s(10),
         marginRight: s(15),
         borderRadius: s(9),
@@ -987,7 +1004,7 @@ const styles = StyleSheet.create({
     block_half_left: {
         width: (windowWidth - s(50)) / 2,
         height: (windowWidth - s(30)) / 2,
-        marginTop: mvs(25),
+        marginTop: mvs(20),
         marginLeft: 15,
         marginRight: 10,
         borderRadius:s(9),
@@ -996,7 +1013,7 @@ const styles = StyleSheet.create({
     block_half: {
         width: (windowWidth - s(50)) / 2,
         height: (windowWidth - s(30)) / 2,
-        marginTop: mvs(25),
+        marginTop: mvs(20),
         marginLeft: 10,
         marginRight: 15,
         borderRadius:s(9),
@@ -1007,7 +1024,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     view_intro: {
-        marginTop: mvs(25),
+        marginTop: mvs(20),
         marginHorizontal: s(15),
         width: windowWidth - s(30),
         height: windowWidth - s(30),

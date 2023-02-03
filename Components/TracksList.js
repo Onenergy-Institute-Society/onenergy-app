@@ -34,6 +34,7 @@ const TracksList = (props) => {
             LayoutAnimation.Presets.spring
         );
         if (!selectedTrack || parseInt(track.id) !== parseInt(selectedTrack.id)) {
+            console.log('selected', track)
             setSelectedTrack(track);
             Analytics.segmentClient.track('Start Guided Practice', {
                 id: track.id,
@@ -89,7 +90,7 @@ const TracksList = (props) => {
                                     ) : null}
                                 </View>
                                 <Text
-                                    style={[styles.subTitle, highlightColor]}>count: x{item.count}</Text>
+                                    style={[styles.subTitle, highlightColor]}></Text>
                                 <Text
                                     style={[styles.duration, highlightColor]}>{new Date(item.duration * 1000).toISOString().substring(14, 19)}</Text>
                             </View>
@@ -132,6 +133,7 @@ const TracksList = (props) => {
                                 data: showGuide
                             }
                         })
+                        console.log(sections)
                         return (
                             <SectionList
                                 stickySectionHeadersEnabled={false}

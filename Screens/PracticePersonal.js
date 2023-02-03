@@ -15,7 +15,7 @@ import {withNavigation} from "react-navigation";
 import TrackPlayer from 'react-native-track-player';
 import externalCodeDependencies from "@src/externalCode/externalRepo/externalCodeDependencies";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
-import {s, windowWidth} from "../Utils/Scale";
+import {mvs, s, windowWidth} from "../Utils/Scale";
 import EventList from "../Components/EventList";
 import QiPointHeader from "../Components/QiPointHeader";
 import {SvgIconBack} from "../Utils/svg";
@@ -55,7 +55,7 @@ const PracticePersonal = props => {
                 <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                     {(optionData.goalCards && optionData.goalCards.length) ?
                         <View>
-                            <EventList location={'practice_guided'} {...props}/>
+                            <EventList location={'practice_guided'} {...props} extraStyle={{marginTop:mvs(20)}}/>
                         </View>
                         : null
                    }

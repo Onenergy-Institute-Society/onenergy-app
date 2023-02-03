@@ -13,7 +13,7 @@ import * as Analytics from "../Utils/Analytics";
 import Blink from "../Utils/Blink";
 
 const EventList = props => {
-    const {navigation, location} = props;
+    const {navigation, location, extraStyle} = props;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
@@ -238,7 +238,7 @@ const EventList = props => {
                                 }
                             }
                             }>
-                            <View style={[styles.containerStyle, shadow ? styles.boxShadow : null]}>
+                            <View style={[styles.containerStyle, shadow ? styles.boxShadow : null, extraStyle]}>
                                 <ScalableImage
                                     width={windowWidth - s(30)}
                                     source={{uri: item.image ? item.image : null}}
@@ -296,7 +296,6 @@ const styles = StyleSheet.create({
     containerStyle: {
         backgroundColor: "white",
         borderRadius:s(9),
-        marginTop: mvs(25),
         marginHorizontal: s(15),
         width: windowWidth - s(30),
     },

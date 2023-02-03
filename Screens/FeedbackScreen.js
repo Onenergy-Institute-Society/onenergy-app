@@ -95,11 +95,11 @@ const FeedbackScreen = props => {
         switch(item.index)
         {
             case 0:
-                cornerStyle = {borderTopLeftRadius:s(9), borderTopRightRadius:s(9), marginTop:mvs(25)};
+                cornerStyle = {borderTopLeftRadius:s(9), borderTopRightRadius:s(9), marginTop:mvs(20)};
                 bottomStyle = {borderBottomWidth:1, borderBottomColor:'#E6E6E8'};
                 break;
             case 3:
-                cornerStyle = {borderBottomLeftRadius:s(9), borderBottomRightRadius:s(9), marginBottom:mvs(25)};
+                cornerStyle = {borderBottomLeftRadius:s(9), borderBottomRightRadius:s(9), marginBottom:mvs(20)};
                 break;
             default:
                 bottomStyle = {borderBottomWidth:1, borderBottomColor:'#E6E6E8'};

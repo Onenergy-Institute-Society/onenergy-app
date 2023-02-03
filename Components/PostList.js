@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         borderRadius:s(9),
         marginHorizontal: s(15),
-        marginTop: mvs(25),
+        marginTop: mvs(20),
         width: windowWidth - s(30),
         height: vs(120),
     },

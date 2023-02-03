@@ -111,9 +111,7 @@ const ProgramsContent = props => {
     return (
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
-                <View style={{marginVertical: s(5)}}>
-                    <EventList location={'program'} {...props}/>
-                </View>
+                <EventList location={'program'} {...props} extraStyle={{marginTop:mvs(20)}}/>
                 {
                     user ?
                         <PracticeTipsRow {...props}/>
@@ -138,7 +136,7 @@ const styles = StyleSheet.create({
     scroll_view: {
         flex: 1,
         justifyContent: "space-between",
-        marginBottom: mvs(25),
+        marginBottom: mvs(20),
     },
     eventRow: {
         marginHorizontal: 15,

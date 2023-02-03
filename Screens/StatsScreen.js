@@ -55,30 +55,29 @@ const StatsScreen = (props) => {
         ],
    };
     let pieData=[];
-    let colors = [
-        ['#093423', '#157d54', '#1eb478', '#22cc89', '#2edc97', '#65e5b2', '#95eecb', '#b4f3da', '#ccf7e6', '#fdfffe', '#ffffff'],
-        ['#200506', '#701014', '#a8191e', '#d92026', '#c11c22', '#e54d52', '#eb7579', '#ed8488', '#ef9497', '#f4b6b8', '#fceeee'],
-        ['#050520', '#111070', '#1a19a8', '#1d1cc1', '#2120d9', '#4e4de5', '#7675eb', '#8584ed', '#9494ef', '#b7b6f4', '#eeeefc'],
-        ['#200905', '#702110', '#c1381c', '#e04a2b', '#e5674d', '#eb8975', '#ed9684', '#efa494', '#f1ac9d', '#2edc97', '#f7cec5'],
+    let guidesStatecolors = [
+        '#fbbbba', '#f87f7e', '#f54a48', '#e70e0c', '#aa0b09', '#740706',
+        '#fbecba', '#f8da7e', '#f5cb48', '#e7b20c', '#aa8309', '#745a06',
+        '#e0fbba', '#c4f87e', '#acf548', '#8ae70c', '#66aa09', '#457406',
+        '#bafbc1', '#7ef88a', '#48f558', '#0ce721', '#09aa18', '#067411',
+        '#bafbf1', '#7ef8e5', '#48f5da', '#0ce7c4', '#09aa91', '#067463',
+        '#badafb', '#7ebaf8', '#489df5', '#0c77e7', '#0958aa', '#063c74',
+        '#cbbafb', '#9e7ef8', '#7548f5', '#450ce7', '#3309aa', '#230674',
+        '#fbbaf3', '#f87ee8', '#f548de', '#f548de', '#aa0995', '#740666',
     ]
-    let pieLegend=[];
-    practiceReducer.guides.map((level, index) => {
-        pieLegend.push({id:level.id, colors:colors[index]})
-    })
-    console.log(pieLegend)
+    let legendColor = -1;
     if(progressReducer.sectionStats&&progressReducer.sectionStats.length) {
         practiceReducer.guides.forEach(level => {
             if(user.rank>=level.rank&&level.sections.length) {
-                let sectionIndex = 0;
                 level.sections.forEach(section=> {
                     for(let item of progressReducer.sectionStats){
                         if (item.section_id === section.id) {
-                            sectionIndex++;
+                            legendColor++;
                             pieData.push(
                                 {
                                     name: section.title,
                                     duration: item.section_duration,
-                                    color: pieLegend.find(color => color.id===level.id).colors[sectionIndex],
+                                    color: guidesStatecolors[legendColor],
                                     legendFontColor: "#262626",
                                     legendFontSize: s(10)
                                 }
@@ -127,6 +126,7 @@ const StatsScreen = (props) => {
             title: optionData.titles.find(el => el.id === 'progress_title').title,
        });
    }, []);
+    let guideIndex = -1;
     return(
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollContainer}
@@ -355,7 +355,7 @@ const StatsScreen = (props) => {
                     </View>
                 </View>
                     :null}
-                <View style={[styles.boxShadow, styles.card, {marginBottom:mvs(25)}]}>
+                <View style={[styles.boxShadow, styles.card, {marginBottom:mvs(20)}]}>
                     <View style={[styles.header,{backgroundColor:"#6ee7b7"}]}>
                         <Text style={styles.headerText}>
                             {optionData.titles.find(el => el.id === 'stats_title_guided').title}
@@ -371,47 +371,47 @@ const StatsScreen = (props) => {
                             colors={['#d1fae5', '#a7f3d0']}>
                             {progressReducer.sectionStats&&progressReducer.sectionStats.length?
                                 <>
-                                {practiceReducer.guides.map(level => {
+                                {practiceReducer.guides.map((level, levelIndex) => {
                                     if(user.rank>=level.rank&&level.sections.length) {
-                                        let sectionIndex = 0;
                                         return (
                                             level.sections.map(section=>{
                                                 return (
-                                                    progressReducer.sectionStats.map((item, index) => {
+                                                    progressReducer.sectionStats.map((item, sectionIndex) => {
                                                         console.log(item.section_id , section.id)
                                                         if(item.section_id === section.id){
-                                                            sectionIndex++;
-                                                        return (
-                                                            <>
-                                                                <View style={styles.row}>
-                                                                    <Text
-                                                                        style={[global.title, styles.title, {flex: 0.5}]}>{section.title}</Text>
-                                                                    <Text numberOfLines={1} style={[global.text, styles.text, {
-                                                                        flex: 0.2,
-                                                                        alignSelf: "flex-end",
-                                                                        textAlign: "right",
-                                                                        alignItems: "flex-end"
-                                                                    }]}>{item.section_count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
-                                                                    <Text style={[global.text, styles.text, {
-                                                                        flex: 0.2,
-                                                                        alignSelf: "flex-end",
-                                                                        textAlign: "right",
-                                                                        alignItems: "flex-end"
-                                                                    }]}>{Math.round(item.section_duration / 60) > 60 ? Math.round(item.section_duration / 60 / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : Math.round(item.section_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
-                                                                    <Svg
-                                                                        width="24"
-                                                                        height="24"
-                                                                        viewBox="0 0 24 24"
-                                                                        style={{flex: 0.1}}
-                                                                    >
-                                                                        <Circle cx="12" cy="12" r="8"
-                                                                                fill={pieLegend.find(color => color.id === level.id).colors[sectionIndex]}
-                                                                        />
-                                                                    </Svg>
-                                                                </View>
-                                                                <View style={[styles.rowHr, {backgroundColor: "#6ee7b7"}]}/>
-                                                            </>
-                                                        )}
+                                                            guideIndex++;
+                                                            return (
+                                                                <>
+                                                                    <View style={styles.row}>
+                                                                        <Text
+                                                                            style={[global.title, styles.title, {flex: 0.5}]}>{section.title}</Text>
+                                                                        <Text numberOfLines={1} style={[global.text, styles.text, {
+                                                                            flex: 0.2,
+                                                                            alignSelf: "flex-end",
+                                                                            textAlign: "right",
+                                                                            alignItems: "flex-end"
+                                                                        }]}>{item.section_count} {optionData.titles.find(el => el.id === 'stats_detail_times').title}</Text>
+                                                                        <Text style={[global.text, styles.text, {
+                                                                            flex: 0.2,
+                                                                            alignSelf: "flex-end",
+                                                                            textAlign: "right",
+                                                                            alignItems: "flex-end"
+                                                                        }]}>{Math.round(item.section_duration / 60) > 60 ? Math.round(item.section_duration / 60 / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : Math.round(item.section_duration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
+                                                                        <Svg
+                                                                            width="24"
+                                                                            height="24"
+                                                                            viewBox="0 0 24 24"
+                                                                            style={{flex: 0.1}}
+                                                                        >
+                                                                            <Circle cx="12" cy="12" r="8"
+                                                                                    fill={guidesStatecolors[guideIndex]}
+                                                                            />
+                                                                        </Svg>
+                                                                    </View>
+                                                                    <View style={[styles.rowHr, {backgroundColor: "#6ee7b7"}]}/>
+                                                                </>
+                                                            )
+                                                        }
                                                     })
                                                 )
                                             })

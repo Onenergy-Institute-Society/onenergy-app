@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
     SafeAreaView, Text, ImageBackground, BackHandler, ActivityIndicator
@@ -52,10 +52,11 @@ const InitData = (props) => {
     }
 
     useEffect(() => {
-        Analytics.segmentClient.identify(user.id, {
-            username: user.slug,
-            name: user.name,
-        }).then();
+        if(user.id)
+            Analytics.segmentClient.identify(user.id, {
+                username: user.slug,
+                name: user.name,
+            }).then();
         const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
         let loadGroup = false, loadGuide = false, loadRoutine = false, loadAchievement = false, loadProgress = false;
         if (optionData.cache.guide && practiceReducer.guideUpdate && optionData.cache.guide > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
@@ -93,19 +94,19 @@ const InitData = (props) => {
         if (achievementReducer.achievementUpdate < optionData.cache.achievement) {
             loaded = false;
         }
-        console.log('progressUpdate', achievementReducer.progressUpdate, optionData.cache.progress);
+        console.log('progressUpdate', progressReducer.progressUpdate, optionData.cache.progress);
         if (progressReducer.progressUpdate < optionData.cache.progress) {
             loaded = false;
         }
-        console.log('guideUpdate', achievementReducer.guideUpdate, optionData.cache.guide);
+        console.log('guideUpdate', practiceReducer.guideUpdate, optionData.cache.guide);
         if (practiceReducer.guideUpdate < optionData.cache.guide) {
             loaded = false;
         }
-        console.log('groupUpdate', achievementReducer.groupUpdate, optionData.cache.group);
+        console.log('groupUpdate', practiceReducer.groupUpdate, optionData.cache.group);
         if (practiceReducer.groupUpdate < optionData.cache.group) {
             loaded = false;
         }
-        console.log('routineUpdate', achievementReducer.routineUpdate, optionData.cache.routine);
+        console.log('routineUpdate', practiceReducer.routineUpdate, optionData.cache.routine);
         if (practiceReducer.routineUpdate < optionData.cache.routine) {
             loaded = false;
         }

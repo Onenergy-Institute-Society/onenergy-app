@@ -121,7 +121,7 @@ const Milestones = (props) => {
                                          {...props}/>
                         </View>:null
                     }
-                    <View style={{marginTop:s(25)}}></View>
+                    <View style={{marginTop:s(20)}}></View>
                 </ScrollView>
             }
         </SafeAreaView>

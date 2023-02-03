@@ -28,7 +28,7 @@ import QuotesScreen from './Screens/QuotesScreen';
 import SolarTermScreen from './Screens/SolarTermScreen';
 import LessonButton from "./Components/LessonButton";
 import PracticePlayer from "./Components/PracticePlayer";
-import VimeoPlayer from "./Components/VimeoPlayer";
+import VideoPlayer from "./Components/VideoPlayer";
 import VimeoBlockLoader from "./Components/VimeoBlockLoader";
 import VideoBlock from "./Components/VideoBlock";
 import PracticePersonal from './Screens/PracticePersonal';
@@ -178,9 +178,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "VimeoPlayer",
-        "VimeoPlayer",
-        VimeoPlayer,
+        "VideoPlayer",
+        "VideoPlayer",
+        VideoPlayer,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
@@ -700,8 +700,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     }
                     console.log('loadGuide', loadGuide )
                     if (loadGuide) {
-                        if (data.guides) {
-                            idPracticeReducer.guides = data.guides;
+                        if (data.guidesData) {
+                            idPracticeReducer.guides = data.guidesData;
                         }
                         idPracticeReducer.guideUpdate = new Date().toISOString();
                         console.log('guideUpdate', idPracticeReducer.guideUpdate  )
@@ -984,7 +984,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         case 'PR':
                             let routineIndex;
                             routineIndex = state.practiceReducer.routines.findIndex((temp) => temp.id === acpData);
-                            let tempTracks = state.practiceReducer.routines[routineIndex].tracks;
+                            let tempTracks = state.practiceReducer.routines[routineIndex].audioTracks;
                             let routineDuration = 0;
                             tempTracks.forEach(track => {
                                 routineDuration = routineDuration + parseInt(track.duration);
@@ -1004,16 +1004,31 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             break;
                         case 'PG':
                             let groupIndex;
+                            console.log('G1')
                             groupIndex = state.practiceReducer.groups.findIndex((temp) => temp.id === acpData);
-                            state.practiceReducer.groups[groupIndex].guides.forEach(tempGuide => {
-                                tempArray.push({'guide': tempGuide, 'count': 1});
+                            state.practiceReducer.groups[groupIndex].guides.forEach(guide_id => {
+                                loop1:
+                                for(let level of state.practiceReducer.guides){
+                                    loop2:
+                                    for(let section of level.sections){
+                                        loop3:
+                                        for(let guide of section.data){
+                                            if(guide.id === guide_id){
+                                                tempArray.push({'guide': guide, 'count': 1});
+                                                break loop1
+                                            }
+                                        }
+                                    }
+                                }
                             });
+                            console.log('G2')
                             tmpAchievements = state.achievementReducer.milestones.filter((item) =>
                                 (item.trigger === 'practice' &&
                                     (
                                         (item.triggerPracticeOption === 'group' && (parseInt(item.triggerGroupPractice) === acpData || !item.triggerGroupPractice))
                                     ) &&
                                     !item.complete_date));
+                            console.log('G3')
                             tmpAchievements.forEach((item) => {
                                 let tempIndex = acpTempAchievementState.milestones.findIndex(achievement => achievement.id === item.id);
                                 acpTempAchievementState.milestones[tempIndex].step += 1;
@@ -1030,12 +1045,16 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                     });
                                 }
                             })
+                            console.log('G4')
+
                             tmpAchievements = state.achievementReducer.daily.filter((item) =>
                                 (item.trigger === 'practice' &&
                                     (
                                         (item.triggerPracticeOption === 'group' && (parseInt(item.triggerGroupPractice) === acpData || !item.triggerGroupPractice))
                                     ) &&
                                     !item.complete_date));
+                            console.log('G5')
+
                             tmpAchievements.forEach((item) => {
                                 let tempIndex = acpTempAchievementState.daily.findIndex(achievement => achievement.id === item.id);
                                 acpTempAchievementState.daily[tempIndex].step += 1;
@@ -1053,6 +1072,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                     });
                                 }
                             })
+                            console.log('G6')
+
                             if (acpTempProgressState.groupStats) {
                                 acpTempIndex = acpTempProgressState.groupStats.findIndex(item => item.group_id === acpData);
                                 if (acpTempIndex >= 0) {
@@ -1074,6 +1095,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             }
                             break;
                     }
+                    console.log('G7')
+
+                    console.log(tempArray, acpTempPracticeState)
                     tempArray.forEach(tempGuide => {
                         //milestones
                         tmpAchievements = state.achievementReducer.milestones.filter((item) => {
@@ -1086,7 +1110,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 return true;
                             }
                         });
-console.log('1')
+                        console.log('1')
                         tmpAchievements.forEach((item) => {
                             let tempIndex = acpTempAchievementState.milestones.findIndex(achievement => achievement.id === item.id);
                             acpTempAchievementState.milestones[tempIndex].step += 1;
@@ -1137,8 +1161,10 @@ console.log('1')
                         console.log('4')
 
                         let acpLevelIndex = acpTempPracticeState.guides.findIndex(level => level.id === tempGuide.guide.levelId);
-                        let acpSectionIndex = acpTempPracticeState.guides[acpLevelIndex].sections.findIndex(section => section.id = tempGuide.guide.sectionId);
-                        let acpGuideIndex = acpTempPracticeState.guides[acpLevelIndex].sections[acpSectionIndex].data.findIndex(guide => guide.id = tempGuide.guide.id);
+                        console.log('a', acpLevelIndex, acpTempPracticeState.guides, tempGuide.guide);
+                        let acpSectionIndex = acpTempPracticeState.guides[acpLevelIndex].sections.findIndex(section => section.id === tempGuide.guide.sectionId);
+                        console.log('b')
+                        let acpGuideIndex = acpTempPracticeState.guides[acpLevelIndex].sections[acpSectionIndex].data.findIndex(guide => guide.id === tempGuide.guide.id);
                         console.log('5')
                         if (acpGuideIndex >= 0) {
                             let tempGuideDuration = parseInt(tempGuide.guide.duration) * parseInt(tempGuide.count);
@@ -1186,7 +1212,6 @@ console.log('1')
                                     'section_duration': tempGuideDuration
                                 })
                             }
-
                         }
                     })
                     console.log('10')
@@ -1217,7 +1242,9 @@ console.log('1')
 
                     acpTempProgressState.lastPractice = acpToday;
                     acpTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
-console.log('7')
+
+                    console.log('7')
+
                     return {
                         ...state,
                         achievementReducer: {
@@ -1581,22 +1608,17 @@ console.log('7')
     }
     externalCodeSetup.reduxApi.addReducer(
         "settingsReducer",
-        (state = {languages: defaultLanguage, settings: {allowLocation: false, initLoaded: 0, vouchers:[]}}, action) => {
+        (state = {languages: defaultLanguage, settings: {ip:'', latitude:0, longitude:0, vouchers:[]}}, action) => {
             switch (action.type) {
-                case "SETTINGS_INIT_LOADED":
+                case "SETTINGS_LOCAL_INFO":
+                    console.log('SETTINGS_LOCAL_INFO',action.payload )
                     return {
                         ...state,
                         settings: {
                             ...state.settings,
-                            initLoaded: action.payload
-                        }
-                    }
-                case "SETTINGS_ALLOW_LOCATION":
-                    return {
-                        ...state,
-                        settings: {
-                            ...state.settings,
-                            allowLocation: action.payload
+                            ip: action.payload.ip,
+                            latitude: action.payload.latitude,
+                            longitude: action.payload.longitude
                         }
                     }
                 case "SETTINGS_ADD_VOUCHER_NOTIFICATION":
@@ -2020,7 +2042,7 @@ console.log('7')
         "gamipress_ranks",
         "forums"
     ])
-
+    externalCodeSetup.configApi.setTrackPlayerEnabled();
     externalCodeSetup.indexJsApi.addIndexJsFunction(() => {
         Orientation.lockToPortrait();
         TrackPlayer.registerPlaybackService(() => PlaybackService);
@@ -2166,7 +2188,7 @@ console.log('7')
     }
 
     externalCodeSetup.profileScreenHooksApi.setAfterDetailsComponent(AfterDetailsComponent);
-    externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "PracticePlayer", "VimeoPlayer", "MilestonesScreen", "QuestsScreen", "StatsScreen", "myVouchersScreen", "FeedbackScreen", "SettingsScreen", "CoursesSingleScreen", "LessonSingleScreen"])
+    externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "PracticePlayer", "VideoPlayer", "MilestonesScreen", "QuestsScreen", "StatsScreen", "myVouchersScreen", "FeedbackScreen", "SettingsScreen", "CoursesSingleScreen", "LessonSingleScreen"])
     externalCodeSetup.settingsScreenApi.setLogoutComponent(({
                                                                 global,
                                                                 t,

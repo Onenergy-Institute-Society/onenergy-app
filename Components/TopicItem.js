@@ -64,9 +64,9 @@ const TopicItem = (props) => {
                     <Text
                         style={{
                             ...global.itemTitle,
-                            fontFamily: "MontserratAlternates-SemiBold",
+                            fontFamily: "Montserrat-SemiBold",
                             fontWeight: "bold",
-                            fontSize: s(20),
+                            fontSize: s(18),
                             paddingRight: ms(40),
                             marginBottom: mvs(3),
                             color: colors.textColor,

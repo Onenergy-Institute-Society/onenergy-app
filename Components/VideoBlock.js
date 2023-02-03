@@ -17,7 +17,6 @@ const VideoBlock = props => {
     const subtitles = block.result.subtitles;
     const [textTracks, setTextTracks] = useState({title: "No Subtitle", language: "", uri: "", type: ""});
     const [selectedCCUrl, setSelectedCCUrl] = useState('');
-    const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
 
     useEffect(() => {
         setTextTracks(subtitles.map((item) => {
@@ -35,14 +34,14 @@ const VideoBlock = props => {
             ...previousState,
             {title: "No Subtitle", language: "", uri: "", type: ""}
         ]);
-    }, [])
+    }, [language.subtitle])
     return (
         <View style={styles.container}>
             <TouchableOpacity
                 onPress={() => {
                     navigation.dispatch(
                         NavigationActions.navigate({
-                            routeName: "VimeoPlayer",
+                            routeName: "VideoPlayer",
                             params: {
                                 videoId: videoId,
                                 video: video,

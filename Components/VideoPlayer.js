@@ -19,7 +19,7 @@ import * as Progress from 'react-native-progress';
 import InteractiveTranscripts from "./InteractiveTranscripts";
 
 const statusBarSize = 0;
-const VimeoPlayer = (props) => {
+const VideoPlayer = (props) => {
     const {navigation} = props;
     const [selectedCCUrl, setSelectedCCUrl] = useState(navigation.getParam('selectedCCUrl'));
     const [paused, setPaused] = useState(false);
@@ -72,7 +72,7 @@ const VimeoPlayer = (props) => {
         if (videoReducer.videos.length) {
             const videoIndex = videoReducer.videos.findIndex(item => item.videoId === videoId);
             if (videoIndex >= 0 && videoReducer.videos[videoIndex].duration > 0) {
-                this.vimeoPlayer.seek(videoReducer.videos[videoIndex].duration);
+                this.videoPlayer.seek(videoReducer.videos[videoIndex].duration);
             }
         }
     }
@@ -97,7 +97,7 @@ const VimeoPlayer = (props) => {
             <StatusBar hidden={true}/>
             <View style={styles.topViewStyle}>
                 <Video
-                    ref={vimeoPlayer => this.vimeoPlayer = vimeoPlayer}
+                    ref={videoPlayer => this.videoPlayer = videoPlayer}
                     onEnd={onVideoEnd.bind(this)}
                     onLoad={onVideoLoad.bind(this)}
                     onProgress={onProgress.bind(this)}
@@ -121,10 +121,10 @@ const VimeoPlayer = (props) => {
                                     <TouchableWithoutFeedback
                                         onPress={() => {
                                             if (currentTime >= 10) {
-                                                this.vimeoPlayer.seek(currentTime - 10);
+                                                this.videoPlayer.seek(currentTime - 10);
                                                 setCurrentTime(currentTime - 10);
                                             } else {
-                                                this.vimeoPlayer.seek(0);
+                                                this.videoPlayer.seek(0);
                                                 setCurrentTime(0);
                                             }
                                         }}
@@ -162,10 +162,10 @@ const VimeoPlayer = (props) => {
                                         <TouchableWithoutFeedback
                                             onPress={() => {
                                                 if (currentTime <= seekableDuration) {
-                                                    this.vimeoPlayer.seek(currentTime + 10)
+                                                    this.videoPlayer.seek(currentTime + 10)
                                                     setCurrentTime(currentTime + 10);
                                                 } else {
-                                                    this.vimeoPlayer.seek(seekableDuration)
+                                                    this.videoPlayer.seek(seekableDuration)
                                                     setCurrentTime(seekableDuration);
                                                 }
                                             }}
@@ -208,7 +208,7 @@ const VimeoPlayer = (props) => {
                                     currentDuration={currentTime * 1000}
                                     url={selectedCCUrl}
                                     seekToTranscriptDuration={(time) => {
-                                        this.vimeoPlayer.seek(time);
+                                        this.videoPlayer.seek(time);
                                     }}
                                     contentContainerStyle={
                                         {
@@ -353,5 +353,5 @@ const styles = StyleSheet.create({
         top: s(20),
     }
 });
-VimeoPlayer.navigationOptions = {header: null};
-export default VimeoPlayer;
+VideoPlayer.navigationOptions = {header: null};
+export default VideoPlayer;

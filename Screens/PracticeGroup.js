@@ -113,7 +113,7 @@ const PracticeGroup = props => {
             fontSize: 20,
             color: colors.textColor,
             textAlign: 'left',
-            marginBottom: mvs(25),
+            marginBottom: mvs(20),
         },
     };
     const renderItem = ({item}) => {
@@ -242,7 +242,7 @@ const PracticeGroup = props => {
                 <ScrollView nestedScrollEnabled={true} styles={styles.scrollView} showsVerticalScrollIndicator={false}>
                     {(optionData.goalCards && optionData.goalCards.length) ?
                         <View>
-                            <EventList location={'practice_group'} {...props}/>
+                            <EventList location={'practice_group'} {...props} extraStyle={{marginTop:mvs(20)}}/>
                         </View>
                         : null
                     }

@@ -5,7 +5,7 @@ import {connect, useDispatch, useSelector} from "react-redux";
 import MemberTracksList from "../Components/MemberTracksList";
 import BlockScreen from "@src/containers/Custom/BlockScreen";
 import {NavigationActions, withNavigation} from "react-navigation";
-import {s, windowWidth} from "../Utils/Scale";
+import {mvs, s, windowWidth} from "../Utils/Scale";
 import TrackPlayer from 'react-native-track-player';
 import EventList from "../Components/EventList";
 import {SvgIconBack, SvgAddIcon} from "../Utils/svg";
@@ -101,7 +101,7 @@ const PracticeMember = props => {
                 <ScrollView style={styles.scroll_view} showsVerticalScrollIndicator={false}>
                     {optionData.goalCards && optionData.goalCards.length ?
                         <View>
-                            <EventList location={'practice_member'} {...props}/>
+                            <EventList location={'practice_member'} {...props} extraStyle={{marginTop:mvs(20)}}/>
                         </View>
                         : null
                     }

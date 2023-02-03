@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
         width: windowWidth,
     },
     title: {
-        marginBottom: mvs(25),
+        marginBottom: mvs(20),
         fontSize: s(14),
         textAlign: 'center',
         color: '#000',
