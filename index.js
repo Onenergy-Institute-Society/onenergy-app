@@ -1607,7 +1607,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         initial: '1', //Skip Language Choosing Screen
     }
     externalCodeSetup.reduxApi.addReducer(
-        "settingsReducer",
+        "settingReducer",
         (state = {languages: defaultLanguage, settings: {ip:'', latitude:0, longitude:0, vouchers:[]}}, action) => {
             switch (action.type) {
                 case "SETTINGS_LOCAL_INFO":
@@ -1679,7 +1679,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     );
     // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
-        let whiteList = [...props.whitelist, "settingsReducer", "postsReducer", "onenergyAppReducer", "videoReducer"];
+        let whiteList = [...props.whitelist, "settingReducer", "postsReducer", "onenergyAppReducer", "videoReducer"];
 
         return {
             ...props,

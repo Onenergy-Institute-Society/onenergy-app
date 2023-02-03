@@ -23,7 +23,7 @@ const ChooseLanguage = (props) => {
        },
     ]
     const dispatch = useDispatch();
-    const defaultLanguage = useSelector((state) => state.settingsReducer.languages);
+    const defaultLanguage = useSelector((state) => state.settingReducer.languages);
     const [selectedLanguage, setSelectedLanguage] = useState(defaultLanguage);
 
     if (defaultLanguage.initial==='1') {

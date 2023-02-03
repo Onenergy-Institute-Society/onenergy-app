@@ -7,7 +7,7 @@ import {ms, mvs, s, windowHeight, windowWidth} from "../Utils/Scale";
 
 const VideoBlock = props => {
     const {block, navigation} = props;
-    const language = useSelector((state) => state.settingsReducer.languages);
+    const language = useSelector((state) => state.settingReducer.languages);
     const no_skip_forward = block.data.no_skip_forward;
     const lesson_video = block.data.lesson_video;
     const duration = block.data.duration;

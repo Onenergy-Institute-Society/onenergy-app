@@ -44,7 +44,7 @@ const HomeContent = (props) => {
     const {global, colors} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const settings = useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings : null);
+    const settings = useSelector((state) => state.settingReducer.settings ? state.settingReducer.settings : null);
     const practiceReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null);
     const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
     const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);

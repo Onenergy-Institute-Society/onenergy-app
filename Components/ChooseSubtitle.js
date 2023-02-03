@@ -8,7 +8,7 @@ import {SvgIconCheck} from "../Utils/svg";
 const ChooseSubtitle = (props) => {
     const {textTracks, setSelectedCCUrl, screenProps} = props;
     const {global, colors} = screenProps;
-    const language = useSelector((state) => state.settingsReducer.languages);
+    const language = useSelector((state) => state.settingReducer.languages);
     const dispatch = useDispatch();
     const openCCDialog = () => {
         this.ccDialog.open();

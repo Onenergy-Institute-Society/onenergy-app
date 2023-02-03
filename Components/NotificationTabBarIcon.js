@@ -8,7 +8,7 @@ const NotificationTabBarIcon = props => {
     const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
     const guideReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer.guides : null);
     const postsReducer = useSelector((state) => state.postsReducer ? state.postsReducer : null);
-    const vouchers = useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings.vouchers : null);
+    const vouchers = useSelector((state) => state.settingReducer.settings ? state.settingReducer.settings.vouchers : null);
     const {notificationID, top, right, size, fontSize = 8, showNumber = false, data = ''} = props;
 
     let notificationCount = 0;
