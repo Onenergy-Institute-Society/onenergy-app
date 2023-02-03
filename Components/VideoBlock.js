@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {useSelector} from "react-redux";
 import {NavigationActions, withNavigation} from "react-navigation";
-import ImageCache from "./ImageCache";
 import {ms, mvs, s, windowHeight, windowWidth} from "../Utils/Scale";
 
 const VideoBlock = props => {

@@ -4,11 +4,10 @@ import {useSelector} from "react-redux";
 import {NavigationActions, withNavigation} from "react-navigation";
 import ScalableImage from "../Components/ScalableImage";
 import TouchableScale from './TouchableScale';
-import {mvs, s, vs, windowWidth} from '../Utils/Scale';
+import {s, vs, windowWidth} from '../Utils/Scale';
 import AwesomeAlert from "../Components/AwesomeAlert";
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import moment from 'moment';
-import FastImage from "react-native-fast-image";
 import * as Analytics from "../Utils/Analytics";
 import Blink from "../Utils/Blink";
 

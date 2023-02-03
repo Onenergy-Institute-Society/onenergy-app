@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
     SafeAreaView, Text, ImageBackground, BackHandler, ActivityIndicator
