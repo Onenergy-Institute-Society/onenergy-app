@@ -25,7 +25,6 @@ import {ProgressChart} from "react-native-chart-kit";
 import {Modalize} from 'react-native-modalize';
 import moment from 'moment';
 import SunCalc from "suncalc";
-import GetLocation from 'react-native-get-location'
 import {
     SvgIconCheck,
     SvgIconCross,
@@ -45,13 +44,11 @@ const HomeContent = (props) => {
     const {global, colors} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const allowLocation = useSelector((state) => state.settingsReducer.settings ? state.settingsReducer.settings.allowLocation : null);
-    const practiceReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null);
+    const settings = useSelector((state) => state.settingReducer.settings ? state.settingReducer.settings : null);
     const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
     const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
     const postsReducer = useSelector((state) => state.postsReducer ? state.postsReducer : null);
     const dispatch = useDispatch();
-    const [location, setLocation] = useState(null);
     const [sunrise, setSunrise] = useState('');
     const [phase, setPhase] = useState('');
     const [nextMoonPhase, setNextMoonPhase] = useState({});
@@ -134,31 +131,42 @@ const HomeContent = (props) => {
         if(progressReducer.latestUpdate!==0)
             return today !== new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD');
     }
-    const getLocation = () => {
-        GetLocation.getCurrentPosition({
-            enableHighAccuracy: true,
-            timeout: 15000,
-        }).then(location => {
-            setLocation(location);
-            const sunTimes = SunCalc.getTimes(new Date(), location.latitude, location.longitude, 0);
-            setSunrise(sunTimes);
-            if(!allowLocation) {
+
+    const fetchIpAndLocation = async () => {
+        try {
+            const api = getApi(props.config);
+            const localInfo = await api.customRequest(
+                "wp-json/onenergy/v1/getLocalInfo/",
+                "get",       // get, post, patch, delete etc.
+                {},               // JSON, FormData or any other type of payload you want to send in a body of request
+                null,             // validation function or null
+                {},               // request headers object
+                false   // true - if full url is given, false if you use the suffix for the url. False is default.
+            ).then(response => response.data);
+            if(localInfo) {
                 dispatch({
-                    type: 'SETTINGS_ALLOW_LOCATION',
-                    payload: true,
+                    type: 'SETTINGS_LOCAL_INFO',
+                    payload: localInfo
                 });
             }
-        })
+        } catch (e) {
+            console.error(e);
+        }
     }
-
     useEffect(() => {
+        if(settings.latitude&&settings.longitude){
+            const sunTimes = SunCalc.getTimes(new Date(), settings.latitude, settings.longitude, 0);
+            setSunrise(sunTimes);
+        }
+    },[settings.latitude])
+    useEffect(async () => {
         Analytics.segmentClient.screen('Home').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
         });
 
-        if(allowLocation) {
-            getLocation();
+        if(!settings.ip){
+            fetchIpAndLocation().then();
         }
         const moonIllumination = SunCalc.getMoonIllumination(new Date());
         const phaseNumber = moonIllumination.phase * 200;
@@ -197,31 +205,6 @@ const HomeContent = (props) => {
         moonPhaseDate = moment.utc().add(dateDiff, 'days').format('MMM DD');
         setNextMoonPhase({'date': moonPhaseDate, 'phase': moonPhase});
         if(user) {
-            let load;
-
-            if (optionData.cache.guide && practiceReducer.guideUpdate && optionData.cache.guide > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
-                load = 1;
-            }
-            if (optionData.cache.group && practiceReducer.groupUpdate && optionData.cache.group > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
-                load = 1;
-            }
-            if (optionData.cache.routine && practiceReducer.routineUpdate && optionData.cache.routine > practiceReducer.routineUpdate || !practiceReducer.routineUpdate) {
-                load = 1;
-            }
-            if (optionData.cache.post && postsReducer.postUpdate && optionData.cache.post > postsReducer.postUpdate || !postsReducer.postUpdate) {
-                dispatch({
-                    type: 'ONENERGY_POSTS_RESET',
-                });
-            }
-            if (optionData.cache.achievement && achievementReducer.achievementUpdate && optionData.cache.achievement > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
-                load = 1;
-            }
-            if (optionData.cache.progress && progressReducer.progressUpdate && optionData.cache.progress > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
-                load = 1;
-            }
-            if(load === 1){
-                props.navigation.navigate("InitData", {transition: 'fade'});
-            }
             async function run() {
                 await SetupService();
             }
@@ -233,33 +216,6 @@ const HomeContent = (props) => {
                 subscription.remove();
             }
         }
-    }, []);
-
-    useEffect(() => {
-        const unsubscribe = messaging().onMessage(async remoteMessage => {
-            const data = remoteMessage.data;
-            if (data.notification_type && data.notification_type === 'pn_functions') {
-                switch (data.function_type) {
-                    case "survey_vip":
-                        dispatch({
-                            type: 'USER_VIP_SURVEY_COMPLETED',
-                        });
-                        if(!(user.membership && user.membership.length)){
-                            dispatch({
-                                type: 'SETTINGS_ADD_VOUCHER_NOTIFICATION',
-                                payload: data.extra_data
-                            });
-                        }
-                        break;
-                    case "profile_updated":
-                        dispatch({
-                            type: 'USER_PROFILE_UPDATED',
-                        });
-                        break;
-                }
-            }
-        });
-        return unsubscribe;
     }, []);
 
     const OnPress = async (item) => {
@@ -620,7 +576,7 @@ const HomeContent = (props) => {
                     </View>
                 )}
                 <View style={styles.eventRow}>
-                    {allowLocation||location?
+                    {settings.latitude&&settings.longitude?
                         <View style={[styles.block_season_left, styles.boxShadow]}>
                             <View style={{justifyContent: "center", alignItems: "center"}}>
                                 <Text style={{
@@ -643,7 +599,7 @@ const HomeContent = (props) => {
                         </View>
                         :
                         <TouchableScale onPress={() => {
-                            getLocation();
+                            fetchIpAndLocation().then();
                         }}>
                             <View style={[styles.block_season_left, styles.boxShadow, {backgroundColor: colors.primaryButtonBg}]}>
                                 <View style={{justifyContent: "center", alignItems: "center", padding: s(15)}}>

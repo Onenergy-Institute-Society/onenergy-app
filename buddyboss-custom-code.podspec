@@ -18,5 +18,4 @@ Pod::Spec.new do |s|
   s.dependency "React-Core"
   s.dependency "sovran-react-native"
   s.dependency "segment-analytics-react-native"
-  s.dependency "ReactNativeGetLocation"
 end
