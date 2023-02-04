@@ -169,6 +169,7 @@ const PracticesContent = props => {
                         : null
                     }
                     <TouchableScale
+                        activeOpacity={1}
                         onPress={personalPracticePressed}>
                         <ImageBackground
                             style={[styles.card, styles.boxShadow]}
@@ -187,6 +188,7 @@ const PracticesContent = props => {
                     </TouchableScale>
 
                     <TouchableScale
+                        activeOpacity={1}
                         onPress={groupPracticePressed}>
                         <ImageBackground
                             style={[styles.card, styles.boxShadow]}
@@ -199,6 +201,7 @@ const PracticesContent = props => {
                     </TouchableScale>
 
                     <TouchableScale
+                        activeOpacity={1}
                         onPress={customPracticePressed}>
                         <ImageBackground
                             style={[styles.card, styles.boxShadow]}

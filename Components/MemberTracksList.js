@@ -17,7 +17,7 @@ import {mvs, s, vs, windowWidth} from '../Utils/Scale';
 import AudioPlayerRoutine from './AudioPlayerRoutine';
 import {Swipeable} from "react-native-gesture-handler";
 import IconButton from "@src/components/IconButton";
-import {SvgMoreVertical} from "../Utils/svg";
+import {SvgClock, SvgMoreVertical} from "../Utils/svg";
 import * as Analytics from "../Utils/Analytics";
 
 if (Platform.OS === "android") {
@@ -102,15 +102,13 @@ const MemberTracksList = (props) => {
                                          imageStyle={{borderTopLeftRadius: s(9), borderTopRightRadius: s(9), borderBottomLeftRadius: showPlayer?0:s(9), borderBottomRightRadius: showPlayer?0:s(9)}}>
                             <View style={styles.titleBox}>
                                 <Text style={styles.title}>{item.title}</Text>
-{/*
                                 <Text
                                     style={styles.duration}>{new Date(totalDuration * 1000).toISOString().substring(14, 19)}</Text>
-*/}
                             </View>
                             <View style={styles.subTitleBox}>
-                                <Text style={styles.subTitle}>{item.level?practiceReducer.guides.find(level=>level.id===item.level).title:'Preparatory Practices'}</Text>
+                                <Text style={styles.subTitle}>{item.level&&practiceReducer.guides.find(level=>level.id===item.level)?practiceReducer.guides.find(level=>level.id===item.level).title:'Preparatory Practices'}</Text>
                                 <Text style={styles.subTitle}>Practices: {item.routine.length}</Text>
-                                <Text style={styles.subTitle}>Background: {optionData.bgm.find(el => el.id === item.bgm_id).name}</Text>
+                                <Text style={styles.subTitle}>Background: {optionData.bgm.find(el => el.id === item.bgm_id)?optionData.bgm.find(el => el.id === item.bgm_id).name:''}</Text>
                             </View>
                             <SvgMoreVertical color={"#fff"}
                                              style={{position: "absolute", right: s(10), bottom: s(10),                                         textShadowColor: 'grey',
@@ -139,11 +137,16 @@ const MemberTracksList = (props) => {
                         <Text style={[styles.title, {color:'grey'}]}>{item.title}</Text>
                         <Text
                             style={[styles.duration, {color:'grey'}]}>{new Date(totalDuration * 1000).toISOString().substring(14, 19)}</Text>
+                        {item.reminder_enable?
+                            <View style={{flexDirection:"row", justifyContent:"flex-end"}}><SvgClock /> <Text>{item.reminder_time}</Text></View>
+                        :
+                            null
+                        }
                     </View>
                     <View style={styles.subTitleBox}>
-                        <Text style={[styles.subTitle, {color:'grey'}]}>{item.level?practiceReducer.guides.find(level=>level.id===item.level).title:'Preparatory Practices'}</Text>
+                        <Text style={[styles.subTitle, {color:'grey'}]}>{item.level&&practiceReducer.guides.find(level=>level.id===item.level)?practiceReducer.guides.find(level=>level.id===item.level).title:'Preparatory Practices'}</Text>
                         <Text style={[styles.subTitle, {color:'grey'}]}>Practices: {item.routine.length}</Text>
-                        <Text style={[styles.subTitle, {color:'grey'}]}>Background: {optionData.bgm.find(el => el.id === item.bgm_id).name}</Text>
+                        <Text style={[styles.subTitle, {color:'grey'}]}>Background: {optionData.bgm.find(el => el.id === item.bgm_id)?optionData.bgm.find(el => el.id === item.bgm_id).name:''}</Text>
                     </View>
                 </ImageBackground>
             </View>

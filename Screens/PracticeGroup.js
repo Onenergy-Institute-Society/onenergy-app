@@ -162,6 +162,7 @@ const PracticeGroup = props => {
         }
         return (
             <TouchableOpacity
+                activeOpacity={1}
                 onPress={() => onItemDetailPress(detail)}
             >
                 <View style={[styles.containerStyle, styles.boxShadow]} key={'gp-' + item.id}>

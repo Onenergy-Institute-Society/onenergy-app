@@ -56,7 +56,6 @@ const StatsScreen = (props) => {
    };
     let pieData=[];
     let guidesStatecolors = [
-        '#fbbbba', '#f87f7e', '#f54a48', '#e70e0c', '#aa0b09', '#740706',
         '#fbecba', '#f8da7e', '#f5cb48', '#e7b20c', '#aa8309', '#745a06',
         '#e0fbba', '#c4f87e', '#acf548', '#8ae70c', '#66aa09', '#457406',
         '#bafbc1', '#7ef88a', '#48f558', '#0ce721', '#09aa18', '#067411',
@@ -64,6 +63,7 @@ const StatsScreen = (props) => {
         '#badafb', '#7ebaf8', '#489df5', '#0c77e7', '#0958aa', '#063c74',
         '#cbbafb', '#9e7ef8', '#7548f5', '#450ce7', '#3309aa', '#230674',
         '#fbbaf3', '#f87ee8', '#f548de', '#f548de', '#aa0995', '#740666',
+        '#fbbbba', '#f87f7e', '#f54a48', '#e70e0c', '#aa0b09', '#740706',
     ]
     let legendColor = -1;
     if(progressReducer.sectionStats&&progressReducer.sectionStats.length) {

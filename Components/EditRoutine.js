@@ -4,10 +4,10 @@ import {connect, useDispatch, useSelector} from "react-redux";
 import {
     ActivityIndicator,
     Alert,
-    Image,
+    Image, Platform,
     SafeAreaView,
     ScrollView,
-    StyleSheet,
+    StyleSheet, Switch,
     Text,
     TextInput,
     TouchableOpacity,
@@ -23,6 +23,11 @@ import {SvgAddIcon, SvgIconBack, SvgIconCheck, SvgIconCross, SvgPlayIcon, SvgSto
 import Video from 'react-native-video';
 import Slider from 'react-native-slider';
 import * as Analytics from "../Utils/Analytics";
+import DatePicker from 'react-native-datepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import PushNotification from "react-native-push-notification";
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import moment from 'moment';
 
 const EditRoutine = props => {
     const {navigation, screenProps} = props;
@@ -44,9 +49,11 @@ const EditRoutine = props => {
         image: optionData.routine_image[0],
         bgm_id: 0,
         bgm_volume: 100,
-        level: 0,
+        level: 230, //Preparatory Practice Term ID
         audioTracks: [],
-        routine: []
+        routine: [],
+        reminder_time:"",
+        reminder_enable:false
     });
     const [routines, setRoutines] = useState(routineIndex >= 0 ? routinesReducer[routineIndex].routine : []);
     const [refresh, setRefresh] = useState(0);
@@ -56,11 +63,12 @@ const EditRoutine = props => {
     const practiceReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null);
     const [sections, setSections] = useState([]);
     const [currentTrackState, setCurrentTrackState] = useState({index: -1, detail: {}});
+    const [changedReminder, setChangedReminder] = useState(false);
     const [changedStatus, setChangedStatus] = useState(false);
     const [cancelContentTouches, setCancelContentTouches] = useState(true);
+    const [showTimePicker, setShowTimePicker] = useState(false);
     const row = [];
     const [key, setKey] = useState('');
-
     const updateTracks = async () => {
         try {
             const apiRoutine = getApi(props.config);
@@ -184,6 +192,43 @@ const EditRoutine = props => {
                 navigation.goBack();
             } else {
                 addTracks().then();
+            }
+            if(changedReminder&&routineDetailState.reminder_enable) {
+                console.log('test')
+                if (Platform.OS === 'ios') {
+                    PushNotificationIOS.cancelLocalNotifications({id: routineDetailState.id});
+                }else{
+                    PushNotification.cancelLocalNotification(routineDetailState.id.toString());
+                }
+                console.log('test2')
+                let fireDate = new Date();
+                console.log(routineDetailState.reminder_time, parseInt(routineDetailState.reminder_time.substring(0, 2)), parseInt(routineDetailState.reminder_time.substring(3, 5)))
+                console.log('fireDate',fireDate)
+
+                fireDate.setHours(parseInt(routineDetailState.reminder_time.substring(0, 2)));
+                fireDate.setMinutes(parseInt(routineDetailState.reminder_time.substring(3, 5)));
+
+                let title = "⏰ Time to practice " + routineDetailState.title;
+                let message = "it's " + routineDetailState.reminder_time + ", get ready to practice your customized routine: " + routineDetailState.title + ".";
+                if (Platform.OS === 'ios') {
+                    PushNotificationIOS.scheduleLocalNotification({
+                        fireDate: fireDate.toISOString(),
+                        alertTitle: title,
+                        alertBody: message,
+                        repeats: true,
+                        repeatInterval: "day",
+                        userInfo: {id: routineDetailState.id}
+                    });
+                } else {
+                        PushNotification.localNotificationSchedule({
+                        channelId: "routine-reminder-"+routineDetailState.id,
+                        date: fireDate,
+                        repeats: true,
+                        repeatType: "day",
+                        title: title,
+                        message: message,
+                    });
+                }
             }
         }else{
             navigation.goBack();
@@ -694,6 +739,20 @@ const EditRoutine = props => {
             )
         })
     }
+    const onChange = (event, selectedDate) => {
+        if (event.type === 'dismissed') {
+            setShowTimePicker(false);
+            return;
+        }
+        if (event.type === 'neutralButtonPressed') {
+            setRoutineDetailState(new Date(0));
+            setShowTimePicker(false);
+        } else {
+            setRoutineDetailState(prevState => ({...prevState, reminder_time: moment(selectedDate).format('HH:mm')}));
+            setChangedStatus(true);setChangedReminder(true);
+            setShowTimePicker(false);
+        }
+    };
     return (
         <SafeAreaView style={global.container}>
             <ScrollView nestedScrollEnabled={true} style={styles.ScrollContainer}
@@ -772,6 +831,85 @@ const EditRoutine = props => {
                                     </View>
                                 </View>
                             </TouchableWithoutFeedback>
+                        </View>
+                    </View>
+                </View>
+                <View style={global.roundBox}>
+                    <View style={{
+                        width: windowWidth - s(35),
+                        flexDirection: "row",
+                        justifyContent: "flex-start",
+                        alignItems: "center"
+                    }}>
+                        <Text style={global.settingsItemTitle}>Daily Reminder</Text>
+                    </View>
+                    <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                        <View style={[styles.listContainer, {justifyContent: "center", width: "75%"}]}>
+                            {Platform.OS==='ios'?
+                                <>
+                                    <View style={{position:"absolute", right:0, top:vs(15)}}>
+                                        <Image style={{marginRight: 10, tintColor: colors.primaryColor}}
+                                               source={require("@src/assets/img/arrow-down.png")}/>
+                                    </View>
+                                    <DatePicker
+                                        style={{width:"100%",
+                                            fontFamily: "Montserrat-Regular",
+                                            fontSize: s(14),}}
+                                        placeholder="Select Time"
+                                        customStyles={{
+                                            dateInput: {
+                                                borderWidth: 0,
+                                                fontFamily: "Montserrat-Regular",
+                                                fontSize: s(14),
+                                            },
+                                            placeholderText: {
+                                                fontFamily: "Montserrat-Regular",
+                                                fontSize: s(14),
+                                            }
+                                        }}
+                                        date={routineDetailState.reminder_time?routineDetailState.reminder_time:""}
+                                        mode="time"
+                                        format="HH:mm"
+                                        confirmBtnText="Confirm"
+                                        cancelBtnText="Cancel"
+                                        minuteInterval={1}
+                                        onDateChange={(time) => {setRoutineDetailState(prevState => {return {...prevState, reminder_time: time}});setChangedStatus(true);setChangedReminder(true);}}
+                                    />
+                                </>
+                            :
+                                <>
+                                <TouchableWithoutFeedback
+                                    activeOpacity={1}
+                                    onPress={() => {
+                                        setShowTimePicker(true);
+                                    }}>
+                                    <View style={styles.content}>
+                                        <Text style={[global.text, styles.trackTitle]}>
+                                           {routineDetailState.reminder_time?routineDetailState.reminder_time:'Select Time'}
+                                        </Text>
+                                        <View>
+                                            <Image style={{marginRight: 10, tintColor: colors.primaryColor}}
+                                                   source={require("@src/assets/img/arrow-down.png")}/>
+                                        </View>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                {showTimePicker?
+                                    <DateTimePicker
+                                    mode={"time"}
+                                    value={routineIndex >= 0 ? routinesReducer[routineIndex].reminder_time? moment(routinesReducer[routineIndex].reminder_time, 'HH:mm').toDate():new Date():new Date()}
+                                    onChange={onChange}
+                                    />
+                                    :null}
+                                </>
+                            }
+                        </View>
+                        <View style={{width: "20%", justifyContent:"center", alignItems:"center"}}>
+                            <Switch
+                                value={routineDetailState.reminder_enable}
+                                onValueChange={()=>{setRoutineDetailState(prevState => {return {...prevState, reminder_enable: !prevState.reminder_enable}});setChangedStatus(true);setChangedReminder(true);}}
+                                trackColor={{ false: "grey", true: colors.primaryColor }}
+                                thumbColor={'white'}
+                            />
                         </View>
                     </View>
                 </View>

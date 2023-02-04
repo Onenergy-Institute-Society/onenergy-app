@@ -355,3 +355,11 @@ export const SvgStopIcon = (props) => {
         </Svg>
     )
 }
+export const SvgClock = (props) => {
+    return (
+        <Svg width={s(24)} height={s(24)} viewBox="0 0 24 24" style={props.style}>
+            <circle cx="12" cy="12" r="10" fill={props.color} strok={props.color}/>
+            <path d="M12 6v6l4 2" fill={props.color} strok={props.color}/>
+        </Svg>
+    )
+}

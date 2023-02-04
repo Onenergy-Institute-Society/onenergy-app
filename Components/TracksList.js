@@ -18,6 +18,7 @@ import AudioPlayer from './AudioPlayer';
 import NotificationTabBarIcon from "./NotificationTabBarIcon";
 import AuthWrapper from "@src/components/AuthWrapper";
 import * as Analytics from "../Utils/Analytics";
+import TouchableScale from "./TouchableScale";
 
 if (Platform.OS === "android") {
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -57,9 +58,10 @@ const TracksList = (props) => {
                 <View style={[styles.trackItem, styles.boxShadow, {
                     backgroundColor: colors.bodyBg,
                     height: showPlayer ? s(120) : s(80)
-                }]}
-                      key={'practice-' + item.id}>
-                    <TouchableOpacity
+                    }]}
+                    key={'practice-' + item.id}
+                >
+                    <TouchableScale
                         activeOpacity={1}
                         onPress={() => {
                             onTrackItemPress(item).then();
@@ -96,7 +98,7 @@ const TracksList = (props) => {
                             <NotificationTabBarIcon notificationID={'practice'} top={3} right={3} size={15}
                                                     fontSize={10} showNumber={false} data={item.id}/>
                         </AuthWrapper>
-                    </TouchableOpacity>
+                    </TouchableScale>
                     {showPlayer ? (
                         <AudioPlayer track={selectedTrack} setMessageBarDisplay={setMessageBarDisplay} {...props}/>
                     ) : null}
