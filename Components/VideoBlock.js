@@ -40,7 +40,7 @@ const VideoBlock = props => {
                 onPress={() => {
                     navigation.dispatch(
                         NavigationActions.navigate({
-                            routeName: "VideoPlayer",
+                            routeName: "LocalVideoPlayer",
                             params: {
                                 videoId: videoId,
                                 video: video,

@@ -19,7 +19,7 @@ import * as Progress from 'react-native-progress';
 import InteractiveTranscripts from "./InteractiveTranscripts";
 
 const statusBarSize = 0;
-const VideoPlayer = (props) => {
+const LocalVideoPlayer = (props) => {
     const {navigation} = props;
     const [selectedCCUrl, setSelectedCCUrl] = useState(navigation.getParam('selectedCCUrl'));
     const [paused, setPaused] = useState(false);
@@ -353,5 +353,5 @@ const styles = StyleSheet.create({
         top: s(20),
     }
 });
-VideoPlayer.navigationOptions = {header: null};
-export default VideoPlayer;
+LocalVideoPlayer.navigationOptions = {header: null};
+export default LocalVideoPlayer;

@@ -28,7 +28,7 @@ import QuotesScreen from './Screens/QuotesScreen';
 import SolarTermScreen from './Screens/SolarTermScreen';
 import LessonButton from "./Components/LessonButton";
 import PracticePlayer from "./Components/PracticePlayer";
-import VideoPlayer from "./Components/VideoPlayer";
+import LocalVideoPlayer from "./Components/LocalVideoPlayer";
 import VimeoBlockLoader from "./Components/VimeoBlockLoader";
 import VideoBlock from "./Components/VideoBlock";
 import PracticePersonal from './Screens/PracticePersonal';
@@ -178,9 +178,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "VideoPlayer",
-        "VideoPlayer",
-        VideoPlayer,
+        "LocalVideoPlayer",
+        "LocalVideoPlayer",
+        LocalVideoPlayer,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
@@ -2179,7 +2179,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     }
 
     externalCodeSetup.profileScreenHooksApi.setAfterDetailsComponent(AfterDetailsComponent);
-    externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "PracticePlayer", "VideoPlayer", "MilestonesScreen", "QuestsScreen", "StatsScreen", "myVouchersScreen", "FeedbackScreen", "SettingsScreen", "CoursesSingleScreen", "LessonSingleScreen"])
+    //externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "PracticePlayer", "LocalVideoPlayer", "MilestonesScreen", "QuestsScreen", "StatsScreen", "myVouchersScreen", "FeedbackScreen", "SettingsScreen", "CoursesSingleScreen", "LessonSingleScreen"])
     externalCodeSetup.settingsScreenApi.setLogoutComponent(({
                                                                 global,
                                                                 t,
