@@ -346,7 +346,7 @@ const HomeContent = (props) => {
                                         }}
                                     />
                                     <FastImage source={{uri: optionData.ranks[parseInt(user.rank)].rankImage}}
-                                               style={{position:"absolute", bottom:0, right:10, width: 24, height: 24, alignSelf: "center"}}/>
+                                               style={{position:"absolute", bottom:5, right:10, width: 24, height: 24, alignSelf: "center"}}/>
                                     {user.membership&&user.membership.length?
                                     <SvgVIPMedal style={{position:"absolute", top:0, right:-10}} />
                                         :null}
@@ -431,7 +431,7 @@ const HomeContent = (props) => {
                                                     this.todayGoalDialog.open();
                                                 }}>
                                             <Text style={[global.link, {
-                                                fontWeight: "bold",
+                                                fontWeight: "normal",
                                                 color: colors.primaryButtonBg
                                             }]}>Goal setting ></Text>
                                         </TouchableScale>
