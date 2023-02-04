@@ -198,7 +198,7 @@ const EditRoutine = props => {
                 if (Platform.OS === 'ios') {
                     PushNotificationIOS.cancelLocalNotifications({id: routineDetailState.id});
                 }else{
-                    PushNotification.cancelLocalNotification(routineDetailState.id.toString());
+                    PushNotification.cancelLocalNotifications({id: routineDetailState.id.toString()});
                 }
                 console.log('test2')
                 let fireDate = new Date();
