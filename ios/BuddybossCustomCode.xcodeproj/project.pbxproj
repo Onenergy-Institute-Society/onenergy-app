@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 
-		5E555C0D2413F4C50049A1A2 /* BuddybossCustomCode.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* BuddybossCustomCode.m */; };
+		5E555C0D2413F4C50049A1A2 /* BuddybossCustomCode.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* BuddybossCustomCode.m */;};
 
 /* End PBXBuildFile section */
 
@@ -25,10 +25,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		134814201AA4EA6300B7C361 /* libBuddybossCustomCode.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBuddybossCustomCode.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		134814201AA4EA6300B7C361 /* libBuddybossCustomCode.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBuddybossCustomCode.a; sourceTree = BUILT_PRODUCTS_DIR;};
 
-		B3E7B5881CC2AC0600A0062D /* BuddybossCustomCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BuddybossCustomCode.h; sourceTree = "<group>"; };
-		B3E7B5891CC2AC0600A0062D /* BuddybossCustomCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BuddybossCustomCode.m; sourceTree = "<group>"; };
+		B3E7B5881CC2AC0600A0062D /* BuddybossCustomCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BuddybossCustomCode.h; sourceTree = "<group>";};
+		B3E7B5891CC2AC0600A0062D /* BuddybossCustomCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BuddybossCustomCode.m; sourceTree = "<group>";};
 
 /* End PBXFileReference section */
 

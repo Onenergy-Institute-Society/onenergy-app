@@ -20,13 +20,13 @@ public class BuddybossCustomCodeModule extends ReactContextBaseJavaModule {
 
     public BuddybossCustomCodeModule(ReactApplicationContext reactContext) {
         super(reactContext);
-    }
+   }
 
     @Override
     @NonNull
     public String getName() {
         return NAME;
-    }
+   }
 
     // Lifecycle methods (DO NOT DELETE)
     // These methods will be called in the BuddyBoss app's MainApplication.java and MainActivity.java
@@ -41,7 +41,7 @@ public class BuddybossCustomCodeModule extends ReactContextBaseJavaModule {
     public static void onNewIntent(Activity activity, Intent intent) {}
 
     public static void getPackages(List<ReactPackage> packages) {}
-
+    
     // Here you can write your own custom native modules to use in your custom repo
     // Below is an example of a simple method to multiply two numbers
     // See https://reactnative.dev/docs/native-modules-android for more information
@@ -49,7 +49,7 @@ public class BuddybossCustomCodeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void multiply(int a, int b, Promise promise) {
         promise.resolve(a * b);
-    }
+   }
 
     public static native int nativeMultiply(int a, int b);
 }

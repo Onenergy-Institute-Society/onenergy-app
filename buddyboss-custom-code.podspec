@@ -10,11 +10,13 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => "10.0" }
-  s.source       = { :git => "https://github.com/buddyboss/buddyboss-app-custom-code-template.git.git", :tag => "#{s.version}" }
+  s.platforms    = {:ios => "10.0"}
+  s.source       = {:git => "https://github.com/buddyboss/buddyboss-app-custom-code-template.git.git", :tag => "#{s.version}"}
 
   s.source_files = "ios/**/*.{h,m,mm}"
 
   s.dependency "React-Core"
-  s.dependency "react-native-track-player"
+  s.dependency "sovran-react-native"
+  s.dependency "segment-analytics-react-native"
+  s.dependency "ReactNativeGetLocation"
 end

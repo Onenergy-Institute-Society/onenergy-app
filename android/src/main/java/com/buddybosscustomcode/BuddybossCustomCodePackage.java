@@ -18,11 +18,11 @@ public class BuddybossCustomCodePackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new BuddybossCustomCodeModule(reactContext));
         return modules;
-    }
+   }
 
     @NonNull
     @Override
     public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
         return Collections.emptyList();
-    }
+   }
 }
