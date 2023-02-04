@@ -45,10 +45,8 @@ const HomeContent = (props) => {
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const settings = useSelector((state) => state.settingReducer.settings ? state.settingReducer.settings : null);
-    const practiceReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null);
     const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
     const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
-    const postsReducer = useSelector((state) => state.postsReducer ? state.postsReducer : null);
     const dispatch = useDispatch();
     const [sunrise, setSunrise] = useState('');
     const [phase, setPhase] = useState('');
@@ -161,43 +159,11 @@ const HomeContent = (props) => {
         }
     },[settings.latitude])
     useEffect(async () => {
-        /*if(user) {
-            let load;
-            console.log('optionData.cache.guideCache', optionData.cache.guideCache, 'practiceReducer.guideUpdate', practiceReducer.guideUpdate)
-            if (optionData.cache.guideCache && practiceReducer.guideUpdate && optionData.cache.guideCache > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
-                load = 1;
-            }
-            console.log('optionData.cache.groupCache', optionData.cache.groupCache, 'practiceReducer.groupUpdate', practiceReducer.groupUpdate)
-            if (optionData.cache.groupCache && practiceReducer.groupUpdate && optionData.cache.groupCache > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
-                load = 1;
-            }
-            console.log('optionData.cache.routineCache', optionData.cache.routineCache, 'practiceReducer.routineUpdate', practiceReducer.routineUpdate)
-            if (optionData.cache.routineCache && practiceReducer.routineUpdate && optionData.cache.routineCache > practiceReducer.routineUpdate || !practiceReducer.routineUpdate) {
-                load = 1;
-            }
-            console.log('optionData.cache.postCache', optionData.cache.postCache, 'postsReducer.postUpdate', postsReducer.postUpdate)
-            if (optionData.cache.postCache && postsReducer.postUpdate && optionData.cache.postCache > postsReducer.postUpdate || !postsReducer.postUpdate) {
-                dispatch({
-                    type: 'ONENERGY_POSTS_RESET',
-                });
-            }
-            console.log('optionData.cache.achievementCache', optionData.cache.achievementCache, 'achievementReducer.achievementUpdate', achievementReducer.achievementUpdate)
-            if (optionData.cache.achievementCache && achievementReducer.achievementUpdate && optionData.cache.achievementCache > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
-                load = 1;
-            }
-            console.log('optionData.cache.progressCache', optionData.cache.progressCache, 'progressReducer.progressUpdate', progressReducer.progressUpdate)
-            if (optionData.cache.progressCache && progressReducer.progressUpdate && optionData.cache.progressCache > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
-                load = 1;
-            }
-            if (load === 1) {
-                props.navigation.navigate("InitData", {transition: 'fade'});
-            }
-        }*/
         Analytics.segmentClient.screen('Home').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
         });
-        console.log('ip',settings.ip)
+
         if(!settings.ip){
             fetchIpAndLocation().then();
         }

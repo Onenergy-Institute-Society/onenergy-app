@@ -49,7 +49,6 @@ const AudioPlayerRoutine = (props) => {
     }, [routine]);
 
     async function addTrack(track) {
-        const state = await TrackPlayer.getState();
         await TrackPlayer.reset();
         return await TrackPlayer.add(track, -1);
     }
