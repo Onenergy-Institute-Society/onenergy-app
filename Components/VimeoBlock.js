@@ -16,7 +16,7 @@ const VimeoBlock = props => {
                 onPress={() => {
                     navigation.dispatch(
                         NavigationActions.navigate({
-                            routeName: "VimeoPlayer",
+                            routeName: "LocalVideoPlayer",
                             params: {
                                 videoId: videoId,
                                 video: video,

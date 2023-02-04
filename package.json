@@ -24,7 +24,6 @@
     "suncalc": "^1.9.0"
   },
   "nativeDependencies": {
-    "react-native-get-location": "^2.2.1",
     "@segment/analytics-react-native": "^2.10.1",
     "@segment/sovran-react-native": "^0.4.5"
   },

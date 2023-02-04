@@ -9,9 +9,9 @@ const AppPageScreen = (props) => {
     if (!props.isFocused)
         return null;
     const {navigation} = props;
-    useEffect(()=>{
+    useEffect(() => {
         Analytics.segmentClient.screen('Page', {title: navigation.getParam('title')}).then();
-    },[]);
+    }, []);
     return (
         <View style={{
             flex: 1,

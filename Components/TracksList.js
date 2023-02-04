@@ -89,8 +89,6 @@ const TracksList = (props) => {
                                     ) : null}
                                 </View>
                                 <Text
-                                    style={[styles.subTitle, highlightColor]}>count: x{item.count}</Text>
-                                <Text
                                     style={[styles.duration, highlightColor]}>{new Date(item.duration * 1000).toISOString().substring(14, 19)}</Text>
                             </View>
                         </ImageBackground>

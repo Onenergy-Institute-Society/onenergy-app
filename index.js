@@ -28,7 +28,7 @@ import QuotesScreen from './Screens/QuotesScreen';
 import SolarTermScreen from './Screens/SolarTermScreen';
 import LessonButton from "./Components/LessonButton";
 import PracticePlayer from "./Components/PracticePlayer";
-import VimeoPlayer from "./Components/VimeoPlayer";
+import LocalVideoPlayer from "./Components/LocalVideoPlayer";
 import VimeoBlockLoader from "./Components/VimeoBlockLoader";
 import VideoBlock from "./Components/VideoBlock";
 import PracticePersonal from './Screens/PracticePersonal';
@@ -178,9 +178,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
-        "VimeoPlayer",
-        "VimeoPlayer",
-        VimeoPlayer,
+        "LocalVideoPlayer",
+        "LocalVideoPlayer",
+        LocalVideoPlayer,
         "All" // "Auth" | "noAuth" | "Main" | "All"
     );
     externalCodeSetup.navigationApi.addNavigationRoute(
@@ -700,8 +700,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     }
                     console.log('loadGuide', loadGuide )
                     if (loadGuide) {
-                        if (data.guides) {
-                            idPracticeReducer.guides = data.guides;
+                        if (data.guidesData) {
+                            idPracticeReducer.guides = data.guidesData;
                         }
                         idPracticeReducer.guideUpdate = new Date().toISOString();
                         console.log('guideUpdate', idPracticeReducer.guideUpdate  )
@@ -984,7 +984,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         case 'PR':
                             let routineIndex;
                             routineIndex = state.practiceReducer.routines.findIndex((temp) => temp.id === acpData);
-                            let tempTracks = state.practiceReducer.routines[routineIndex].tracks;
+                            let tempTracks = state.practiceReducer.routines[routineIndex].audioTracks;
                             let routineDuration = 0;
                             tempTracks.forEach(track => {
                                 routineDuration = routineDuration + parseInt(track.duration);
@@ -1005,8 +1005,20 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         case 'PG':
                             let groupIndex;
                             groupIndex = state.practiceReducer.groups.findIndex((temp) => temp.id === acpData);
-                            state.practiceReducer.groups[groupIndex].guides.forEach(tempGuide => {
-                                tempArray.push({'guide': tempGuide, 'count': 1});
+                            state.practiceReducer.groups[groupIndex].guides.forEach(guide_id => {
+                                loop1:
+                                for(let level of state.practiceReducer.guides){
+                                    loop2:
+                                    for(let section of level.sections){
+                                        loop3:
+                                        for(let guide of section.data){
+                                            if(guide.id === guide_id){
+                                                tempArray.push({'guide': guide, 'count': 1});
+                                                break loop1
+                                            }
+                                        }
+                                    }
+                                }
                             });
                             tmpAchievements = state.achievementReducer.milestones.filter((item) =>
                                 (item.trigger === 'practice' &&
@@ -1137,8 +1149,8 @@ console.log('1')
                         console.log('4')
 
                         let acpLevelIndex = acpTempPracticeState.guides.findIndex(level => level.id === tempGuide.guide.levelId);
-                        let acpSectionIndex = acpTempPracticeState.guides[acpLevelIndex].sections.findIndex(section => section.id = tempGuide.guide.sectionId);
-                        let acpGuideIndex = acpTempPracticeState.guides[acpLevelIndex].sections[acpSectionIndex].data.findIndex(guide => guide.id = tempGuide.guide.id);
+                        let acpSectionIndex = acpTempPracticeState.guides[acpLevelIndex].sections.findIndex(section => section.id === tempGuide.guide.sectionId);
+                        let acpGuideIndex = acpTempPracticeState.guides[acpLevelIndex].sections[acpSectionIndex].data.findIndex(guide => guide.id === tempGuide.guide.id);
                         console.log('5')
                         if (acpGuideIndex >= 0) {
                             let tempGuideDuration = parseInt(tempGuide.guide.duration) * parseInt(tempGuide.count);
@@ -1186,7 +1198,6 @@ console.log('1')
                                     'section_duration': tempGuideDuration
                                 })
                             }
-
                         }
                     })
                     console.log('10')
@@ -1507,14 +1518,6 @@ console.log('7')
                     userObject: vscTempUser
                 }
                 return reducer(vscNewState, action);
-            case "USER_PROFILE_UPDATED":
-                let upuTempUser = state.userObject;
-                upuTempUser.profile_updated = true;
-                const upuNewState = {
-                    ...state,
-                    userObject: upuTempUser
-                }
-                return reducer(upuNewState, action);
             default:
                 return reducer(state, action);
         }
@@ -1580,23 +1583,18 @@ console.log('7')
         initial: '1', //Skip Language Choosing Screen
     }
     externalCodeSetup.reduxApi.addReducer(
-        "settingsReducer",
-        (state = {languages: defaultLanguage, settings: {allowLocation: false, initLoaded: 0, vouchers:[]}}, action) => {
+        "settingReducer",
+        (state = {languages: defaultLanguage, settings: {ip:'', latitude:0, longitude:0, vouchers:[]}}, action) => {
             switch (action.type) {
-                case "SETTINGS_INIT_LOADED":
+                case "SETTINGS_LOCAL_INFO":
+                    console.log('SETTINGS_LOCAL_INFO',action.payload )
                     return {
                         ...state,
                         settings: {
                             ...state.settings,
-                            initLoaded: action.payload
-                        }
-                    }
-                case "SETTINGS_ALLOW_LOCATION":
-                    return {
-                        ...state,
-                        settings: {
-                            ...state.settings,
-                            allowLocation: action.payload
+                            ip: action.payload.ip,
+                            latitude: action.payload.latitude,
+                            longitude: action.payload.longitude
                         }
                     }
                 case "SETTINGS_ADD_VOUCHER_NOTIFICATION":
@@ -1657,7 +1655,7 @@ console.log('7')
     );
     // Make Language and Notification reducer persistent, and remove blog and post from persistent
     externalCodeSetup.reduxApi.addPersistorConfigChanger(props => {
-        let whiteList = [...props.whitelist, "settingsReducer", "postsReducer", "onenergyAppReducer", "videoReducer"];
+        let whiteList = [...props.whitelist, "settingReducer", "postsReducer", "onenergyAppReducer", "videoReducer"];
 
         return {
             ...props,
@@ -2020,7 +2018,6 @@ console.log('7')
         "gamipress_ranks",
         "forums"
     ])
-
     externalCodeSetup.indexJsApi.addIndexJsFunction(() => {
         Orientation.lockToPortrait();
         TrackPlayer.registerPlaybackService(() => PlaybackService);
@@ -2166,7 +2163,7 @@ console.log('7')
     }
 
     externalCodeSetup.profileScreenHooksApi.setAfterDetailsComponent(AfterDetailsComponent);
-    externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "PracticePlayer", "VimeoPlayer", "MilestonesScreen", "QuestsScreen", "StatsScreen", "myVouchersScreen", "FeedbackScreen", "SettingsScreen", "CoursesSingleScreen", "LessonSingleScreen"])
+    //externalCodeSetup.navigationApi.setScreensWithoutTabBar(["EditRoutine", "PracticeGroup", "PracticeMember", "PracticePersonal", "PracticePlayer", "LocalVideoPlayer", "MilestonesScreen", "QuestsScreen", "StatsScreen", "myVouchersScreen", "FeedbackScreen", "SettingsScreen", "CoursesSingleScreen", "LessonSingleScreen"])
     externalCodeSetup.settingsScreenApi.setLogoutComponent(({
                                                                 global,
                                                                 t,
@@ -2308,7 +2305,7 @@ console.log('7')
                 ) {
                     return "AuthSiteSelectionScreen";
                 } else {
-                    return routeProps.shouldLockApp ? "AppLockScreen" : "noAuth";
+                    return routeProps.shouldLockApp ? "AppLockScreen" : "InitData";
                 }
             } else {
                 return myCustomRoute; //Use my own custom route instead of the default "Auth" route
@@ -2324,6 +2321,9 @@ console.log('7')
             },
             OnBoarding: {
                 screen: OnBoarding
+            },
+            InitData: {
+                screen: InitData
             }
         }
 

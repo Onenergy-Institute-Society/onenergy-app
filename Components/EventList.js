@@ -1,14 +1,13 @@
-import React, {useEffect, useState} from "react";
-import {StyleSheet, Text, View,} from "react-native";
+import React, {useState} from "react";
+import {StyleSheet, View,} from "react-native";
 import {useSelector} from "react-redux";
 import {NavigationActions, withNavigation} from "react-navigation";
 import ScalableImage from "../Components/ScalableImage";
 import TouchableScale from './TouchableScale';
-import {mvs, s, vs, windowWidth} from '../Utils/Scale';
+import {s, vs, windowWidth} from '../Utils/Scale';
 import AwesomeAlert from "../Components/AwesomeAlert";
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import moment from 'moment';
-import FastImage from "react-native-fast-image";
 import * as Analytics from "../Utils/Analytics";
 import Blink from "../Utils/Blink";
 
@@ -296,7 +295,6 @@ const styles = StyleSheet.create({
     containerStyle: {
         backgroundColor: "white",
         borderRadius:s(9),
-        marginTop: mvs(25),
         marginHorizontal: s(15),
         width: windowWidth - s(30),
     },

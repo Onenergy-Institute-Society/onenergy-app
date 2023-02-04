@@ -41,7 +41,7 @@ const AudioPlayerRoutine = (props) => {
         }
     }
     useEffect(() => {
-        addTrack(routine.tracks).then(async () => {
+        addTrack(routine.audioTracks).then(async () => {
             await TrackPlayer.play();
             setPlaying(true);
             setStopped(false);
@@ -49,7 +49,6 @@ const AudioPlayerRoutine = (props) => {
     }, [routine]);
 
     async function addTrack(track) {
-        const state = await TrackPlayer.getState();
         await TrackPlayer.reset();
         return await TrackPlayer.add(track, -1);
     }
@@ -88,17 +87,17 @@ const AudioPlayerRoutine = (props) => {
     useTrackPlayerEvents([Event.PlaybackTrackChanged], ({nextTrack, position}) => {
         setPastPosition(position)
         setNextTrack(nextTrack)
-        if (nextTrack) setTrackTitle(routine.tracks[parseInt(nextTrack, 10)].title);
+        if (nextTrack) setTrackTitle(routine.audioTracks[parseInt(nextTrack, 10)].title);
         let index = parseInt(nextTrack, 10);
-        if (routine.tracks[index]) {
-            setTrackTitle(routine.tracks[index].title);
+        if (routine.audioTracks[index]) {
+            setTrackTitle(routine.audioTracks[index].title);
         }
     });
 
     useTrackPlayerEvents([Event.PlaybackQueueEnded], async (event) => {
         if (event.type === 'playback-queue-ended') {
             if (Platform.OS === 'ios') {
-                if (!nextTrack || nextTrack === routine.tracks.length - 1) {
+                if (!nextTrack || nextTrack === routine.audioTracks.length - 1) {
                     setPlaying(false);
                     setStopped(true);
                     setTrackTitle('');
@@ -129,7 +128,7 @@ const AudioPlayerRoutine = (props) => {
         if ((state === State.Paused)) {
             const queue = await TrackPlayer.getQueue();
             if(!queue.length){
-                addTrack(routine.tracks).then(async () => {
+                addTrack(routine.audioTracks).then(async () => {
                     await TrackPlayer.play();
                     setPlaying(true);
                     setStopped(false);
@@ -141,7 +140,7 @@ const AudioPlayerRoutine = (props) => {
             }
         }
         if ((state === State.Stopped) || (state === State.None)) {
-            addTrack(routine.tracks).then(async () => {
+            addTrack(routine.audioTracks).then(async () => {
                 await TrackPlayer.play();
                 setPlaying(true);
                 setStopped(false);

@@ -2,12 +2,11 @@ import React, {useEffect, useState} from "react";
 import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {useSelector} from "react-redux";
 import {NavigationActions, withNavigation} from "react-navigation";
-import ImageCache from "./ImageCache";
 import {ms, mvs, s, windowHeight, windowWidth} from "../Utils/Scale";
 
 const VideoBlock = props => {
     const {block, navigation} = props;
-    const language = useSelector((state) => state.settingsReducer.languages);
+    const language = useSelector((state) => state.settingReducer.languages);
     const no_skip_forward = block.data.no_skip_forward;
     const lesson_video = block.data.lesson_video;
     const duration = block.data.duration;
@@ -17,7 +16,6 @@ const VideoBlock = props => {
     const subtitles = block.result.subtitles;
     const [textTracks, setTextTracks] = useState({title: "No Subtitle", language: "", uri: "", type: ""});
     const [selectedCCUrl, setSelectedCCUrl] = useState('');
-    const videoComplete = useSelector((state) => state.videoReducer.videoComplete);
 
     useEffect(() => {
         setTextTracks(subtitles.map((item) => {
@@ -35,14 +33,14 @@ const VideoBlock = props => {
             ...previousState,
             {title: "No Subtitle", language: "", uri: "", type: ""}
         ]);
-    }, [])
+    }, [language.subtitle])
     return (
         <View style={styles.container}>
             <TouchableOpacity
                 onPress={() => {
                     navigation.dispatch(
                         NavigationActions.navigate({
-                            routeName: "VimeoPlayer",
+                            routeName: "LocalVideoPlayer",
                             params: {
                                 videoId: videoId,
                                 video: video,

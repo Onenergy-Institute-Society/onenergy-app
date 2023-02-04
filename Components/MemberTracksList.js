@@ -73,7 +73,7 @@ const MemberTracksList = (props) => {
     const renderItem = ({item, index}) => {
         let showPlayer = !!(selectedRoutine && selectedRoutine.id === item.id);
         let totalDuration = 0;
-        item.tracks.forEach((item) => {
+        item.audioTracks.forEach((item) => {
             totalDuration += parseInt(item.duration);
         })
         let itemRank = !item.level?0:practiceReducer.guides.find(level=>level.id===item.level).rank;

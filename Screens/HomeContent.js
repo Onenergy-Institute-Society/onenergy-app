@@ -34,7 +34,7 @@ import {
     SvgIconSunrise,
     SvgIconSunset, SvgVIPMedal
 } from "../Utils/svg";
-import messaging from '@react-native-firebase/messaging';
+
 import { SetupService } from '../Services';
 import * as Analytics from "../Utils/Analytics";
 
@@ -47,7 +47,6 @@ const HomeContent = (props) => {
     const settings = useSelector((state) => state.settingReducer.settings ? state.settingReducer.settings : null);
     const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
     const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
-    const postsReducer = useSelector((state) => state.postsReducer ? state.postsReducer : null);
     const dispatch = useDispatch();
     const [sunrise, setSunrise] = useState('');
     const [phase, setPhase] = useState('');
@@ -153,7 +152,7 @@ const HomeContent = (props) => {
             console.error(e);
         }
     }
-    useEffect(() => {
+    useEffect(()=>{
         if(settings.latitude&&settings.longitude){
             const sunTimes = SunCalc.getTimes(new Date(), settings.latitude, settings.longitude, 0);
             setSunrise(sunTimes);
@@ -201,7 +200,6 @@ const HomeContent = (props) => {
             dateDiff = 29.530 - lunarAge;
             moonPhase = 'New Moon';
         }
-
         moonPhaseDate = moment.utc().add(dateDiff, 'days').format('MMM DD');
         setNextMoonPhase({'date': moonPhaseDate, 'phase': moonPhase});
         if(user) {
