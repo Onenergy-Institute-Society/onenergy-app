@@ -89,7 +89,6 @@ const StatsScreen = (props) => {
             }
        })
    }
-    console.log(practiceReducer, pieData)
     const chartConfig = {
         backgroundGradientFrom: "#FFEEE7",
         backgroundGradientFromOpacity: 1,
@@ -377,7 +376,6 @@ const StatsScreen = (props) => {
                                             level.sections.map(section=>{
                                                 return (
                                                     progressReducer.sectionStats.map((item, sectionIndex) => {
-                                                        console.log(item.section_id , section.id)
                                                         if(item.section_id === section.id){
                                                             guideIndex++;
                                                             return (

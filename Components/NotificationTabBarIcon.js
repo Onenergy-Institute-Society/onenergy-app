@@ -135,7 +135,11 @@ const NotificationTabBarIcon = props => {
                     let weeklyCount = achievementReducer.weekly ? achievementReducer.weekly.complete_date && !achievementReducer.weekly.claim_date:0;
                     let monthlyCount = achievementReducer.monthly ? achievementReducer.monthly.complete_date && !achievementReducer.monthly.claim_date:0;
                     let milestoneCount = achievementReducer.milestones ? achievementReducer.milestones.filter(item => item.complete_date && !item.claim_date).length : 0;
-                    notificationCount = dailyCount + weeklyCount + monthlyCount + milestoneCount;
+                    let voucherCount = 0;
+                    if (vouchers && vouchers.length) {
+                        voucherCount = vouchers && vouchers.length;
+                    }
+                    notificationCount = dailyCount + weeklyCount + monthlyCount + milestoneCount + voucherCount;
                 }
                 break;
             case 'practice':

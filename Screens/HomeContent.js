@@ -34,7 +34,7 @@ import {
     SvgIconSunrise,
     SvgIconSunset, SvgVIPMedal
 } from "../Utils/svg";
-import messaging from '@react-native-firebase/messaging';
+
 import { SetupService } from '../Services';
 import * as Analytics from "../Utils/Analytics";
 
@@ -155,15 +155,13 @@ const HomeContent = (props) => {
         }
     }
     useEffect(()=>{
-        console.log(settings.latitude, settings.longitude)
         if(settings.latitude&&settings.longitude){
             const sunTimes = SunCalc.getTimes(new Date(), settings.latitude, settings.longitude, 0);
-            console.log(sunTimes)
             setSunrise(sunTimes);
         }
     },[settings.latitude])
     useEffect(async () => {
-        if(user) {
+        /*if(user) {
             let load;
             console.log('optionData.cache.guideCache', optionData.cache.guideCache, 'practiceReducer.guideUpdate', practiceReducer.guideUpdate)
             if (optionData.cache.guideCache && practiceReducer.guideUpdate && optionData.cache.guideCache > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
@@ -194,7 +192,7 @@ const HomeContent = (props) => {
             if (load === 1) {
                 props.navigation.navigate("InitData", {transition: 'fade'});
             }
-        }
+        }*/
         Analytics.segmentClient.screen('Home').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
@@ -250,33 +248,6 @@ const HomeContent = (props) => {
                 subscription.remove();
             }
         }
-    }, []);
-
-    useEffect(() => {
-        const unsubscribe = messaging().onMessage(async remoteMessage => {
-            const data = remoteMessage.data;
-            if (data.notification_type && data.notification_type === 'pn_functions') {
-                switch (data.function_type) {
-                    case "survey_vip":
-                        dispatch({
-                            type: 'USER_VIP_SURVEY_COMPLETED',
-                        });
-                        if(!(user.membership && user.membership.length)){
-                            dispatch({
-                                type: 'SETTINGS_ADD_VOUCHER_NOTIFICATION',
-                                payload: data.extra_data
-                            });
-                        }
-                        break;
-                    case "profile_updated":
-                        dispatch({
-                            type: 'USER_PROFILE_UPDATED',
-                        });
-                        break;
-                }
-            }
-        });
-        return unsubscribe;
     }, []);
 
     const OnPress = async (item) => {

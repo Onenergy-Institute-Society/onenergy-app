@@ -4,6 +4,7 @@ import {
     SafeAreaView, Text, ImageBackground, BackHandler, ActivityIndicator
 } from "react-native";
 import {getApi} from "@src/services";
+import messaging from '@react-native-firebase/messaging';
 import * as Analytics from "../Utils/Analytics";
 
 const InitData = (props) => {
@@ -50,8 +51,27 @@ const InitData = (props) => {
             console.error(e);
         }
     }
-
     useEffect(() => {
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            console.log('messaging', remoteMessage)
+            const data = remoteMessage.data;
+            if (data.notification_type && data.notification_type === 'pn_functions') {
+                switch (data.function_type) {
+                    case "survey_vip":
+                        dispatch({
+                            type: 'USER_VIP_SURVEY_COMPLETED',
+                        });
+                        if(!(user.membership && user.membership.length)){
+                            dispatch({
+                                type: 'SETTINGS_ADD_VOUCHER_NOTIFICATION',
+                                payload: data.extra_data
+                            });
+                        }
+                        break;
+                }
+            }
+        });
+        return unsubscribe;
         if(user.id)
             Analytics.segmentClient.identify(user.id, {
                 username: user.slug,
@@ -77,6 +97,8 @@ const InitData = (props) => {
         console.log('loadGuide', loadGuide , 'loadGroup',  loadGroup , 'loadRoutine', loadRoutine ,'loadAchievement', loadAchievement , 'loadProgress', loadProgress);
         if (loadGuide || loadGroup || loadRoutine || loadAchievement || loadProgress) {
             fetchInitDate(loadGroup, loadGuide, loadRoutine, loadAchievement, loadProgress).then();
+        }else{
+            props.navigation.navigate("Main");
         }
         if (optionData.cache.postCache && postsReducer.postUpdate && optionData.cache.postCache > postsReducer.postUpdate || !postsReducer.postUpdate) {
             dispatch({
@@ -111,7 +133,8 @@ const InitData = (props) => {
             loaded = false;
         }
         if (loaded) {
-            navigation.goBack();
+            console.log('home')
+            props.navigation.navigate("Main");
         }
     }, [achievementReducer.achievementUpdate, progressReducer.progressUpdate, practiceReducer.routineUpdate, practiceReducer.groupUpdate, practiceReducer.guideUpdate])
 

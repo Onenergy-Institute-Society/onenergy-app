@@ -1097,7 +1097,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     }
                     console.log('G7')
 
-                    console.log(tempArray, acpTempPracticeState)
                     tempArray.forEach(tempGuide => {
                         //milestones
                         tmpAchievements = state.achievementReducer.milestones.filter((item) => {
@@ -1534,14 +1533,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     userObject: vscTempUser
                 }
                 return reducer(vscNewState, action);
-            case "USER_PROFILE_UPDATED":
-                let upuTempUser = state.userObject;
-                upuTempUser.profile_updated = true;
-                const upuNewState = {
-                    ...state,
-                    userObject: upuTempUser
-                }
-                return reducer(upuNewState, action);
             default:
                 return reducer(state, action);
         }
@@ -1623,6 +1614,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     }
                 case "SETTINGS_ADD_VOUCHER_NOTIFICATION":
                     const savnVoucher = state.settings.vouchers;
+                    console.log('add')
                     if(!savnVoucher.find(voucher => voucher === action.payload))
                     {
                         savnVoucher.push(action.payload);
@@ -2306,10 +2298,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             android: feature.is_enabled_android
         })
 
-        // Get the initial switch route based on state data.
-        // getInitialSwitchRoute() is based on BB App's AppNavigator.js
-        // Feel free to copy and paste this to your own code
-
         const getInitialSwitchRoute = () => {
 
             const defaultInitialRoute = "Auth";
@@ -2329,7 +2317,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 ) {
                     return "AuthSiteSelectionScreen";
                 } else {
-                    return routeProps.shouldLockApp ? "AppLockScreen" : "noAuth";
+                    return routeProps.shouldLockApp ? "AppLockScreen" : "InitData";
                 }
             } else {
                 return myCustomRoute; //Use my own custom route instead of the default "Auth" route
@@ -2345,6 +2333,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             },
             OnBoarding: {
                 screen: OnBoarding
+            },
+            InitData: {
+                screen: InitData
             }
         }
 

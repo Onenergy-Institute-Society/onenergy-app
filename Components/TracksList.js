@@ -34,7 +34,6 @@ const TracksList = (props) => {
             LayoutAnimation.Presets.spring
         );
         if (!selectedTrack || parseInt(track.id) !== parseInt(selectedTrack.id)) {
-            console.log('selected', track)
             setSelectedTrack(track);
             Analytics.segmentClient.track('Start Guided Practice', {
                 id: track.id,
@@ -133,7 +132,6 @@ const TracksList = (props) => {
                                 data: showGuide
                             }
                         })
-                        console.log(sections)
                         return (
                             <SectionList
                                 stickySectionHeadersEnabled={false}
