@@ -2039,7 +2039,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     externalCodeSetup.indexJsApi.addIndexJsFunction(() => {
         Orientation.lockToPortrait();
         TrackPlayer.registerPlaybackService(() => PlaybackService);
-        // Must be outside of any component LifeCycle (such as `componentDidMount`).
+       /* // Must be outside of any component LifeCycle (such as `componentDidMount`).
         PushNotification.configure({
             // (optional) Called when Token is generated (iOS and Android)
             onRegister: function (token) {
@@ -2080,20 +2080,20 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             // default: true
             popInitialNotification: true,
 
-            /**
+            /!**
              * (optional) default: true
              * - Specified if permissions (ios) and token (android and ios) will requested or not,
              * - if not, you must call PushNotificationsHandler.requestPermissions() later
              * - if you are not using remote notification or do not have Firebase installed, use this:
              *     requestPermissions: Platform.OS === 'ios'
-             */
+             *!/
             requestPermissions: true,
         });
         PushNotification.createChannel({
             channelId: 'onenergyReminders',
             channelName: 'Onenergy Routines Reminder',
             channelDescription: 'Reminder for routines'
-        })
+        })*/
 
     })
     externalCodeSetup.blogSingleApi.setAfterBlogSingleBody((props) => {

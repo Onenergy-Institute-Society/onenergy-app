@@ -180,7 +180,7 @@ const EditRoutine = props => {
                 return false;
             }
             setChangedStatus(false);
-            if(changedReminder&&routineDetailState.reminder_enable) {
+/*            if(changedReminder&&routineDetailState.reminder_enable) {
                 console.log('test')
                 if (Platform.OS === 'ios') {
                     PushNotificationIOS.cancelLocalNotifications({id: routineDetailState.id});
@@ -221,7 +221,7 @@ const EditRoutine = props => {
                         message: message,
                     });
                 }
-            }
+            }*/
             if (routineIndex >= 0) {
                 updateTracks().then()
                 dispatch({
@@ -744,7 +744,7 @@ const EditRoutine = props => {
             )
         })
     }
-    const onChange = (event, selectedDate) => {
+/*    const onChange = (event, selectedDate) => {
         console.log(event)
         if (event.type === 'dismissed') {
             setShowTimePicker(false);
@@ -759,7 +759,7 @@ const EditRoutine = props => {
             setChangedReminder(true);
             setShowTimePicker(false);
         }
-    };
+    };*/
     return (
         <SafeAreaView style={global.container}>
             <ScrollView nestedScrollEnabled={true} style={styles.ScrollContainer}
@@ -841,7 +841,7 @@ const EditRoutine = props => {
                         </View>
                     </View>
                 </View>
-                <View style={global.roundBox}>
+                {/*<View style={global.roundBox}>
                     <View style={{
                         width: windowWidth - s(35),
                         flexDirection: "row",
@@ -919,7 +919,7 @@ const EditRoutine = props => {
                             />
                         </View>
                     </View>
-                </View>
+                </View>*/}
                 <View style={global.roundBox}>
                     <View style={{
                         width: windowWidth - s(35),
