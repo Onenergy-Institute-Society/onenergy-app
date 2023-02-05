@@ -71,7 +71,6 @@ const InitData = (props) => {
                 }
             }
         });
-        return unsubscribe;
         if(user.id)
             Analytics.segmentClient.identify(user.id, {
                 username: user.slug,
@@ -107,6 +106,7 @@ const InitData = (props) => {
         }
         return () => {
             backHandler.remove();
+            unsubscribe.remove();
         }
     }, []);
 

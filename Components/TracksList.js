@@ -19,6 +19,7 @@ import NotificationTabBarIcon from "./NotificationTabBarIcon";
 import AuthWrapper from "@src/components/AuthWrapper";
 import * as Analytics from "../Utils/Analytics";
 import TouchableScale from "./TouchableScale";
+import {SvgClock} from "../Utils/svg";
 
 if (Platform.OS === "android") {
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -90,8 +91,10 @@ const TracksList = (props) => {
                                         }}/>
                                     ) : null}
                                 </View>
-                                <Text
-                                    style={[styles.duration, highlightColor]}>{new Date(item.duration * 1000).toISOString().substring(14, 19)}</Text>
+                                <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center", marginBottom:vs(5)}}>
+                                    <SvgClock color={colors.textColor} size={s(14)} style={{marginRight:s(5)}}/>
+                                    <Text style={highlightColor}>{new Date(item.duration * 1000).toISOString().substring(14, 16)}'{new Date(item.duration * 1000).toISOString().substring(17, 19)}"</Text>
+                                </View>
                             </View>
                         </ImageBackground>
                         <AuthWrapper actionOnGuestLogin={'hide'}>

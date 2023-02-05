@@ -357,9 +357,24 @@ export const SvgStopIcon = (props) => {
 }
 export const SvgClock = (props) => {
     return (
-        <Svg width={s(24)} height={s(24)} viewBox="0 0 24 24" style={props.style}>
-            <circle cx="12" cy="12" r="10" fill={props.color} strok={props.color}/>
-            <path d="M12 6v6l4 2" fill={props.color} strok={props.color}/>
+        <Svg width={props.size} height={props.size} viewBox="0 0 24 24" style={props.style}>
+            <Circle cx="12" cy="12" r="10" fill={'none'} stroke={props.color} strokeWidth="2"/>
+            <Path d="M12 6v6l4 2" fill={props.color} stroke={props.color} strokeWidth="2"/>
+        </Svg>
+    )
+}
+export const SvgBell = (props) => {
+    return (
+        <Svg width={props.size} height={props.size} viewBox="0 0 24 24" style={props.style}>
+            <Path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" fill={'none'} stroke={props.color} strokeWidth="2"/>
+        </Svg>
+    )
+}
+export const SvgWatch = (props) => {
+    return (
+        <Svg width={props.size} height={props.size} viewBox="0 0 24 24" style={props.style}>
+            <Circle cx="12" cy="12" r="7" fill={'none'} stroke={props.color} strokeWidth="2"/>
+            <Path d="M12 9v3l1.5 1.5M16.51 17.35l-.35 3.83a2 2 0 0 1-2 1.82H9.83a2 2 0 0 1-2-1.82l-.35-3.83m.01-10.7.35-3.83A2 2 0 0 1 9.83 1h4.35a2 2 0 0 1 2 1.82l.35 3.83" fill={props.color} stroke={props.color} strokeWidth="2"/>
         </Svg>
     )
 }

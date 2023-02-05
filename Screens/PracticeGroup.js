@@ -22,7 +22,7 @@ import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHand
 import EventList from "../Components/EventList";
 import {BlurView} from "@react-native-community/blur";
 import FastImage from "react-native-fast-image";
-import {SvgIconBack, SvgIconCross} from "../Utils/svg";
+import {SvgClock, SvgIconBack, SvgIconCross} from "../Utils/svg";
 import * as Analytics from "../Utils/Analytics";
 
 const PracticeGroup = props => {
@@ -222,8 +222,12 @@ const PracticeGroup = props => {
                             }
                         </View>
                         {conditionLessons || user.test_mode ?
-                            <Text style={styles.subtitle}>duration: {new Date(item.duration * 1000).toISOString().substring(14, 19)}, repeat
-                                every {loop} mins</Text>
+                            <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+                                <SvgClock color={'white'} size={s(14)} style={{marginRight:s(5)}}/>
+                                <Text style={styles.subtitle}>{new Date(item.duration * 1000).toISOString().substring(14, 19)}</Text>
+                                <SvgClock color={'white'} size={s(14)} style={{marginRight:s(5)}}/>
+                                <Text style={styles.subtitle}>every {loop} mins</Text>
+                            </View>
                             :
                             <Text style={styles.subtitle}>Finish required lessons to unlock.</Text>
                         }
