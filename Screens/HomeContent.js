@@ -51,15 +51,18 @@ const HomeContent = (props) => {
     const [sunrise, setSunrise] = useState('');
     const [phase, setPhase] = useState('');
     const [nextMoonPhase, setNextMoonPhase] = useState({});
+    const [currentSolarTerm, setCurrentSolarTerm] = useState(null);
 
     const onFocusHandler = async () => {
         try {
             navigation.closeDrawer();
             if(user){
                 if (progressReducer.latestUpdate && checkTodayDate()) {
+                    calcSolarMoon();
                     dispatch({
                         type: 'ONENERGY_DAILY_UPDATE',
                     });
+                    fetchCurrentSolarTerm().then();
                 }
                 await updateStatus();
             }
@@ -70,16 +73,39 @@ const HomeContent = (props) => {
     const _handleAppStateChange = async () => {
         if (user && progressReducer.latestUpdate) {
             if (AppState.currentState === 'active' && checkTodayDate()) {
+                calcSolarMoon();
                 dispatch({
                     type: 'ONENERGY_DAILY_UPDATE',
                 });
+                fetchCurrentSolarTerm().then();
             }
             if ((Platform.OS === "android" && AppState.currentState === 'background') || (Platform.OS === "ios" && AppState.currentState === 'inactive')) {
                 await updateStatus();
             }
         }
     };
-
+    const fetchCurrentSolarTerm = async () => {
+        try {
+            const api = getApi(props.config);
+            const data = await api.customRequest(
+                "wp-json/onenergy/v1/currentSolar/",
+                "get",       // get, post, patch, delete etc.
+                {},               // JSON, FormData or any other type of payload you want to send in a body of request
+                null,             // validation function or null
+                {},               // request headers object
+                false   // true - if full url is given, false if you use the suffix for the url. False is default.
+            ).then(response => response.data);
+            if(data){
+                setCurrentSolarTerm({
+                    Image:data.Image,
+                    Start:data.Start,
+                    End:data.End
+                })
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
     const updateStatus = async () => {
         if (progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
             let achievements = {
@@ -130,7 +156,47 @@ const HomeContent = (props) => {
         if(progressReducer.latestUpdate!==0)
             return today !== new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD');
     }
+    const calcSolarMoon = () => {
+        if(!settings.ip){
+            fetchIpAndLocation().then();
+        }
+        const moonIllumination = SunCalc.getMoonIllumination(new Date());
+        const phaseNumber = moonIllumination.phase * 200;
+        let phaseName = '';
+        console.log(phaseNumber)
+        if (phaseNumber >= 0 && phaseNumber <= 4) {
+            phaseName = 'New Moon';
+        } else if (phaseNumber > 4 && phaseNumber < 50) {
+            phaseName = 'Waxing Crescent';
+        } else if (phaseNumber >= 50 && phaseNumber <= 54) {
+            phaseName = 'First Quarter';
+        } else if (phaseNumber > 54 && phaseNumber < 100) {
+            phaseName = 'Waxing Gibbous';
+        } else if (phaseNumber >= 100 && phaseNumber <= 104) {
+            phaseName = 'Full Moon';
+        } else if (phaseNumber > 104 && phaseNumber < 150) {
+            phaseName = 'Waning Gibbous';
+        } else if (phaseNumber >= 150 && phaseNumber <= 154) {
+            phaseName = 'Last Quarter';
+        } else if (phaseNumber > 154 && phaseNumber < 200) {
+            phaseName = 'Waning Crescent';
+        }
+        setPhase(phaseName)
+        const lunarAge = (phaseNumber * 3)/20;
+        let dateDiff;
+        let moonPhase = '';
+        let moonPhaseDate = '';
 
+        if (lunarAge <= 14.765) {
+            dateDiff = 14.765 - lunarAge;
+            moonPhase = 'Full Moon';
+        } else {
+            dateDiff = 29.530 - lunarAge;
+            moonPhase = 'New Moon';
+        }
+        moonPhaseDate = moment.utc().add(dateDiff, 'days').format('MMM DD');
+        setNextMoonPhase({'date': moonPhaseDate, 'phase': moonPhase});
+    }
     const fetchIpAndLocation = async () => {
         try {
             const api = getApi(props.config);
@@ -163,45 +229,12 @@ const HomeContent = (props) => {
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'home_title').title,
         });
-
-        if(!settings.ip){
-            fetchIpAndLocation().then();
-        }
-        const moonIllumination = SunCalc.getMoonIllumination(new Date());
-        const phaseNumber = moonIllumination.phase * 200;
-        let phaseName = '';
-        if (phaseNumber >= 0 && phaseNumber <= 2 || phaseNumber >= 198 && phaseNumber <= 200) {
-            phaseName = 'New Moon';
-        } else if (phaseNumber > 2 && phaseNumber < 48) {
-            phaseName = 'Waxing Crescent';
-        } else if (phaseNumber >= 48 && phaseNumber <= 52) {
-            phaseName = 'First Quarter';
-        } else if (phaseNumber > 52 && phaseNumber < 98) {
-            phaseName = 'Waxing Gibbous';
-        } else if (phaseNumber >= 98 && phaseNumber <= 102) {
-            phaseName = 'Full Moon';
-        } else if (phaseNumber > 102 && phaseNumber < 148) {
-            phaseName = 'Waning Gibbous';
-        } else if (phaseNumber >= 148 && phaseNumber <= 152) {
-            phaseName = 'Last Quarter';
-        } else if (phaseNumber > 152 && phaseNumber < 198) {
-            phaseName = 'Waning Crescent';
-        }
-        setPhase(phaseName)
-        const lunarAge = (phaseNumber * 3)/20;
-        let dateDiff;
-        let moonPhase = '';
-        let moonPhaseDate = '';
-
-        if (lunarAge <= 14.765) {
-            dateDiff = 14.765 - lunarAge;
-            moonPhase = 'Full Moon';
-        } else {
-            dateDiff = 29.530 - lunarAge;
-            moonPhase = 'New Moon';
-        }
-        moonPhaseDate = moment.utc().add(dateDiff, 'days').format('MMM DD');
-        setNextMoonPhase({'date': moonPhaseDate, 'phase': moonPhase});
+        calcSolarMoon();
+        setCurrentSolarTerm({
+            Image:optionData.currentSolarTermImage,
+            Start:optionData.currentSolarTermStart,
+            End:optionData.currentSolarTermEnd,
+        });
         if(user) {
             async function run() {
                 await SetupService();
@@ -620,29 +653,30 @@ const HomeContent = (props) => {
                     <View style={[styles.block_season_center, styles.boxShadow]}>
                         <View style={{justifyContent: "center", alignItems: "center"}}>
                             <Text style={{
-                                fontFamily: "MontserratAlternates-Regular",
-                                fontWeight: "normal",
-                                fontSize: s(12),
-                                color: "white"
-                            }}>{phase}</Text>
+                                fontFamily: "MontserratAlternates-SemiBold",
+                                fontWeight: "bold",
+                                fontSize: s(14),
+                                color: "white",
+                                textAlign: "center"
+                            }}>Today{'\n'}{phase}</Text>
                             <SvgIconMoonPhase moonPhase={phase}/>
                         </View>
                         <View style={{justifyContent: "center", alignItems: "center"}}>
                             <Text style={{
-                                fontFamily: "MontserratAlternates-SemiBold",
-                                fontWeight: "bold",
+                                fontFamily: "Montserrat-Regular",
+                                fontWeight: "normal",
                                 fontSize: s(14),
                                 color: "white"
-                            }}>{nextMoonPhase.phase}</Text>
+                            }}>{nextMoonPhase.date}, Next</Text>
                             <Text style={{
-                                fontFamily: "Montserrat-SemiBold",
-                                fontWeight: "bold",
-                                fontSize: s(18),
+                                fontFamily: "MontserratAlternates-Regular",
+                                fontWeight: "normal",
+                                fontSize: s(12),
                                 color: "white"
-                            }}>{nextMoonPhase.date}</Text>
+                            }}>{nextMoonPhase.phase}</Text>
                         </View>
                     </View>
-                    {optionData.currentSolarTermImage && (
+                    {currentSolarTerm && (
                         <TouchableScale
                             onPress={
                                 () => {
@@ -666,7 +700,7 @@ const HomeContent = (props) => {
                             }>
                             <View style={[styles.block_season_right, styles.boxShadow]}>
                                 <ImageCache
-                                    source={{uri: optionData.currentSolarTermImage ? optionData.currentSolarTermImage : ''}}
+                                    source={{uri: currentSolarTerm.Image ? currentSolarTerm.Image : ''}}
                                     style={styles.image_season}
                                 />
                                 <View style={{
@@ -682,14 +716,14 @@ const HomeContent = (props) => {
                                         fontSize: s(16),
                                         lineHeight: s(16),
                                         color: '#FFF'
-                                    }}>{new moment(optionData.currentSolarTermStart).format('MMM')}</Text>
+                                    }}>{currentSolarTerm.Start?new moment(currentSolarTerm.Start).format('MMM'):''}</Text>
                                     <Text style={{
                                         fontFamily: "Montserrat-SemiBold",
                                         fontWeight: "bold",
                                         fontSize: s(22),
                                         lineHeight: s(22),
                                         color: '#FFF'
-                                    }}>{new moment(optionData.currentSolarTermStart).format('DD')}</Text></View>
+                                    }}>{currentSolarTerm.Start?new moment(currentSolarTerm.Start).format('DD'):''}</Text></View>
                                 <View style={{
                                     position: "absolute",
                                     right: s(10),
@@ -703,14 +737,14 @@ const HomeContent = (props) => {
                                         fontSize: s(16),
                                         lineHeight: s(16),
                                         color: '#FFF'
-                                    }}>{new moment(optionData.currentSolarTermEnd).format('MMM')}</Text>
+                                    }}>{currentSolarTerm.End?new moment(currentSolarTerm.End).format('MMM'):''}</Text>
                                     <Text style={{
                                         fontFamily: "Montserrat-SemiBold",
                                         fontWeight: "bold",
                                         fontSize: s(22),
                                         lineHeight: s(22),
                                         color: '#FFF'
-                                    }}>{new moment(optionData.currentSolarTermEnd).format('DD')}</Text></View>
+                                    }}>{currentSolarTerm.End?new moment(currentSolarTerm.End).format('DD'):''}</Text></View>
                             </View>
                         </TouchableScale>
                     )}
@@ -923,7 +957,7 @@ const styles = StyleSheet.create({
         marginLeft: s(10),
         borderRadius: s(9),
         backgroundColor: '#2e2e2e',
-        paddingTop: s(10),
+        paddingTop: s(5),
         justifyContent: "space-evenly",
         alignItems: "center"
     },

@@ -744,22 +744,6 @@ const EditRoutine = props => {
             )
         })
     }
-/*    const onChange = (event, selectedDate) => {
-        console.log(event)
-        if (event.type === 'dismissed') {
-            setShowTimePicker(false);
-            return;
-        }
-        if (event.type === 'neutralButtonPressed') {
-            setRoutineDetailState(new Date(0));
-            setShowTimePicker(false);
-        } else {
-            setRoutineDetailState(prevState => ({...prevState, reminder_time: moment(selectedDate).format('HH:mm')}));
-            setChangedStatus(true);
-            setChangedReminder(true);
-            setShowTimePicker(false);
-        }
-    };*/
     return (
         <SafeAreaView style={global.container}>
             <ScrollView nestedScrollEnabled={true} style={styles.ScrollContainer}
@@ -841,7 +825,8 @@ const EditRoutine = props => {
                         </View>
                     </View>
                 </View>
-                {/*<View style={global.roundBox}>
+                {Platform.OS==='ios'?
+                <View style={global.roundBox}>
                     <View style={{
                         width: windowWidth - s(35),
                         flexDirection: "row",
@@ -852,63 +837,34 @@ const EditRoutine = props => {
                     </View>
                     <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
                         <View style={[styles.listContainer, {justifyContent: "center", width: "75%"}]}>
-                            {Platform.OS==='ios'?
-                                <>
-                                    <View style={{position:"absolute", right:0, top:vs(15)}}>
-                                        <Image style={{marginRight: 10, tintColor: colors.primaryColor}}
-                                               source={require("@src/assets/img/arrow-down.png")}/>
-                                    </View>
-                                    <DatePicker
-                                        style={{width:"100%",
-                                            fontFamily: "Montserrat-Regular",
-                                            fontSize: s(14),}}
-                                        placeholder="Select Time"
-                                        customStyles={{
-                                            dateInput: {
-                                                borderWidth: 0,
-                                                fontFamily: "Montserrat-Regular",
-                                                fontSize: s(14),
-                                            },
-                                            placeholderText: {
-                                                fontFamily: "Montserrat-Regular",
-                                                fontSize: s(14),
-                                            }
-                                        }}
-                                        date={routineDetailState.reminder_time?routineDetailState.reminder_time:""}
-                                        mode="time"
-                                        format="HH:mm"
-                                        confirmBtnText="Confirm"
-                                        cancelBtnText="Cancel"
-                                        minuteInterval={1}
-                                        onDateChange={(time) => {setRoutineDetailState(prevState => {return {...prevState, reminder_time: time}});setChangedStatus(true);setChangedReminder(true);}}
-                                    />
-                                </>
-                            :
-                                <>
-                                <TouchableWithoutFeedback
-                                    activeOpacity={1}
-                                    onPress={() => {
-                                        setShowTimePicker(true);
-                                    }}>
-                                    <View style={styles.content}>
-                                        <Text style={[global.text, styles.trackTitle]}>
-                                           {routineDetailState.reminder_time?routineDetailState.reminder_time:'Select Time'}
-                                        </Text>
-                                        <View>
-                                            <Image style={{marginRight: 10, tintColor: colors.primaryColor}}
-                                                   source={require("@src/assets/img/arrow-down.png")}/>
-                                        </View>
-                                    </View>
-                                </TouchableWithoutFeedback>
-                                {showTimePicker?
-                                    <DateTimePicker
-                                    mode={"time"}
-                                    value={routineIndex >= 0 ? routinesReducer[routineIndex].reminder_time? moment(routinesReducer[routineIndex].reminder_time, 'HH:mm').toDate():new Date():new Date()}
-                                    onChange={onChange}
-                                    />
-                                    :null}
-                                </>
-                            }
+                            <View style={{position:"absolute", right:0, top:vs(15)}}>
+                                <Image style={{marginRight: 10, tintColor: colors.primaryColor}}
+                                       source={require("@src/assets/img/arrow-down.png")}/>
+                            </View>
+                            <DatePicker
+                                style={{width:"100%",
+                                    fontFamily: "Montserrat-Regular",
+                                    fontSize: s(14),}}
+                                placeholder="Select Time"
+                                customStyles={{
+                                    dateInput: {
+                                        borderWidth: 0,
+                                        fontFamily: "Montserrat-Regular",
+                                        fontSize: s(14),
+                                    },
+                                    placeholderText: {
+                                        fontFamily: "Montserrat-Regular",
+                                        fontSize: s(14),
+                                    }
+                                }}
+                                date={routineDetailState.reminder_time?routineDetailState.reminder_time:""}
+                                mode="time"
+                                format="HH:mm"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                minuteInterval={1}
+                                onDateChange={(time) => {setRoutineDetailState(prevState => {return {...prevState, reminder_time: time}});setChangedStatus(true);setChangedReminder(true);}}
+                            />
                         </View>
                         <View style={{width: "20%", justifyContent:"center", alignItems:"center"}}>
                             <Switch
@@ -919,7 +875,8 @@ const EditRoutine = props => {
                             />
                         </View>
                     </View>
-                </View>*/}
+                </View>:null}
+                {user.rank>0?
                 <View style={global.roundBox}>
                     <View style={{
                         width: windowWidth - s(35),
@@ -947,7 +904,7 @@ const EditRoutine = props => {
                             </TouchableWithoutFeedback>
                         </View>
                     </View>
-                </View>
+                </View>:null}
                 <View style={global.roundBox}>
                     <View style={{
                         width: "100%",
