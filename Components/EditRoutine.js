@@ -180,19 +180,6 @@ const EditRoutine = props => {
                 return false;
             }
             setChangedStatus(false);
-            if (routineIndex >= 0) {
-                updateTracks().then()
-                dispatch({
-                    type: "ONENERGY_ROUTINE_SAVE",
-                    payload: routineDetailState
-                })
-                Analytics.segmentClient.track('Edit Routing', {
-                    id: routineDetailState.id
-                }).then();
-                navigation.goBack();
-            } else {
-                addTracks().then();
-            }
             if(changedReminder&&routineDetailState.reminder_enable) {
                 console.log('test')
                 if (Platform.OS === 'ios') {
@@ -234,6 +221,19 @@ const EditRoutine = props => {
                         message: message,
                     });
                 }
+            }
+            if (routineIndex >= 0) {
+                updateTracks().then()
+                dispatch({
+                    type: "ONENERGY_ROUTINE_SAVE",
+                    payload: routineDetailState
+                })
+                Analytics.segmentClient.track('Edit Routing', {
+                    id: routineDetailState.id
+                }).then();
+                navigation.goBack();
+            } else {
+                addTracks().then();
             }
         }else{
             navigation.goBack();

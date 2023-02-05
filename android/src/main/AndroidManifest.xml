@@ -5,30 +5,4 @@
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" android:minSdkVersion="33"/>
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <application>
-        <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
-        <meta-data android:name="institute.onenergy.app.notification_channel_name" android:value="onenergyReminders"/>
-        <meta-data android:name="institute.onenergy.app.notification_channel_description" android:value="Onenergy Routines Reminder"/>
-        <!-- Change the resource name to your App's accent color - or any other color you want -->
-        <meta-data android:name="institute.onenergy.app.notification_color" android:resource="@android:color/#ef713c"/>
-
-        <receiver android:name="com.google.android.gms.gcm.GcmReceiver" android:exported="true" android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="${applicationId}" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="institute.onenergy.app.modules.RNPushNotificationPublisher" />
-        <receiver android:name="institute.onenergy.app.modules.RNPushNotificationBootEventReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-        <service android:name="institute.onenergy.app.modules.RNPushNotificationRegistrationService"/>
-        <service android:name="institute.onenergy.app.modules.RNPushNotificationListenerServiceGcm" android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
-    </application>
  </manifest>
