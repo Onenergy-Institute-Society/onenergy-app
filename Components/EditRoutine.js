@@ -179,6 +179,10 @@ const EditRoutine = props => {
                 alert('Please choose a routine name.');
                 return false;
             }
+            if (changedReminder && !routineDetailState.reminder_time){
+                alert('Please choose a reminder time.');
+                return false;
+            }
             setChangedStatus(false);
 /*            if(changedReminder&&routineDetailState.reminder_enable) {
                 console.log('test')

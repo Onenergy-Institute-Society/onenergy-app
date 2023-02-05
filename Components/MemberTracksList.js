@@ -105,11 +105,11 @@ const MemberTracksList = (props) => {
                                 <Text style={styles.title}>{item.title}</Text>
                             </View>
                             <View style={{position:"absolute", right:s(10), top:s(10)}}>
-                            <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+                            <View style={{flexDirection:"row", justifyContent:"flex-start", alignItems:"center"}}>
                                 <SvgClock color={'white'} size={s(14)} style={{marginRight:s(5)}}/><Text style={styles.duration}>{new Date(totalDuration * 1000).toISOString().substring(14, 16)}'{new Date(totalDuration * 1000).toISOString().substring(17, 19)}"</Text>
                             </View>
                             {item.reminder_enable?
-                                <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+                                <View style={{flexDirection:"row", justifyContent:"flex-start", alignItems:"center"}}>
                                     <SvgBell color={'white'} size={s(14)} style={{marginRight:s(5)}}/><Text style={styles.duration}>{item.reminder_time}</Text>
                                 </View>
                                 :
