@@ -141,7 +141,7 @@ const AudioPlayer = (props) => {
                                       hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
                         <IconButton
                             icon={playing ? require("@src/assets/img/music-pause.png") : require("@src/assets/img/music-play.png")}
-                            tintColor={"black"}
+                            tintColor={colors.primaryColor}
                             style={{
                                 height: s(24),
                                 width: s(24),
@@ -153,7 +153,7 @@ const AudioPlayer = (props) => {
                                           hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
                             <IconButton
                                 icon={require("@src/assets/img/stop.png")}
-                                tintColor={"black"}
+                                tintColor={colors.primaryColor}
                                 style={{
                                     height: s(24),
                                     width: s(24),
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-around',
         width: s(150),
     },
     stopButton: {

@@ -225,8 +225,8 @@ const EditRoutine = props => {
                         userInfo: {id: routineDetailState.id}
                     });
                 } else {
-                        PushNotification.localNotificationSchedule({
-                        channelId: "routine-reminder-"+routineDetailState.id,
+                    PushNotification.localNotificationSchedule({
+                        channelId: "onenergyReminders",
                         date: fireDate,
                         repeats: true,
                         repeatType: "day",
@@ -745,6 +745,7 @@ const EditRoutine = props => {
         })
     }
     const onChange = (event, selectedDate) => {
+        console.log(event)
         if (event.type === 'dismissed') {
             setShowTimePicker(false);
             return;
@@ -754,7 +755,8 @@ const EditRoutine = props => {
             setShowTimePicker(false);
         } else {
             setRoutineDetailState(prevState => ({...prevState, reminder_time: moment(selectedDate).format('HH:mm')}));
-            setChangedStatus(true);setChangedReminder(true);
+            setChangedStatus(true);
+            setChangedReminder(true);
             setShowTimePicker(false);
         }
     };

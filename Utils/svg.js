@@ -378,3 +378,26 @@ export const SvgWatch = (props) => {
         </Svg>
     )
 }
+export const SvgChevronsLeft = (props) => {
+    return (
+        <Svg width={props.size} height={props.size} viewBox="0 0 24 24" style={props.style}>
+            <Path d="m11 17-5-5 5-5M18 17l-5-5 5-5" fill="none" stroke={props.color} strokeWidth="2"/>
+        </Svg>
+    )
+}
+export const SvgChevronsDown = (props) => {
+    return (
+        <Svg width={props.size} height={props.size} viewBox="0 0 24 24" style={props.style}>
+            <Path d="m7 13 5 5 5-5M7 6l5 5 5-5" fill="none" stroke={props.color} strokeWidth="2"/>
+        </Svg>
+    )
+}
+export const SvgRepeat = (props) => {
+    return (
+        <Svg width={props.size} height={props.size} viewBox="0 0 24 24" style={props.style}>
+            <Path d="m17 1 4 4-4 4" fill="none" stroke={props.color} strokeWidth="2"/>
+            <Path d="M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4" fill="none" stroke={props.color} strokeWidth="2"/>
+            <Path d="M21 13v2a4 4 0 0 1-4 4H3" fill="none" stroke={props.color} strokeWidth="2"/>
+        </Svg>
+    )
+}

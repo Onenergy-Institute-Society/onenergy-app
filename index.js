@@ -2089,6 +2089,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
              */
             requestPermissions: true,
         });
+        PushNotification.createChannel({
+            channelId: 'onenergyReminders',
+            channelName: 'Onenergy Routines Reminder',
+            channelDescription: 'Reminder for routines'
+        })
+
     })
     externalCodeSetup.blogSingleApi.setAfterBlogSingleBody((props) => {
         const {blog} = props;

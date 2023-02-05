@@ -17,8 +17,8 @@ const TrackSlider = (props) => {
         const s = Math.floor((seconds % 3600) % 60);
 
         const hrs = h > 0 ? (h < 10 ? `0${h}:` : `${h}:`) : '';
-        const mins = m > 0 ? (m < 10 ? `0${m}:` : `${m}:`) : '00:';
-        const scnds = s > 0 ? (s < 10 ? `0${s}` : s) : '00';
+        const mins = m > 0 ? (m < 10 ? `0${m}\'` : `${m}\'`) : '00\'';
+        const scnds = s > 0 ? (s < 10 ? `0${s}\"` : `${s}\"`) : '00\"';
         return `${hrs}${mins}${scnds}`;
     };
     useEffect(() => {
@@ -49,11 +49,11 @@ const TrackSlider = (props) => {
                         value={position}
                         thumbTintColor='black'
                         minimumValue={0}
-                        thumbStyle={{width: s(10), height: s(10)}}
+                        thumbStyle={{width: s(10), height: vs(10)}}
                         animationType='timing'
                         maximumValue={duration}
-                        minimumTrackTintColor={'#4942E1'}
-                        maximumTrackTintColor={'#7DE7FA'}
+                        minimumTrackTintColor={'#8c79ea'}
+                        maximumTrackTintColor={'#d0c9f6'}
                         disabled={!user.test_mode}
                         onValueChange={val => {
                             TrackPlayer.pause();

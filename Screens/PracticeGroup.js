@@ -22,7 +22,7 @@ import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHand
 import EventList from "../Components/EventList";
 import {BlurView} from "@react-native-community/blur";
 import FastImage from "react-native-fast-image";
-import {SvgClock, SvgIconBack, SvgIconCross} from "../Utils/svg";
+import {SvgChevronsLeft, SvgClock, SvgIconBack, SvgIconCross, SvgRepeat} from "../Utils/svg";
 import * as Analytics from "../Utils/Analytics";
 
 const PracticeGroup = props => {
@@ -222,19 +222,16 @@ const PracticeGroup = props => {
                             }
                         </View>
                         {conditionLessons || user.test_mode ?
-                            <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
-                                <SvgClock color={'white'} size={s(14)} style={{marginRight:s(5)}}/>
-                                <Text style={styles.subtitle}>{new Date(item.duration * 1000).toISOString().substring(14, 19)}</Text>
-                                <SvgClock color={'white'} size={s(14)} style={{marginRight:s(5)}}/>
+                            <View style={{flexDirection:"row", justifyContent:"flex-start", alignItems:"center", width: windowWidth - s(30)}}>
+                                <SvgClock color={colors.textColor} size={s(14)} style={{marginRight:s(5), marginLeft:s(5)}}/>
+                                <Text style={styles.subtitle}>{new Date(item.duration * 1000).toISOString().substring(14, 16)}'{new Date(item.duration * 1000).toISOString().substring(17, 19)}"</Text>
+                                <SvgRepeat color={colors.textColor} size={s(14)} style={{marginRight:s(5), marginLeft:s(5)}}/>
                                 <Text style={styles.subtitle}>every {loop} mins</Text>
                             </View>
                             :
                             <Text style={styles.subtitle}>Finish required lessons to unlock.</Text>
                         }
-                        <View style={{width:windowWidth-s(60), flexDirection: "row", justifyContent:"space-between"}}>
-                            <Text style={styles.description}>{practiceCount?practiceCount + 'times':null}</Text>
-                            <Text style={styles.description}>tap to view detail</Text>
-                        </View>
+                        <SvgChevronsLeft size={s(24)} color={"#fff"} style={{position: "absolute", right: s(10), bottom: s(10)}}/>
                     </ImageBackground>
                 </View>
             </TouchableOpacity>

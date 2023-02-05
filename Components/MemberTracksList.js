@@ -17,7 +17,7 @@ import {mvs, s, vs, windowWidth} from '../Utils/Scale';
 import AudioPlayerRoutine from './AudioPlayerRoutine';
 import {Swipeable} from "react-native-gesture-handler";
 import IconButton from "@src/components/IconButton";
-import {SvgBell, SvgClock, SvgMoreVertical, SvgWatch} from "../Utils/svg";
+import {SvgBell, SvgChevronsLeft, SvgClock, SvgMoreVertical, SvgWatch} from "../Utils/svg";
 import * as Analytics from "../Utils/Analytics";
 
 if (Platform.OS === "android") {
@@ -103,31 +103,25 @@ const MemberTracksList = (props) => {
                                          imageStyle={{borderTopLeftRadius: s(9), borderTopRightRadius: s(9), borderBottomLeftRadius: showPlayer?0:s(9), borderBottomRightRadius: showPlayer?0:s(9)}}>
                             <View style={styles.titleBox}>
                                 <Text style={styles.title}>{item.title}</Text>
-                                {item.reminder_enable?
-                                    <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
-                                        <SvgBell color={colors.primaryColor} size={s(14)} style={{marginRight:s(5)}}/><Text>{item.reminder_time}</Text>
-                                    </View>
-                                    :
-                                    null
-                                }
-                                <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
-                                    <SvgClock color={'white'} size={s(14)} style={{marginRight:s(5)}}/><Text style={styles.duration}>{new Date(totalDuration * 1000).toISOString().substring(14, 19)}</Text>
-                                </View>
                             </View>
-
+                            <View style={{position:"absolute", right:s(10), top:s(10)}}>
+                            <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+                                <SvgClock color={'white'} size={s(14)} style={{marginRight:s(5)}}/><Text style={styles.duration}>{new Date(totalDuration * 1000).toISOString().substring(14, 16)}'{new Date(totalDuration * 1000).toISOString().substring(17, 19)}"</Text>
+                            </View>
+                            {item.reminder_enable?
+                                <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+                                    <SvgBell color={'white'} size={s(14)} style={{marginRight:s(5)}}/><Text style={styles.duration}>{item.reminder_time}</Text>
+                                </View>
+                                :
+                                null
+                            }
+                            </View>
                             <View style={styles.subTitleBox}>
                                 <Text style={styles.subTitle}>{item.level&&practiceReducer.guides.find(level=>level.id===item.level)?practiceReducer.guides.find(level=>level.id===item.level).title:'Preparatory Practices'}</Text>
                                 <Text style={styles.subTitle}>Practices: {item.routine.length}</Text>
                                 <Text style={styles.subTitle}>Background: {optionData.bgm.find(el => el.id === item.bgm_id)?optionData.bgm.find(el => el.id === item.bgm_id).name:''}</Text>
                             </View>
-                            <SvgMoreVertical color={"#fff"}
-                                             style={{position: "absolute", right: s(10), bottom: s(10),
-                                                 textShadowColor: 'grey',
-                                                 textShadowRadius: 1,
-                                                 textShadowOffset: {
-                                                     width: -1,
-                                                     height: 1
-                                                 }}}/>
+                            <SvgChevronsLeft size={s(24)} color={"#fff"} style={{position: "absolute", right: s(10), bottom: s(10)}}/>
                         </ImageBackground>
                     </TouchableOpacity>
                     {showPlayer ? (
