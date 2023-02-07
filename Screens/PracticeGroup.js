@@ -217,7 +217,7 @@ const PracticeGroup = props => {
                                                   onPress={() => {
                                                   }}
                                 >
-                                    <Text style={styles.txtOff}>{styles.txtOff}>{optionData.titles.find(el => el.id === 'practices_group_button_locked').title}</Text>
+                                    <Text style={styles.txtOff}>{optionData.titles.find(el => el.id === 'practices_group_button_locked').title}</Text>
                                 </TouchableOpacity>
                             }
                         </View>
@@ -286,7 +286,7 @@ const PracticeGroup = props => {
                             color: colors.headerColor,
                             fontFamily: "MontserratAlternates-SemiBold",
                             fontWeight: "bold"
-                        }}>Group Practice Detail</Text>
+                        }}>{optionData.titles.find(el => el.id === 'practices_group_title_detail').title}</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 this.DetailModal.close();

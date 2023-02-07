@@ -12,7 +12,7 @@ const QuestsWeekly = (props) => {
     const [weekly, setWeekly] = useState(achievementReducer);
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
-
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     useEffect(() => {
         Analytics.segmentClient.screen('Quests', {type: 'Weekly'}).then();
         setWeekly(achievementReducer);
@@ -27,13 +27,13 @@ const QuestsWeekly = (props) => {
                     borderRadius:s(9), alignItems: 'center',
                     justifyContent: 'center', backgroundColor: colors.secondaryButtonBg,
                     marginTop: mvs(10),
-                }}><Text style={[global.text, {color: colors.labelTextColor}]}>7 days streak REWARD +20 Qi</Text></View>
+                }}><Text style={[global.text, {color: colors.labelTextColor}]}>{optionData.titles.find(el => el.id === 'achievement_quest_weekly_title_award_info').title}</Text></View>
                 {Array(7).fill().map((_, idx) => 1 + idx).map((day, index) => {
                     return (
                         <View
                             style={[styles.row, styles.boxShadow, {backgroundColor: achievementReducer && achievementReducer.days && achievementReducer.days.length && achievementReducer.days[index] !== undefined && achievementReducer.days[index] !== null && achievementReducer.days[index] ? colors.primaryButtonBg : colors.bodyBg}]}>
                             <Text
-                                style={[global.title, {color: achievementReducer && achievementReducer.days && achievementReducer.days.length && achievementReducer.days[index] !== undefined && achievementReducer.days[index] !== null && achievementReducer.days[index] ? 'white' : colors.primaryButtonBg}]}>Day {day}</Text>
+                                style={[global.title, {color: achievementReducer && achievementReducer.days && achievementReducer.days.length && achievementReducer.days[index] !== undefined && achievementReducer.days[index] !== null && achievementReducer.days[index] ? 'white' : colors.primaryButtonBg}]}>{optionData.titles.find(el => el.id === 'achievement_quest_title_day1').title} {day} {optionData.titles.find(el => el.id === 'achievement_quest_title_day2').title}</Text>
                             <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
                                 <Text style={[global.text, {
                                     marginRight: 10,
@@ -54,14 +54,14 @@ const QuestsWeekly = (props) => {
                         achievementReducer.claim_date ?
                             <View style={[styles.boxShadow, styles.rowReward]}>
                                 <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
-                                    <Text style={global.itemTitle}>7 Days Streak</Text>
+                                    <Text style={global.itemTitle}>{optionData.titles.find(el => el.id === 'achievement_quest_weekly_title_completed_into').title}</Text>
                                 </View>
                                 <View
                                     style={[styles.rowRight, {backgroundColor: !achievementReducer.complete_date ? 'gold' : !achievementReducer.claim_date ? colors.secondaryButtonColor : 'gray'}]}>
                                     <Text
                                         style={[global.boxTitle, {color: '#FFF'}]}
                                     >
-                                        CLEARED
+                                        {optionData.titles.find(el => el.id === 'achievement_button_cleared').title}
                                     </Text>
                                     <Text
                                         numberOfLines={1}
@@ -78,12 +78,11 @@ const QuestsWeekly = (props) => {
                         :
                             <View style={[styles.boxShadow, styles.rowReward]}>
                                 <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
-                                    <Text style={[global.itemTitle, {fontWeight: "normal"}]}>7 Days Streak</Text>
+                                    <Text style={[global.itemTitle, {fontWeight: "normal"}]}>{optionData.titles.find(el => el.id === 'achievement_quest_weekly_title_completed_into').title}</Text>
                                     <View style={{marginVertical: 10}}>
                                         <View
                                             style={{justifyContent: 'center', alignItems: 'center'}}>
-                                            <Text style={[global.text, {color: "#ED57E1"}]}>Expire
-                                                in {7 - moment(today).diff(moment(achievementReducer.complete_date), 'days')} days</Text></View>
+                                            <Text style={[global.text, {color: "#ED57E1"}]}>{optionData.titles.find(el => el.id === 'achievement_quest_title_expire_in').title}{7 - moment(today).diff(moment(achievementReducer.complete_date), 'days')} days</Text></View>
                                     </View>
                                 </View>
                                 <TouchableWithoutFeedback
@@ -101,7 +100,7 @@ const QuestsWeekly = (props) => {
                                         <Text
                                             style={[global.boxTitle, {color: '#FFF'}]}
                                         >
-                                            CLAIM
+                                            {optionData.titles.find(el => el.id === 'achievement_button_claim').title}
                                         </Text>
                                         <Text
                                             style={[global.pointTitle, {
@@ -110,7 +109,7 @@ const QuestsWeekly = (props) => {
                                                 color: '#FFF'
                                             }]}
                                         >
-                                            +20 Qi
+                                            +20 {optionData.points.find(pt => pt.pointName === 'qi').pointTitle}
                                         </Text>
                                     </View>
                                 </TouchableWithoutFeedback>

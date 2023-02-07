@@ -8,6 +8,7 @@ import {ms, s, windowWidth} from '../Utils/Scale';
 
 const RelatedPostsRow = props => {
     const {posts, navigation} = props;
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const postsReducer = useSelector((state) => state.postsReducer.posts.filter((post) => posts.includes(post.id)));
     const renderOverlayImage = (format) => {
         switch (format) {
@@ -60,7 +61,7 @@ const RelatedPostsRow = props => {
             {postsReducer.posts && postsReducer.posts.length ?
                 <View style={styles.ScrollView}>
                     <View style={styles.view_blog_title}>
-                        <Text style={styles.heading}>Related Posts</Text>
+                        <Text style={styles.heading}>{optionData.titles.find(el => el.id === 'posts_title_related_posts').title}</Text>
                     </View>
                     <FlatList
                         data={postsReducer.posts}

@@ -160,7 +160,7 @@ const VouchersScreen = (props) => {
                         style={styles.list} source={{uri: item.image ? item.image : ''}}>
                         <Text style={[styles.subTitle,{color:item.color, left:item.left?s(item.left):null, top:item.top?s(item.top):null, right:item.right?s(item.right):null, bottom:item.bottom?s(item.bottom):null,}]}>{moment(item.expireDate).format("MMMM Do, YYYY")}</Text>
                         {item.redeemDate?
-                            <Text style={styles.redeemedText}>REDEEMED</Text>
+                            <Text style={styles.redeemedText}>{optionData.titles.find(el => el.id === 'voucher_redeemed').title}</Text>
                         :null}
                     </ScalableImage>
                 </View>

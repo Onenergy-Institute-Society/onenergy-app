@@ -7,6 +7,11 @@ import {s} from '../Utils/Scale';
 import TrackSlider from "./TrackSlider";
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 import * as Analytics from "../Utils/Analytics";
+import {
+    SvgPauseCircleIcon,
+    SvgPlayCircleIcon,
+    SvgStopCircleIcon,
+} from "../Utils/svg";
 
 const AudioPlayer = (props) => {
     const {screenProps, user} = props;
@@ -138,26 +143,12 @@ const AudioPlayer = (props) => {
                 <View style={styles.buttonsCol}>
                     <TouchableOpacity onPress={onPlayPausePress} style={styles.playPauseButton}
                                       hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
-                        <IconButton
-                            icon={playing ? require("@src/assets/img/music-pause.png") : require("@src/assets/img/music-play.png")}
-                            tintColor={"black"}
-                            style={{
-                                height: s(24),
-                                width: s(24),
-                            }}
-                        />
+                        {playing ? <SvgPauseCircleIcon color={colors.textColor}/>:<SvgPlayCircleIcon color={colors.textColor}/>}
                     </TouchableOpacity>
                     {!stopped ? (
                         <TouchableOpacity onPress={onStopPress} style={styles.stopButton}
                                           hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
-                            <IconButton
-                                icon={require("@src/assets/img/stop.png")}
-                                tintColor={"black"}
-                                style={{
-                                    height: s(24),
-                                    width: s(24),
-                                }}
-                            />
+                            <SvgStopCircleIcon color={colors.textColor}/>
                         </TouchableOpacity>
                     ) : null}
                 </View>
@@ -205,7 +196,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         alignItems: 'center',
-        justifyContent: 'space-around',
+        justifyContent: 'flex-start',
         width: s(150),
     },
     stopButton: {

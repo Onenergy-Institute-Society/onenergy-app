@@ -990,7 +990,7 @@ const EditRoutine = props => {
                             color: colors.headerColor,
                             fontFamily: "MontserratAlternates-SemiBold",
                             fontWeight: "bold"
-                        }}>Choose volume</Text>
+                        }}>{optionData.titles.find(el => el.id === 'practices_edit_routine_title_choose_volume').title}</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 this.bgmVolumeDialog.close();
@@ -1087,7 +1087,7 @@ const EditRoutine = props => {
                             color: colors.headerColor,
                             fontFamily: "MontserratAlternates-SemiBold",
                             fontWeight: "bold"
-                        }}>Background Music</Text>
+                        }}>{optionData.titles.find(el => el.id === 'practices_edit_routine_title_background_music').title}</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 this.bgmDialog.close();
@@ -1132,7 +1132,7 @@ const EditRoutine = props => {
                             color: colors.headerColor,
                             fontFamily: "MontserratAlternates-SemiBold",
                             fontWeight: "bold"
-                        }}>Practice Level</Text>
+                        }}>{optionData.titles.find(el => el.id === 'practices_edit_routine_title_choose_level').title}</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 this.levelDialog.close();
@@ -1339,7 +1339,7 @@ EditRoutine.navigationOptions = ({navigation, screenProps}) => {
                         fontFamily: "Montserrat-Regular",
                         fontSize: s(16),
                         color: screenProps.colors.headerIconColor
-                    }}>navigation.getParam('cancel')</Text>
+                    }}>{params.cancel}</Text>
                 </TouchableOpacity>
     }
 }

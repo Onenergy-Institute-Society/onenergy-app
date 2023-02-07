@@ -8,6 +8,7 @@ import * as Analytics from "../Utils/Analytics";
 const QuestsMonthly = (props) => {
     const {screenProps} = props;
     const {colors, global} = screenProps;
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer.monthly : null);
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
@@ -23,8 +24,7 @@ const QuestsMonthly = (props) => {
                     borderRadius:s(9), alignItems: 'center',
                     justifyContent: 'center', backgroundColor: colors.secondaryButtonBg,
                     marginTop: mvs(10),
-                }}><Text style={[global.text, {color: colors.labelTextColor}]}>30 days streak REWARD +100
-                    Qi</Text></View>
+                }}><Text style={[global.text, {color: colors.labelTextColor}]}>{optionData.titles.find(el => el.id === 'achievement_quest_monthly_title_award_info').title}</Text></View>
                 <View style={styles.daysContainer}>
                     {Array(30).fill().map((_, idx) => 1 + idx).map((day, index) => {
                         return (
@@ -43,7 +43,7 @@ const QuestsMonthly = (props) => {
                                     fontWeight: "bold",
                                     fontSize: s(10),
                                     color: index === 30 ? colors.secondaryButtonColor : achievementReducer && achievementReducer.days && achievementReducer.days.length && achievementReducer.days[index] !== undefined && achievementReducer.days[index] !== null && achievementReducer.days[index] ? 'white' : colors.primaryButtonBg
-                                }]}>Day {day}</Text>
+                                }]}>{optionData.titles.find(el => el.id === 'achievement_quest_title_day1').title} {day} {optionData.titles.find(el => el.id === 'achievement_quest_title_day2').title}</Text>
                             </View>
                         )
                     })}
@@ -53,14 +53,14 @@ const QuestsMonthly = (props) => {
                         achievementReducer.claim_date ?
                             <View style={[styles.boxShadow, styles.rowReward]}>
                                 <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
-                                    <Text style={global.itemTitle}>30 Days Streak</Text>
+                                    <Text style={global.itemTitle}>{optionData.titles.find(el => el.id === 'achievement_quest_monthly_title_completed_into').title}</Text>
                                 </View>
                                 <View
                                     style={[styles.rowRight, {backgroundColor: !achievementReducer.complete_date ? 'gold' : !achievementReducer.claim_date ? colors.secondaryButtonColor : 'gray'}]}>
                                     <Text
                                         style={[global.boxTitle, {color: '#FFF'}]}
                                     >
-                                        CLEARED
+                                        {optionData.titles.find(el => el.id === 'achievement_button_cleared').title}
                                     </Text>
                                     <Text
                                         numberOfLines={1}
@@ -73,12 +73,11 @@ const QuestsMonthly = (props) => {
                             :
                             <View style={[styles.boxShadow, styles.rowReward]}>
                                 <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
-                                    <Text style={[global.itemTitle, {fontWeight: "normal"}]}>30 Days Streak</Text>
+                                    <Text style={[global.itemTitle, {fontWeight: "normal"}]}>{optionData.titles.find(el => el.id === 'achievement_quest_monthly_title_completed_into').title}</Text>
                                     <View style={{marginVertical: 10}}>
                                         <View
                                             style={{justifyContent: 'center', alignItems: 'center'}}>
-                                            <Text style={[global.text, {color: "#ED57E1"}]}>Expire
-                                                in {7 - moment(today).diff(moment(achievementReducer.complete_date), 'days')} days</Text></View>
+                                            <Text style={[global.text, {color: "#ED57E1"}]}>{optionData.titles.find(el => el.id === 'achievement_quest_title_expire_in').title}{7 - moment(today).diff(moment(achievementReducer.complete_date), 'days')}{optionData.titles.find(el => el.id === 'achievement_quest_monthly_title_days').title}</Text></View>
                                     </View>
                                 </View>
                                 <TouchableWithoutFeedback
@@ -96,7 +95,7 @@ const QuestsMonthly = (props) => {
                                         <Text
                                             style={[global.boxTitle, {color: '#FFF'}]}
                                         >
-                                            CLAIM
+                                            {optionData.titles.find(el => el.id === 'achievement_button_claim').title}
                                         </Text>
                                         <Text
                                             style={[global.pointTitle, {
@@ -105,7 +104,7 @@ const QuestsMonthly = (props) => {
                                                 color: '#FFF',
                                             }]}
                                         >
-                                            +100 Qi
+                                            +100 {optionData.points.find(pt => pt.pointName === 'qi').pointTitle}
                                         </Text>
                                     </View>
                                 </TouchableWithoutFeedback>

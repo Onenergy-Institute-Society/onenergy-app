@@ -738,7 +738,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             }
                         }
                         idAchievementReducer.achievementUpdate = new Date().toISOString();
-                        console.log('achievementUpdate', idPracticeReducer.achievementUpdate  )
+                        console.log('achievementUpdate', idAchievementReducer.achievementUpdate  )
                     }
                     console.log('loadProgress', loadProgress )
                     if (loadProgress) {

@@ -46,12 +46,15 @@ const TracksList = (props) => {
 
     const renderItem = ({item, index}) => {
         let highlightColor;
+        let highlightColorStyle;
         let showPlayer;
         if (selectedTrack && selectedTrack.id === item.id) {
-            highlightColor = {color: "white"};
+            highlightColor="white";
+            highlightColorStyle = {color: "white"};
             showPlayer = true;
         } else {
-            highlightColor = {color: colors.textColor};
+            highlightColor=colors.textColor;
+            highlightColorStyle = {color: colors.textColor};
             showPlayer = false;
         }
         return (
@@ -81,7 +84,7 @@ const TracksList = (props) => {
                             </View>
                             <View style={styles.trackDescBox}>
                                 <View style={styles.titleBox}>
-                                    <Text style={[global.itemTitle, highlightColor, {fontSize: s(18.7)}]}>{item.title}</Text>
+                                    <Text style={[global.itemTitle, highlightColorStyle, {fontSize: s(18.7)}]}>{item.title}</Text>
                                     {item.new ? (
                                         <View style={{
                                             height: 12,
@@ -92,8 +95,8 @@ const TracksList = (props) => {
                                     ) : null}
                                 </View>
                                 <View style={{flexDirection:"row", justifyContent:"flex-end", alignItems:"center", marginBottom:vs(5)}}>
-                                    <SvgClock color={colors.textColor} size={s(14)} style={{marginRight:s(5)}}/>
-                                    <Text style={highlightColor}>{new Date(item.duration * 1000).toISOString().substring(14, 16)}'{new Date(item.duration * 1000).toISOString().substring(17, 19)}"</Text>
+                                    <SvgClock color={highlightColor} size={s(14)} style={{marginRight:s(5)}}/>
+                                    <Text style={highlightColorStyle}>{new Date(item.duration * 1000).toISOString().substring(14, 16)}'{new Date(item.duration * 1000).toISOString().substring(17, 19)}"</Text>
                                 </View>
                             </View>
                         </ImageBackground>

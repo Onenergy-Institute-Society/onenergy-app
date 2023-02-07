@@ -8,6 +8,7 @@ import Video from 'react-native-video';
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 import TrackSlider from "./TrackSlider";
 import * as Analytics from "../Utils/Analytics";
+import {SvgPauseCircleIcon, SvgPlayCircleIcon, SvgStopCircleIcon} from "../Utils/svg";
 
 const AudioPlayerRoutine = (props) => {
     const {screenProps, user, optionData} = props;
@@ -161,26 +162,12 @@ const AudioPlayerRoutine = (props) => {
                     <View style={styles.buttonsCol}>
                         <TouchableOpacity onPress={onPlayPausePress} style={styles.playPauseButton}
                                           hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
-                            <IconButton
-                                icon={playing ? require("@src/assets/img/music-pause.png") : require("@src/assets/img/music-play.png")}
-                                tintColor={"black"}
-                                style={{
-                                    height: s(24),
-                                    width: s(24),
-                                }}
-                            />
+                            {playing ? <SvgPauseCircleIcon color={colors.textColor}/>:<SvgPlayCircleIcon color={colors.textColor}/>}
                         </TouchableOpacity>
                         {!stopped ? (
                             <TouchableOpacity onPress={onStopPress} style={styles.stopButton}
                                               hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
-                                <IconButton
-                                    icon={require("@src/assets/img/stop.png")}
-                                    tintColor={"black"}
-                                    style={{
-                                        height: s(24),
-                                        width: s(24),
-                                    }}
-                                />
+                                <SvgStopCircleIcon color={colors.textColor}/>
                             </TouchableOpacity>
                         ) : null}
                     </View>
@@ -203,7 +190,7 @@ const AudioPlayerRoutine = (props) => {
                 </View>
             </View>
             <View style={styles.routineDetailBox}>
-                <Text style={[styles.subTitle,{fontFamily:trackTitle==="Opening"&&playing?"Montserrat-SemiBold":"Montserrat-Regular", fontWeight:trackTitle==='Opening'&&playing?"bold":"normal"}]}>Opening</Text>
+                <Text style={[styles.subTitle,{fontFamily:trackTitle==="Opening"&&playing?"Montserrat-SemiBold":"Montserrat-Regular", fontWeight:trackTitle==='Opening'&&playing?"bold":"normal"}]}>{optionData.titles.find(el => el.id === 'practices_guide_opening').title}</Text>
                 {
                     routine.routine.map((item, index) => {
                         return (
@@ -213,7 +200,7 @@ const AudioPlayerRoutine = (props) => {
                         )
                     })
                 }
-                <Text style={[styles.subTitle,{fontFamily:trackTitle==="Closing"&&playing?"Montserrat-SemiBold":"Montserrat-Regular", fontWeight:trackTitle==='Closing'&&playing?"bold":"normal"}]}>Closing</Text>
+                <Text style={[styles.subTitle,{fontFamily:trackTitle==="Closing"&&playing?"Montserrat-SemiBold":"Montserrat-Regular", fontWeight:trackTitle==='Closing'&&playing?"bold":"normal"}]}>{optionData.titles.find(el => el.id === 'practices_guide_closing').title}</Text>
             </View>
         </>
     );

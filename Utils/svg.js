@@ -341,17 +341,48 @@ export const SvgAddIcon = (props) => {
         </Svg>
     )
 }
+export const SvgPlayCircleIcon = (props) => {
+    return (
+        <Svg width={s(24)} height={s(24)} viewBox="0 0 24 24" style={props.style}>
+            <Circle cx="12" cy="12" r="10" fill={props.color} stroke={props.color}/>
+            <Path d="m10 8 6 4-6 4V8z" fill="#ffffff" stroke="#ffffff" strokeWidth="2"/>
+        </Svg>
+    )
+}
+export const SvgPauseCircleIcon = (props) => {
+    return (
+        <Svg width={s(24)} height={s(24)} viewBox="0 0 24 24" style={props.style}>
+            <Circle cx="12" cy="12" r="10" fill={props.color} stroke={props.color}/>
+            <Path d="M10 15V9M14 15V9" fill="#ffffff" stroke="#ffffff" strokeWidth="2"/>
+        </Svg>
+    )
+}
+export const SvgStopCircleIcon = (props) => {
+    return (
+        <Svg width={s(24)} height={s(24)} viewBox="0 0 24 24" style={props.style}>
+            <Circle cx="12" cy="12" r="10" fill={props.color} stroke={props.color}/>
+            <Path d="M9 9h6v6H9z" fill="#ffffff" stroke="#ffffff" strokeWidth="2"/>
+        </Svg>
+    )
+}
 export const SvgPlayIcon = (props) => {
     return (
         <Svg width={s(24)} height={s(24)} viewBox="0 0 24 24" style={props.style}>
-            <Path d="m5 3 14 9-14 9V3z" fill={props.color} strok={props.color}/>
+            <Path d="m5 3 14 9-14 9V3z" fill={props.color} stroke={props.color}/>
+        </Svg>
+    )
+}
+export const SvgPauseIcon = (props) => {
+    return (
+        <Svg width={s(24)} height={s(24)} viewBox="0 0 24 24" style={props.style}>
+            <Path d="M6 4h4v16H6zM14 4h4v16h-4z" fill={props.color} stroke={props.color}/>
         </Svg>
     )
 }
 export const SvgStopIcon = (props) => {
     return (
         <Svg width={s(24)} height={s(24)} viewBox="0 0 24 24" style={props.style}>
-            <Rect width="18" height="18" x="3" y="3" rx="2" ry="2" fill={props.color} strok={props.color}/>
+            <Rect width="18" height="18" x="3" y="3" rx="2" ry="2" fill={props.color}/>
         </Svg>
     )
 }
