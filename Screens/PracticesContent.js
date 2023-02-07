@@ -177,7 +177,7 @@ const PracticesContent = props => {
                             imageStyle={{borderRadius: s(9)}}
                             source={require('../assets/images/guided_practice.jpg')}
                         >
-                            <Text style={styles.practiceType}>Guided{"\n"}Practice</Text>
+                            <Text style={styles.practiceType}>{optionData.titles.find(el => el.id === 'practices_title_guided_practice').title}</Text>
 
                             <AuthWrapper actionOnGuestLogin={'hide'}>
                                 <NotificationTabBarIcon notificationID={'guide_personal'} top={10} right={10}
@@ -196,7 +196,7 @@ const PracticesContent = props => {
                             imageStyle={{borderRadius: s(9)}}
                             source={require('../assets/images/group_practice.jpg')}
                         >
-                            <Text style={styles.practiceType}>Group{"\n"}Practice</Text>
+                            <Text style={styles.practiceType}>{optionData.titles.find(el => el.id === 'practices_title_group_practice').title}</Text>
                         </ImageBackground>
                     </TouchableScale>
 
@@ -209,7 +209,7 @@ const PracticesContent = props => {
                             imageStyle={{borderRadius: s(9)}}
                             source={require('../assets/images/customize_practice.jpg')}
                         >
-                            <Text style={styles.practiceType}>Customize{"\n"}Practice</Text>
+                            <Text style={styles.practiceType}>{optionData.titles.find(el => el.id === 'practices_title_customized_practice').title}</Text>
                         </ImageBackground>
                     </TouchableScale>
                 </ScrollView>
@@ -329,10 +329,12 @@ const styles = StyleSheet.create({
     },
     practiceType: {
         marginLeft: (windowWidth - s(30)) * 2 / 7,
+        width: windowWidth/2,
         color: '#8c79ea',
         fontFamily: "MontserratAlternates-SemiBold",
         fontWeight: "bold",
-        fontSize: s(28)
+        fontSize: s(28),
+        flexWrap: "wrap"
     }
 });
 PracticesContent.navigationOptions = ({navigation, screenProps}) => {

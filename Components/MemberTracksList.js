@@ -77,7 +77,6 @@ const MemberTracksList = (props) => {
             totalDuration += parseInt(item.duration);
         })
         let itemRank = !item.level?0:practiceReducer.guides.find(level=>level.id===item.level).rank;
-        console.log(item)
         return (
             itemRank<=user.rank?
             <Swipeable
@@ -118,15 +117,15 @@ const MemberTracksList = (props) => {
                             </View>
                             <View style={styles.subTitleBox}>
                                 <Text style={styles.subTitle}>{item.level&&practiceReducer.guides.find(level=>level.id===item.level)?practiceReducer.guides.find(level=>level.id===item.level).title:'Preparatory Practices'}</Text>
-                                <Text style={styles.subTitle}>Practices: {item.routine.length}</Text>
-                                <Text style={styles.subTitle}>Background: {optionData.bgm.find(el => el.id === item.bgm_id)?optionData.bgm.find(el => el.id === item.bgm_id).name:''}</Text>
+                                <Text style={styles.subTitle}>{optionData.titles.find(el => el.id === 'practices_routines_label_practices').title} {item.routine.length}</Text>
+                                <Text style={styles.subTitle}>{optionData.titles.find(el => el.id === 'practices_routines_label_background_music').title} {optionData.bgm.find(el => el.id === item.bgm_id)?optionData.bgm.find(el => el.id === item.bgm_id).name:''}</Text>
                             </View>
                             <SvgChevronsLeft size={s(24)} color={"#fff"} style={{position: "absolute", right: s(10), bottom: s(10)}}/>
                         </ImageBackground>
                     </TouchableOpacity>
                     {showPlayer ? (
                         <>
-                            <AudioPlayerRoutine routine={selectedRoutine} setMessageBarDisplay={setMessageBarDisplay}
+                            <AudioPlayerRoutine optionData={optionData} user={user} routine={selectedRoutine} setMessageBarDisplay={setMessageBarDisplay}
                                                 totalDuration={totalDuration} {...props}/>
                         </>
                     ) : null}

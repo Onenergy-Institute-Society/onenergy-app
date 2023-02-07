@@ -134,7 +134,7 @@ const StatsScreen = (props) => {
                 <View style={[styles.card, styles.boxShadow]}>
                     <View style={[styles.header, {backgroundColor: "#f29066"}]}>
                         <Text style={styles.headerText}>
-                            Weekly Progress (minutes)
+                            {optionData.titles.find(el => el.id === 'stats_title_weekly_progress').title}
                         </Text>
                     </View>
                     <View style={[styles.container,{
@@ -158,7 +158,7 @@ const StatsScreen = (props) => {
                 <View style={[styles.card, styles.boxShadow]}>
                     <View style={[styles.header, {backgroundColor: "#8c79ea"}]}>
                         <Text style={styles.headerText}>
-                            100 Days Heatmap
+                            {optionData.titles.find(el => el.id === 'stats_title_100_days_heatmap').title}
                         </Text>
                     </View>
                     <View style={[styles.container,{
@@ -198,37 +198,37 @@ const StatsScreen = (props) => {
                            }]}
                             colors={['#a5f3fc', '#cffafe']}>
                             <View style={styles.row}>
-                                <Text style={[global.title, styles.title]}>Course Enrolled:</Text>
+                                <Text style={[global.title, styles.title]}>{optionData.titles.find(el => el.id === 'stats_title_course_enrolled').title}</Text>
                                 <Text style={[global.text,styles.text]}> {progressReducer.enrolledCourses?progressReducer.enrolledCourses.length:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                             <View style={styles.row}>
-                                <Text style={[global.title, styles.title]}>Course Completed:</Text>
+                                <Text style={[global.title, styles.title]}>{optionData.titles.find(el => el.id === 'stats_title_course_completed').title}</Text>
                                 <Text style={[global.text,styles.text]}> {progressReducer.completedCourses?progressReducer.completedCourses.length:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                             <View style={styles.row}>
-                                <Text style={[global.title, styles.title]}>Lesson Completed:</Text>
+                                <Text style={[global.title, styles.title]}>{optionData.titles.find(el => el.id === 'stats_title_lesson_completed').title}</Text>
                                 <Text style={[global.text,styles.text]}> {progressReducer.completedLessons?progressReducer.completedLessons.length:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                            <View style={styles.row}>
-                                <Text style={[global.title, styles.title]}>Today Practice:</Text>
+                                <Text style={[global.title, styles.title]}>{optionData.titles.find(el => el.id === 'stats_title_today_practice').title}</Text>
                                 <Text style={[global.text,styles.text]}> {progressReducer.todayDuration?Math.round(progressReducer.todayDuration / 60 )>60?Math.round(progressReducer.todayDuration /3600)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.todayDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                             <View style={styles.row}>
-                                <Text style={[global.title, styles.title]}>Weekly Practice:</Text>
+                                <Text style={[global.title, styles.title]}>{optionData.titles.find(el => el.id === 'stats_title_weekly_practice').title}</Text>
                                 <Text style={[global.text,styles.text]}> {progressReducer.weekDuration?Math.round(progressReducer.weekDuration / 60 )>60?Math.round(progressReducer.weekDuration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.weekDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                             <View style={styles.row}>
-                                <Text style={[global.title, styles.title]}>Total Practice:</Text>
+                                <Text style={[global.title, styles.title]}>{optionData.titles.find(el => el.id === 'stats_title_total_practice').title}</Text>
                                 <Text style={[global.text,styles.text]}> {progressReducer.totalDuration?Math.round(progressReducer.totalDuration / 60 )>60?Math.round(progressReducer.totalDuration / 60 /60)+' '+optionData.titles.find(el => el.id === 'stats_detail_hours').title:Math.round(progressReducer.totalDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title:0}</Text>
                             </View>
                             <View style={[styles.rowHr, {backgroundColor: "#67e8f9"}]}/>
                             <View style={[styles.row, styles.lastRow]}>
-                                <Text style={[global.title, styles.title]}>Total Practice Days:</Text>
+                                <Text style={[global.title, styles.title]}>{optionData.titles.find(el => el.id === 'stats_title_today_practice_days').title}</Text>
                                 <Text style={[global.text,styles.text]}> {progressReducer.totalPracticeDays?progressReducer.totalPracticeDays+' '+optionData.titles.find(el => el.id === 'stats_detail_days').title:0}</Text>
                             </View>
                         </LinearGradient>

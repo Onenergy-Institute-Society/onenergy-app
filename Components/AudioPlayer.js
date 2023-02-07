@@ -9,9 +9,8 @@ import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 import * as Analytics from "../Utils/Analytics";
 
 const AudioPlayer = (props) => {
-    const {screenProps} = props;
+    const {screenProps, user} = props;
     const {colors} = screenProps;
-    const user = useSelector((state) => state.user.userObject);
     const {track, setMessageBarDisplay} = props;
     const [playing, setPlaying] = useState(false);
     const [stopped, setStopped] = useState(true)
@@ -141,7 +140,7 @@ const AudioPlayer = (props) => {
                                       hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
                         <IconButton
                             icon={playing ? require("@src/assets/img/music-pause.png") : require("@src/assets/img/music-play.png")}
-                            tintColor={colors.primaryColor}
+                            tintColor={"black"}
                             style={{
                                 height: s(24),
                                 width: s(24),
@@ -153,7 +152,7 @@ const AudioPlayer = (props) => {
                                           hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
                             <IconButton
                                 icon={require("@src/assets/img/stop.png")}
-                                tintColor={colors.primaryColor}
+                                tintColor={"black"}
                                 style={{
                                     height: s(24),
                                     width: s(24),
@@ -164,7 +163,7 @@ const AudioPlayer = (props) => {
                 </View>
             </View>
             <View style={styles.progressBarSection}>
-                <TrackSlider {...props}/>
+                <TrackSlider user={user} {...props}/>
             </View>
         </View>
     );

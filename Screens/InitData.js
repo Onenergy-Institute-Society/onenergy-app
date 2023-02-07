@@ -6,12 +6,15 @@ import {
 import {getApi} from "@src/services";
 import messaging from '@react-native-firebase/messaging';
 import * as Analytics from "../Utils/Analytics";
+import {languages} from "../Utils/Settings";
 
 const InitData = (props) => {
     const {navigation, screenProps} = props;
     const {global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
+    const defaultLanguage = useSelector((state) => state.settingReducer.languages);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    const cacheData = useSelector((state) => state.settings.settings.onenergy_cache);
     const practiceReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null);
     const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
     const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
@@ -71,26 +74,36 @@ const InitData = (props) => {
                 }
             }
         });
-        if(user.id)
+        if(user.id) {
             Analytics.segmentClient.identify(user.id, {
                 username: user.slug,
                 name: user.name,
             }).then();
+            if(user.language!==defaultLanguage.abbr){
+                let newLang = languages.find(lang=>lang.abbr===user.language)
+                if(newLang){
+                    dispatch({
+                        type: 'ONENERGY_DEFAULT_LANGUAGE',
+                        payload: newLang
+                    });
+                }
+            }
+        }
         const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
         let loadGroup = false, loadGuide = false, loadRoutine = false, loadAchievement = false, loadProgress = false;
-        if (optionData.cache.guideCache && practiceReducer.guideUpdate && optionData.cache.guideCache > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
+        if (cacheData.guideCache && practiceReducer.guideUpdate && cacheData.guideCache > practiceReducer.guideUpdate || !practiceReducer.guideUpdate) {
             loadGuide = true;
         }
-        if (optionData.cache.groupCache && practiceReducer.groupUpdate && optionData.cache.groupCache > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
+        if (cacheData.groupCache && practiceReducer.groupUpdate && cacheData.groupCache > practiceReducer.groupUpdate || !practiceReducer.groupUpdate) {
             loadGroup = true;
         }
-        if (optionData.cache.routineCache && practiceReducer.routineUpdate && optionData.cache.routineCache > practiceReducer.routineUpdate || !practiceReducer.routineUpdate) {
+        if (cacheData.routineCache && practiceReducer.routineUpdate && cacheData.routineCache > practiceReducer.routineUpdate || !practiceReducer.routineUpdate) {
             loadRoutine = true;
         }
-        if (optionData.cache.achievementCache && achievementReducer.achievementUpdate && optionData.cache.achievementCache > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
+        if (cacheData.achievementCache && achievementReducer.achievementUpdate && cacheData.achievementCache > achievementReducer.achievementUpdate || !achievementReducer.achievementUpdate) {
             loadAchievement = true;
         }
-        if (optionData.cache.progressCache && progressReducer.progressUpdate && optionData.cache.progressCache > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
+        if (cacheData.progressCache && progressReducer.progressUpdate && cacheData.progressCache > progressReducer.progressUpdate || !progressReducer.progressUpdate) {
             loadProgress = true;
         }
         console.log('loadGuide', loadGuide , 'loadGroup',  loadGroup , 'loadRoutine', loadRoutine ,'loadAchievement', loadAchievement , 'loadProgress', loadProgress);
@@ -99,7 +112,7 @@ const InitData = (props) => {
         }else{
             props.navigation.navigate("Main");
         }
-        if (optionData.cache.postCache && postsReducer.postUpdate && optionData.cache.postCache > postsReducer.postUpdate || !postsReducer.postUpdate) {
+        if (cacheData.postCache && postsReducer.postUpdate && cacheData.postCache > postsReducer.postUpdate || !postsReducer.postUpdate) {
             dispatch({
                 type: 'ONENERGY_POSTS_RESET',
             });
@@ -112,24 +125,24 @@ const InitData = (props) => {
 
     useEffect(() => {
         let loaded = true;
-        console.log('achievementUpdate', achievementReducer.achievementUpdate, optionData.cache.achievementCache);
-        if (achievementReducer.achievementUpdate < optionData.cache.achievementCache) {
+        console.log('achievementUpdate', achievementReducer.achievementUpdate, cacheData.achievementCache);
+        if (achievementReducer.achievementUpdate < cacheData.achievementCache) {
             loaded = false;
         }
-        console.log('progressUpdate', progressReducer.progressUpdate, optionData.cache.progressCache);
-        if (progressReducer.progressUpdate < optionData.cache.progressCache) {
+        console.log('progressUpdate', progressReducer.progressUpdate, cacheData.progressCache);
+        if (progressReducer.progressUpdate < cacheData.progressCache) {
             loaded = false;
         }
-        console.log('guideUpdate', practiceReducer.guideUpdate, optionData.cache.guideCache);
-        if (practiceReducer.guideUpdate < optionData.cache.guideCache) {
+        console.log('guideUpdate', practiceReducer.guideUpdate, cacheData.guideCache);
+        if (practiceReducer.guideUpdate < cacheData.guideCache) {
             loaded = false;
         }
-        console.log('groupUpdate', practiceReducer.groupUpdate, optionData.cache.groupCache);
-        if (practiceReducer.groupUpdate < optionData.cache.groupCache) {
+        console.log('groupUpdate', practiceReducer.groupUpdate, cacheData.groupCache);
+        if (practiceReducer.groupUpdate < cacheData.groupCache) {
             loaded = false;
         }
-        console.log('routineUpdate', practiceReducer.routineUpdate, optionData.cache.routineCache);
-        if (practiceReducer.routineUpdate < optionData.cache.routineCache) {
+        console.log('routineUpdate', practiceReducer.routineUpdate, cacheData.routineCache);
+        if (practiceReducer.routineUpdate < cacheData.routineCache) {
             loaded = false;
         }
         if (loaded) {
@@ -142,7 +155,7 @@ const InitData = (props) => {
         <SafeAreaView style={global.container}>
             <ImageBackground resizeMode="cover" style={{flex: 1, justifyContent: "center", alignItems: "center"}}
                              source={require('../assets/images/5-1024x683.jpg')}>
-                <Text style={[global.appHeaderTitle, {color: "white"}]}>Loading data...</Text><ActivityIndicator
+                <Text style={[global.appHeaderTitle, {color: "white"}]}>{optionData.titles.find(el => el.id === 'init_data_loading').title}</Text><ActivityIndicator
                 size="large"/>
             </ImageBackground>
         </SafeAreaView>

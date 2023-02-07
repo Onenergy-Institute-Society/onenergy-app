@@ -1,15 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {useSelector} from "react-redux";
 import TrackPlayer, {useProgress} from 'react-native-track-player';
 import {Text} from 'react-native';
 import Slider from 'react-native-slider';
 import {ms, s, vs} from "../Utils/Scale";
 
 const TrackSlider = (props) => {
-    const {type, totalDuration, pastPosition} = props;
+    const {type, totalDuration, pastPosition, user} = props;
     const {position, duration} = useProgress()
     const [pastDuration, setPastDuration] = useState(0);
-    const user = useSelector((state) => state.user.userObject);
     const secondsToHHMMSS = (seconds: number | string) => {
         seconds = Number(seconds);
         const h = Math.floor(seconds / 3600);

@@ -49,7 +49,7 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
     const dispatch = useDispatch();
     const [sunrise, setSunrise] = useState('');
-    const [phase, setPhase] = useState('');
+    const [moonPhase, setMoonPhase] = useState('');
     const [nextMoonPhase, setNextMoonPhase] = useState({});
     const [currentSolarTerm, setCurrentSolarTerm] = useState(null);
 
@@ -163,39 +163,47 @@ const HomeContent = (props) => {
         const moonIllumination = SunCalc.getMoonIllumination(new Date());
         const phaseNumber = moonIllumination.phase * 200;
         let phaseName = '';
-        console.log(phaseNumber)
+        let phaseTitle = '';
         if (phaseNumber >= 0 && phaseNumber <= 4) {
             phaseName = 'New Moon';
+            phaseTitle = optionData.titles.find(el => el.id === 'home_moonphase_new_moon').title;
         } else if (phaseNumber > 4 && phaseNumber < 50) {
-            phaseName = 'Waxing Crescent';
+            phaseName = 'waxing_crescent';
+            phaseTitle = optionData.titles.find(el => el.id === 'home_moonphase_waxing_crescent').title;
         } else if (phaseNumber >= 50 && phaseNumber <= 54) {
             phaseName = 'First Quarter';
+            phaseTitle = optionData.titles.find(el => el.id === 'home_moonphase_first_quarter').title;
         } else if (phaseNumber > 54 && phaseNumber < 100) {
             phaseName = 'Waxing Gibbous';
+            phaseTitle = optionData.titles.find(el => el.id === 'home_moonphase_waxing_gibbous').title;
         } else if (phaseNumber >= 100 && phaseNumber <= 104) {
             phaseName = 'Full Moon';
+            phaseTitle = optionData.titles.find(el => el.id === 'home_moonphase_full_moon').title;
         } else if (phaseNumber > 104 && phaseNumber < 150) {
             phaseName = 'Waning Gibbous';
+            phaseTitle = optionData.titles.find(el => el.id === 'home_moonphase_waning_gibbous').title;
         } else if (phaseNumber >= 150 && phaseNumber <= 154) {
             phaseName = 'Last Quarter';
+            phaseTitle = optionData.titles.find(el => el.id === 'home_moonphase_last_quarter').title;
         } else if (phaseNumber > 154 && phaseNumber < 200) {
             phaseName = 'Waning Crescent';
+            phaseTitle = optionData.titles.find(el => el.id === 'home_moonphase_waning_crescent').title;
         }
-        setPhase(phaseName)
+        setMoonPhase({phaseName, phaseTitle})
         const lunarAge = (phaseNumber * 3)/20;
         let dateDiff;
-        let moonPhase = '';
+        let moonPhaseTitle = '';
         let moonPhaseDate = '';
 
         if (lunarAge <= 14.765) {
             dateDiff = 14.765 - lunarAge;
-            moonPhase = 'Full Moon';
+            moonPhaseTitle = optionData.titles.find(el => el.id === 'home_moonphase_full_moon').title;
         } else {
             dateDiff = 29.530 - lunarAge;
-            moonPhase = 'New Moon';
+            moonPhaseTitle = optionData.titles.find(el => el.id === 'home_moonphase_new_moon').title;
         }
         moonPhaseDate = moment.utc().add(dateDiff, 'days').format('MMM DD');
-        setNextMoonPhase({'date': moonPhaseDate, 'phase': moonPhase});
+        setNextMoonPhase({'date': moonPhaseDate, 'phase': moonPhaseTitle});
     }
     const fetchIpAndLocation = async () => {
         try {
@@ -344,7 +352,7 @@ const HomeContent = (props) => {
                 }]}>
                     <Text
                         style={global.text}>
-                        {item.item} minutes
+                        {item.item} {optionData.titles.find(el => el.id === 'home_popup_daily_goal_minutes').title}
                     </Text>
                     {progressReducer.todayGoal &&
                     parseInt(progressReducer.todayGoal) === parseInt(item.item) ? (
@@ -410,8 +418,9 @@ const HomeContent = (props) => {
                                         }}>
                                             <Text style={[global.itemTitle, {
                                                 fontSize: s(14),
-                                                color: colors.primaryColor
-                                            }]}>Daily Goal: </Text><Text style={[global.textAlt, {
+                                                color: colors.primaryColor,
+                                                marginRight:s(5)
+                                            }]}>{optionData.titles.find(el => el.id === 'home_stats_daily_goal').title}</Text><Text style={[global.textAlt, {
                                             fontSize: s(12),
                                             color: colors.primaryColor
                                         }]}>{progressReducer.todayGoal ? Math.round(progressReducer.todayGoal) > 60 ? Math.round(progressReducer.todayGoal / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : progressReducer.todayGoal + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title : 0 + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
@@ -420,12 +429,13 @@ const HomeContent = (props) => {
                                             flexDirection: "row",
                                             justifyContent: "center",
                                             alignItems: "center",
-                                            marginBottom: mvs(10)
+                                            marginBottom: mvs(10),
                                         }}>
                                             <Text style={[global.itemTitle, {
                                                 fontSize: s(14),
-                                                color: colors.primaryColor
-                                            }]}>Today: </Text><Text style={[global.textAlt, {
+                                                color: colors.primaryColor,
+                                                marginRight:s(5)
+                                            }]}>{optionData.titles.find(el => el.id === 'home_stats_today').title}</Text><Text style={[global.textAlt, {
                                             fontSize: s(12),
                                             color: colors.primaryColor
                                         }]}>{progressReducer.todayDuration ? Math.round(progressReducer.todayDuration / 60) > 60 ? Math.round(progressReducer.todayDuration / 3600) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_hours').title : Math.round(progressReducer.todayDuration / 60) + ' ' + optionData.titles.find(el => el.id === 'stats_detail_minutes').title : 0 + optionData.titles.find(el => el.id === 'stats_detail_minutes').title}</Text>
@@ -466,7 +476,7 @@ const HomeContent = (props) => {
                                             <Text style={[global.link, {
                                                 fontWeight: "normal",
                                                 color: colors.primaryButtonBg
-                                            }]}>Goal setting ></Text>
+                                            }]}>{optionData.titles.find(el => el.id === 'home_stats_goal_setting').title}</Text>
                                         </TouchableScale>
                                     </View>
                                 </View>
@@ -486,12 +496,14 @@ const HomeContent = (props) => {
                                             width: "100%",
                                             flexDirection: "row",
                                             justifyContent: "center",
-                                            alignItems: "center"
+                                            alignItems: "center",
+                                            paddingHorizontal: s(10)
                                         }}>
                                             <Text style={[global.itemTitle, {
                                                 fontSize: s(14),
-                                                color: colors.primaryColor
-                                            }]}>courses{"\n"}in progress</Text>
+                                                color: colors.primaryColor,
+                                                flexWrap: 'wrap'
+                                            }]}>{optionData.titles.find(el => el.id === 'home_stats_course_in_progress').title}</Text>
                                         </View>
                                         <View style={{flexDirection: "row", justifyContent: "flex-start"}}>
                                             <Text style={[global.itemTitle, {
@@ -515,13 +527,14 @@ const HomeContent = (props) => {
                                             width: "100%",
                                             flexDirection: "row",
                                             justifyContent: "center",
-                                            alignItems: "center"
+                                            alignItems: "center",
+                                            paddingHorizontal: s(10)
                                         }}>
                                             <Text style={[global.itemTitle, {
-                                                lineHeight: s(14),
                                                 fontSize: s(14),
-                                                color: colors.primaryColor
-                                            }]}>total{"\n"}practiced</Text>
+                                                color: colors.primaryColor,
+                                                flexWrap: 'wrap'
+                                            }]}>{optionData.titles.find(el => el.id === 'home_stats_total_practiced').title}</Text>
                                         </View>
                                         <View style={{
                                             flexDirection: "row",
@@ -564,7 +577,7 @@ const HomeContent = (props) => {
                                             color: colors.primaryButtonColor,
                                             marginLeft: ms(5)
                                         }]}>
-                                        Create account
+                                        {optionData.titles.find(el => el.id === 'home_sign_up').title}
                                     </Text>
                                 </View>
                             </View>
@@ -589,7 +602,7 @@ const HomeContent = (props) => {
                                             color: colors.secondaryButtonColor,
                                             marginLeft: s(5)
                                         }]}>
-                                        Sign in
+                                        {optionData.titles.find(el => el.id === 'home_sign_in').title}
                                     </Text>
                                 </View>
                             </View>
@@ -658,8 +671,8 @@ const HomeContent = (props) => {
                                 fontSize: s(14),
                                 color: "white",
                                 textAlign: "center"
-                            }}>Today{'\n'}{phase}</Text>
-                            <SvgIconMoonPhase moonPhase={phase}/>
+                            }}>{optionData.titles.find(el => el.id === 'home_moonphase_today').title} {moonPhase.phaseTitle}</Text>
+                            <SvgIconMoonPhase moonPhase={moonPhase.phaseName}/>
                         </View>
                         <View style={{justifyContent: "center", alignItems: "center"}}>
                             <Text style={{
@@ -667,7 +680,7 @@ const HomeContent = (props) => {
                                 fontWeight: "normal",
                                 fontSize: s(14),
                                 color: "white"
-                            }}>{nextMoonPhase.date}, Next</Text>
+                            }}>{nextMoonPhase.date}, {optionData.titles.find(el => el.id === 'home_moonphase_next').title}</Text>
                             <Text style={{
                                 fontFamily: "MontserratAlternates-Regular",
                                 fontWeight: "normal",
@@ -761,8 +774,8 @@ const HomeContent = (props) => {
                         }
                     }>
                         <View style={styles.view_blog_title}>
-                            <Text style={global.widgetTitle}>Q & A</Text>
-                            <Text style={global.link}>See All ></Text>
+                            <Text style={global.widgetTitle}>{optionData.titles.find(el => el.id === 'home_title_faq').title}</Text>
+                            <Text style={global.link}>{optionData.titles.find(el => el.id === 'home_title_see_all').title}</Text>
                         </View>
                     </TouchableScale>
                 </View>
@@ -786,7 +799,7 @@ const HomeContent = (props) => {
                             }>
                                 <View style={styles.view_blog_title}>
                                     <Text style={global.widgetTitle}>{blog.name}</Text>
-                                    <Text style={global.link}>See All ></Text>
+                                    <Text style={global.link}>{optionData.titles.find(el => el.id === 'home_title_see_all').title}</Text>
                                 </View>
                             </TouchableScale>
                             <View style={styles.eventRow}>
@@ -824,7 +837,7 @@ const HomeContent = (props) => {
                             color: colors.headerColor,
                             fontFamily: "MontserratAlternates-SemiBold",
                             fontWeight: "bold"
-                        }}>Daily Goal</Text>
+                        }}>{optionData.titles.find(el => el.id === 'home_popup_daily_goal').title}</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 this.todayGoalDialog.close();
@@ -883,7 +896,7 @@ const styles = StyleSheet.create({
         width: (windowWidth - s(45)) * 3 / 8,
         paddingVertical: s(5),
         height: (windowWidth * 3 / 5 - s(15)) / 2,
-        justifyContent: "space-between",
+        justifyContent: "space-around",
         marginLeft: s(15),
         alignItems: 'center',
         borderRadius:s(9),
@@ -912,7 +925,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     bottomRow: {
-        marginBottom: mvs(50),
+        marginTop: mvs(50),
     },
     view_title: {
         flex: 1,

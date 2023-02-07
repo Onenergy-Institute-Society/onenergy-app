@@ -24,6 +24,7 @@ import Video from 'react-native-video';
 import Slider from 'react-native-slider';
 import * as Analytics from "../Utils/Analytics";
 import DatePicker from 'react-native-datepicker';
+import {routineImages} from "../Utils/Settings";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import PushNotification from "react-native-push-notification";
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
@@ -133,10 +134,11 @@ const EditRoutine = props => {
     useEffect(() => {
         if (routineDetailState) {
             props.navigation.setParams({
-                title: routineDetailState.title ? routineDetailState.title : "New Routine",
+                title: routineDetailState.title ? routineDetailState.title : optionData.titles.find(el => el.id === 'programs_title_routine_button_new_routine').title,
+                cancel: optionData.titles.find(el => el.id === 'programs_title_routine_button_cancel').title,
                 onBackPressed: onBackPressed,
                 changeStatus: changedStatus,
-                backButtonTitle: changedStatus ? 'Save' : '',
+                backButtonTitle: changedStatus ? optionData.titles.find(el => el.id === 'programs_title_routine_button_save').title : '',
             });
             if(routineDetailState.bgm_id) {
                 backgroundMusics.forEach(bgm => {
@@ -728,7 +730,7 @@ const EditRoutine = props => {
         );
     }
     const renderColor = () => {
-        return backgroundImages.map((image) => {
+        return routineImages.map((image) => {
             let imageSelected;
             if (image === routineDetailState.image) {
                 imageSelected = {borderWidth: 5, borderColor: '#4942e1'};
@@ -754,7 +756,7 @@ const EditRoutine = props => {
                         canCancelContentTouches={cancelContentTouches}
             >
                 <View style={global.roundBox}>
-                    <Text style={global.settingsItemTitle}>Routine Name</Text>
+                    <Text style={global.settingsItemTitle}>{optionData.titles.find(el => el.id === 'practices_edit_routine_title_name').title}</Text>
                     <TextInput
                         style={[global.text, styles.inputName]}
                         placeholder={"Routine Name?"}
@@ -772,7 +774,7 @@ const EditRoutine = props => {
                         justifyContent: "flex-start",
                         alignItems: "center"
                     }}>
-                        <Text style={global.settingsItemTitle}>Background Image</Text>
+                        <Text style={global.settingsItemTitle}>{optionData.titles.find(el => el.id === 'practices_edit_routine_title_background_image').title}</Text>
                     </View>
                     <View>
                         <View style={{flexDirection: "row", justifyContent: "space-between", marginTop: mvs(5)}}>
@@ -787,8 +789,8 @@ const EditRoutine = props => {
                         justifyContent: "space-between",
                         alignItems: "center"
                     }}>
-                        <Text style={global.settingsItemTitle}>Background Music</Text>
-                        <Text style={[global.settingsItemTitle, {fontSize: s(14)}]}>Volume</Text>
+                        <Text style={global.settingsItemTitle}>{optionData.titles.find(el => el.id === 'practices_edit_routine_title_background_music').title}</Text>
+                        <Text style={[global.settingsItemTitle, {fontSize: s(14)}]}>{optionData.titles.find(el => el.id === 'practices_edit_routine_title_volume').title}</Text>
                     </View>
                     <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
                         <View style={[styles.listContainer, {width: "75%"}]}>
@@ -837,7 +839,7 @@ const EditRoutine = props => {
                         justifyContent: "flex-start",
                         alignItems: "center"
                     }}>
-                        <Text style={global.settingsItemTitle}>Daily Reminder</Text>
+                        <Text style={global.settingsItemTitle}>{optionData.titles.find(el => el.id === 'practices_edit_routine_title_daily_reminder').title}</Text>
                     </View>
                     <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
                         <View style={[styles.listContainer, {justifyContent: "center", width: "75%"}]}>
@@ -888,7 +890,7 @@ const EditRoutine = props => {
                         justifyContent: "flex-start",
                         alignItems: "center"
                     }}>
-                        <Text style={global.settingsItemTitle}>Practice Level</Text>
+                        <Text style={global.settingsItemTitle}>{optionData.titles.find(el => el.id === 'practices_edit_routine_title_practice_level').title}</Text>
                     </View>
                     <View>
                         <View style={styles.listContainer}>
@@ -916,8 +918,8 @@ const EditRoutine = props => {
                         justifyContent: "space-between",
                         alignItems: "center"
                     }}>
-                        <Text style={global.settingsItemTitle}>Practices</Text>
-                        <Text style={[global.text, {fontSize: s(10)}]}>(swipe to delete, drag to sort)</Text>
+                        <Text style={global.settingsItemTitle}>{optionData.titles.find(el => el.id === 'programs_title_routine_practices').title}</Text>
+                        <Text style={[global.text, {fontSize: s(10)}]}>{optionData.titles.find(el => el.id === 'programs_title_routine_tip').title}</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 this.addGuideModal.open();
@@ -929,7 +931,7 @@ const EditRoutine = props => {
 
                     <GestureHandlerRootView style={{height: "100%"}}>
                         {routineDetailState.routine.length === 0 ? (
-                            <View><Text style={global.text}>No practice selected, please tap "Plus Sign" to add.</Text></View>
+                            <View><Text style={global.text}>{optionData.titles.find(el => el.id === 'programs_title_routine_no_practices').title}</Text></View>
                         ) : (
                             <SortList
                                 horizontal={false}                          // The orientation of the list
@@ -1175,7 +1177,7 @@ const EditRoutine = props => {
                             color: colors.headerColor,
                             fontFamily: "MontserratAlternates-SemiBold",
                             fontWeight: "bold"
-                        }}>Practices</Text>
+                        }}>{optionData.titles.find(el => el.id === 'programs_title_routine_practices').title}</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 this.addGuideModal.close();
@@ -1337,7 +1339,7 @@ EditRoutine.navigationOptions = ({navigation, screenProps}) => {
                         fontFamily: "Montserrat-Regular",
                         fontSize: s(16),
                         color: screenProps.colors.headerIconColor
-                    }}>Cancel</Text>
+                    }}>navigation.getParam('cancel')</Text>
                 </TouchableOpacity>
     }
 }

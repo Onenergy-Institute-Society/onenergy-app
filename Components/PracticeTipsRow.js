@@ -113,7 +113,7 @@ const PracticeTipsRow = props => {
         dataPosts && dataPosts.length ?
             <View style={styles.ScrollView}>
                 <View style={styles.view_blog_title}>
-                    <Text style={global.widgetTitle}>Routine Tips</Text>
+                    <Text style={global.widgetTitle}>{optionData.titles.find(el => el.id === 'programs_title_routine_tips').title}</Text>
                 </View>
                 <FlatList
                     style={styles.postsTips}

@@ -55,10 +55,8 @@ const OnBoarding = props => {
                         return (
                             <View style={{width:windowWidth-30, justifyContent:"space-evenly", alignItems:"flex-start"}}>
                                 <Text multiline={true}
-                                      numberOfLines={4}
                                       style={styles.title}>{item.title}</Text>
                                 <Text multiline={true}
-                                      numberOfLines={4}
                                       style={styles.subtitle}>{item.subtitle}</Text>
                             </View>
                         )
@@ -80,7 +78,7 @@ const OnBoarding = props => {
                     onPress={scrollTo}
                 >
                     <View style={{width:windowWidth-s(30), backgroundColor: colors.primaryButtonBg, justifyContent:"center", alignItems:"center", borderRadius:s(15), padding:ms(20)}}>
-                        <Text style={{color: '#ffffff', fontFamily: 'MontserratAlternates-SemiBold', fontSize:s(16), fontWeight:'bold'}}>{currentIndex===0?'Get Started':'Continue'}</Text>
+                        <Text style={{color: '#ffffff', fontFamily: 'MontserratAlternates-SemiBold', fontSize:s(16), fontWeight:'bold'}}>{currentIndex===0?optionData.titles.find(el => el.id === 'onboarding_button_getstarted').title:optionData.titles.find(el => el.id === 'onboarding_button_continue').title}</Text>
                     </View>
                 </TouchableOpacity>
                 {currentIndex === 0 ?
@@ -93,8 +91,7 @@ const OnBoarding = props => {
                             alignItems: "center",
                             padding: 20
                        }}>
-                            <Text style={{color: colors.secondaryButtonColor, fontFamily: 'MontserratAlternates-Regular', fontSize: s(16)}}>Create
-                                an account</Text>
+                            <Text style={{color: colors.secondaryButtonColor, fontFamily: 'MontserratAlternates-Regular', fontSize: s(16)}}>{optionData.titles.find(el => el.id === 'onboarding_button_signup').title}</Text>
                         </View>
                     </TouchableOpacity>
                     :
@@ -107,7 +104,7 @@ const OnBoarding = props => {
                             alignItems: "center",
                             padding: 20
                        }}>
-                            <Text style={{color: colors.secondaryButtonColor, fontFamily: 'MontserratAlternates-Regular', fontSize: s(16)}}>Skip for now</Text>
+                            <Text style={{color: colors.secondaryButtonColor, fontFamily: 'MontserratAlternates-Regular', fontSize: s(16)}}>{optionData.titles.find(el => el.id === 'onboarding_button_skip').title}</Text>
                         </View>
                     </TouchableOpacity>
                }
@@ -171,6 +168,8 @@ const styles = StyleSheet.create({
         width: windowWidth-s(60),
         lineHeight: s(20),
         fontSize: s(20),
+        paddingVertical: s(5),
+        flexWrap: "wrap",
         color: "#262626"
    }
 });

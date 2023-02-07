@@ -10,10 +10,8 @@ import TrackSlider from "./TrackSlider";
 import * as Analytics from "../Utils/Analytics";
 
 const AudioPlayerRoutine = (props) => {
-    const {screenProps} = props;
+    const {screenProps, user, optionData} = props;
     const {colors} = screenProps;
-    const user = useSelector((state) => state.user.userObject);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const {routine, setMessageBarDisplay, totalDuration} = props;
     const [playing, setPlaying] = useState(false);
     const [stopped, setStopped] = useState(true)
@@ -188,7 +186,7 @@ const AudioPlayerRoutine = (props) => {
                     </View>
                 </View>
                 <View style={styles.progressBarSection}>
-                    <TrackSlider type={"routine"} pastPosition={pastPosition} totalDuration={totalDuration}/>
+                    <TrackSlider user={user} type={"routine"} pastPosition={pastPosition} totalDuration={totalDuration} {...props}/>
                     {routine.bgm_id ? (
                         <Video
                             ref={videoPlayer => this.videoPlayer = videoPlayer}

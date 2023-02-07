@@ -81,8 +81,6 @@ import {
     SvgIconWisdomFocused,
     SvgIconWisdomUnfocused
 } from "./Utils/svg";
-import PushNotificationIOS from "@react-native-community/push-notification-ios";
-import PushNotification from "react-native-push-notification";
 import * as Analytics from "./Utils/Analytics";
 
 export const applyCustomCode = (externalCodeSetup: any) => {
@@ -293,6 +291,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     //Program screen course list
     const NewWidgetItemCourseComponent = (props) => {
         const {viewModel, colors} = props;
+        const optionData = useSelector((state) => state.settings.settings.onenergy_option);
 
         let featuredUrl = viewModel.featuredUrl.replace('-300x200', '-1024x683');
         let statusText;
@@ -315,11 +314,11 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         let lessonNote = '';
         if (viewModel.progression === 100) {
             statusBarColor = colors.coursesLabelCompleted;
-            statusText = "Completed";
+            statusText = optionData.titles.find(el => el.id === 'programs_label_completed').title;
             lessonNote = 'Congratulations on completion';
         } else if (viewModel.price && viewModel.price.expired) {
             statusBarColor = "black";
-            statusText = "Expired";
+            statusText = optionData.titles.find(el => el.id === 'programs_label_expired').title;
             lessonNote = 'Course is expired, no more access';
         } else if (viewModel.hasAccess) {
             if (lesson_time > current_time) {
@@ -338,16 +337,16 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             } else {
                 if (viewModel.progression > 0) {
                     statusBarColor = colors.coursesLabelProgress;
-                    statusText = "In Progress";
+                    statusText = optionData.titles.find(el => el.id === 'programs_label_in_progress').title;
                 } else {
                     statusBarColor = colors.coursesLabelFree;
-                    statusText = "Enrolled";
+                    statusText = optionData.titles.find(el => el.id === 'programs_label_enrolled').title;
                     lessonNote = 'Please start your first lesson';
                 }
             }
         } else {
             statusBarColor = colors.coursesLabelStart;
-            statusText = "Start Course";
+            statusText = optionData.titles.find(el => el.id === 'programs_label_start_course').title;
         }
         const styles = StyleSheet.create({
             containerStyle: {
@@ -916,6 +915,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     let acpToday = new moment().format('YYYY-MM-DD');
                     let tmpAchievements;
                     let acpTempIndex;
+                    console.log('R0')
 
                     if (acpToday > acpTempProgressState.lastPractice) {
                         acpTempProgressState.totalPracticeDays += 1;
@@ -984,14 +984,17 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             tempArray.push({'guide': acpData, 'count': 1});
                             break;
                         case 'PR':
+                            console.log('R1')
                             let routineIndex;
                             routineIndex = state.practiceReducer.routines.findIndex((temp) => temp.id === acpData);
                             let tempTracks = state.practiceReducer.routines[routineIndex].audioTracks;
                             let routineDuration = 0;
+                            console.log('R2')
                             tempTracks.forEach(track => {
                                 routineDuration = routineDuration + parseInt(track.duration);
-                                tempArray.push({'guide': track, 'count': track.count});
+                                if(track.count) tempArray.push({'guide': track, 'count': track.count});
                             })
+                            console.log('R3')
                             acpTempIndex = acpTempProgressState.routineStats.findIndex(item => item.routine_id === acpData)
                             if (acpTempIndex >= 0) {
                                 acpTempProgressState.routineStats[acpTempIndex].routine_count += 1;
@@ -1159,7 +1162,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 });
                             }
                         })
-                        console.log('4')
+                        console.log('4', acpTempPracticeState)
 
                         let acpLevelIndex = acpTempPracticeState.guides.findIndex(level => level.id === tempGuide.guide.levelId);
                         console.log('a', acpLevelIndex, acpTempPracticeState.guides, tempGuide.guide);
@@ -1928,9 +1931,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     })
 
     externalCodeSetup.navigationApi.setBottomTabBarIcon((icon, iconProps) => {
-        const routeLabel = iconProps.route.routes[0].params.item?.label;
+        const routeLabel = iconProps.route.routes[0].params.item?.object;
         switch (routeLabel) {
-            case "Home":
+            case "homePage":
                 return <View
                     style={{
                         height: 30,
@@ -1945,7 +1948,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         <SvgIconHomeUnfocused color={iconProps.tintColor}/>
                     }
                 </View>
-            case "Programs":
+            case "programs":
                 return <View
                     style={{
                         height: 24,
@@ -1964,7 +1967,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                                 showNumber={false}/>
                     </AuthWrapper>
                 </View>
-            case "QiGong":
+            case "practices":
                 return <View
                     style={{
                         height: 30,
@@ -1983,7 +1986,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                                 showNumber={false}/>
                     </AuthWrapper>
                 </View>
-            case "Wisdom":
+            case "wisdom":
                 return <View
                     style={{
                         height: 30,
@@ -2002,7 +2005,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                                 showNumber={false}/>
                     </AuthWrapper>
                 </View>
-            case "More":
+            case "more":
                 return <View
                     style={{
                         height: 30,
@@ -2124,7 +2127,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             fontFamily: "Montserrat-Regular",
                             fontSize: s(16)
                         }}>
-                            Point:
+                            {optionData.titles.find(el => el.id === 'profile_detail_label_point').title}
                         </Text>
                         <FastImage
                             source={require('./assets/images/icon-ray.png')} style={{width: 24, height: 24}}/>
@@ -2154,7 +2157,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         fontFamily: "Montserrat-Regular",
                         fontSize: s(16)
                     }}>
-                        Rank:
+                        {optionData.titles.find(el => el.id === 'profile_detail_label_rank').title}
                     </Text>
                     <FastImage source={{uri: optionData.ranks[parseInt(user.rank)].rankImage}}
                                style={{width: 24, height: 24, alignSelf: "center"}}/>

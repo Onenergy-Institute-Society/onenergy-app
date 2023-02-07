@@ -65,7 +65,7 @@ class MilestonesAccordian extends Component {
                                         alignItems: 'center'
                                     }}>
                                     <Text
-                                        style={[this.props.screenProps.global.textItemSubtitle, {color: '#FFF'}]}>{complete_date ? "completed" : completed_steps + ' / ' + this.props.item.step.length}</Text>
+                                        style={[this.props.screenProps.global.textItemSubtitle, {color: '#FFF'}]}>{complete_date ? this.props.optionData.titles.find(el => el.id === 'achievement_button_completed').title : completed_steps + ' / ' + this.props.item.step.length}</Text>
                                 </View>
                             </View>
                         </View>
@@ -91,7 +91,7 @@ class MilestonesAccordian extends Component {
                                         <Text
                                             style={[this.props.screenProps.global.boxTitle, {color: '#FFF'}]}
                                         >
-                                            REWARD
+                                            {this.props.optionData.titles.find(el => el.id === 'achievement_button_reward').title}
                                         </Text>
                                         {this.props.item.awards.map(point =>
                                             <Text
@@ -110,7 +110,7 @@ class MilestonesAccordian extends Component {
                                         <Text
                                             style={[this.props.screenProps.global.boxTitle, {color: '#FFF'}]}
                                         >
-                                            {claim_date ? 'CLEARED' : 'CLAIM'}
+                                            {claim_date ? this.props.optionData.titles.find(el => el.id === 'achievement_button_cleared').title : this.props.optionData.titles.find(el => el.id === 'achievement_button_claim').title}
                                         </Text>
                                         <Text
                                             style={[this.props.screenProps.global.itemMeta, {

@@ -118,9 +118,9 @@ const ProgramsContent = props => {
                         : null
                 }
                 <View style={styles.heading_title}>
-                    <Text style={global.widgetTitle}>Preparatory Courses</Text>
+                    <Text style={global.widgetTitle}>{optionData.titles.find(el => el.id === 'programs_title_preparatory_courses').title}</Text>
                 </View>
-                <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle="My Courses"
+                <CoursesScreen {...props} showSearch={false} hideFilters={true} screenTitle=""
                                hideNavigationHeader={true} hideTitle={true} headerHeight={0}/>
             </ScrollView>
         </SafeAreaView>

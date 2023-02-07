@@ -9,6 +9,7 @@ import {ms, mvs, s, vs} from '../Utils/Scale';
 
 const PostRow = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    const cacheData = useSelector((state) => state.settings.settings.onenergy_cache);
     const [postsData, setPostsData] = useState([]);
     const {navigation, postType, postCategory, postPerPage, postOrder, postOrderBy, showAuthor, screenProps} = props;
     const {colors, global} = screenProps;
@@ -64,7 +65,7 @@ const PostRow = props => {
     }
     useEffect(() => {
         let loadPosts = false;
-        if (postsReducer.postUpdate && optionData.cache.postCache > postsReducer.postUpdate || !postsReducer.postUpdate) {
+        if (postsReducer.postUpdate && cacheData.postCache > postsReducer.postUpdate || !postsReducer.postUpdate) {
             loadPosts = true;
         } else {
             if (categoryIndex && categoryIndex >= 0) {

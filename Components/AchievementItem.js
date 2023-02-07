@@ -46,7 +46,7 @@ const AchievementItem = (props) => {
                             alignItems: 'center'
                         }}>
                         <Text
-                            style={[global.textItemSubtitle, {color: '#FFF'}]}>{mode === 'daily' ? item.complete_date === today ? "completed!" : '0 / ' + item.total : item.complete_date ? "completed!" : item.step + ' / ' + item.total}</Text>
+                            style={[global.textItemSubtitle, {color: '#FFF'}]}>{mode === 'daily' ? item.complete_date === today ? optionData.titles.find(el => el.id === 'achievement_button_completed').title : '0 / ' + item.total : item.complete_date ? optionData.titles.find(el => el.id === 'achievement_button_completed').title : item.step + ' / ' + item.total}</Text>
                     </View>
                 </View>
             </View>
@@ -63,7 +63,7 @@ const AchievementItem = (props) => {
                                 <Text
                                     style={[global.boxTitle, {color: '#FFF'}]}
                                 >
-                                    REWARD
+                                    {optionData.titles.find(el => el.id === 'achievement_button_reward').title}
                                 </Text>
                                 {item.awards&&item.awards.length&&item.awards.map(point =>
                                     <Text
@@ -82,7 +82,7 @@ const AchievementItem = (props) => {
                                 <Text
                                     style={[global.boxTitle, {color: '#FFF'}]}
                                 >
-                                    {mode !== 'past' && item.claim_date ? 'CLEARED' : 'CLAIM'}
+                                    {mode !== 'past' && item.claim_date ? optionData.titles.find(el => el.id === 'achievement_button_cleared').title : optionData.titles.find(el => el.id === 'achievement_button_claim').title}
                                 </Text>
                                 <Text
                                     numberOfLines={1}

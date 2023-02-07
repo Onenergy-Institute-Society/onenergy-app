@@ -186,7 +186,7 @@ const PracticeGroup = props => {
                                         <FastImage tintColor={colors.primaryColor}
                                                    source={require("@src/assets/img/stopwatch.png")}
                                                    style={{width: 16, height: 16}}/>
-                                        <Text style={styles.waitTime}>Start in {timeToGo} mins</Text>
+                                        <Text style={styles.waitTime}>{optionData.titles.find(el => el.id === 'practices_group_label_start_in').title} {timeToGo} {optionData.titles.find(el => el.id === 'practices_group_label_minutes').title}</Text>
                                     </View>
                                     <WaitingGroupPractice gp_id={item.id}
                                                           gp_time={CurrentStartTime}
@@ -203,21 +203,21 @@ const PracticeGroup = props => {
                                                           handlePress(item, CurrentStartTime, startMinutes)
                                                       }}
                                     >
-                                        <Text style={styles.txtJoin}>JOIN</Text>
+                                        <Text style={styles.txtJoin}>{optionData.titles.find(el => el.id === 'practices_group_button_join').title}</Text>
                                     </TouchableOpacity>
                                     :
                                     <TouchableOpacity style={styles.btnOff}
                                                       onPress={() => {
                                                       }}
                                     >
-                                        <Text style={styles.txtOff}>WAIT</Text>
+                                        <Text style={styles.txtOff}>{optionData.titles.find(el => el.id === 'practices_group_button_wait').title}</Text>
                                     </TouchableOpacity>
                                 :
                                 <TouchableOpacity style={styles.btnOff}
                                                   onPress={() => {
                                                   }}
                                 >
-                                    <Text style={styles.txtOff}>LOCKED</Text>
+                                    <Text style={styles.txtOff}>{styles.txtOff}>{optionData.titles.find(el => el.id === 'practices_group_button_locked').title}</Text>
                                 </TouchableOpacity>
                             }
                         </View>
@@ -226,10 +226,10 @@ const PracticeGroup = props => {
                                 <SvgClock color={colors.textColor} size={s(14)} style={{marginRight:s(5), marginLeft:s(5)}}/>
                                 <Text style={styles.subtitle}>{new Date(item.duration * 1000).toISOString().substring(14, 16)}'{new Date(item.duration * 1000).toISOString().substring(17, 19)}"</Text>
                                 <SvgRepeat color={colors.textColor} size={s(14)} style={{marginRight:s(5), marginLeft:s(5)}}/>
-                                <Text style={styles.subtitle}>every {loop} mins</Text>
+                                <Text style={styles.subtitle}>{optionData.titles.find(el => el.id === 'practices_group_label_every').title} {loop} {optionData.titles.find(el => el.id === 'practices_group_label_minutes').title}</Text>
                             </View>
                             :
-                            <Text style={styles.subtitle}>Finish required lessons to unlock.</Text>
+                            <Text style={styles.subtitle}>{optionData.titles.find(el => el.id === 'practices_group_label_locked').title}</Text>
                         }
                         <SvgChevronsLeft size={s(24)} color={"#fff"} style={{position: "absolute", right: s(10), bottom: s(10)}}/>
                     </ImageBackground>
