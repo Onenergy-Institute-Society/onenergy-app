@@ -22,7 +22,7 @@ const StatsScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const progressReducer = useSelector((state) => state.onenergyAppReducer?state.onenergyAppReducer.progressReducer:null);
     const practiceReducer = useSelector((state) => state.onenergyAppReducer?state.onenergyAppReducer.practiceReducer:null);
-
+console.log(progressReducer, practiceReducer)
     let tmpWeek=[];
     let today = new Date();
     tmpWeek=[{day:today.getDay(),date:new moment().format('YYYY-MM-DD')}];
@@ -335,7 +335,7 @@ const StatsScreen = (props) => {
                            }]}
                             colors={['#ddd6fe', '#ede9fe']}>
                             {progressReducer.groupStats.map((item, index)=> {
-                                let groupName = practiceReducer.groups.find(group => group.id === item.group_id).name;
+                                let groupName = practiceReducer.groups.find(group => parseInt(group.id) === parseInt(item.group_id)).name;
                                 return (
                                     <>
                                         <View style={styles.row}>
