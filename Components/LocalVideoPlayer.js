@@ -21,7 +21,8 @@ import InteractiveTranscripts from "./InteractiveTranscripts";
 const statusBarSize = 0;
 const LocalVideoPlayer = (props) => {
     const {navigation} = props;
-    const [selectedCCUrl, setSelectedCCUrl] = useState(navigation.getParam('selectedCCUrl'));
+    const language = useSelector((state) => state.settingReducer.languages);
+    const [selectedCCUrl, setSelectedCCUrl] = useState('');
     const [paused, setPaused] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [seekableDuration, setSeekableDuration] = useState(0);
@@ -41,6 +42,15 @@ const LocalVideoPlayer = (props) => {
             deactivateKeepAwake();
         };
     }, []);
+
+    useEffect(()=>{
+        let textTrack = textTracks.find(item=>item.language === language.subtitle);
+        if(textTrack){
+            setSelectedCCUrl(textTrack.uri);
+        }else{
+            setSelectedCCUrl('');
+        }
+    },[language])
 
     const completeVideo = () => {
         dispatch({

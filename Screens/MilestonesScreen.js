@@ -114,8 +114,14 @@ const MilestonesScreen = createStackNavigator({
        }
    }
 });
+const ScreenTitle = () => {
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    return (
+        <Text>{optionData.titles.find(el => el.id === 'milestone_title').title}</Text>
+    )
+}
 MilestonesScreen.navigationOptions = ({navigation, screenProps}) => ({
-    title: 'Milestones',
+    title: <ScreenTitle />,
     headerStyle: {
         backgroundColor: screenProps.colors.headerBg,
    },

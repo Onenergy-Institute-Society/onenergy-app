@@ -20,7 +20,7 @@ const AudioPlayerRoutine = (props) => {
     const [nextTrack, setNextTrack] = useState(0);
     const [pastPosition, setPastPosition] = useState(0);
     const dispatch = useDispatch();
-
+    console.log(routine)
     const updateProgress = async () => {
         try {
             dispatch({
@@ -102,18 +102,18 @@ const AudioPlayerRoutine = (props) => {
                     setTrackTitle('');
                     await TrackPlayer.reset();
                     setNextTrack(0);
-                    this.videoPlayer.seek(0);
                     updateProgress().then();
-               }
-           } else {
-            setPlaying(false);
-            setStopped(true);
-            setTrackTitle('');
-            await TrackPlayer.reset();
-            setNextTrack(0);
-            this.videoPlayer.seek(0);
-            updateProgress().then();
-           }
+                    if (routine.bgm_id) this.videoPlayer.seek(0)
+                }
+            } else {
+                setPlaying(false);
+                setStopped(true);
+                setTrackTitle('');
+                await TrackPlayer.reset();
+                setNextTrack(0);
+                updateProgress().then();
+                if (routine.bgm_id) this.videoPlayer.seek(0)
+            }
         }
     });
 
@@ -126,13 +126,13 @@ const AudioPlayerRoutine = (props) => {
         }
         if ((state === State.Paused)) {
             const queue = await TrackPlayer.getQueue();
-            if(!queue.length){
+            if (!queue.length) {
                 addTrack(routine.audioTracks).then(async () => {
                     await TrackPlayer.play();
                     setPlaying(true);
                     setStopped(false);
                 })
-            }else {
+            } else {
                 await TrackPlayer.play();
                 setPlaying(true);
                 setStopped(false);
@@ -153,7 +153,7 @@ const AudioPlayerRoutine = (props) => {
         setPastPosition(0);
         setPlaying(false);
         setStopped(true);
-        this.videoPlayer.seek(0);
+        if (routine.bgm_id) this.videoPlayer.seek(0)
     };
     return (
         <>
@@ -162,7 +162,8 @@ const AudioPlayerRoutine = (props) => {
                     <View style={styles.buttonsCol}>
                         <TouchableOpacity onPress={onPlayPausePress} style={styles.playPauseButton}
                                           hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
-                            {playing ? <SvgPauseCircleIcon color={colors.textColor}/>:<SvgPlayCircleIcon color={colors.textColor}/>}
+                            {playing ? <SvgPauseCircleIcon color={colors.textColor}/> :
+                                <SvgPlayCircleIcon color={colors.textColor}/>}
                         </TouchableOpacity>
                         {!stopped ? (
                             <TouchableOpacity onPress={onStopPress} style={styles.stopButton}
@@ -173,7 +174,8 @@ const AudioPlayerRoutine = (props) => {
                     </View>
                 </View>
                 <View style={styles.progressBarSection}>
-                    <TrackSlider user={user} type={"routine"} pastPosition={pastPosition} totalDuration={totalDuration} {...props}/>
+                    <TrackSlider user={user} type={"routine"} pastPosition={pastPosition}
+                                 totalDuration={totalDuration} {...props}/>
                     {routine.bgm_id ? (
                         <Video
                             ref={videoPlayer => this.videoPlayer = videoPlayer}
@@ -182,7 +184,7 @@ const AudioPlayerRoutine = (props) => {
                             playWhenInactive={true}
                             ignoreSilentSwitch={"ignore"}
                             repeat={true}
-                            volume={routine.bgm_volume?routine.bgm_volume/100:0.5}
+                            volume={routine.bgm_volume ? routine.bgm_volume / 100 : 0.5}
                             paused={!playing}
                             source={{uri: optionData.bgm.find(el => el.id === routine.bgm_id).url}}
                         />
@@ -190,17 +192,30 @@ const AudioPlayerRoutine = (props) => {
                 </View>
             </View>
             <View style={styles.routineDetailBox}>
-                <Text style={[styles.subTitle,{fontFamily:trackTitle==="Opening"&&playing?"Montserrat-SemiBold":"Montserrat-Regular", fontWeight:trackTitle==='Opening'&&playing?"bold":"normal"}]}>{optionData.titles.find(el => el.id === 'practices_guide_opening').title}</Text>
+                <Text style={[styles.subTitle, {
+                    fontFamily: trackTitle === "Opening" && playing ? "Montserrat-SemiBold" : "Montserrat-Regular",
+                    fontWeight: trackTitle === 'Opening' && playing ? "bold" : "normal"
+                }]}>{optionData.titles.find(el => el.id === 'practices_guide_opening').title}</Text>
                 {
                     routine.routine.map((item, index) => {
                         return (
-                            <View style={{flexDirection:"row", justifyContent:"space-between"}}>
-                                <Text style={[styles.subTitle,{fontFamily:trackTitle===item.title&&playing?"Montserrat-SemiBold":"Montserrat-Regular", fontWeight:trackTitle===item.title&&playing?"bold":"normal"}]}>{item.title}</Text>
+                            <View style={{flexDirection: "row", justifyContent: "space-between"}}>
+                                <Text style={[styles.subTitle, {
+                                    fontFamily: trackTitle === item.title && playing ? "Montserrat-SemiBold" : "Montserrat-Regular",
+                                    fontWeight: trackTitle === item.title && playing ? "bold" : "normal"
+                                }]}>{item.title}</Text>
+                                <Text style={[styles.subTitle, {
+                                    fontFamily: trackTitle === item.title && playing ? "Montserrat-SemiBold" : "Montserrat-Regular",
+                                    fontWeight: trackTitle === item.title && playing ? "bold" : "normal"
+                                }]}>x {item.count} {item.mode === "0" ? '' : 'm'}</Text>
                             </View>
                         )
                     })
                 }
-                <Text style={[styles.subTitle,{fontFamily:trackTitle==="Closing"&&playing?"Montserrat-SemiBold":"Montserrat-Regular", fontWeight:trackTitle==='Closing'&&playing?"bold":"normal"}]}>{optionData.titles.find(el => el.id === 'practices_guide_closing').title}</Text>
+                <Text style={[styles.subTitle, {
+                    fontFamily: trackTitle === "Closing" && playing ? "Montserrat-SemiBold" : "Montserrat-Regular",
+                    fontWeight: trackTitle === 'Closing' && playing ? "bold" : "normal"
+                }]}>{optionData.titles.find(el => el.id === 'practices_guide_closing').title}</Text>
             </View>
         </>
     );

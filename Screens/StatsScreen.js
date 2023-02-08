@@ -22,7 +22,7 @@ const StatsScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const progressReducer = useSelector((state) => state.onenergyAppReducer?state.onenergyAppReducer.progressReducer:null);
     const practiceReducer = useSelector((state) => state.onenergyAppReducer?state.onenergyAppReducer.practiceReducer:null);
-console.log(progressReducer, practiceReducer)
+
     let tmpWeek=[];
     let today = new Date();
     tmpWeek=[{day:today.getDay(),date:new moment().format('YYYY-MM-DD')}];

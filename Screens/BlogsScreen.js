@@ -90,6 +90,12 @@ const BlogsScreen = createStackNavigator({
        }
    }
 });
+const ScreenTitle = () => {
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    return (
+        <Text>{optionData.titles.find(el => el.id === 'blog_title').title}</Text>
+    )
+}
 BlogsScreen.navigationOptions = ({navigation, screenProps}) => {
     const {colors, global} = screenProps;
     let headerLeft = null;
@@ -105,7 +111,7 @@ BlogsScreen.navigationOptions = ({navigation, screenProps}) => {
             </TouchableOpacity>
    }
     return {
-        title: 'Wisdom of Life',
+        title: <ScreenTitle />,
         headerStyle: {
             backgroundColor: colors.headerBg,
        },

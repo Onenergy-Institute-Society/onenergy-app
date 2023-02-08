@@ -22,7 +22,7 @@ import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHand
 import EventList from "../Components/EventList";
 import {BlurView} from "@react-native-community/blur";
 import FastImage from "react-native-fast-image";
-import {SvgChevronsLeft, SvgClock, SvgIconBack, SvgIconCross, SvgRepeat} from "../Utils/svg";
+import {SvgChevronsDown, SvgClock, SvgIconBack, SvgIconCross, SvgRepeat} from "../Utils/svg";
 import * as Analytics from "../Utils/Analytics";
 
 const PracticeGroup = props => {
@@ -179,10 +179,10 @@ const PracticeGroup = props => {
                                 <Text style={styles.title}>{item.name}</Text>
                                 <View style={{
                                     flexDirection: "row",
-                                    justifyContent: "space-between",
+                                    justifyContent: "flex-start",
                                     marginHorizontal: s(15)
                                 }}>
-                                    <View style={{flexDirection: "row", justifyContent: "flex-start",}}>
+                                    <View style={{flexDirection: "row", justifyContent: "flex-start", marginRight:s(10)}}>
                                         <FastImage tintColor={colors.primaryColor}
                                                    source={require("@src/assets/img/stopwatch.png")}
                                                    style={{width: 16, height: 16}}/>
@@ -231,7 +231,7 @@ const PracticeGroup = props => {
                             :
                             <Text style={styles.subtitle}>{optionData.titles.find(el => el.id === 'practices_group_label_locked').title}</Text>
                         }
-                        <SvgChevronsLeft size={s(24)} color={"#fff"} style={{position: "absolute", right: s(10), bottom: s(10)}}/>
+                        <SvgChevronsDown size={s(24)} color={"#fff"} style={{position: "absolute", right: s(10), bottom: s(10)}}/>
                     </ImageBackground>
                 </View>
             </TouchableOpacity>

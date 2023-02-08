@@ -237,7 +237,7 @@ const QuotesScreen = props => {
                         : null}
                     <Text
                         style={styles.title}>
-                        &#x2190; Swipe for more quotes &#x2192;
+                        &#x2190; {optionData.titles.find(el => el.id === 'quote_bottom_tip').title} &#x2192;
                     </Text>
                 </View>
             ) : (

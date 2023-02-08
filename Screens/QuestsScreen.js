@@ -116,8 +116,14 @@ const QuestsScreen = createStackNavigator({
        }
    }
 });
+const ScreenTitle = () => {
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    return (
+        <Text>{optionData.titles.find(el => el.id === 'quest_title').title}</Text>
+    )
+}
 QuestsScreen.navigationOptions = ({navigation, screenProps}) => ({
-    title: 'Quests',
+    title: <ScreenTitle />,
     headerStyle: {
         backgroundColor: screenProps.colors.headerBg,
    },

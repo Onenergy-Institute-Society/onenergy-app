@@ -81,6 +81,8 @@ import {
     SvgIconWisdomFocused,
     SvgIconWisdomUnfocused
 } from "./Utils/svg";
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import PushNotification from "react-native-push-notification";
 import * as Analytics from "./Utils/Analytics";
 
 export const applyCustomCode = (externalCodeSetup: any) => {
@@ -981,7 +983,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     let tempArray = [];
                     switch (acpMode) {
                         case 'PP':
-                            tempArray.push({'guide': acpData, 'count': 1});
+                            tempArray.push({'guide': acpData, 'count': acpData.count});
                             break;
                         case 'PR':
                             console.log('R1')
@@ -1019,7 +1021,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                         loop3:
                                         for(let guide of section.data){
                                             if(guide.id === guide_id){
-                                                tempArray.push({'guide': guide, 'count': 1});
+                                                tempArray.push({'guide': guide, 'count': guide.count});
                                                 break loop1
                                             }
                                         }
@@ -2042,6 +2044,62 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     externalCodeSetup.indexJsApi.addIndexJsFunction(() => {
         Orientation.lockToPortrait();
         TrackPlayer.registerPlaybackService(() => PlaybackService);
+        // Must be outside of any component LifeCycle (such as `componentDidMount`).
+        PushNotification.configure({
+            // (optional) Called when Token is generated (iOS and Android)
+            onRegister: function (token) {
+                console.log("TOKEN:", token);
+            },
+
+            // (required) Called when a remote is received or opened, or local notification is opened
+            onNotification: function (notification) {
+                console.log("NOTIFICATION:", notification);
+
+                // process the notification
+
+                // (required) Called when a remote is received or opened, or local notification is opened
+                notification.finish(PushNotificationIOS.FetchResult.NoData);
+            },
+
+            // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
+            onAction: function (notification) {
+                console.log("ACTION:", notification.action);
+                console.log("NOTIFICATION:", notification);
+
+                // process the action
+            },
+
+            // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
+            onRegistrationError: function(err) {
+                console.error(err.message, err);
+            },
+
+            // IOS ONLY (optional): default: all - Permissions to register.
+            permissions: {
+                alert: true,
+                badge: true,
+                sound: true,
+            },
+
+            // Should the initial notification be popped automatically
+            // default: true
+            popInitialNotification: true,
+
+            /**
+             * (optional) default: true
+             * - Specified if permissions (ios) and token (android and ios) will requested or not,
+             * - if not, you must call PushNotificationsHandler.requestPermissions() later
+             * - if you are not using remote notification or do not have Firebase installed, use this:
+             *     requestPermissions: Platform.OS === 'ios'
+             */
+            requestPermissions: true,
+        });
+        PushNotification.createChannel({
+            channelId: 'onenergyReminders',
+            channelName: 'Onenergy Routines Reminder',
+            channelDescription: 'Reminder for routines'
+        })
+
     })
     externalCodeSetup.blogSingleApi.setAfterBlogSingleBody((props) => {
         const {blog} = props;
