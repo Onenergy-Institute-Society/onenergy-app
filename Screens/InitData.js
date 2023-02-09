@@ -9,7 +9,7 @@ import * as Analytics from "../Utils/Analytics";
 import {languages} from "../Utils/Settings";
 
 const InitData = (props) => {
-    const {navigation, screenProps} = props;
+    const {screenProps} = props;
     const {global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
     const defaultLanguage = useSelector((state) => state.settingReducer.languages);
@@ -70,6 +70,11 @@ const InitData = (props) => {
                                 payload: data.extra_data
                             });
                         }
+                        break;
+                    case "profile_updated":
+                        dispatch({
+                            type: 'USER_PROFILE_UPDATED',
+                        });
                         break;
                 }
             }

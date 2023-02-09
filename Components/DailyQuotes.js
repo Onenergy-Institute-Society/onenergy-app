@@ -34,7 +34,7 @@ const DailyQuotes = (props) => {
                                  alignSelf: "flex-start",
                                  tintColor: colors.primaryButtonBg
                              }}>
-                <Text style={[global.text, styles.title]}>{quote_rendered}</Text>
+                <Text numberOfLines={2} style={[global.text, styles.title]}>{quote_rendered}</Text>
             </ImageBackground>
         </TouchableScale>
     )

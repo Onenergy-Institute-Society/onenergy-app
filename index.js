@@ -298,36 +298,14 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         let featuredUrl = viewModel.featuredUrl.replace('-300x200', '-1024x683');
         let statusText;
         let statusBarColor;
-        const lesson_time = new moment.utc(viewModel.date);
         const current_time = new moment.utc();
-        const diffMinutes = lesson_time.diff(current_time, 'minutes');
-        const diffHours = lesson_time.diff(current_time, 'hours');
-        const diffDays = lesson_time.diff(current_time, 'days');
-        let diffTime;
-        if (diffMinutes < 60) {
-            diffTime = 'in ' + diffMinutes + ' Minutes';
-        } else {
-            if (diffHours < 24) {
-                diffTime = 'tomorrow';
-            } else {
-                diffTime = 'in ' + diffDays + ' Days';
-            }
-        }
-        let lessonNote = '';
         if (viewModel.progression === 100) {
             statusBarColor = colors.coursesLabelCompleted;
             statusText = optionData.titles.find(el => el.id === 'programs_label_completed').title;
-            lessonNote = 'Congratulations on completion';
         } else if (viewModel.price && viewModel.price.expired) {
             statusBarColor = "black";
             statusText = optionData.titles.find(el => el.id === 'programs_label_expired').title;
-            lessonNote = 'Course is expired, no more access';
         } else if (viewModel.hasAccess) {
-            if (lesson_time > current_time) {
-                lessonNote = 'Next lesson will be available ' + diffTime;
-            } else {
-                lessonNote = 'Next lesson is available now';
-            }
             const expiringTime = new moment.utc(viewModel.price.expires_on);
             const diffExpiringDays = expiringTime.diff(current_time, 'days');
             let diffExpiringTime;
@@ -335,7 +313,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             if (diffExpiringDays <= 7 && diffExpiringDays > 0) {
                 statusBarColor = "grey";
                 statusText = diffExpiringTime;
-                lessonNote = 'Course is expiring soon';
             } else {
                 if (viewModel.progression > 0) {
                     statusBarColor = colors.coursesLabelProgress;
@@ -343,7 +320,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 } else {
                     statusBarColor = colors.coursesLabelFree;
                     statusText = optionData.titles.find(el => el.id === 'programs_label_enrolled').title;
-                    lessonNote = 'Please start your first lesson';
                 }
             }
         } else {
@@ -681,6 +657,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         }, action) => {
             switch (action.type) {
                 case "ONENERGY_INIT_DATA":
+                    console.log('ONENERGY_INIT_DATA');
                     const data = action.payload.data;
                     const loadGroup = action.payload.loadGroup;
                     const loadGuide = action.payload.loadGuide;
@@ -748,7 +725,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             Object.keys(data.progress.points).forEach(key =>
                                 idProgressReducer.points[key] = parseInt(data.progress.points[key])
                             )
-                            idProgressReducer.lastPractice = data.progress.lastPractice ? parseInt(data.progress.lastPractice) : '';
+                            idProgressReducer.lastPractice = data.progress.lastPractice ? data.progress.lastPractice : '';
                             idProgressReducer.latestUpdate = Math.floor(new Date().getTime() / 1000);
                             idProgressReducer.lastUpload = data.progress.lastUpload ? parseInt(data.progress.lastUpload) : 0;
                             idProgressReducer.totalDuration = data.progress.totalDuration ? parseInt(data.progress.totalDuration) : 0;
@@ -806,7 +783,8 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         progressReducer: idProgressReducer,
                     };
                 case "ONENERGY_ROUTINE_UPDATE":
-                        return {
+                    console.log('ONENERGY_ROUTINE_UPDATE');
+                    return {
                             ...state,
                             practiceReducer: {
                                 ...state.practiceReducer,
@@ -815,6 +793,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             }
                         };
                 case "ONENERGY_ROUTINE_SAVE":
+                    console.log('ONENERGY_ROUTINE_SAVE');
                     let orsRoutine = action.payload;
                     const ors_tempPracticeState = {...state.practiceReducer};
 
@@ -848,25 +827,26 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         }
                     }
                 case "ONENERGY_GUIDE_UPDATE":
+                    console.log('ONENERGY_GUIDE_UPDATE');
                     let lessonGuides = action.payload;
                     let tempGuides = {...state.practiceReducer};
                     loop1:
                     for(let [levelIndex, level] of state.practiceReducer.guides.entries()) {
-                        loop2:
-                            for (let [sectionIndex, section] of level.sections.entries()) {
-                                let tempIndex = section.data.findIndex(item => lessonGuides.includes(item.id));
-                                if (tempIndex >= 0) {
-                                    tempGuides.guides[levelIndex].sections[sectionIndex].data[tempIndex].show = true;
-                                    tempGuides.guides[levelIndex].sections[sectionIndex].data[tempIndex].new = true;
-                                    break loop1;
-                                }
+                        for (let [sectionIndex, section] of level.sections.entries()) {
+                            let tempIndex = section.data.findIndex(item => lessonGuides.includes(item.id));
+                            if (tempIndex >= 0) {
+                                tempGuides.guides[levelIndex].sections[sectionIndex].data[tempIndex].show = true;
+                                tempGuides.guides[levelIndex].sections[sectionIndex].data[tempIndex].new = true;
+                                break loop1;
                             }
+                        }
                     }
                     return {
                         ...state,
                         practiceReducer: tempGuides
                     };
                 case "ONENERGY_PROGRESS_GOAL":
+                    console.log('ONENERGY_PROGRESS_GOAL');
                     switch (action.payload.mode) {
                         case 'todayGoal':
                             let goal = action.payload.data;
@@ -880,15 +860,17 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     }
                     break;
                 case "ONENERGY_PROGRESS_UPLOADED":
-
-                    const opuTempProgressState = {...state.progressReducer};
-                    opuTempProgressState.actionList = [];
-                    opuTempProgressState.lastUpload = Math.floor(new Date().getTime() / 1000);
+                    console.log('ONENERGY_PROGRESS_UPLOADED', Math.floor(new Date().getTime() / 1000));
                     return {
                         ...state,
-                        progressReducer: opuTempProgressState
+                        progressReducer: {
+                            ...state.progressReducer,
+                            actionList: [],
+                            lastUpload: Math.floor(new Date().getTime() / 1000)
+                        }
                     };
                 case "ONENERGY_DAILY_UPDATE":
+                    console.log('ONENERGY_DAILY_UPDATE');
                     const oduTempProgressState = {...state.progressReducer};
                     const oduTempDailyState = {...state.achievementReducer};
 
@@ -909,6 +891,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         progressReducer: oduTempProgressState,
                     };
                 case "ONENERGY_PRACTICE_COMPLETED":
+                    console.log('ONENERGY_PRACTICE_COMPLETED');
                     const acpTempPracticeState = {...state.practiceReducer};
                     const acpTempProgressState = {...state.progressReducer};
                     const acpTempAchievementState = {...state.achievementReducer};
@@ -917,8 +900,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     let acpToday = new moment().format('YYYY-MM-DD');
                     let tmpAchievements;
                     let acpTempIndex;
-                    console.log('R0')
-
                     if (acpToday > acpTempProgressState.lastPractice) {
                         acpTempProgressState.totalPracticeDays += 1;
                         acpTempAchievementState.milestones.forEach((item, tempIndex) => {
@@ -937,75 +918,90 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 }
                             }
                         })
-                        //weekly
-                        if (acpTempAchievementState.weekly.days && acpTempAchievementState.weekly.days.length) {
-                            let lastDay = acpTempAchievementState.weekly.days[acpTempAchievementState.weekly.days.length - 1];
-                            if (moment(acpToday).diff(moment(lastDay), 'days') > 1) {
-                                acpTempAchievementState.weekly.days = [];
-                                acpTempAchievementState.weekly.days.push(acpToday);
-                            } else if (acpTempAchievementState.weekly.days.length > 7) {
-                                acpTempAchievementState.weekly.days = [];
-                                acpTempAchievementState.weekly.days.push(acpToday);
-                            } else if (acpToday !== lastDay){
-                                acpTempAchievementState.weekly.days.push(acpToday);
-                                if (acpTempAchievementState.weekly.days.length === 7) {
-                                    acpTempAchievementState.weekly.complete_date = acpToday;
-                                    acpTempAchievementState.weekly.claim_date = '';
-                                }
-                            }
-                        } else {
+                    }
+                    //weekly
+                    if (acpTempAchievementState.weekly.days && acpTempAchievementState.weekly.days.length) {
+                        let lastDay = acpTempAchievementState.weekly.days[acpTempAchievementState.weekly.days.length - 1];
+                        if (moment(acpToday).diff(moment(lastDay), 'days') > 1) {
                             acpTempAchievementState.weekly.days = [];
                             acpTempAchievementState.weekly.days.push(acpToday);
-                        }
-
-                        //monthly
-                        if (acpTempAchievementState.monthly.days && acpTempAchievementState.monthly.days.length) {
-                            let lastDay = acpTempAchievementState.monthly.days[acpTempAchievementState.monthly.days.length - 1];
-                            if (moment(acpToday).diff(moment(lastDay), 'days') > 1) {
-                                acpTempAchievementState.monthly.days = [];
-                                acpTempAchievementState.monthly.days.push(acpToday);
-                            } else if (acpTempAchievementState.monthly.days.length > 30) {
-                                acpTempAchievementState.monthly.days = [];
-                                acpTempAchievementState.monthly.days.push(acpToday);
-                            } else if (acpToday !== lastDay){
-                                acpTempAchievementState.monthly.days.push(acpToday);
-                                if (acpTempAchievementState.monthly.days.length === 30) {
-                                    acpTempAchievementState.monthly.complete_date = acpToday;
-                                    acpTempAchievementState.monthly.claim_date = '';
-                                }
+                        } else if (acpTempAchievementState.weekly.days.length > 7) {
+                            acpTempAchievementState.weekly.days = [];
+                            acpTempAchievementState.weekly.days.push(acpToday);
+                        } else if (acpToday !== lastDay){
+                            acpTempAchievementState.weekly.days.push(acpToday);
+                            if (acpTempAchievementState.weekly.days.length === 7) {
+                                acpTempAchievementState.weekly.complete_date = acpToday;
+                                acpTempAchievementState.weekly.claim_date = '';
                             }
-                        } else {
-                            acpTempAchievementState.monthly.days = [];
-                            acpTempAchievementState.monthly.days.push(acpToday)
                         }
+                    } else {
+                        acpTempAchievementState.weekly.days = [];
+                        acpTempAchievementState.weekly.days.push(acpToday);
+                    }
+
+                    //monthly
+                    if (acpTempAchievementState.monthly.days && acpTempAchievementState.monthly.days.length) {
+                        let lastDay = acpTempAchievementState.monthly.days[acpTempAchievementState.monthly.days.length - 1];
+                        if (moment(acpToday).diff(moment(lastDay), 'days') > 1) {
+                            acpTempAchievementState.monthly.days = [];
+                            acpTempAchievementState.monthly.days.push(acpToday);
+                        } else if (acpTempAchievementState.monthly.days.length > 30) {
+                            acpTempAchievementState.monthly.days = [];
+                            acpTempAchievementState.monthly.days.push(acpToday);
+                        } else if (acpToday !== lastDay){
+                            acpTempAchievementState.monthly.days.push(acpToday);
+                            if (acpTempAchievementState.monthly.days.length === 30) {
+                                acpTempAchievementState.monthly.complete_date = acpToday;
+                                acpTempAchievementState.monthly.claim_date = '';
+                            }
+                        }
+                    } else {
+                        acpTempAchievementState.monthly.days = [];
+                        acpTempAchievementState.monthly.days.push(acpToday)
                     }
 
                     let tempArray = [];
                     switch (acpMode) {
                         case 'PP':
-                            tempArray.push({'guide': acpData, 'count': acpData.count});
+                            tempArray.push({'guide': acpData, 'duration': acpData.duration, 'count': acpData.count});
                             break;
                         case 'PR':
                             console.log('R1')
                             let routineIndex;
                             routineIndex = state.practiceReducer.routines.findIndex((temp) => temp.id === acpData);
-                            let tempTracks = state.practiceReducer.routines[routineIndex].audioTracks;
-                            let routineDuration = 0;
-                            console.log('R2')
-                            tempTracks.forEach(track => {
-                                routineDuration = routineDuration + parseInt(track.duration);
-                                if(track.count) tempArray.push({'guide': track, 'count': track.count});
+                            let tempGuides = state.practiceReducer.routines[routineIndex].routine;
+                            let guideDuration = 0;
+                            console.log('R2', tempGuides)
+                            tempGuides.forEach(guide => {
+                                let startCount = parseInt(guide.startCount);
+                                let endDuration = parseInt(guide.endDuration);
+                                let remainCount;
+                                if(guide.count>startCount) {
+                                    remainCount = guide.count - startCount;
+                                }
+                                guide.parts.forEach(part => {
+                                    if(part.start){
+                                        guideDuration = guideDuration + parseInt(part.start_duration);
+                                    }
+                                    if(part.repeat){
+                                        guideDuration = guideDuration + parseInt(part.repeat_duration) * remainCount;
+                                    }
+                                })
+                                guideDuration = guideDuration + endDuration;
+                                console.log(guide.count, startCount, remainCount, guideDuration)
+                                tempArray.push({'guide': guide, 'duration':guideDuration, 'count': guide.count});
                             })
                             console.log('R3')
                             acpTempIndex = acpTempProgressState.routineStats.findIndex(item => item.routine_id === acpData)
                             if (acpTempIndex >= 0) {
                                 acpTempProgressState.routineStats[acpTempIndex].routine_count += 1;
-                                acpTempProgressState.routineStats[acpTempIndex].routine_duration += routineDuration;
+                                acpTempProgressState.routineStats[acpTempIndex].routine_duration += guideDuration;
                             } else {
                                 acpTempProgressState.routineStats.push({
                                     'routine_id': acpData,
                                     'routine_count': 1,
-                                    'routine_duration': routineDuration,
+                                    'routine_duration': guideDuration,
                                 })
                             }
                             break;
@@ -1016,12 +1012,10 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             state.practiceReducer.groups[groupIndex].guides.forEach(guide_id => {
                                 loop1:
                                 for(let level of state.practiceReducer.guides){
-                                    loop2:
                                     for(let section of level.sections){
-                                        loop3:
                                         for(let guide of section.data){
                                             if(guide.id === guide_id){
-                                                tempArray.push({'guide': guide, 'count': guide.count});
+                                                tempArray.push({'guide': guide, 'duration':guide.count, 'count': guide.count});
                                                 break loop1
                                             }
                                         }
@@ -1173,49 +1167,38 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         let acpGuideIndex = acpTempPracticeState.guides[acpLevelIndex].sections[acpSectionIndex].data.findIndex(guide => guide.id === tempGuide.guide.id);
                         console.log('5')
                         if (acpGuideIndex >= 0) {
-                            let tempGuideDuration = parseInt(tempGuide.guide.duration) * parseInt(tempGuide.count);
-                            let tempGuideCount = parseInt(tempGuide.guide.count) * parseInt(tempGuide.count);
+
+                            console.log(tempGuide.duration, tempGuide.count);
 
                             acpTempPracticeState.guides[acpLevelIndex].sections[acpSectionIndex].data[acpGuideIndex].new = false;
-                            acpTempProgressState.totalDuration += tempGuideDuration;
-                            acpTempProgressState.todayDuration += tempGuideDuration;
-                            acpTempProgressState.weekDuration += tempGuideDuration;
+                            acpTempProgressState.totalDuration = acpTempProgressState.totalDuration?acpTempProgressState.totalDuration+tempGuide.duration:tempGuide.duration;
+                            acpTempProgressState.todayDuration = acpTempProgressState.todayDuration?acpTempProgressState.todayDuration+tempGuide.duration:tempGuide.duration;
+                            acpTempProgressState.weekDuration = acpTempProgressState.weekDuration?acpTempProgressState.weekDuration+tempGuide.duration:tempGuide.duration;
                             console.log('6')
-                            if (acpTempProgressState.guideStats && acpTempProgressState.guideStats.length) {
 
-                                acpTempIndex = acpTempProgressState.guideStats.findIndex(item => parseInt(item.guide_id) === parseInt(tempGuide.guide.id))
-                                console.log('7')
-                                if (acpTempIndex >= 0) {
-                                    acpTempProgressState.guideStats[acpTempIndex].guide_count += tempGuideCount;
-                                    acpTempProgressState.guideStats[acpTempIndex].guide_duration += tempGuideDuration;
-                                } else {
-                                    acpTempProgressState.guideStats.push({
-                                        'guide_id': tempGuide.guide.id,
-                                        'guide_count': tempGuideCount,
-                                        'guide_duration': tempGuideDuration
-                                    })
-                                }
-
-                            } else {
-                                console.log('8')
-                                acpTempProgressState.guideStats = [];
-                                acpTempProgressState.guideStats.push({
-                                    'guide_id': tempGuide.guide.id,
-                                    'guide_count': tempGuideCount,
-                                    'guide_duration': tempGuideDuration
-                                })
-
-                            }
-                            console.log('9')
-                            acpTempIndex = acpTempProgressState.sectionStats.findIndex(item => item.section_id === tempGuide.guide.sectionId)
+                            acpTempIndex = acpTempProgressState.guideStats.findIndex(item => parseInt(item.guide_id) === parseInt(tempGuide.guide.id))
+                            console.log('7')
                             if (acpTempIndex >= 0) {
-                                acpTempProgressState.sectionStats[acpTempIndex].section_count += tempGuideCount;
-                                acpTempProgressState.sectionStats[acpTempIndex].section_duration += tempGuideDuration;
+                                acpTempProgressState.guideStats[acpTempIndex].guide_count += parseInt(tempGuide.count);
+                                acpTempProgressState.guideStats[acpTempIndex].guide_duration += parseInt(tempGuide.duration);
+                            } else {
+                                acpTempProgressState.guideStats.push({
+                                    'guide_id': parseInt(tempGuide.guide.id),
+                                    'guide_count': parseInt(tempGuide.count),
+                                    'guide_duration': parseInt(tempGuide.duration)
+                                })
+                            }
+
+                            console.log('8')
+                            acpTempIndex = acpTempProgressState.sectionStats.findIndex(item => parseInt(item.section_id) === parseInt(tempGuide.guide.sectionId))
+                            if (acpTempIndex >= 0) {
+                                acpTempProgressState.sectionStats[acpTempIndex].section_count += parseInt(tempGuide.count);
+                                acpTempProgressState.sectionStats[acpTempIndex].section_duration += parseInt(tempGuide.duration);
                             } else {
                                 acpTempProgressState.sectionStats.push({
-                                    'section_id': tempGuide.guide.sectionId,
-                                    'section_count': tempGuideCount,
-                                    'section_duration': tempGuideDuration
+                                    'section_id': parseInt(tempGuide.guide.sectionId),
+                                    'section_count': parseInt(tempGuide.count),
+                                    'section_duration': parseInt(tempGuide.duration)
                                 })
                             }
                         }
@@ -1246,10 +1229,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         'time': Math.floor(new Date().getTime() / 1000)
                     });
 
-                    acpTempProgressState.lastPractice = acpToday;
-                    acpTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
-
-                    console.log('7')
+                    console.log('7', Math.floor(new Date().getTime() / 1000))
+                    acpTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000);
+                    acpTempProgressState.lastPractice = new moment().format('YYYY-MM-DD');
 
                     return {
                         ...state,
@@ -1264,6 +1246,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         practiceReducer: acpTempPracticeState
                     };
                 case "ONENERGY_MILESTONE_CLAIM":
+                    console.log('ONENERGY_MILESTONE_CLAIM');
                     const mcTempMilestoneState = {...state.achievementReducer};
                     const mcTempProgressState = {...state.progressReducer};
                     let mcMilestoneIndex = mcTempMilestoneState.milestones.findIndex(achievement => achievement.id === action.payload.id);
@@ -1280,12 +1263,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         id:mcTempMilestoneState.milestones[mcMilestoneIndex].id,
                         title: mcTempMilestoneState.milestones[mcMilestoneIndex].title,
                     }).then();
-                    mcTempProgressState.actionList.push({
-                        'mode': 'CM',
-                        'data': {'id': action.payload.id, 'points': mcTempMilestoneState.milestones[mcMilestoneIndex].awards},
-                        'time': Math.floor(new Date().getTime() / 1000)
-                    });
-                    mcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000);
 
                     return {
                         ...state,
@@ -1293,6 +1270,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         progressReducer: mcTempProgressState
                     };
                 case "ONENERGY_DAILY_CLAIM":
+                    console.log('ONENERGY_DAILY_CLAIM');
                     const dcTempDailyState = {...state.achievementReducer};
                     const dcTempProgressState = {...state.progressReducer};
                     let dcDailyIndex = dcTempDailyState.daily.findIndex(achievement => achievement.id === action.payload.id);
@@ -1314,13 +1292,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         id:dcTempDailyState.daily[dcDailyIndex].id,
                         title: dcTempDailyState.milestones[dcDailyIndex].title,
                     }).then();
-                    dcTempProgressState.actionList.push({
-                        'mode': 'CM',
-                        'data': {'id': action.payload.id, 'points': dcTempDailyState.daily[dcDailyIndex].awards},
-                        'time': Math.floor(new Date().getTime() / 1000)
-                    });
-
-                    dcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
 
                     return {
                         ...state,
@@ -1328,6 +1299,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         progressReducer: dcTempProgressState
                     };
                 case "ONENERGY_PAST_CLAIM":
+                    console.log('ONENERGY_PAST_CLAIM');
                     const awcTempQuestState = {...state.achievementReducer};
                     const awcTempProgressState = {...state.progressReducer};
                     let awcAchievementIndex = awcTempQuestState.daily.findIndex(achievement => achievement.id === action.payload.id);
@@ -1346,12 +1318,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             id: action.payload.id,
                             title: awcTempQuestState.daily[awcAchievementIndex].title,
                         }).then();
-                        awcTempProgressState.actionList.push({
-                            'mode': 'CM',
-                            'data': {'id': action.payload.id, 'points': awcTempQuestState.daily[awcAchievementIndex].awards},
-                            'time': Math.floor(new Date().getTime() / 1000)
-                        });
-                        awcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     }
                     return {
                         ...state,
@@ -1359,6 +1325,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         progressReducer: awcTempProgressState
                     };
                 case "ONENERGY_WEEKLY_MONTHLY_CLAIM":
+                    console.log('ONENERGY_WEEKLY_MONTHLY_CLAIM');
                     const acwTempAchievementState = {...state.achievementReducer};
                     const acwTempProgressState = {...state.progressReducer};
                     switch (action.payload.mode) {
@@ -1368,11 +1335,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             Analytics.segmentClient.track('Weekly Quest Claimed', {
                                 date: new moment().format('YYYY-MM-DD')
                             }).then();
-                            acwTempProgressState.actionList.push({
-                                'mode': 'CM',
-                                'data': {'id': action.payload.id, 'points': {'qi': 20}},
-                                'time': Math.floor(new Date().getTime() / 1000)
-                            });
                             break;
                         case 'monthly':
                             acwTempAchievementState.monthly.claim_date = new moment().format('YYYY-MM-DD');
@@ -1380,20 +1342,15 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             Analytics.segmentClient.track('Monthly Quest Claimed', {
                                 date: new moment().format('YYYY-MM-DD')
                             }).then();
-                            acwTempProgressState.actionList.push({
-                                'mode': 'CM',
-                                'data': {'id': action.payload.id, 'points': {'qi': 100}},
-                                'time': Math.floor(new Date().getTime() / 1000)
-                            });
                             break;
                     }
-                    acwTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     return {
                         ...state,
                         achievementReducer: acwTempAchievementState,
                         progressReducer: acwTempProgressState
                     };
                 case "ONENERGY_LESSON_COMPLETED":
+                    console.log('ONENERGY_LESSON_COMPLETED');
                     const olcTempProgressState = {...state.progressReducer};
                     const olcTempMilestoneState = {...state.achievementReducer};
                     let lesson = action.payload.lesson;
@@ -1416,21 +1373,11 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             Analytics.segmentClient.track('Achievement Completed', {
                                 id: item.id
                             }).then();
-                            olcTempProgressState.actionList.push({
-                                'mode': 'CA',
-                                'data': {'id': item.id, 'points': item.awards},
-                                'time': Math.floor(new Date().getTime() / 1000)
-                            });
                         }
                     })
                     olcTempProgressState.completedLessons.push({
                         "id": lesson.id,
                         "date": Math.floor(new Date().getTime() / 1000)
-                    });
-                    olcTempProgressState.actionList.push({
-                        'mode': 'LC',
-                        'data': lesson.id,
-                        'time': Math.floor(new Date().getTime() / 1000)
                     });
                     if (course.completed) {
                         olcTempProgressState.completedCourses.push({
@@ -1440,19 +1387,14 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         Analytics.segmentClient.track('Course Completed', {
                             id: course.id,
                         }).then();
-                        olcTempProgressState.actionList.push({
-                            'mode': 'CC',
-                            'data': course.id,
-                            'time': Math.floor(new Date().getTime() / 1000)
-                        });
                     }
-                    olcTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     return {
                         ...state,
                         achievementReducer: olcTempMilestoneState,
                         progressReducer: olcTempProgressState
                     };
                 case 'ONENERGY_COURSE_ENROLLED':
+                    console.log('ONENERGY_COURSE_ENROLLED');
                     const oceTempProgressState = {...state.progressReducer};
                     oceTempProgressState.enrolledCourses.push({
                         "id": action.payload,
@@ -1461,17 +1403,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     Analytics.segmentClient.track('Course Enrolled', {
                         "id": action.payload,
                     }).then();
-                    oceTempProgressState.actionList.push({
-                        'mode': 'CE',
-                        'data': action.payload,
-                        'time': Math.floor(new Date().getTime() / 1000)
-                    });
-                    oceTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000)
                     return {
                         ...state,
                         progressReducer: oceTempProgressState
                     }
                 case 'ONENERGY_ACHIEVEMENT_RESET':
+                    console.log('ONENERGY_ACHIEVEMENT_RESET');
                     return {
                         ...state,
                         achievementReducer: {
@@ -1483,6 +1420,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         }
                     }
                 case "ONENERGY_PRACTICE_RESET":
+                    console.log('ONENERGY_PRACTICE_RESET');
                     return {
                         ...state,
                         practiceReducer: {
@@ -1495,6 +1433,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         }
                     };
                 case "ONENERGY_PROGRESS_RESET":
+                    console.log('ONENERGY_PROGRESS_RESET');
                     return {
                         ...state,
                         progressReducer: {
@@ -1540,6 +1479,14 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     userObject: vscTempUser
                 }
                 return reducer(vscNewState, action);
+            case "USER_PROFILE_UPDATED":
+                let upuTempUser = state.userObject;
+                upuTempUser.profile_updated = true;
+                const upuNewState = {
+                    ...state,
+                    userObject: upuTempUser
+                }
+                return reducer(upuNewState, action);
             default:
                 return reducer(state, action);
         }
@@ -1759,10 +1706,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         } else if (courseVM.hasAccess) {
             let Info = null;
             if (courseVM.price.expires_on) {
-                let diffExpiringTime = '';
                 const expiringTime = new moment.utc(courseVM.price.expires_on);
                 const diffExpiringDays = expiringTime.diff(current_time, 'days');
-                diffExpiringTime = 'Course expires in ' + diffExpiringDays + ' days, please finish all the lesson in time.';
+                let diffExpiringTime = 'Course expires in ' + diffExpiringDays + ' days, please finish all the lesson in time.';
                 Info =
                     diffExpiringDays <= 7 && diffExpiringDays > 0 ?
                         <View style={{paddingHorizontal: ms(20), paddingVertical: mvs(10)}}>
@@ -2201,7 +2147,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         </Text>
                     </View>
                 )) : null}
-                {user.rank&&optionData.ranks[parseInt(user.rank)]?
                 <View style={{
                     flexDirection: "row",
                     justifyContent: "flex-start",
@@ -2217,7 +2162,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     }}>
                         {optionData.titles.find(el => el.id === 'profile_detail_label_rank').title}
                     </Text>
-                    <FastImage source={{uri: optionData.ranks[parseInt(user.rank)].rankImage}}
+                    <FastImage source={{uri: optionData.ranks[user.rank?parseInt(user.rank):0].rankImage}}
                                style={{width: 24, height: 24, alignSelf: "center"}}/>
                     <Text style={{
                         color: '#262626',
@@ -2227,10 +2172,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         fontFamily: "Montserrat-Regular",
                         fontSize: s(16)
                     }}>
-                        {optionData.ranks[parseInt(user.rank)].rankName}
+                        {optionData.ranks[user.rank?parseInt(user.rank):0].rankName}
                     </Text>
                 </View>
-                    :null}
                 {user.membership.length > 0 ?
                     <Text style={{color: "#262626",fontWeight: "normal",
                         alignItems:"flex-start",
@@ -2295,6 +2239,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                                         });
                                                     });
                                                     const apiRequest = getApi(config);
+                                                    console.log('statsUpdate logout', progressReducer, achievements);
                                                     apiRequest.customRequest(
                                                         "wp-json/onenergy/v1/statsUpdate",
                                                         "post",

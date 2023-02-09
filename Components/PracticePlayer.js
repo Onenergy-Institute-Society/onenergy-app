@@ -39,6 +39,8 @@ const PracticePlayer = (props) => {
     const onVideoLoad = (e) => {
         if (seek) {
             this.videoPlayer.seek(seek);
+        }else{
+            this.videoPlayer.seek(1800);
         }
     }
 
@@ -61,26 +63,50 @@ const PracticePlayer = (props) => {
     }
 
     const handleBackButtonClick = () => {
-        Alert.alert(
-            "Please Confirm",
-            user.test_mode ? "Testing mode: Update progress and exit?" : "Stop before session ends will result not counting as one complete practice, are you sure you want to exit?",
-            [
-                {
-                    text: "OK", onPress: () => {
-                        user.test_mode ?
-                            updateProgress().then() : null;
-                        navigation.goBack();
+        user.test_mode?
+            Alert.alert(
+                "Please Confirm",
+                user.test_mode ? "Testing mode: Update progress and exit?" : "Stop before session ends will result not counting as one complete practice, are you sure you want to exit?",
+                [
+                    {
+                        text: "OK", onPress: () => {
+                            updateProgress().then()
+                            navigation.goBack();
+                        }
+                    },
+                    {
+                        text: "No", onPress: () => {
+                            navigation.goBack();
+                        }
+                    },
+                    {
+                        text: "Cancel", onPress: () => {
+                        }
                     }
-                },
+                ],
                 {
-                    text: "Cancel", onPress: () => {
-                    }
+                    cancelable: false,
                 }
-            ],
-            {
-                cancelable: false,
-            }
-        )
+            )
+            :
+            Alert.alert(
+                "Please Confirm",
+                "Stop before session ends will result not counting as one complete practice, are you sure you want to exit?",
+                [
+                    {
+                        text: "OK", onPress: () => {
+                            navigation.goBack();
+                        }
+                    },
+                    {
+                        text: "Cancel", onPress: () => {
+                        }
+                    }
+                ],
+                {
+                    cancelable: false,
+                }
+            )
         return true;
     }
 

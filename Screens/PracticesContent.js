@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {connect, useSelector, useDispatch} from "react-redux";
+import {connect, useSelector} from "react-redux";
 import {
     StyleSheet,
     View,
     SafeAreaView, Text, TouchableOpacity, ScrollView, ImageBackground
 } from "react-native";
-import {getApi} from "@src/services";
 import {NavigationActions} from "react-navigation";
 import TouchableScale from "../Components/TouchableScale";
 import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
@@ -16,7 +15,6 @@ import {ms, mvs, s, windowHeight, windowWidth} from "../Utils/Scale";
 import EventList from "../Components/EventList";
 import LoginScreen from "@src/containers/Custom/LoginScreen";
 import AuthWrapper from "@src/components/AuthWrapper";
-import moment from 'moment';
 import {
     SvgIconCross,
     SvgIconMenu,
@@ -34,20 +32,9 @@ const PracticesContent = props => {
         const user = useSelector((state) => state.user.userObject);
         const [helpModal, setHelpModal] = useState({title: '', id: 0});
         const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-        const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
-        const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
-        const dispatch = useDispatch();
         const onFocusHandler = async () => {
             try {
                 navigation.closeDrawer();
-                if(user){
-                    if (progressReducer.latestUpdate && checkTodayDate()) {
-                        dispatch({
-                            type: 'ONENERGY_DAILY_UPDATE',
-                        });
-                    }
-                    await updateStatus();
-                }
             } catch (e) {
 
             }
@@ -58,63 +45,12 @@ const PracticesContent = props => {
             props.navigation.setParams({
                 title: optionData.titles.find(el => el.id === 'practices_title').title,
             });
-            if (user) {
-                navigation.addListener('willFocus', onFocusHandler)
-                return () => {
-                    navigation.removeListener('willFocus', onFocusHandler)
-                }
+            navigation.addListener('willFocus', onFocusHandler)
+            return () => {
+                navigation.removeListener('willFocus', onFocusHandler)
             }
         }, [])
-        const updateStatus = async () => {
-            if (progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
-                let achievements = {
-                    'milestones': [],
-                    'daily': [],
-                    'weekly': achievementReducer.weekly,
-                    'monthly': achievementReducer.monthly
-                }
-                achievementReducer.milestones.forEach((milestone) => {
-                    achievements.milestones.push({
-                        'id': milestone.id,
-                        'step': milestone.step,
-                        'complete_date': milestone.complete_date,
-                        'claim_date': milestone.claim_date,
-                    });
-                });
-                achievementReducer.daily.forEach((quest) => {
-                    achievements.daily.push({
-                        'id': quest.id,
-                        'step': quest.step,
-                        'complete_date': quest.complete_date,
-                        'claim_date': quest.claim_date,
-                        'list': quest.list
-                    });
-                });
-                const apiRequest = getApi(props.config);
-                await apiRequest.customRequest(
-                    "wp-json/onenergy/v1/statsUpdate",
-                    "post",
-                    {
-                        "progress": progressReducer,
-                        "achievements": achievements
-                    },
-                    null,
-                    {},
-                    false
-                ).then(response => {
-                    if (response.data) {
-                        dispatch({
-                            type: 'ONENERGY_PROGRESS_UPLOADED'
-                        });
-                    }
-                });
-            }
-        }
-        const checkTodayDate = () => {
-            const today = new moment().format('YYYY-MM-DD');
-            if (progressReducer.latestUpdate !== 0)
-                return today !== new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD');
-        }
+
         const personalPracticePressed = () => {
             if (user) {
                 navigation.dispatch(
@@ -177,7 +113,7 @@ const PracticesContent = props => {
                             imageStyle={{borderRadius: s(9)}}
                             source={require('../assets/images/guided_practice.jpg')}
                         >
-                            <Text style={styles.practiceType}>{optionData.titles.find(el => el.id === 'practices_title_guided_practice').title}</Text>
+                            <Text style={styles.practiceType}>{optionData.titles.find(el => el.id === 'practices_title_guided_practice').title.replace('\\n', '\n')}</Text>
 
                             <AuthWrapper actionOnGuestLogin={'hide'}>
                                 <NotificationTabBarIcon notificationID={'guide_personal'} top={10} right={10}
@@ -196,7 +132,7 @@ const PracticesContent = props => {
                             imageStyle={{borderRadius: s(9)}}
                             source={require('../assets/images/group_practice.jpg')}
                         >
-                            <Text style={styles.practiceType}>{optionData.titles.find(el => el.id === 'practices_title_group_practice').title}</Text>
+                            <Text style={styles.practiceType}>{optionData.titles.find(el => el.id === 'practices_title_group_practice').title.replace('\\n', '\n')}</Text>
                         </ImageBackground>
                     </TouchableScale>
 
@@ -209,7 +145,7 @@ const PracticesContent = props => {
                             imageStyle={{borderRadius: s(9)}}
                             source={require('../assets/images/customize_practice.jpg')}
                         >
-                            <Text style={styles.practiceType}>{optionData.titles.find(el => el.id === 'practices_title_customized_practice').title}</Text>
+                            <Text style={styles.practiceType}>{optionData.titles.find(el => el.id === 'practices_title_customized_practice').title.replace('\\n', '\n')}</Text>
                         </ImageBackground>
                     </TouchableScale>
                 </ScrollView>
@@ -329,7 +265,7 @@ const styles = StyleSheet.create({
     },
     practiceType: {
         marginLeft: (windowWidth - s(30)) * 2 / 7,
-        width: windowWidth/2,
+        width: windowWidth - s(30),
         color: '#8c79ea',
         fontFamily: "MontserratAlternates-SemiBold",
         fontWeight: "bold",

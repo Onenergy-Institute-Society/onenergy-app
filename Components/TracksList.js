@@ -8,7 +8,6 @@ import {
     SectionList,
     StyleSheet,
     Text,
-    TouchableOpacity,
     UIManager,
     View
 } from 'react-native';
@@ -53,7 +52,7 @@ const TracksList = (props) => {
             highlightColorStyle = {color: "white"};
             showPlayer = true;
         } else {
-            highlightColor=colors.textColor;
+            highlightColor=colors.primaryColor;
             highlightColorStyle = {color: colors.textColor};
             showPlayer = false;
         }

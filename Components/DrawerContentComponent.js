@@ -23,7 +23,7 @@ import {
     SvgIconSetting,
     SvgIconSignup,
     SvgIconSupport,
-    SvgIconVoucher, SvgVIPMedal
+    SvgIconVoucher
 } from "../Utils/svg";
 
 const CustomDrawerContentComponent = (props) => {
@@ -97,13 +97,12 @@ const CustomDrawerContentComponent = (props) => {
                                         </View>
                                     </View>
                                 )) : null}
-                                {user.rank&&optionData.ranks[parseInt(user.rank)]?
                                 <View style={{
                                     flexDirection: "row",
                                     justifyContent: "flex-end",
                                     alignItems: "center"
                                 }}>
-                                    <FastImage source={{uri: optionData.ranks[parseInt(user.rank)].rankImage}}
+                                    <FastImage source={{uri: optionData.ranks[user.rank?parseInt(user.rank):0].rankImage}}
                                                style={{width: 24, height: 24, alignSelf: "center"}}/>
                                     <Text style={{
                                         color: '#fff',
@@ -116,10 +115,9 @@ const CustomDrawerContentComponent = (props) => {
                                             height: 1
                                         }
                                     }}>
-                                        {optionData.ranks[parseInt(user.rank)].rankName}
+                                        {optionData.ranks[user.rank?parseInt(user.rank):0].rankName}
                                     </Text>
                                 </View>
-                                    :null}
                             </View>
                         </View>
                         {user.membership.length > 0 ?

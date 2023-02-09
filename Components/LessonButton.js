@@ -1,12 +1,10 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {ActivityIndicator, Text, TouchableOpacity, View} from "react-native";
 import {getApi} from "@src/services";
 import {NavigationActions, StackActions, withNavigation} from "react-navigation";
 import {connect, useDispatch, useSelector} from "react-redux";
 import IconButton from "@src/components/IconButton";
 import AwesomeAlert from "../Components/AwesomeAlert";
-import ImageCache from "./ImageCache";
-import {s} from "../Utils/Scale";
 
 const LessonButton = (props) => {
     const {global, colors, lesson} = props;

@@ -6,7 +6,8 @@ import {
     View,
     SafeAreaView,
     Text,
-    AppState, Platform, TouchableOpacity, TouchableWithoutFeedback
+    TouchableOpacity,
+    TouchableWithoutFeedback
 } from "react-native";
 import {getApi} from "@src/services";
 import {ms, mvs, s, windowHeight, windowWidth} from '../Utils/Scale';
@@ -56,34 +57,24 @@ const HomeContent = (props) => {
     const onFocusHandler = async () => {
         try {
             navigation.closeDrawer();
-            if(user){
-                if (progressReducer.latestUpdate && checkTodayDate()) {
-                    calcSolarMoon();
-                    dispatch({
-                        type: 'ONENERGY_DAILY_UPDATE',
-                    });
-                    fetchCurrentSolarTerm().then();
-                }
-                await updateStatus();
-            }
         } catch (e) {
         }
     }
-
-    const _handleAppStateChange = async () => {
-        if (user && progressReducer.latestUpdate) {
-            if (AppState.currentState === 'active' && checkTodayDate()) {
+    useEffect(() => {
+        if (progressReducer.latestUpdate !== 0)
+            if (new moment().format('YYYY-MM-DD') !== new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD')) {
+                console.log('Daily Update', new moment().format('YYYY-MM-DD'));
                 calcSolarMoon();
                 dispatch({
                     type: 'ONENERGY_DAILY_UPDATE',
                 });
                 fetchCurrentSolarTerm().then();
             }
-            if ((Platform.OS === "android" && AppState.currentState === 'background') || (Platform.OS === "ios" && AppState.currentState === 'inactive')) {
-                await updateStatus();
-            }
-        }
-    };
+    },[new moment().format('YYYY-MM-DD')])
+    useEffect(()=>{
+        updateStatus().then();
+    },[progressReducer.latestUpdate])
+
     const fetchCurrentSolarTerm = async () => {
         try {
             const api = getApi(props.config);
@@ -107,6 +98,7 @@ const HomeContent = (props) => {
         }
     }
     const updateStatus = async () => {
+        console.log('lastUpload', progressReducer.lastUpload, 'latestUpdate', progressReducer.latestUpdate);
         if (progressReducer.lastUpload && progressReducer.latestUpdate > progressReducer.lastUpload || !progressReducer.lastUpload) {
             let achievements = {
                 'milestones': [],
@@ -132,6 +124,7 @@ const HomeContent = (props) => {
                 });
             });
             const apiRequest = getApi(props.config);
+            console.log('statsUpdate home', progressReducer, achievements);
             await apiRequest.customRequest(
                 "wp-json/onenergy/v1/statsUpdate",
                 "post",
@@ -151,11 +144,7 @@ const HomeContent = (props) => {
             });
         }
     }
-    const checkTodayDate = () => {
-        const today = new moment().format('YYYY-MM-DD');
-        if(progressReducer.latestUpdate!==0)
-            return today !== new moment.unix(progressReducer.latestUpdate).format('YYYY-MM-DD');
-    }
+
     const calcSolarMoon = () => {
         if(!settings.ip){
             fetchIpAndLocation().then();
@@ -248,68 +237,13 @@ const HomeContent = (props) => {
                 await SetupService();
             }
             run().then();
-            navigation.addListener('willFocus', onFocusHandler)
-            const subscription = AppState.addEventListener("change", _handleAppStateChange);
-            return () => {
-                navigation.removeListener('willFocus', onFocusHandler);
-                subscription.remove();
-            }
+        }
+        navigation.addListener('willFocus', onFocusHandler)
+        return () => {
+            navigation.removeListener('willFocus', onFocusHandler);
         }
     }, []);
 
-    const OnPress = async (item) => {
-        if (item) {
-            switch (item.link) {
-                case 'app':
-                    navigation.dispatch(
-                        NavigationActions.navigate({
-                            routeName: "AppPageScreen",
-                            params: {
-                                pageId: item.param,
-                                title: item.title
-                            }
-                        })
-                    )
-                    break;
-                case 'blog':
-                    navigation.dispatch(
-                        NavigationActions.navigate({
-                            routeName: "BlogScreen",
-                            params: {
-                                blogId: item.param,
-                                title: item.title
-                            }
-                        })
-                    )
-                    break;
-                case 'course':
-                    navigation.dispatch(
-                        NavigationActions.navigate({
-                            routeName: "CourseScreen",
-                            params: {
-                                courseId: parseInt(item.param),
-                            }
-                        })
-                    )
-                    break;
-                case 'link':
-                    let secTimer = setInterval(() => {
-                        clearInterval(secTimer);
-                    }, 1000)
-                    await props.attemptDeepLink(false)(null, item.param);
-                    break;
-                case 'screen':
-                    navigation.dispatch(
-                        NavigationActions.navigate({
-                            routeName: item.param
-                        })
-                    )
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
     const minutes = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
     const renderGoalSelector = (item) => {
         let cornerStyle = {};
@@ -386,8 +320,8 @@ const HomeContent = (props) => {
                                             margin: s(10)
                                         }}
                                     />
-                                    <FastImage source={{uri: optionData.ranks[parseInt(user.rank)].rankImage}}
-                                               style={{position:"absolute", bottom:5, right:10, width: 24, height: 24, alignSelf: "center"}}/>
+                                    < FastImage source={{uri: optionData.ranks[user.rank?parseInt(user.rank):0].rankImage}}
+                                    style={{position:"absolute", bottom:5, right:10, width: 24, height: 24, alignSelf: "center"}}/>
                                     {user.membership&&user.membership.length?
                                     <SvgVIPMedal style={{position:"absolute", top:0, right:-10}} />
                                         :null}
@@ -497,13 +431,12 @@ const HomeContent = (props) => {
                                             flexDirection: "row",
                                             justifyContent: "center",
                                             alignItems: "center",
-                                            paddingHorizontal: s(10)
                                         }}>
                                             <Text style={[global.itemTitle, {
                                                 fontSize: s(14),
                                                 color: colors.primaryColor,
                                                 flexWrap: 'wrap'
-                                            }]}>{optionData.titles.find(el => el.id === 'home_stats_course_in_progress').title}</Text>
+                                            }]}>{optionData.titles.find(el => el.id === 'home_stats_course_in_progress').title.replace('\\n', '\n')}</Text>
                                         </View>
                                         <View style={{flexDirection: "row", justifyContent: "flex-start"}}>
                                             <Text style={[global.itemTitle, {
@@ -528,13 +461,12 @@ const HomeContent = (props) => {
                                             flexDirection: "row",
                                             justifyContent: "center",
                                             alignItems: "center",
-                                            paddingHorizontal: s(10)
                                         }}>
                                             <Text style={[global.itemTitle, {
                                                 fontSize: s(14),
                                                 color: colors.primaryColor,
                                                 flexWrap: 'wrap'
-                                            }]}>{optionData.titles.find(el => el.id === 'home_stats_total_practiced').title}</Text>
+                                            }]}>{optionData.titles.find(el => el.id === 'home_stats_total_practiced').title.replace('\\n', '\n')}</Text>
                                         </View>
                                         <View style={{
                                             flexDirection: "row",
@@ -680,7 +612,7 @@ const HomeContent = (props) => {
                                 fontWeight: "normal",
                                 fontSize: s(14),
                                 color: "white"
-                            }}>{nextMoonPhase.date}, {optionData.titles.find(el => el.id === 'home_moonphase_next').title}</Text>
+                            }}>{nextMoonPhase.date}</Text>
                             <Text style={{
                                 fontFamily: "MontserratAlternates-Regular",
                                 fontWeight: "normal",

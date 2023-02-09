@@ -21,14 +21,11 @@ import {Modalize} from 'react-native-modalize';
 import {ms, mvs, s, vs, windowHeight, windowWidth} from "../Utils/Scale";
 import {SvgAddIcon, SvgIconBack, SvgIconCheck, SvgIconCross, SvgPlayIcon, SvgStopIcon} from "../Utils/svg";
 import Video from 'react-native-video';
-import Slider from 'react-native-slider';
 import * as Analytics from "../Utils/Analytics";
 import DatePicker from 'react-native-datepicker';
 import {routineImages} from "../Utils/Settings";
-import DateTimePicker from '@react-native-community/datetimepicker';
 import PushNotification from "react-native-push-notification";
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
-import moment from 'moment';
 
 const EditRoutine = props => {
     const {navigation, screenProps} = props;
@@ -37,7 +34,6 @@ const EditRoutine = props => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user.userObject);
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const backgroundImages = optionData.routine_image;
     const backgroundMusics = optionData.bgm;
     const [playingSound, setPlayingSound] = useState(false);
     const [waitingGetID, setWaitingGetID] = useState(null);
@@ -67,7 +63,6 @@ const EditRoutine = props => {
     const [changedReminder, setChangedReminder] = useState(false);
     const [changedStatus, setChangedStatus] = useState(false);
     const [cancelContentTouches, setCancelContentTouches] = useState(true);
-    const [showTimePicker, setShowTimePicker] = useState(false);
     const row = [];
     const [key, setKey] = useState('');
     const updateTracks = async () => {
@@ -275,38 +270,38 @@ const EditRoutine = props => {
                             artwork: artwork,
                             duration: parseInt(part.start_duration),
                         });
-                        if(parseInt(item.count)>parseInt(item.startCount)) {
-                            let remainCount = parseInt(item.count)-parseInt(item.startCount);
-                            switch (item.mode) {
-                                case '0':
-                                    if (part.repeat) {
-                                        for (let i = 1; i <= remainCount; i++) {
-                                            id++;
-                                            tracks.push({
-                                                id: id,
-                                                title: item.title,
-                                                url: part.repeat,
-                                                artist: artist,
-                                                artwork: artwork,
-                                                duration: parseInt(part.repeat_duration),
-                                            });
-                                        }
-                                    }
-                                    break;
-                                case '1':
-                                    for (let i = 0; i < remainCount; i++) {
+                    }
+                    if(parseInt(item.count)>parseInt(item.startCount)) {
+                        let remainCount = parseInt(item.count)-parseInt(item.startCount);
+                        switch (item.mode) {
+                            case '0':
+                                if (part.repeat) {
+                                    for (let i = 1; i <= remainCount; i++) {
                                         id++;
                                         tracks.push({
                                             id: id,
                                             title: item.title,
-                                            url: min1,
+                                            url: part.repeat,
                                             artist: artist,
                                             artwork: artwork,
-                                            duration: 60,
+                                            duration: parseInt(part.repeat_duration),
                                         });
                                     }
-                                    break
-                            }
+                                }
+                                break;
+                            case '1':
+                                for (let i = 0; i < remainCount; i++) {
+                                    id++;
+                                    tracks.push({
+                                        id: id,
+                                        title: item.title,
+                                        url: min1,
+                                        artist: artist,
+                                        artwork: artwork,
+                                        duration: 60,
+                                    });
+                                }
+                                break
                         }
                     }
                 })
@@ -918,9 +913,9 @@ const EditRoutine = props => {
                                 date={routineDetailState.reminder_time?routineDetailState.reminder_time:""}
                                 mode="time"
                                 format="HH:mm"
-                                confirmBtnText="Confirm"
-                                cancelBtnText="Cancel"
-                                minuteInterval={1}
+                                confirmBtnText={optionData.titles.find(el => el.id === 'button_ok').title}
+                                cancelBtnText={optionData.titles.find(el => el.id === 'button_cancel').title}
+                                minuteInterval={10}
                                 onDateChange={(time) => {setRoutineDetailState(prevState => {return {...prevState, reminder_time: time}});setChangedStatus(true);setChangedReminder(true);}}
                             />
                         </View>

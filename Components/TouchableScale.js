@@ -13,6 +13,7 @@ class TouchableScale extends PureComponent {
         Animated.timing(this.scaleValue, {
                 toValue: 0.97,
                 duration: 300,
+                useNativeDriver: true,
             }
         ).start();
     }
@@ -21,6 +22,7 @@ class TouchableScale extends PureComponent {
         Animated.timing(this.scaleValue, {
             toValue: 1,
             duration: 150,
+            useNativeDriver: true,
         }).start()
     }
 
