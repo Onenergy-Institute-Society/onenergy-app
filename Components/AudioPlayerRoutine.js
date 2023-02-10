@@ -2,12 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {connect, useDispatch, useSelector} from "react-redux";
 import {StyleSheet, Text, TouchableOpacity, View, Platform} from 'react-native';
 import TrackPlayer, {Event, State, useTrackPlayerEvents} from 'react-native-track-player';
-import IconButton from "@src/components/IconButton";
 import {s} from '../Utils/Scale';
 import Video from 'react-native-video';
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 import TrackSlider from "./TrackSlider";
-import * as Analytics from "../Utils/Analytics";
 import {SvgPauseCircleIcon, SvgPlayCircleIcon, SvgStopCircleIcon} from "../Utils/svg";
 
 const AudioPlayerRoutine = (props) => {
@@ -30,10 +28,6 @@ const AudioPlayerRoutine = (props) => {
                     data: routine.id
                 }
             });
-            Analytics.segmentClient.track('End Routine Practice', {
-                id: routine.id,
-                title: routine.title
-            }).then();
             setMessageBarDisplay(true);
         } catch (e) {
             console.error(e);

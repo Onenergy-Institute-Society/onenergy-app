@@ -5,7 +5,6 @@ import Video from "react-native-video";
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 import {ms, s, windowHeight, windowWidth} from "../Utils/Scale";
 import WaitingGroupPractice from "./WaitingGroupPractice";
-import * as Analytics from "../Utils/Analytics";
 
 const PracticePlayer = (props) => {
     const [paused, setPaused] = useState(false);
@@ -16,11 +15,6 @@ const PracticePlayer = (props) => {
     const user = useSelector((state) => state.user.userObject);
     const dispatch = useDispatch();
     useEffect(() => {
-        Analytics.segmentClient.track('Start Group Practice', {
-                id: groupPractice.id,
-                title: groupPractice.name,
-            }
-        ).then();
         activateKeepAwake();
         const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
         return () => {
@@ -53,10 +47,6 @@ const PracticePlayer = (props) => {
                     'data': groupPractice.id
                 }
             });
-            Analytics.segmentClient.track('End Routine Practice', {
-                id: groupPractice.id,
-                title: groupPractice.name
-            }).then();
         } catch (e) {
             console.error(e);
         }

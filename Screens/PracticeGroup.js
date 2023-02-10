@@ -23,7 +23,6 @@ import EventList from "../Components/EventList";
 import {BlurView} from "@react-native-community/blur";
 import FastImage from "react-native-fast-image";
 import {SvgChevronsDown, SvgClock, SvgIconBack, SvgIconCross, SvgRepeat} from "../Utils/svg";
-import * as Analytics from "../Utils/Analytics";
 
 const PracticeGroup = props => {
     const {navigation, screenProps} = props;
@@ -53,7 +52,6 @@ const PracticeGroup = props => {
     }
 
     useEffect(() => {
-        Analytics.segmentClient.screen('Practices Group').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'practices_group').title,
         });

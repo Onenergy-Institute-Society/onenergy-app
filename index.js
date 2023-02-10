@@ -83,7 +83,6 @@ import {
 } from "./Utils/svg";
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from "react-native-push-notification";
-import * as Analytics from "./Utils/Analytics";
 
 export const applyCustomCode = (externalCodeSetup: any) => {
     externalCodeSetup.topicsApi.setTopicItemComponent(props => {
@@ -914,9 +913,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 acpTempAchievementState.milestones[tempIndex].step += 1;
                                 if (parseInt(item.total) <= acpTempProgressState.totalPracticeDays) {
                                     acpTempAchievementState.milestones[tempIndex].complete_date = acpToday;
-                                    Analytics.segmentClient.track('Achievement Completed', {
-                                        id: item.id,
-                                    }).then();
                                     acpTempProgressState.actionList.push({
                                         'mode': 'CA',
                                         'data': {'id': item.id, 'points': item.awards},
@@ -1078,9 +1074,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 if (acpTempAchievementState.milestones[tempIndex].total <= acpTempAchievementState.milestones[tempIndex].step) {
                                     acpTempAchievementState.milestones[tempIndex].complete_date = acpToday;
                                     acpTempAchievementState.milestones[tempIndex].claim_date = '';
-                                    Analytics.segmentClient.track('Achievement Completed', {
-                                        id: item.id,
-                                    }).then();
                                     acpTempProgressState.actionList.push({
                                         'mode': 'CA',
                                         'data': {'id': item.id, 'points': item.awards},
@@ -1105,9 +1098,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                     acpTempAchievementState.daily[tempIndex].complete_date = acpToday
                                     acpTempAchievementState.daily[tempIndex].claim_date = '';
                                     acpTempAchievementState.daily[tempIndex].list.push(acpTempAchievementState.daily[tempIndex].complete_date);
-                                    Analytics.segmentClient.track('Achievement Completed', {
-                                        id: item.id,
-                                    }).then();
                                     acpTempProgressState.actionList.push({
                                         'mode': 'CA',
                                         'data': {'id': item.id, 'points': item.awards},
@@ -1169,9 +1159,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             if (acpTempAchievementState.milestones[tempIndex].total <= acpTempAchievementState.milestones[tempIndex].step) {
                                 acpTempAchievementState.milestones[tempIndex].complete_date = acpToday;
                                 acpTempAchievementState.milestones[tempIndex].claim_date = '';
-                                Analytics.segmentClient.track('Achievement Completed', {
-                                    id: item.id,
-                                }).then();
                                 acpTempProgressState.actionList.push({
                                     'mode': 'CA',
                                     'data': {'id': item.id, 'points': item.awards},
@@ -1199,9 +1186,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 acpTempAchievementState.daily[tempIndex].complete_date = acpToday;
                                 acpTempAchievementState.daily[tempIndex].claim_date = '';
                                 acpTempAchievementState.daily[tempIndex].list.push(acpTempAchievementState.daily[tempIndex].complete_date);
-                                Analytics.segmentClient.track('Achievement Completed', {
-                                    id: item.id,
-                                }).then();
                                 acpTempProgressState.actionList.push({
                                     'mode': 'CA',
                                     'data': {'id': item.id, 'points': item.awards},
@@ -1311,10 +1295,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             mcTempProgressState.points[award.name] = parseInt(award.point);
                         }
                     })
-                    Analytics.segmentClient.track('Milestone Claimed', {
-                        id:mcTempMilestoneState.milestones[mcMilestoneIndex].id,
-                        title: mcTempMilestoneState.milestones[mcMilestoneIndex].title,
-                    }).then();
 
                     return {
                         ...state,
@@ -1343,10 +1323,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             dcTempProgressState.points[award.name] = parseInt(award.point);
                         }
                     })
-                    Analytics.segmentClient.track('Quest Claimed', {
-                        id:dcTempDailyState.daily[dcDailyIndex].id,
-                        title: dcTempDailyState.milestones[dcDailyIndex].title,
-                    }).then();
 
                     return {
                         ...state,
@@ -1369,10 +1345,6 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 awcTempProgressState.points[award.name] = parseInt(award.point);
                             }
                         })
-                        Analytics.segmentClient.track('Past Quest Claimed', {
-                            id: action.payload.id,
-                            title: awcTempQuestState.daily[awcAchievementIndex].title,
-                        }).then();
                     }
                     return {
                         ...state,
@@ -1387,16 +1359,10 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         case 'weekly':
                             acwTempAchievementState.weekly.claim_date = new moment().format('YYYY-MM-DD');
                             acwTempProgressState.points.qi += 20;
-                            Analytics.segmentClient.track('Weekly Quest Claimed', {
-                                date: new moment().format('YYYY-MM-DD')
-                            }).then();
                             break;
                         case 'monthly':
                             acwTempAchievementState.monthly.claim_date = new moment().format('YYYY-MM-DD');
                             acwTempProgressState.points.qi += 100;
-                            Analytics.segmentClient.track('Monthly Quest Claimed', {
-                                date: new moment().format('YYYY-MM-DD')
-                            }).then();
                             break;
                     }
                     return {

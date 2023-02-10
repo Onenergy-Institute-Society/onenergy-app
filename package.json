@@ -18,24 +18,13 @@
     "react-native": "0.67.4"
   },
   "dependencies": {
-    "@segment/analytics-react-native": "^2.13.0",
-    "@segment/sovran-react-native": "^0.4.5",
     "react-native-chart-kit": "^6.12.0",
     "suncalc": "^1.9.0"
   },
   "devDependencies": {
-    "@segment/analytics-react-native": "^2.13.0",
-    "@segment/sovran-react-native": "^0.4.5",
     "react-native-chart-kit": "^6.12.0",
     "suncalc": "^1.9.0",
-    "typescript": "4.5.2"
   },
-  "nativeDependencies": {
-    "@segment/analytics-react-native": "^2.13.0",
-    "@segment/sovran-react-native": "^0.4.5"
-  },
-  "podDependencies": {
-    "segment-analytics-react-native": "@segment/analytics-react-native",
-    "sovran-react-native": "@segment/sovran-react-native"
-  }
+  "nativeDependencies": {},
+  "podDependencies": {}
 }

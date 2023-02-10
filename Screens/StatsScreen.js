@@ -13,7 +13,6 @@ import Svg, {Circle} from "react-native-svg";
 import {LineChart, PieChart, ContributionGraph} from "react-native-chart-kit";
 import moment from 'moment';
 import {SvgIconBack} from "../Utils/svg";
-import * as Analytics from "../Utils/Analytics";
 
 const StatsScreen = (props) => {
     const {screenProps} = props;
@@ -120,7 +119,6 @@ const StatsScreen = (props) => {
         )
    });
     useEffect(() => {
-        Analytics.segmentClient.screen('Progress').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'progress_title').title,
        });

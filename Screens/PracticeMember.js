@@ -9,7 +9,6 @@ import {mvs, s, windowWidth} from "../Utils/Scale";
 import TrackPlayer from 'react-native-track-player';
 import EventList from "../Components/EventList";
 import {SvgIconBack, SvgAddIcon} from "../Utils/svg";
-import * as Analytics from "../Utils/Analytics";
 
 const PracticeMember = props => {
     const {navigation, screenProps} = props;
@@ -72,7 +71,6 @@ const PracticeMember = props => {
         removeRoutine(item).then();
     }
     useEffect(() => {
-        Analytics.segmentClient.screen('Practices Customized').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'practices_member').title,
             showAdd: !!((practiceReducer && practiceReducer.routines && practiceReducer.routines.length < 5) || !practiceReducer.routines),

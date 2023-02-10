@@ -8,7 +8,6 @@ import {s, vs, windowWidth} from '../Utils/Scale';
 import AwesomeAlert from "../Components/AwesomeAlert";
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import moment from 'moment';
-import * as Analytics from "../Utils/Analytics";
 import Blink from "../Utils/Blink";
 
 const EventList = props => {
@@ -167,10 +166,6 @@ const EventList = props => {
                                                 setShowAlert(true);
                                                 break;
                                             case 'app':
-                                                Analytics.segmentClient.track('Tap Goal Card', {
-                                                    action: 'open app page',
-                                                    pageId: item.param
-                                                }).then();
                                                 navigation.dispatch(
                                                     NavigationActions.navigate({
                                                         routeName: "AppPageScreen",
@@ -182,10 +177,6 @@ const EventList = props => {
                                                 )
                                                 break;
                                             case 'blog':
-                                                Analytics.segmentClient.track('Tap Goal Card', {
-                                                    action: 'open blog page',
-                                                    blogId: item.param
-                                                }).then();
                                                 navigation.dispatch(
                                                     NavigationActions.navigate({
                                                         routeName: "BlogScreen",
@@ -197,10 +188,6 @@ const EventList = props => {
                                                 )
                                                 break;
                                             case 'course':
-                                                Analytics.segmentClient.track('Tap Goal Card', {
-                                                    action: 'open course',
-                                                    courseId: item.param
-                                                }).then();
                                                 navigation.dispatch(
                                                     NavigationActions.navigate({
                                                         routeName: "CourseScreen",
@@ -211,17 +198,9 @@ const EventList = props => {
                                                 )
                                                 break;
                                             case 'link':
-                                                Analytics.segmentClient.track('Tap Goal Card', {
-                                                    action: 'open link',
-                                                    pageId: item.param
-                                                }).then();
                                                 await props.attemptDeepLink(false)(null, item.param);
                                                 break;
                                             case 'screen':
-                                                Analytics.segmentClient.track('Tap Goal Card', {
-                                                    action: 'open screen',
-                                                    screen: item.param
-                                                }).then();
                                                 navigation.dispatch(
                                                     NavigationActions.navigate({
                                                         routeName: item.param

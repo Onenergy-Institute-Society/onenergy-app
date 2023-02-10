@@ -18,7 +18,6 @@ import AudioPlayerRoutine from "./AudioPlayerRoutine";
 import { Swipeable } from "react-native-gesture-handler";
 import IconButton from "@src/components/IconButton";
 import { SvgBell, SvgChevronsLeft, SvgClock } from "../Utils/svg";
-import * as Analytics from "../Utils/Analytics";
 
 if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental &&
@@ -44,12 +43,6 @@ const MemberTracksList = (props) => {
       parseInt(routine.id) !== parseInt(selectedRoutine.id)
     ) {
       setSelectedRoutine(routine);
-      Analytics.segmentClient
-        .track("Start Routine Practice", {
-          id: routine.id,
-          title: routine.title,
-        })
-        .then();
     }
   };
 

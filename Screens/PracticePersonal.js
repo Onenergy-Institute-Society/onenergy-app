@@ -19,7 +19,6 @@ import {mvs, s, windowWidth} from "../Utils/Scale";
 import EventList from "../Components/EventList";
 import QiPointHeader from "../Components/QiPointHeader";
 import {SvgIconBack} from "../Utils/svg";
-import * as Analytics from "../Utils/Analytics";
 
 const PracticePersonal = props => {
     const {screenProps} = props;
@@ -31,7 +30,6 @@ const PracticePersonal = props => {
     const [fadeAnim] = useState(new Animated.Value(0));
 
     useEffect(() => {
-        Analytics.segmentClient.screen('Practices Guided').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'practices_basic').title,
        });

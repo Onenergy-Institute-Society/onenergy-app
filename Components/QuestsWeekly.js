@@ -3,7 +3,6 @@ import {connect, useDispatch, useSelector} from "react-redux";
 import {Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {ms, mvs, s, windowWidth} from "../Utils/Scale";
 import moment from 'moment';
-import * as Analytics from "../Utils/Analytics";
 
 const QuestsWeekly = (props) => {
     const {screenProps} = props;
@@ -13,10 +12,6 @@ const QuestsWeekly = (props) => {
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    useEffect(() => {
-        Analytics.segmentClient.screen('Quests', {type: 'Weekly'}).then();
-        setWeekly(achievementReducer);
-    },[])
 
     return (
         <SafeAreaView style={global.container}>

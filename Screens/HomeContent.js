@@ -37,7 +37,6 @@ import {
 } from "../Utils/svg";
 
 import { SetupService } from '../Services';
-import * as Analytics from "../Utils/Analytics";
 
 this.todayGoalDialog = undefined;
 const HomeContent = (props) => {

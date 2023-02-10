@@ -6,7 +6,6 @@ import ImageCache from '../Components/ImageCache';
 import PostRow from "../Components/PostRow";
 import {s, windowWidth} from "../Utils/Scale";
 import {SvgIconBack} from "../Utils/svg";
-import * as Analytics from "../Utils/Analytics";
 
 const SolarTermScreen = props => {
     const {navigation, screenProps} = props;
@@ -31,7 +30,6 @@ const SolarTermScreen = props => {
        }
    }
     useEffect(()=>{
-        Analytics.segmentClient.screen('Solar').then();
         fetchPostData().then();
    }, []);
     useEffect(()=>{

@@ -3,7 +3,6 @@ import {connect, useDispatch, useSelector} from "react-redux";
 import {Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {ms, mvs, s, windowWidth} from "../Utils/Scale";
 import moment from 'moment';
-import * as Analytics from "../Utils/Analytics";
 
 const QuestsMonthly = (props) => {
     const {screenProps} = props;
@@ -12,9 +11,6 @@ const QuestsMonthly = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer.monthly : null);
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
-    useEffect(()=>{
-        Analytics.segmentClient.screen('Quests', {type: 'Monthly'}).then();
-    },[]);
     return (
         <SafeAreaView style={global.container}>
             <ScrollView style={styles.containerStyle}>

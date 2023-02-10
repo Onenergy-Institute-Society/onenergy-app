@@ -5,7 +5,6 @@ import {
 } from "react-native";
 import {getApi} from "@src/services";
 import messaging from '@react-native-firebase/messaging';
-import * as Analytics from "../Utils/Analytics";
 import {languages} from "../Utils/Settings";
 
 const InitData = (props) => {
@@ -80,10 +79,6 @@ const InitData = (props) => {
             }
         });
         if(user.id) {
-            Analytics.segmentClient.identify(user.id, {
-                username: user.slug,
-                name: user.name,
-            }).then();
             if(user.language!==defaultLanguage.abbr){
                 let newLang = languages.find(lang=>lang.abbr===user.language)
                 if(newLang){

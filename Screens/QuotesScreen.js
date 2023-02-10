@@ -18,7 +18,6 @@ import {s, windowWidth, windowHeight, mvs} from "../Utils/Scale";
 import ScalableImage from "../Components/ScalableImage";
 import RNFetchBlob from 'rn-fetch-blob';
 import {SvgIconBack} from "../Utils/svg";
-import * as Analytics from "../Utils/Analytics";
 
 const QuotesScreen = props => {
     const {screenProps} = props;
@@ -144,7 +143,6 @@ const QuotesScreen = props => {
             inViewPort.item.image ? checkPermission(inViewPort.item.image) : null;
     };
     useEffect(() => {
-        Analytics.segmentClient.screen('Quotes').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'quote_title').title,
             downloadCurrentQuote: downloadCurrentQuote,

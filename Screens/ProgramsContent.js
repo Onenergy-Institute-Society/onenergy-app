@@ -17,7 +17,6 @@ import NotificationTabBarIcon from "../Components/NotificationTabBarIcon";
 import AuthWrapper from "@src/components/AuthWrapper";
 import PracticeTipsRow from "../Components/PracticeTipsRow";
 import {SvgIconBack, SvgIconMenu, SvgIconMilestone, SvgIconProgress, SvgIconQuest} from "../Utils/svg";
-import * as Analytics from "../Utils/Analytics";
 
 const ProgramsContent = props => {
     const {navigation, screenProps} = props;
@@ -34,7 +33,6 @@ const ProgramsContent = props => {
     }
 
     useEffect(() => {
-        Analytics.segmentClient.screen('Programs').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'programs_title').title,
         });

@@ -19,7 +19,6 @@ import {ms, mvs, s, windowWidth} from '../Utils/Scale';
 import Recaptcha from "../Components/Recaptcha";
 import {BlurView} from "@react-native-community/blur";
 import {SvgIconBack, SvgIconCheck, SvgIconCross} from "../Utils/svg";
-import * as Analytics from "../Utils/Analytics";
 
 const FeedbackScreen = props => {
     const {screenProps} = props;

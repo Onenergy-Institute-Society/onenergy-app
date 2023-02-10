@@ -6,7 +6,6 @@ import {NavigationActions, withNavigation} from "react-navigation";
 import ImageCache from './ImageCache';
 import TouchableScale from './TouchableScale';
 import {ms, mvs, s, vs, windowWidth} from '../Utils/Scale';
-import * as Analytics from "../Utils/Analytics";
 
 const PostList = props => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
@@ -78,7 +77,6 @@ const PostList = props => {
             case 103: type='watch'; break;
             case 105: type='read'; break;
         }
-        Analytics.segmentClient.screen('Blogs', {type: type}).then();
     },[]);
 
     useEffect(() => {

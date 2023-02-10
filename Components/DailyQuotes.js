@@ -3,7 +3,6 @@ import {ImageBackground, StyleSheet, Text} from 'react-native';
 import {NavigationActions, withNavigation} from "react-navigation";
 import {ms, s, windowWidth} from '../Utils/Scale';
 import TouchableScale from './TouchableScale';
-import * as Analytics from "../Utils/Analytics";
 
 const DailyQuotes = (props) => {
     const {navigation, screenProps, quote} = props;
@@ -11,9 +10,7 @@ const DailyQuotes = (props) => {
     const regex_tag = /(<([^>]+)>)/ig;
     const regex_newline = /\r?\n|\r/g;
     const quote_rendered = quote.replace(regex_tag, '').replace(regex_newline, '');
-    useEffect(()=>{
-        Analytics.segmentClient.screen('Quests', {type: 'daily'}).then();
-    },[]);
+
     return (
         <TouchableScale
             onPress={() => {

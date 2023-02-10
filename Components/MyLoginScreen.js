@@ -2,12 +2,8 @@ import React, {useEffect} from 'react';
 import LoginScreen from "@src/containers/Custom/LoginScreen";
 import {TouchableOpacity} from "react-native";
 import {SvgIconBack} from "../Utils/svg";
-import * as Analytics from "../Utils/Analytics";
 
 const MyLoginScreen = (props) => {
-    useEffect(()=>{
-        Analytics.segmentClient.screen('Login').then();
-    },[]);
     return (
         <LoginScreen {...props}/>
     )

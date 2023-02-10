@@ -23,7 +23,6 @@ import {
     SvgIconQuest,
     SvgIconBack
 } from "../Utils/svg";
-import * as Analytics from "../Utils/Analytics";
 
 const PracticesContent = props => {
     try {
@@ -41,7 +40,6 @@ const PracticesContent = props => {
         }
 
         useEffect(() => {
-            Analytics.segmentClient.screen('Practices').then();
             props.navigation.setParams({
                 title: optionData.titles.find(el => el.id === 'practices_title').title,
             });

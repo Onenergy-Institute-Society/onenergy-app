@@ -16,7 +16,6 @@ import {ms, mvs, s, vs, windowWidth} from '../Utils/Scale';
 import AudioPlayer from './AudioPlayer';
 import NotificationTabBarIcon from "./NotificationTabBarIcon";
 import AuthWrapper from "@src/components/AuthWrapper";
-import * as Analytics from "../Utils/Analytics";
 import TouchableScale from "./TouchableScale";
 import {SvgClock} from "../Utils/svg";
 
@@ -36,10 +35,6 @@ const TracksList = (props) => {
         );
         if (!selectedTrack || parseInt(track.id) !== parseInt(selectedTrack.id)) {
             setSelectedTrack(track);
-            Analytics.segmentClient.track('Start Guided Practice', {
-                id: track.id,
-                title: track.title
-            }).then();
         }
     };
 
