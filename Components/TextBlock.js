@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Image, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native";
 import {useSelector} from "react-redux";
 import {ms, mvs, s, windowWidth} from "../Utils/Scale";
@@ -12,29 +12,70 @@ const systemFonts = ['Montserrat-Regular', 'Montserrat-SemiBold', 'Montserrat-Se
 const TextBlock = (props) => {
     const {block, navigation} = props;
     const user = useSelector((state) => state.user.userObject);
-    const permission = block.data.data.permission ? block.data.data.permission : '';
-    let showBlock = false;
-    switch (permission) {
-        case '':
-            showBlock = true;
-            break;
-        case 'guest':
-            showBlock = !user;
-            break;
-        case 'login':
-            showBlock = !!user;
-            break;
-        case 'user':
-            if (user && !(user.membership && user.membership.length)) {
-                showBlock = true;
+    const [showBlock, setShowBlock] = useState(false);
+    const [htmlStyle, setHtmlStyle] = useState([]);
+    useEffect(() => {
+        console.log('block',block)
+        if(block&&block.data&&block.data.data&&block.data.data.permission) {
+            let permission = block.data.data.permission;
+            switch (permission) {
+                case '':
+                    setShowBlock(true);
+                    break;
+                case 'guest':
+                    setShowBlock(!user);
+                    break;
+                case 'login':
+                    setShowBlock(!!user);
+                    break;
+                case 'user':
+                    if (user && !(user.membership && user.membership.length)) {
+                        setShowBlock(true);
+                    }
+                    break;
+                case 'member':
+                    if (user && user.membership && user.membership.length) {
+                        setShowBlock(true);
+                    }
+                    break;
             }
-            break;
-        case 'member':
-            if (user && user.membership && user.membership.length) {
-                showBlock = true;
-            }
-            break;
-    }
+            setHtmlStyle({
+                a: {
+                    fontSize: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize) : s(14),
+                    fontFamily: "Montserrat-Regular",
+                    fontWeight: "normal",
+                },
+                /*        ul:{
+                            width:"100%",
+                       },*/
+                li: {
+                    lineHeight: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize * 1.47) : s(14 * 1.47),
+                    fontSize: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize) : s(14),
+                    color: block.data.data.bodyColor ? block.data.data.bodyColor : "#000",
+                    textAlign: block.data.data.bodyAlign ? block.data.data.bodyAlign : "left",
+                    fontFamily: "Montserrat-Regular",
+                    fontWeight: "normal",
+                },
+                p: {
+                    lineHeight: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize * 1.47) : s(14 * 1.47),
+                    fontSize: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize) : s(14),
+                    color: block.data.data.bodyColor ? block.data.data.bodyColor : "#000",
+                    textAlign: block.data.data.bodyAlign ? block.data.data.bodyAlign : "left",
+                    fontFamily: "Montserrat-Regular",
+                    fontWeight: "normal",
+                },
+                rawtext: {
+                    lineHeight: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize * 1.47) : s(14 * 1.47),
+                    fontSize: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize) : s(14),
+                    color: block.data.data.bodyColor ? block.data.data.bodyColor : "#000",
+                    textAlign: block.data.data.bodyAlign ? block.data.data.bodyAlign : "left",
+                    fontFamily: "Montserrat-Regular",
+                    fontWeight: "normal",
+                }
+            });
+        }
+    },[]);
+
     const ImageComponent = () => {
         return (
             <View style={{
@@ -50,40 +91,7 @@ const TextBlock = (props) => {
             </View>
         )
     }
-    const htmlStyle = {
-        a: {
-            fontSize: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize) : s(14),
-            fontFamily: "Montserrat-Regular",
-            fontWeight: "normal",
-        },
-        /*        ul:{
-                    width:"100%",
-               },*/
-        li: {
-            lineHeight: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize * 1.47) : s(14 * 1.47),
-            fontSize: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize) : s(14),
-            color: block.data.data.bodyColor ? block.data.data.bodyColor : "#000",
-            textAlign: block.data.data.bodyAlign ? block.data.data.bodyAlign : "left",
-            fontFamily: "Montserrat-Regular",
-            fontWeight: "normal",
-        },
-        p: {
-            lineHeight: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize * 1.47) : s(14 * 1.47),
-            fontSize: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize) : s(14),
-            color: block.data.data.bodyColor ? block.data.data.bodyColor : "#000",
-            textAlign: block.data.data.bodyAlign ? block.data.data.bodyAlign : "left",
-            fontFamily: "Montserrat-Regular",
-            fontWeight: "normal",
-        },
-        rawtext: {
-            lineHeight: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize * 1.47) : s(14 * 1.47),
-            fontSize: block.data.data.bodyFontSize ? s(block.data.data.bodyFontSize) : s(14),
-            color: block.data.data.bodyColor ? block.data.data.bodyColor : "#000",
-            textAlign: block.data.data.bodyAlign ? block.data.data.bodyAlign : "left",
-            fontFamily: "Montserrat-Regular",
-            fontWeight: "normal",
-        }
-    };
+
     const TextComponent = () => {
         return (
             <View style={{
@@ -175,6 +183,7 @@ const TextBlock = (props) => {
     }
     return (
         showBlock ?
+            <>            <Text>TSTT</Text>
             <TouchableWithoutFeedback
                 onPress={OnPress}
             >
@@ -202,6 +211,7 @@ const TextBlock = (props) => {
                     </LinearGradient>
                 </View>
             </TouchableWithoutFeedback>
+                </>
             : null
     )
 }

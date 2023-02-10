@@ -92,7 +92,7 @@ export default class SortListItem extends Component {
             {x: 0, y: ((this.state.itemSize * index) - (this.state.itemSize * this.props.initIndex))};
         this.state.position.setOffset(nullPos);
         this.state.position.setValue(currentPos);
-        Animated.timing(this.state.position, {toValue: newPos, duration: 300,useNativeDriver: true,}).start(() => {
+        Animated.timing(this.state.position, {toValue: newPos, duration: 300}).start(() => {
             this.state.position.setOffset(newPos);
             this.state.position.setValue(nullPos);
             if (highlight === true) {

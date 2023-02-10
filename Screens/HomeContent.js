@@ -53,6 +53,7 @@ const HomeContent = (props) => {
     const [moonPhase, setMoonPhase] = useState('');
     const [nextMoonPhase, setNextMoonPhase] = useState({});
     const [currentSolarTerm, setCurrentSolarTerm] = useState(null);
+    const [points, setPoints] = useState(null);
 
     const onFocusHandler = async () => {
         try {
@@ -74,7 +75,12 @@ const HomeContent = (props) => {
     useEffect(()=>{
         updateStatus().then();
     },[progressReducer.latestUpdate])
-
+    useEffect(()=>{
+        if(points) {
+            updateClaim().then();
+            setPoints(progressReducer.points)
+        }
+    },[...Object.values(progressReducer.points)])
     const fetchCurrentSolarTerm = async () => {
         try {
             const api = getApi(props.config);
@@ -144,7 +150,45 @@ const HomeContent = (props) => {
             });
         }
     }
-
+    const updateClaim = async () => {
+        console.log('lastUpload', progressReducer.lastUpload, 'latestUpdate', progressReducer.latestUpdate);
+        let achievements = {
+            'milestones': [],
+            'daily': [],
+            'weekly': achievementReducer.weekly,
+            'monthly': achievementReducer.monthly
+        }
+        achievementReducer.milestones.forEach((milestone) => {
+            achievements.milestones.push({
+                'id': milestone.id,
+                'step': milestone.step,
+                'complete_date': milestone.complete_date,
+                'claim_date': milestone.claim_date,
+            });
+        });
+        achievementReducer.daily.forEach((quest) => {
+            achievements.daily.push({
+                'id': quest.id,
+                'step': quest.step,
+                'complete_date': quest.complete_date,
+                'claim_date': quest.claim_date,
+                'list': quest.list
+            });
+        });
+        const apiRequest = getApi(props.config);
+        console.log('claimUpdate home', progressReducer.points, achievements);
+        await apiRequest.customRequest(
+            "wp-json/onenergy/v1/claimUpdate",
+            "post",
+            {
+                "points": progressReducer.points,
+                "achievements": achievements
+            },
+            null,
+            {},
+            false
+        ).then();
+    }
     const calcSolarMoon = () => {
         if(!settings.ip){
             fetchIpAndLocation().then();
@@ -237,6 +281,7 @@ const HomeContent = (props) => {
                 await SetupService();
             }
             run().then();
+            setPoints(progressReducer.points);
         }
         navigation.addListener('willFocus', onFocusHandler)
         return () => {
