@@ -71,7 +71,7 @@ const StatsScreen = (props) => {
             if(user.rank>=level.rank&&level.sections.length) {
                 level.sections.forEach(section=> {
                     for(let item of progressReducer.sectionStats){
-                        if (item.section_id === section.id) {
+                        if (parseInt(item.section_id) === parseInt(section.id)) {
                             legendColor++;
                             pieData.push(
                                 {
@@ -376,7 +376,7 @@ const StatsScreen = (props) => {
                                             level.sections.map(section=>{
                                                 return (
                                                     progressReducer.sectionStats.map((item, sectionIndex) => {
-                                                        if(item.section_id === section.id){
+                                                        if(parseInt(item.section_id) === parseInt(section.id)){
                                                             guideIndex++;
                                                             return (
                                                                 <>

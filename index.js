@@ -894,6 +894,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     console.log('ONENERGY_PRACTICE_COMPLETED');
 
                     //Init
+                    console.log('Init');
                     const acpTempPracticeState = {...state.practiceReducer};
                     const acpTempProgressState = {...state.progressReducer};
                     const acpTempAchievementState = {...state.achievementReducer};
@@ -905,6 +906,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     let tempArray = [];
 
                     //Check if today's first practice, execute daily progress only once.
+                    console.log('Check if today first practice, execute daily progress only once.');
                     if (acpToday > acpTempProgressState.lastPractice) {
                         acpTempProgressState.totalPracticeDays += 1;
                         acpTempAchievementState.milestones.forEach((item, tempIndex) => {
@@ -926,6 +928,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     }
 
                     //add weekly quest if need
+                    console.log('add weekly quest if need');
                     if (acpTempAchievementState.weekly.days && acpTempAchievementState.weekly.days.length) {
                         let lastDay = acpTempAchievementState.weekly.days[acpTempAchievementState.weekly.days.length - 1];
                         if (moment(acpToday).diff(moment(lastDay), 'days') > 1) {
@@ -947,6 +950,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     }
 
                     //add monthly quest if need
+                    console.log('add monthly quest if need');
                     if (acpTempAchievementState.monthly.days && acpTempAchievementState.monthly.days.length) {
                         let lastDay = acpTempAchievementState.monthly.days[acpTempAchievementState.monthly.days.length - 1];
                         if (moment(acpToday).diff(moment(lastDay), 'days') > 1) {
@@ -972,63 +976,75 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         case 'PP'://Single guided practice
 
                             //Add single guide in list
+                            console.log('Single guided practice, Add single guide in list');
                             tempArray.push({'guide': acpData, 'duration': acpData.duration, 'count': acpData.count});
 
                             //Process total durations
+                            console.log('Process total durations');
                             acpTempProgressState.totalDuration = acpTempProgressState.totalDuration?parseInt(acpTempProgressState.totalDuration)+parseInt(acpData.duration):parseInt(acpData.duration);
                             acpTempProgressState.todayDuration = acpTempProgressState.todayDuration?parseInt(acpTempProgressState.todayDuration)+parseInt(acpData.duration):parseInt(acpData.duration);
                             acpTempProgressState.weekDuration = acpTempProgressState.weekDuration?parseInt(acpTempProgressState.weekDuration)+parseInt(acpData.duration):parseInt(acpData.duration);
                             break;
 
                         case 'PR'://Customized practices
+                            console.log('Customized practices, Add guides in list');
 
                             //Add guides in list
                             let routineIndex;
                             routineIndex = state.practiceReducer.routines.findIndex((temp) => temp.id === acpData);
                             let tempGuides = state.practiceReducer.routines[routineIndex].routine;
-                            let guideDuration = 0;
-
+                            let audioTracks = state.practiceReducer.routines[routineIndex].audioTracks;
+                            let routineDuration = 0;
+                            console.log('Calculate routine duration', audioTracks);
+                            audioTracks.forEach(track => {
+                                routineDuration = routineDuration + track.duration;
+                            })
+                            console.log('Add guides in list');
                             tempGuides.forEach(guide => {
+                                let guideDuration = 0;
                                 let startCount = parseInt(guide.startCount);
                                 let endDuration = parseInt(guide.endDuration);
-                                let remainCount;
-                                if(guide.count>startCount) {
-                                    remainCount = guide.count - startCount;
-                                }
+                                let remainCount = guide.count - startCount;
+                                console.log('guide', guide)
                                 guide.parts.forEach(part => {
+                                    console.log('part', part)
                                     if(part.start){
                                         guideDuration = guideDuration + parseInt(part.start_duration);
                                     }
-                                    if(part.repeat){
+                                    if(part.repeat && remainCount){
                                         guideDuration = guideDuration + parseInt(part.repeat_duration) * remainCount;
                                     }
                                 })
+                                console.log('guideDuration', guideDuration)
                                 guideDuration = guideDuration + endDuration;
                                 console.log(guide.count, startCount, remainCount, guideDuration)
                                 tempArray.push({'guide': guide, 'duration':guideDuration, 'count': guide.count});
                             })
 
                             //Process routine stats
+                            console.log('Process routine stats');
                             acpTempIndex = acpTempProgressState.routineStats.findIndex(item => item.routine_id === acpData)
                             if (acpTempIndex >= 0) {
                                 acpTempProgressState.routineStats[acpTempIndex].routine_count += 1;
-                                acpTempProgressState.routineStats[acpTempIndex].routine_duration += guideDuration;
+                                acpTempProgressState.routineStats[acpTempIndex].routine_duration += routineDuration;
                             } else {
                                 acpTempProgressState.routineStats.push({
                                     'routine_id': acpData,
                                     'routine_count': 1,
-                                    'routine_duration': guideDuration,
+                                    'routine_duration': routineDuration,
                                 })
                             }
 
                             //Process total durations
-                            acpTempProgressState.totalDuration = acpTempProgressState.totalDuration?parseInt(acpTempProgressState.totalDuration)+guideDuration:guideDuration;
-                            acpTempProgressState.todayDuration = acpTempProgressState.todayDuration?parseInt(acpTempProgressState.todayDuration)+guideDuration:guideDuration;
-                            acpTempProgressState.weekDuration = acpTempProgressState.weekDuration?parseInt(acpTempProgressState.weekDuration)+guideDuration:guideDuration;
+                            console.log('Process total durations');
+                            acpTempProgressState.totalDuration = acpTempProgressState.totalDuration?parseInt(acpTempProgressState.totalDuration)+routineDuration:routineDuration;
+                            acpTempProgressState.todayDuration = acpTempProgressState.todayDuration?parseInt(acpTempProgressState.todayDuration)+routineDuration:routineDuration;
+                            acpTempProgressState.weekDuration = acpTempProgressState.weekDuration?parseInt(acpTempProgressState.weekDuration)+routineDuration:routineDuration;
 
                             break;
 
                         case 'PG'://Group practice
+                            console.log('Group practice, Add guides in list');
 
                             //Add guides in list
                             let groupIndex;
@@ -1048,6 +1064,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             });
 
                             //Progress milestones achievement for group practice
+                            console.log('Progress milestones achievement for group practice');
                             tmpAchievements = state.achievementReducer.milestones.filter((item) =>
                                 (item.trigger === 'practice' &&
                                     (
@@ -1073,6 +1090,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             })
 
                             //Progress daily quests for group practice
+                            console.log('Progress daily quests for group practice');
                             tmpAchievements = state.achievementReducer.daily.filter((item) =>
                                 (item.trigger === 'practice' &&
                                     (
@@ -1099,6 +1117,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             })
 
                             //Process group practice stats
+                            console.log('Process group practice stats');
                             if (acpTempProgressState.groupStats) {
                                 acpTempIndex = acpTempProgressState.groupStats.findIndex(item => item.group_id === acpData);
                                 if (acpTempIndex >= 0) {
@@ -1120,6 +1139,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             }
 
                             //Process total durations
+                            console.log('Process total durations');
                             acpTempProgressState.totalDuration = acpTempProgressState.totalDuration?parseInt(acpTempProgressState.totalDuration)+parseInt(state.practiceReducer.groups[groupIndex].duration):parseInt(state.practiceReducer.groups[groupIndex].duration);
                             acpTempProgressState.todayDuration = acpTempProgressState.todayDuration?parseInt(acpTempProgressState.todayDuration)+parseInt(state.practiceReducer.groups[groupIndex].duration):parseInt(state.practiceReducer.groups[groupIndex].duration);
                             acpTempProgressState.weekDuration = acpTempProgressState.weekDuration?parseInt(acpTempProgressState.weekDuration)+parseInt(state.practiceReducer.groups[groupIndex].duration):parseInt(state.practiceReducer.groups[groupIndex].duration);
@@ -1128,9 +1148,11 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     }
 
                     //Process each guide in list for achievement and stats
+                    console.log('Process each guide in list for achievement and stats');
                     tempArray.forEach(tempGuide => {
 
                         //Process milestones
+                        console.log('Process milestones');
                         tmpAchievements = state.achievementReducer.milestones.filter((item) => {
                             if (item.trigger === 'practice' &&
                                 (
@@ -1159,6 +1181,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         })
 
                         //Process daily quests
+                        console.log('Process daily quests');
                         tmpAchievements = state.achievementReducer.daily.filter((item) => {
                             if (item.trigger === 'practice' &&
                                 (
@@ -1188,15 +1211,18 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         })
 
                         //Find the guide in reducer stores and change it's stats
-                        let acpLevelIndex = acpTempPracticeState.guides.findIndex(level => level.id === tempGuide.guide.levelId);
-                        let acpSectionIndex = acpTempPracticeState.guides[acpLevelIndex].sections.findIndex(section => section.id === tempGuide.guide.sectionId);
-                        let acpGuideIndex = acpTempPracticeState.guides[acpLevelIndex].sections[acpSectionIndex].data.findIndex(guide => guide.id === tempGuide.guide.id);
+                        console.log('Find the guide in reducer stores and change its stats', tempGuide);
+                        let acpLevelIndex = acpTempPracticeState.guides.findIndex(level => parseInt(level.id) === parseInt(tempGuide.guide.levelId));
+                        let acpSectionIndex = acpTempPracticeState.guides[acpLevelIndex].sections.findIndex(section => parseInt(section.id) === parseInt(tempGuide.guide.sectionId));
+                        let acpGuideIndex = acpTempPracticeState.guides[acpLevelIndex].sections[acpSectionIndex].data.findIndex(guide => parseInt(guide.id) === parseInt(tempGuide.guide.id));
                         if (acpGuideIndex >= 0) {
 
                             //Remove new sign
+                            console.log('Remove new sign');
                             acpTempPracticeState.guides[acpLevelIndex].sections[acpSectionIndex].data[acpGuideIndex].new = false;
 
                             //Process single guide stats
+                            console.log('Process single guide stats');
                             acpTempIndex = acpTempProgressState.guideStats.findIndex(item => parseInt(item.guide_id) === parseInt(tempGuide.guide.id))
                             if (acpTempIndex >= 0) {
                                 acpTempProgressState.guideStats[acpTempIndex].guide_count += parseInt(tempGuide.count);
@@ -1210,6 +1236,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             }
 
                             //Process section stats
+                            console.log('Process section stats');
                             acpTempIndex = acpTempProgressState.sectionStats.findIndex(item => parseInt(item.section_id) === parseInt(tempGuide.guide.sectionId))
                             if (acpTempIndex >= 0) {
                                 acpTempProgressState.sectionStats[acpTempIndex].section_count += parseInt(tempGuide.count);
@@ -1225,6 +1252,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     })
 
                     //Process progress list
+                    console.log('Process progress list');
                     let todayProgressIndex = acpTempProgressState.progress && acpTempProgressState.progress.findIndex(item => item.date === acpToday);
                     if (acpTempProgressState.progress && todayProgressIndex >= 0) {
                         acpTempProgressState.progress[todayProgressIndex].duration = acpTempProgressState.todayDuration;
@@ -1243,6 +1271,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     }
 
                     //Add in action list
+                    console.log('Add in action list');
                     acpTempProgressState.actionList.push({
                         'mode': acpMode,
                         'data': acpData,
@@ -1250,10 +1279,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     });
 
                     //Change update time
+                    console.log('Change update time');
                     acpTempProgressState.latestUpdate = Math.floor(new Date().getTime() / 1000);
                     acpTempProgressState.lastPractice = new moment().format('YYYY-MM-DD');
 
                     //Update the reducer store
+                    console.log('Update the reducer store');
                     return {
                         ...state,
                         achievementReducer: {

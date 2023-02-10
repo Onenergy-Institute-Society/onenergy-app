@@ -76,7 +76,7 @@ const MemberTracksList = (props) => {
         item.audioTracks.forEach((item) => {
             totalDuration += parseInt(item.duration);
         })
-        let itemRank = !item.level?0:practiceReducer.guides.find(level=>level.id===item.level).rank;
+        let itemRank = !item.level?0:practiceReducer.guides.find(level=>parseInt(level.id)===parseInt(item.level)).rank;
         return (
             itemRank<=user.rank?
             <Swipeable
@@ -116,7 +116,7 @@ const MemberTracksList = (props) => {
                             }
                             </View>
                             <View style={styles.subTitleBox}>
-                                <Text style={styles.subTitle}>{item.level&&practiceReducer.guides.find(level=>level.id===item.level)?practiceReducer.guides.find(level=>level.id===item.level).title:'Preparatory Practices'}</Text>
+                                <Text style={styles.subTitle}>{item.level&&practiceReducer.guides.find(level=>parseInt(level.id)===parseInt(item.level))?practiceReducer.guides.find(level=>level.id===item.level).title:'Preparatory Practices'}</Text>
                                 <Text style={styles.subTitle}>{optionData.titles.find(el => el.id === 'practices_routines_label_practices').title} {item.routine.length}</Text>
                                 <Text style={styles.subTitle}>{optionData.titles.find(el => el.id === 'practices_routines_label_background_music').title} {optionData.bgm.find(el => el.id === item.bgm_id)?optionData.bgm.find(el => el.id === item.bgm_id).name:''}</Text>
                             </View>
@@ -143,7 +143,7 @@ const MemberTracksList = (props) => {
                             style={[styles.duration, {color:'grey'}]}>{new Date(totalDuration * 1000).toISOString().substring(14, 19)}</Text>
                     </View>
                     <View style={styles.subTitleBox}>
-                        <Text style={[styles.subTitle, {color:'grey'}]}>{item.level&&practiceReducer.guides.find(level=>level.id===item.level)?practiceReducer.guides.find(level=>level.id===item.level).title:'Preparatory Practices'}</Text>
+                        <Text style={[styles.subTitle, {color:'grey'}]}>{item.level&&practiceReducer.guides.find(level=>parseInt(level.id)===parseInt(item.level))?practiceReducer.guides.find(level=>level.id===item.level).title:'Preparatory Practices'}</Text>
                         <Text style={[styles.subTitle, {color:'grey'}]}>Practices: {item.routine.length}</Text>
                         <Text style={[styles.subTitle, {color:'grey'}]}>Background: {optionData.bgm.find(el => el.id === item.bgm_id)?optionData.bgm.find(el => el.id === item.bgm_id).name:''}</Text>
                     </View>

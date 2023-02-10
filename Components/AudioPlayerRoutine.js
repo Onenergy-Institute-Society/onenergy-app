@@ -103,7 +103,7 @@ const AudioPlayerRoutine = (props) => {
                     await TrackPlayer.reset();
                     setNextTrack(0);
                     updateProgress().then();
-                    if (routine.bgm_id) this.videoPlayer.seek(0)
+                    /*if (routine.bgm_id) this.videoPlayer.seek(0)*/
                 }
             } else {
                 setPlaying(false);
@@ -112,7 +112,7 @@ const AudioPlayerRoutine = (props) => {
                 await TrackPlayer.reset();
                 setNextTrack(0);
                 updateProgress().then();
-                if (routine.bgm_id) this.videoPlayer.seek(0)
+                /*if (routine.bgm_id) this.videoPlayer.seek(0)*/
             }
         }
     });
@@ -153,7 +153,7 @@ const AudioPlayerRoutine = (props) => {
         setPastPosition(0);
         setPlaying(false);
         setStopped(true);
-        if (routine.bgm_id) this.videoPlayer.seek(0)
+        /*if (routine.bgm_id) this.videoPlayer.seek(0)*/
     };
     return (
         <>

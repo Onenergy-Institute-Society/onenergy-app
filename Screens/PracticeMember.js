@@ -89,6 +89,7 @@ const PracticeMember = props => {
             Animated.timing(fadeAnim, {
                 toValue: 1,
                 duration: 2000,
+                useNativeDriver: true
             }).start();
             setTimeout(function () {
                 setMessageBarDisplay(false);

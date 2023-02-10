@@ -150,11 +150,11 @@ const EditRoutine = props => {
                 setSelectBgmVolume(100);
             }
             if(routineDetailState.level) {
-                setSelectLevel(practiceReducer.guides.find(level => level.id === routineDetailState.level).title);
-                setSections(practiceReducer.guides.find(level => level.id === routineDetailState.level).sections);
+                setSelectLevel(practiceReducer.guides.find(level => parseInt(level.id) === parseInt(routineDetailState.level)).title);
+                setSections(practiceReducer.guides.find(level => parseInt(level.id) === parseInt(routineDetailState.level)).sections);
             }else {
-                setSelectLevel(practiceReducer.guides.find(level => level.rank === 0).title);
-                setSections(practiceReducer.guides.find(level => level.rank === 0).sections);
+                setSelectLevel(practiceReducer.guides.find(level => parseInt(level.rank) === 0).title);
+                setSections(practiceReducer.guides.find(level => parseInt(level.rank) === 0).sections);
             }
         }
     }, [routineDetailState])
@@ -388,7 +388,6 @@ const EditRoutine = props => {
         });
         setChangedStatus(true);
         setRefresh(refresh + 1);
-        setPlayingSound(false);
         this.countDialog.close();
     }
     const rightActions = (dragX, item) => {
@@ -683,7 +682,7 @@ const EditRoutine = props => {
                     alignItems: 'center',
                     justifyContent: 'center'
                 }]}>
-                    <View style={{flexDirection: "row", justifyContent: "flex-end", alignItems: "center", width: "50%", }}>
+                    <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", }}>
                         <Text
                             style={[global.text, {fontSize:s(15),marginLeft: s(5)}]}>
                             {item.item}

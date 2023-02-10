@@ -42,7 +42,8 @@ const PracticePersonal = props => {
             Animated.timing(fadeAnim, {
                 toValue: 1,
                 duration: 2000,
-                easing: Easing.bounce
+                easing: Easing.bounce,
+                useNativeDriver: true
            }).start();
             setTimeout(function () {
                 setMessageBarDisplay(false);

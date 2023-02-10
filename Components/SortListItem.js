@@ -92,7 +92,7 @@ export default class SortListItem extends Component {
             {x: 0, y: ((this.state.itemSize * index) - (this.state.itemSize * this.props.initIndex))};
         this.state.position.setOffset(nullPos);
         this.state.position.setValue(currentPos);
-        Animated.timing(this.state.position, {toValue: newPos, duration: 300}).start(() => {
+        Animated.timing(this.state.position, {toValue: newPos, duration: 300, useNativeDriver: false}).start(() => {
             this.state.position.setOffset(newPos);
             this.state.position.setValue(nullPos);
             if (highlight === true) {
@@ -101,8 +101,9 @@ export default class SortListItem extends Component {
                         x: 25,
                         y: 0
                     }), duration: 150,
+                    useNativeDriver: false
                 }).start(() => {
-                    Animated.timing(this.state.position, {toValue: nullPos, duration: 150,}).start();
+                    Animated.timing(this.state.position, {toValue: nullPos, duration: 150, useNativeDriver: false}).start();
                 });
             }
         });
