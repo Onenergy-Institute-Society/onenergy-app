@@ -337,6 +337,7 @@ const EditRoutine = props => {
             newRoutines.splice(index, 1);
             setRoutines(newRoutines);
             let tracks = createTracks(newRoutines);
+            console.log('Update tracks after delete', tracks)
             setRoutineDetailState(prevState => {
                 return {...prevState, routine: newRoutines, audioTracks: tracks}
             });
@@ -348,6 +349,7 @@ const EditRoutine = props => {
 
     const updateItem = (items) => {
         let tracks = createTracks(items);
+        console.log('Update tracks after update', tracks)
         setRoutines(items);
         setRoutineDetailState(prevState => {
             return {...prevState, routine: items, tracks: tracks}
@@ -361,6 +363,7 @@ const EditRoutine = props => {
         let newRoutines = routines;
         newRoutines.push(item);
         let tracks = createTracks(newRoutines);
+        console.log('Update tracks after add guide', tracks)
         setRoutines(newRoutines);
         setRoutineDetailState(prevState => {
             return {
