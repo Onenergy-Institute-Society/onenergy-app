@@ -1,3 +1,4 @@
+// @ts-ignore
 import TrackPlayer, {AppKilledPlaybackBehavior, Capability,} from 'react-native-track-player';
 
 export const SetupService = async (): Promise<boolean> => {

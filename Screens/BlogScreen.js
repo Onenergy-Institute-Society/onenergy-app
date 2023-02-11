@@ -1,16 +1,12 @@
 import React, {useEffect} from 'react';
 import {View, ActivityIndicator} from 'react-native';
 import MyBlogScreen from "@src/containers/Custom/BlogSingleScreen";
-import * as Analytics from "../Utils/Analytics";
+
 
 const BlogScreen = (props) => {
     const {navigation} = props;
     const blogId = navigation.getParam('blogId');
     let title = navigation.getParam('title').replace(/[‘’“”]+/g, '\'');
-
-    useEffect(()=>{
-        Analytics.segmentClient.screen('Blog', {title: title}).then();
-    },[]);
 
     if (!props.isFocused)
         return null;

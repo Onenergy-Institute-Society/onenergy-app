@@ -6,7 +6,6 @@ import ImageCache from '../Components/ImageCache';
 import PostList from "../Components/PostList";
 import {mvs, s, windowWidth} from "../Utils/Scale";
 import {SvgIconBack} from "../Utils/svg";
-import * as Analytics from "../Utils/Analytics";
 
 const CategoryScreen = props => {
     const {navigation, screenProps} = props;
@@ -32,7 +31,6 @@ const CategoryScreen = props => {
    }
 
     useEffect(()=>{
-        Analytics.segmentClient.screen('Category', {title: navigation.getParam('name')}).then();
         fetchCategoryData().then();
    }, []);
     useEffect(()=>{
