@@ -2582,6 +2582,50 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             </>
         );
     })
+    externalCodeSetup.pageScreenHooksApi.setOnShouldStartLoadWithRequest(props => {
+        const {
+            index,
+            req,
+            isLoading,
+            isFocused,
+            currentUrl,
+            nextUrl,
+            isExternalDeeplink,
+            onNext,
+            openExternal,
+            shouldOpenInExternalBrowser,
+            isSameSite,
+            attemptDeepLink
+        } = props;
+
+        // If webview was not tapped, handle loading in the active webview
+        if (req.navigationType !== "click") {
+            return true;
+        }
+        // If webview is loading, handle redirection in the same webview
+        if (isLoading) {
+            return true;
+        }
+
+        if (!req.url) {
+            return true;
+        }
+
+        if (nextUrl.pathname === null) {
+            return true;
+        }
+
+        if (
+            currentUrl.pathname === nextUrl.pathname &&
+            currentUrl.host === nextUrl.host
+        ) {
+            return true;
+        }
+
+        if (!isFocused) {
+            return false;
+        }
+    })
 }
 
 

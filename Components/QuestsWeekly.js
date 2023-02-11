@@ -12,6 +12,9 @@ const QuestsWeekly = (props) => {
     const today = new moment().format('YYYY-MM-DD');
     const dispatch = useDispatch();
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    useEffect(() => {
+        setWeekly(achievementReducer);
+    },[])
 
     return (
         <SafeAreaView style={global.container}>

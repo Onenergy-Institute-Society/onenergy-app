@@ -919,58 +919,7 @@ const EditRoutine = props => {
                             />
                         </View>
                     </View>
-                </View>:
-                    <View style={global.roundBox}>
-                        <View style={{
-                            width: windowWidth - s(35),
-                            flexDirection: "row",
-                            justifyContent: "flex-start",
-                            alignItems: "center"
-                        }}>
-                            <Text style={global.settingsItemTitle}>{optionData.titles.find(el => el.id === 'practices_edit_routine_title_daily_reminder').title}</Text>
-                        </View>
-                        <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-                            <View style={[styles.listContainer, {justifyContent: "center", width: "75%"}]}>
-                                <View style={{position:"absolute", right:0, top:vs(15)}}>
-                                    <Image style={{marginRight: 10, tintColor: colors.primaryColor}}
-                                           source={require("@src/assets/img/arrow-down.png")}/>
-                                </View>
-                                <DatePicker
-                                    style={{width:"100%",
-                                        fontFamily: "Montserrat-Regular",
-                                        fontSize: s(14),}}
-                                    placeholder="Select Time"
-                                    customStyles={{
-                                        dateInput: {
-                                            borderWidth: 0,
-                                            fontFamily: "Montserrat-Regular",
-                                            fontSize: s(14),
-                                        },
-                                        placeholderText: {
-                                            fontFamily: "Montserrat-Regular",
-                                            fontSize: s(14),
-                                        }
-                                    }}
-                                    date={routineDetailState.reminder_time?routineDetailState.reminder_time:""}
-                                    mode="time"
-                                    format="HH:mm"
-                                    confirmBtnText={optionData.titles.find(el => el.id === 'button_ok').title}
-                                    cancelBtnText={optionData.titles.find(el => el.id === 'button_cancel').title}
-                                    minuteInterval={10}
-                                    onDateChange={(time) => {setRoutineDetailState(prevState => {return {...prevState, reminder_time: time}});setChangedStatus(true);setChangedReminder(true);}}
-                                />
-                            </View>
-                            <View style={{width: "20%", justifyContent:"center", alignItems:"center"}}>
-                                <Switch
-                                    value={routineDetailState.reminder_enable}
-                                    onValueChange={()=>{setRoutineDetailState(prevState => {return {...prevState, reminder_enable: !prevState.reminder_enable}});setChangedStatus(true);setChangedReminder(true);}}
-                                    trackColor={{ false: "grey", true: colors.primaryColor }}
-                                    thumbColor={'white'}
-                                />
-                            </View>
-                        </View>
-                    </View>
-                }
+                </View>:null}
                 {user.rank>0?
                 <View style={global.roundBox}>
                     <View style={{
