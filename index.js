@@ -85,8 +85,7 @@ import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from "react-native-push-notification";
 import * as Analytics from "./Utils/Analytics";
 
-export let applyCustomCode: function
-applyCustomCode = (externalCodeSetup: any) => {
+export const applyCustomCode = (externalCodeSetup: any) => {
     externalCodeSetup.topicsApi.setTopicItemComponent(props => {
         return <TopicItem {...props}/>;
     })
@@ -2621,7 +2620,7 @@ applyCustomCode = (externalCodeSetup: any) => {
             </>
         );
     })
-};
+}
 
 
 
