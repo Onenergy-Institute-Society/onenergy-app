@@ -53,11 +53,11 @@ const InteractiveTranscripts = ({
                 });
             if (cueArray.length > 0) {
                 let cueVal = cueTextAndIndex(cueArray, currentDuration);
-                changeSelectedIndex(cueVal.cueindex);
-                if (cueVal.cueindex >= 0 && selectedIndex !== cueVal.cueindex) {
+                changeSelectedIndex(cueVal.cueIndex);
+                if (cueVal.cueIndex >= 0 && selectedIndex !== cueVal.cueIndex) {
                     flatListRef.scrollToIndex({
                         animated: false,
-                        index: cueVal.cueindex,
+                        index: cueVal.cueIndex,
                         viewPosition: 0.3,
                     });
                 }
@@ -83,11 +83,11 @@ const InteractiveTranscripts = ({
         }
         low = low - 1;
         if (low < 0) {
-            return {cuetext: '', cueindex: -1};
+            return {cueText: '', cueIndex: -1};
         }
         return {
-            cuetext: array[low].endTime >= value ? array[low].text : '',
-            cueindex: array[low].endTime >= value ? array[low].sequence : -1,
+            cueText: array[low].endTime >= value ? array[low].text : '',
+            cueIndex: array[low].endTime >= value ? array[low].sequence : -1,
         };
     };
     const getItemLayout = (data, index) => (

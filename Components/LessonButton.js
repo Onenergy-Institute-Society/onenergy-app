@@ -22,9 +22,9 @@ const LessonButton = (props) => {
 
     const completeLesson = async () => {
         try {
-            const apiRequest = getApi(props.config);
+            const {customRequest} = getApi(props.config);
             let course;
-            const data = await apiRequest.customRequest(
+            const data = await customRequest(
                 "wp-json/buddyboss-app/learndash/v1/lessons/" + lesson.id + "/complete",
                 "post",
                 {"course_id": lesson.parent.id},

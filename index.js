@@ -85,7 +85,8 @@ import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from "react-native-push-notification";
 import * as Analytics from "./Utils/Analytics";
 
-export const applyCustomCode = (externalCodeSetup: any) => {
+export let applyCustomCode: function
+applyCustomCode = (externalCodeSetup: any) => {
     externalCodeSetup.topicsApi.setTopicItemComponent(props => {
         return <TopicItem {...props}/>;
     })
@@ -368,7 +369,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             image: {
                 width: windowWidth - s(30),
                 height: (windowWidth - s(30)) / 9 * 4,
-                borderRadius:s(9),
+                borderRadius: s(9),
                 marginLeft: (windowWidth - s(30)) / 9,
                 overflow: 'hidden',
                 resizeMode: "cover",
@@ -385,7 +386,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             meta: {
                 width: windowWidth - s(30),
                 height: (windowWidth - s(30)) / 9 * 4,
-                borderRadius:s(9),
+                borderRadius: s(9),
                 justifyContent: "center",
                 alignItems: "center",
                 paddingRight: ms(10),
@@ -415,7 +416,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             },
             card: {
                 backgroundColor: 'white',
-                borderRadius:s(9),
+                borderRadius: s(9),
                 width: '100%',
                 height: s(150),
                 marginTop: mvs(25),
@@ -669,32 +670,32 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     const idProgressReducer = {...state.progressReducer};
 
                     const oidToday = new moment().format('YYYY-MM-DD');
-                    const oidUpdateDaily = data.progress.latestUpdate===0 || (data.progress.latestUpdate && oidToday !== new moment.unix(data.progress.latestUpdate).format('YYYY-MM-DD'));
-                    console.log('loadGroup', loadGroup )
+                    const oidUpdateDaily = data.progress.latestUpdate === 0 || (data.progress.latestUpdate && oidToday !== new moment.unix(data.progress.latestUpdate).format('YYYY-MM-DD'));
+                    console.log('loadGroup', loadGroup)
                     if (loadGroup) {
                         if (data.groups) {
                             idPracticeReducer.groups = data.groups;
                         }
                         idPracticeReducer.groupUpdate = new Date().toISOString();
-                        console.log('groupUpdate', idPracticeReducer.groupUpdate )
+                        console.log('groupUpdate', idPracticeReducer.groupUpdate)
                     }
-                    console.log('loadGuide', loadGuide )
+                    console.log('loadGuide', loadGuide)
                     if (loadGuide) {
                         if (data.guidesData) {
                             idPracticeReducer.guides = data.guidesData;
                         }
                         idPracticeReducer.guideUpdate = new Date().toISOString();
-                        console.log('guideUpdate', idPracticeReducer.guideUpdate  )
+                        console.log('guideUpdate', idPracticeReducer.guideUpdate)
                     }
-                    console.log('loadRoutine', loadRoutine )
+                    console.log('loadRoutine', loadRoutine)
                     if (loadRoutine) {
                         if (data.routines) {
                             idPracticeReducer.routines = data.routines;
                         }
                         idPracticeReducer.routineUpdate = new Date().toISOString();
-                        console.log('routineUpdate', idPracticeReducer.routineUpdate  )
+                        console.log('routineUpdate', idPracticeReducer.routineUpdate)
                     }
-                    console.log('loadAchievement', loadAchievement )
+                    console.log('loadAchievement', loadAchievement)
                     if (loadAchievement) {
                         if (data.achievements) {
                             idAchievementReducer.milestones = data.achievements.milestones;
@@ -709,7 +710,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 complete_date: '',
                                 claim_date: ''
                             };
-                            if(oidUpdateDaily){
+                            if (oidUpdateDaily) {
                                 idAchievementReducer.daily.forEach((item, tempIndex) => {
                                     idAchievementReducer.daily[tempIndex].complete_date = '';
                                     idAchievementReducer.daily[tempIndex].claim_date = '';
@@ -717,9 +718,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             }
                         }
                         idAchievementReducer.achievementUpdate = new Date().toISOString();
-                        console.log('achievementUpdate', idAchievementReducer.achievementUpdate  )
+                        console.log('achievementUpdate', idAchievementReducer.achievementUpdate)
                     }
-                    console.log('loadProgress', loadProgress )
+                    console.log('loadProgress', loadProgress)
                     if (loadProgress) {
                         if (data.progress) {
                             Object.keys(data.progress.points).forEach(key =>
@@ -729,7 +730,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             idProgressReducer.latestUpdate = Math.floor(new Date().getTime() / 1000);
                             idProgressReducer.lastUpload = data.progress.lastUpload ? parseInt(data.progress.lastUpload) : 0;
                             idProgressReducer.totalDuration = data.progress.totalDuration ? parseInt(data.progress.totalDuration) : 0;
-                            idProgressReducer.todayDuration = oidUpdateDaily? 0 : data.progress.todayDuration ? parseInt(data.progress.todayDuration) : 0;
+                            idProgressReducer.todayDuration = oidUpdateDaily ? 0 : data.progress.todayDuration ? parseInt(data.progress.todayDuration) : 0;
                             idProgressReducer.todayGoal = data.progress.todayGoal ? parseInt(data.progress.todayGoal) : 10;
                             idProgressReducer.weekDuration = oidUpdateDaily && (new Date().getDay() === 1) ? 0 : data.progress.weekDuration ? parseInt(data.progress.weekDuration) : 0;
                             idProgressReducer.progress = [];
@@ -744,7 +745,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 idProgressReducer.progress = [];
                             }
                             idProgressReducer.totalPracticeDays = data.progress.totalPracticeDays ? parseInt(data.progress.totalPracticeDays) : 0;
-                            idProgressReducer.totalLoginDays = oidUpdateDaily? data.progress.totalLoginDays ? parseInt(data.progress.totalLoginDays)+1 : 1 : data.progress.totalLoginDays ? parseInt(data.progress.totalLoginDays) : 1;
+                            idProgressReducer.totalLoginDays = oidUpdateDaily ? data.progress.totalLoginDays ? parseInt(data.progress.totalLoginDays) + 1 : 1 : data.progress.totalLoginDays ? parseInt(data.progress.totalLoginDays) : 1;
                             idProgressReducer.guideStats = data.progress.guideStats ? data.progress.guideStats : [];
                             idProgressReducer.sectionStats = data.progress.sectionStats ? data.progress.sectionStats : [];
                             idProgressReducer.routineStats = data.progress.routineStats ? data.progress.routineStats : [];
@@ -774,7 +775,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         }
                         idProgressReducer.actionList = [];
                         idProgressReducer.progressUpdate = new Date().toISOString();
-                        console.log('progressUpdate', idPracticeReducer.progressUpdate  )
+                        console.log('progressUpdate', idPracticeReducer.progressUpdate)
                     }
                     return {
                         ...state,
@@ -785,19 +786,19 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 case "ONENERGY_ROUTINE_UPDATE":
                     console.log('ONENERGY_ROUTINE_UPDATE');
                     return {
-                            ...state,
-                            practiceReducer: {
-                                ...state.practiceReducer,
+                        ...state,
+                        practiceReducer: {
+                            ...state.practiceReducer,
                             routines: action.payload,
                             routineUpdate: new Date().toISOString()
-                            }
-                        };
+                        }
+                    };
                 case "ONENERGY_ROUTINE_SAVE":
                     console.log('ONENERGY_ROUTINE_SAVE');
                     let orsRoutine = action.payload;
                     const ors_tempPracticeState = {...state.practiceReducer};
 
-                    if(ors_tempPracticeState.routines) {
+                    if (ors_tempPracticeState.routines) {
                         if (ors_tempPracticeState.routines.length) {
                             let orsIndex = ors_tempPracticeState.routines.findIndex(el => el.id === orsRoutine.id);
                             if (orsIndex >= 0) {
@@ -816,7 +817,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 routineUpdate: new Date().toISOString()
                             }
                         }
-                    }else{
+                    } else {
                         return {
                             ...state,
                             practiceReducer: {
@@ -831,16 +832,16 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     let lessonGuides = action.payload;
                     let tempGuides = {...state.practiceReducer};
                     loop1:
-                    for(let [levelIndex, level] of state.practiceReducer.guides.entries()) {
-                        for (let [sectionIndex, section] of level.sections.entries()) {
-                            let tempIndex = section.data.findIndex(item => lessonGuides.includes(item.id));
-                            if (tempIndex >= 0) {
-                                tempGuides.guides[levelIndex].sections[sectionIndex].data[tempIndex].show = true;
-                                tempGuides.guides[levelIndex].sections[sectionIndex].data[tempIndex].new = true;
-                                break loop1;
+                        for (let [levelIndex, level] of state.practiceReducer.guides.entries()) {
+                            for (let [sectionIndex, section] of level.sections.entries()) {
+                                let tempIndex = section.data.findIndex(item => lessonGuides.includes(item.id));
+                                if (tempIndex >= 0) {
+                                    tempGuides.guides[levelIndex].sections[sectionIndex].data[tempIndex].show = true;
+                                    tempGuides.guides[levelIndex].sections[sectionIndex].data[tempIndex].new = true;
+                                    break loop1;
+                                }
                             }
                         }
-                    }
                     return {
                         ...state,
                         practiceReducer: tempGuides
@@ -937,7 +938,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         } else if (acpTempAchievementState.weekly.days.length > 7) {
                             acpTempAchievementState.weekly.days = [];
                             acpTempAchievementState.weekly.days.push(acpToday);
-                        } else if (acpToday !== lastDay){
+                        } else if (acpToday !== lastDay) {
                             acpTempAchievementState.weekly.days.push(acpToday);
                             if (acpTempAchievementState.weekly.days.length === 7) {
                                 acpTempAchievementState.weekly.complete_date = acpToday;
@@ -959,7 +960,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         } else if (acpTempAchievementState.monthly.days.length > 30) {
                             acpTempAchievementState.monthly.days = [];
                             acpTempAchievementState.monthly.days.push(acpToday);
-                        } else if (acpToday !== lastDay){
+                        } else if (acpToday !== lastDay) {
                             acpTempAchievementState.monthly.days.push(acpToday);
                             if (acpTempAchievementState.monthly.days.length === 30) {
                                 acpTempAchievementState.monthly.complete_date = acpToday;
@@ -981,9 +982,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
 
                             //Process total durations
                             console.log('Process total durations');
-                            acpTempProgressState.totalDuration = acpTempProgressState.totalDuration?parseInt(acpTempProgressState.totalDuration)+parseInt(acpData.duration):parseInt(acpData.duration);
-                            acpTempProgressState.todayDuration = acpTempProgressState.todayDuration?parseInt(acpTempProgressState.todayDuration)+parseInt(acpData.duration):parseInt(acpData.duration);
-                            acpTempProgressState.weekDuration = acpTempProgressState.weekDuration?parseInt(acpTempProgressState.weekDuration)+parseInt(acpData.duration):parseInt(acpData.duration);
+                            acpTempProgressState.totalDuration = acpTempProgressState.totalDuration ? parseInt(acpTempProgressState.totalDuration) + parseInt(acpData.duration) : parseInt(acpData.duration);
+                            acpTempProgressState.todayDuration = acpTempProgressState.todayDuration ? parseInt(acpTempProgressState.todayDuration) + parseInt(acpData.duration) : parseInt(acpData.duration);
+                            acpTempProgressState.weekDuration = acpTempProgressState.weekDuration ? parseInt(acpTempProgressState.weekDuration) + parseInt(acpData.duration) : parseInt(acpData.duration);
                             break;
 
                         case 'PR'://Customized practices
@@ -1008,17 +1009,17 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 console.log('guide', guide)
                                 guide.parts.forEach(part => {
                                     console.log('part', part)
-                                    if(part.start){
+                                    if (part.start) {
                                         guideDuration = guideDuration + parseInt(part.start_duration);
                                     }
-                                    if(part.repeat && remainCount){
+                                    if (part.repeat && remainCount) {
                                         guideDuration = guideDuration + parseInt(part.repeat_duration) * remainCount;
                                     }
                                 })
                                 console.log('guideDuration', guideDuration)
                                 guideDuration = guideDuration + endDuration;
                                 console.log(guide.count, startCount, remainCount, guideDuration)
-                                tempArray.push({'guide': guide, 'duration':guideDuration, 'count': guide.count});
+                                tempArray.push({'guide': guide, 'duration': guideDuration, 'count': guide.count});
                             })
 
                             //Process routine stats
@@ -1037,9 +1038,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
 
                             //Process total durations
                             console.log('Process total durations');
-                            acpTempProgressState.totalDuration = acpTempProgressState.totalDuration?parseInt(acpTempProgressState.totalDuration)+routineDuration:routineDuration;
-                            acpTempProgressState.todayDuration = acpTempProgressState.todayDuration?parseInt(acpTempProgressState.todayDuration)+routineDuration:routineDuration;
-                            acpTempProgressState.weekDuration = acpTempProgressState.weekDuration?parseInt(acpTempProgressState.weekDuration)+routineDuration:routineDuration;
+                            acpTempProgressState.totalDuration = acpTempProgressState.totalDuration ? parseInt(acpTempProgressState.totalDuration) + routineDuration : routineDuration;
+                            acpTempProgressState.todayDuration = acpTempProgressState.todayDuration ? parseInt(acpTempProgressState.todayDuration) + routineDuration : routineDuration;
+                            acpTempProgressState.weekDuration = acpTempProgressState.weekDuration ? parseInt(acpTempProgressState.weekDuration) + routineDuration : routineDuration;
 
                             break;
 
@@ -1051,16 +1052,20 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             groupIndex = state.practiceReducer.groups.findIndex((temp) => temp.id === acpData);
                             state.practiceReducer.groups[groupIndex].guides.forEach(guide_id => {
                                 loop1:
-                                for(let level of state.practiceReducer.guides){
-                                    for(let section of level.sections){
-                                        for(let guide of section.data){
-                                            if(guide.id === guide_id){
-                                                tempArray.push({'guide': guide, 'duration':guide.count, 'count': guide.count});
-                                                break loop1
+                                    for (let level of state.practiceReducer.guides) {
+                                        for (let section of level.sections) {
+                                            for (let guide of section.data) {
+                                                if (guide.id === guide_id) {
+                                                    tempArray.push({
+                                                        'guide': guide,
+                                                        'duration': guide.count,
+                                                        'count': guide.count
+                                                    });
+                                                    break loop1
+                                                }
                                             }
                                         }
                                     }
-                                }
                             });
 
                             //Progress milestones achievement for group practice
@@ -1140,9 +1145,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
 
                             //Process total durations
                             console.log('Process total durations');
-                            acpTempProgressState.totalDuration = acpTempProgressState.totalDuration?parseInt(acpTempProgressState.totalDuration)+parseInt(state.practiceReducer.groups[groupIndex].duration):parseInt(state.practiceReducer.groups[groupIndex].duration);
-                            acpTempProgressState.todayDuration = acpTempProgressState.todayDuration?parseInt(acpTempProgressState.todayDuration)+parseInt(state.practiceReducer.groups[groupIndex].duration):parseInt(state.practiceReducer.groups[groupIndex].duration);
-                            acpTempProgressState.weekDuration = acpTempProgressState.weekDuration?parseInt(acpTempProgressState.weekDuration)+parseInt(state.practiceReducer.groups[groupIndex].duration):parseInt(state.practiceReducer.groups[groupIndex].duration);
+                            acpTempProgressState.totalDuration = acpTempProgressState.totalDuration ? parseInt(acpTempProgressState.totalDuration) + parseInt(state.practiceReducer.groups[groupIndex].duration) : parseInt(state.practiceReducer.groups[groupIndex].duration);
+                            acpTempProgressState.todayDuration = acpTempProgressState.todayDuration ? parseInt(acpTempProgressState.todayDuration) + parseInt(state.practiceReducer.groups[groupIndex].duration) : parseInt(state.practiceReducer.groups[groupIndex].duration);
+                            acpTempProgressState.weekDuration = acpTempProgressState.weekDuration ? parseInt(acpTempProgressState.weekDuration) + parseInt(state.practiceReducer.groups[groupIndex].duration) : parseInt(state.practiceReducer.groups[groupIndex].duration);
 
                             break;
                     }
@@ -1312,7 +1317,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         }
                     })
                     Analytics.segmentClient.track('Milestone Claimed', {
-                        id:mcTempMilestoneState.milestones[mcMilestoneIndex].id,
+                        id: mcTempMilestoneState.milestones[mcMilestoneIndex].id,
                         title: mcTempMilestoneState.milestones[mcMilestoneIndex].title,
                     }).then();
 
@@ -1344,7 +1349,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         }
                     })
                     Analytics.segmentClient.track('Quest Claimed', {
-                        id:dcTempDailyState.daily[dcDailyIndex].id,
+                        id: dcTempDailyState.daily[dcDailyIndex].id,
                         title: dcTempDailyState.milestones[dcDailyIndex].title,
                     }).then();
 
@@ -1608,10 +1613,10 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     }
     externalCodeSetup.reduxApi.addReducer(
         "settingReducer",
-        (state = {languages: defaultLanguage, settings: {ip:'', latitude:0, longitude:0, vouchers:[]}}, action) => {
+        (state = {languages: defaultLanguage, settings: {ip: '', latitude: 0, longitude: 0, vouchers: []}}, action) => {
             switch (action.type) {
                 case "SETTINGS_LOCAL_INFO":
-                    console.log('SETTINGS_LOCAL_INFO',action.payload )
+                    console.log('SETTINGS_LOCAL_INFO', action.payload)
                     return {
                         ...state,
                         settings: {
@@ -1623,8 +1628,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     }
                 case "SETTINGS_ADD_VOUCHER_NOTIFICATION":
                     const savnVoucher = state.settings.vouchers;
-                    if(!savnVoucher.find(voucher => voucher === action.payload))
-                    {
+                    if (!savnVoucher.find(voucher => voucher === action.payload)) {
                         savnVoucher.push(action.payload);
                         return {
                             ...state,
@@ -1633,14 +1637,13 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 vouchers: savnVoucher
                             }
                         }
-                    }else{
+                    } else {
                         return state;
                     }
                 case "SETTINGS_REMOVE_VOUCHER_NOTIFICATION":
                     const srvnVoucher = state.settings.vouchers;
                     const srvnIndexVoucher = srvnVoucher.findIndex(voucher => voucher === action.payload);
-                    if(srvnIndexVoucher >=0)
-                    {
+                    if (srvnIndexVoucher >= 0) {
                         srvnVoucher.splice(srvnIndexVoucher);
                         return {
                             ...state,
@@ -1649,7 +1652,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                 vouchers: srvnVoucher
                             }
                         }
-                    }else{
+                    } else {
                         return state;
                     }
                 case "ONENERGY_DEFAULT_LANGUAGE": {
@@ -2070,7 +2073,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             },
 
             // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
-            onRegistrationError: function(err) {
+            onRegistrationError: function (err) {
                 console.error(err.message, err);
             },
 
@@ -2180,7 +2183,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         const optionData = useSelector((state) => state.settings.settings.onenergy_option);
         const user = useSelector((state) => state.user.userObject);
         return (
-            <View style={{marginLeft:s(35),marginTop:mvs(15)}}>
+            <View style={{marginLeft: s(35), marginTop: mvs(15)}}>
                 {progressReducer && progressReducer.points && Object.keys(progressReducer.points).length ? Object.entries(progressReducer.points).map(([key, value]) => (
                     <View style={{
                         flexDirection: "row",
@@ -2226,7 +2229,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     }}>
                         {optionData.titles.find(el => el.id === 'profile_detail_label_rank').title}
                     </Text>
-                    <FastImage source={{uri: optionData.ranks[user.rank?parseInt(user.rank):0].rankImage}}
+                    <FastImage source={{uri: optionData.ranks[user.rank ? parseInt(user.rank) : 0].rankImage}}
                                style={{width: 24, height: 24, alignSelf: "center"}}/>
                     <Text style={{
                         color: '#262626',
@@ -2236,14 +2239,16 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                         fontFamily: "Montserrat-Regular",
                         fontSize: s(16)
                     }}>
-                        {optionData.ranks[user.rank?parseInt(user.rank):0].rankName}
+                        {optionData.ranks[user.rank ? parseInt(user.rank) : 0].rankName}
                     </Text>
                 </View>
                 {user.membership.length > 0 ?
-                    <Text style={{color: "#262626",fontWeight: "normal",
-                        alignItems:"flex-start",
+                    <Text style={{
+                        color: "#262626", fontWeight: "normal",
+                        alignItems: "flex-start",
                         fontFamily: "Montserrat-Regular",
-                        fontSize: s(16)}}>{user.membership[0].plan.name}</Text>
+                        fontSize: s(16)
+                    }}>{user.membership[0].plan.name}</Text>
                     : null}
             </View>
         )
@@ -2616,7 +2621,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             </>
         );
     })
-}
+};
 
 
 

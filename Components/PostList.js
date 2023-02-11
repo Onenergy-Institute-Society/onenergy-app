@@ -22,8 +22,8 @@ const PostList = props => {
     const fetchPostsData = async () => {
         try {
             let notify = false;
-            const api = getApi(props.config);
-            const data = await api.customRequest(
+            const {customRequest} = getApi(props.config);
+            const data = await customRequest(
                 "wp-json/wp/v2/posts?_embed&categories=" + postCategory + "&order=" + postOrder + "&orderby=" + postOrderBy + "&per_page=" + postPerPage + "&page=" + page,
                 "get",
                 {},

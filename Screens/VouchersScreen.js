@@ -34,11 +34,11 @@ const VouchersScreen = (props) => {
     const [alertBody, setAlertBody] = useState('');
     const [alertConfirmText, setAlertConfirmText] = useState('');
     const dispatch = useDispatch();
+    const {customRequest} = getApi(props.config);
 
     const fetchVoucherData = async () => {
         try {
-            const apiVoucher = getApi(props.config);
-            await apiVoucher.customRequest(
+            await customRequest(
                 "wp-json/onenergy/v1/voucher",
                 "get",
                 {},
@@ -61,8 +61,7 @@ const VouchersScreen = (props) => {
        });
    },[])
     const reloadUser = async () => {
-        const apiRequest = getApi(props.config);
-        await apiRequest.customRequest(
+        await customRequest(
             "wp-json/wp/v2/users/" + user.id,
             "get",
             {},
@@ -103,8 +102,8 @@ const VouchersScreen = (props) => {
                                     async () => {
                                         try {
                                             setLoading(true);
-                                            const apiRequest = getApi(props.config);
-                                            await apiRequest.customRequest(
+                                            const {customRequest} = getApi(props.config);
+                                            await customRequest(
                                                 "wp-json/onenergy/v1/redeemVoucher",
                                                 "post",
                                                 {"id": item.id},

@@ -17,8 +17,8 @@ const CategoryScreen = props => {
 
     const fetchCategoryData = async () => {
         try {
-            const apiSlide = getApi(props.config);
-            await apiSlide.customRequest(
+            const {customRequest} = getApi(props.config);
+            await customRequest(
                 "wp-json/wp/v2/categories/"+category,
                 "get",
                 {},

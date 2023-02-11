@@ -18,8 +18,8 @@ const PracticeTipsRow = props => {
     const fetchPostsData = async () => {
         try {
             let notify = false;
-            const api = getApi(props.config);
-            const data = await api.customRequest(
+            const {customRequest} = getApi(props.config);
+            const data = await customRequest(
                 "wp-json/wp/v2/posts?_embed&categories=258",
                 "get",       // get, post, patch, delete etc.
                 {},               // JSON, FormData or any other type of payload you want to send in a body of request

@@ -8,24 +8,18 @@ import moment from 'moment';
 const AchievementItem = (props) => {
     const {mode, item, date, handleOnPress, screenProps} = props;
     const {colors, global} = screenProps;
-    const optionData = useSelector((state) => {
-        const {onenergy_option} = state.settings.settings;
-        return onenergy_option;
-    });
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
     const today = new moment().format('YYYY-MM-DD');
-    const {bodyBg, primaryButtonBg, primaryColor} = colors;
-    const {pointTitle, boxTitle, textItemSubtitle, title, itemMeta} = global;
-    const {titles} = optionData;
-    const {claim_date, awards, complete_date} = item;
+
     return (
         <View style={[styles.boxShadow, styles.row]}>
-            <View style={[styles.rowLeft, {backgroundColor: bodyBg}]}>
-                <Text style={[title, {fontSize: s(12)}]}>{item.title}</Text>
+            <View style={[styles.rowLeft, {backgroundColor: colors.bodyBg}]}>
+                <Text style={[global.title, {fontSize: s(12)}]}>{item.title}</Text>
                 {mode === 'past' ?
                     <View style={{marginVertical: 10}}>
                         <View
                             style={{justifyContent: 'center', alignItems: 'center'}}>
-                            <Text style={{color: primaryButtonBg}}>Expire
+                            <Text style={{color: colors.primaryButtonBg}}>Expire
                                 in {7 - moment(today).diff(moment(date), 'days')} days</Text></View>
                     </View>
                     : null}
@@ -37,7 +31,7 @@ const AchievementItem = (props) => {
                     height: mode !== 'past' && !item.claim_date ? 'auto' : 0
                 }}>
                     <Progress.Bar showsText={true} borderWidth={0}
-                                  color={item.complete_date === today && mode === 'daily' ? "lightgreen" : item.complete_date ? "lightgreen" : primaryButtonBg}
+                                  color={item.complete_date === today && mode === 'daily' ? "lightgreen" : item.complete_date ? "lightgreen" : colors.primaryButtonBg}
                                   unfilledColor={"black"} borderRadius={9}
                                   progress={mode === 'daily' ? item.complete_date === today ? item.total : 0 : item.complete_date ? item.total : item.step / item.total}
                                   width={windowWidth / 2} height={s(16)}/>
@@ -52,7 +46,7 @@ const AchievementItem = (props) => {
                             alignItems: 'center'
                         }}>
                         <Text
-                            style={[textItemSubtitle, {color: '#FFF'}]}>{mode === 'daily' ? item.complete_date === today ? titles.find(el => el.id === 'achievement_button_completed').title : '0 / ' + item.total : item.complete_date ? titles.find(el => el.id === 'achievement_button_completed').title : item.step + ' / ' + item.total}</Text>
+                            style={[global.textItemSubtitle, {color: '#FFF'}]}>{mode === 'daily' ? item.complete_date === today ? optionData.titles.find(el => el.id === 'achievement_button_completed').title : '0 / ' + item.total : item.complete_date ? optionData.titles.find(el => el.id === 'achievement_button_completed').title : item.step + ' / ' + item.total}</Text>
                     </View>
                 </View>
             </View>
@@ -62,57 +56,46 @@ const AchievementItem = (props) => {
                 }}
             >
                 <View
-                    style={[styles.rowRight, {backgroundColor: mode === 'past' ? primaryColor : !item.complete_date ? primaryButtonBg : !item.claim_date ? primaryColor : 'grey'}]}>
+                    style={[styles.rowRight, {backgroundColor: mode === 'past' ? colors.primaryColor : !item.complete_date ? colors.primaryButtonBg : !item.claim_date ? colors.primaryColor : 'grey'}]}>
                     {
-                        mode !== 'past' && !complete_date ?
+                        mode !== 'past' && !item.complete_date ?
                             <>
                                 <Text
-                                    style={[boxTitle, {color: '#FFF'}]}
+                                    style={[global.boxTitle, {color: '#FFF'}]}
                                 >
-                                    {titles.find(el => el.id === 'achievement_button_reward').title}
+                                    {optionData.titles.find(el => el.id === 'achievement_button_reward').title}
                                 </Text>
-                                {awards&&awards.length&&awards.map(point => {
-                                    const {point: point1, name} = point;
-                                    const {pointTitle: pointTitle1} = optionData.points.find(pt => {
-                                        const {pointName} = pt;
-                                        return pointName === name;
-                                    });
-                                    return <Text
-                                            style={[pointTitle, {
+                                {item.awards&&item.awards.length&&item.awards.map(point =>
+                                    <Text
+                                        style={[global.pointTitle, {
                                                 flexWrap: "nowrap",
                                                 fontSize: s(24),
                                                 color: '#FFF'
                                             }]}
                                         >
-                                            +{point1} {pointTitle1}
-                                        </Text>;
-                                    }
+                                        +{point.point} {optionData.points.find(pt => pt.pointName === point.name).pointTitle}
+                                    </Text>
                                 )}
                             </>
                             :
                             <>
                                 <Text
-                                    style={[boxTitle, {color: '#FFF'}]}
+                                    style={[global.boxTitle, {color: '#FFF'}]}
                                 >
-                                    {mode !== 'past' && claim_date ? titles.find(el => el.id === 'achievement_button_cleared').title : titles.find(el => el.id === 'achievement_button_claim').title}
+                                    {mode !== 'past' && item.claim_date ? optionData.titles.find(el => el.id === 'achievement_button_cleared').title : optionData.titles.find(el => el.id === 'achievement_button_claim').title}
                                 </Text>
                                 <Text
                                     numberOfLines={1}
-                                    style={[itemMeta, {
+                                    style={[global.itemMeta, {
                                         flexWrap: "nowrap",
-                                        fontSize: s(mode !== 'past' && claim_date ? 11 : 24),
+                                        fontSize: s(mode !== 'past' && item.claim_date ? 11 : 24),
                                         color: '#FFF'
                                     }]}
                                 >
-                                    {mode !== 'past' && claim_date ? claim_date :
-                                        awards.map(point => {
-                                            const {point: point1, name} = point;
-                                            const {pointTitle: pointTitle1} = optionData.points.find(pt => {
-                                                const {pointName} = pt;
-                                                return pointName === name;
-                                            });
+                                    {mode !== 'past' && item.claim_date ? item.claim_date :
+                                        item.awards.map(point => {
                                             return (
-                                                '+' + point1 + ' ' + pointTitle1
+                                                '+' + point.point + ' ' + optionData.points.find(pt => pt.pointName === point.name).pointTitle
                                             )
                                         })
                                     }

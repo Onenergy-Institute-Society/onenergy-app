@@ -29,15 +29,10 @@ const MemberTracksList = (props) => {
   const { global, colors } = screenProps;
   const user = useSelector((state) => state.user.userObject);
   const optionData = useSelector(
-    (state) => {
-      const {onenergy_option} = state.settings.settings;
-      return onenergy_option;
-    }
+    (state) => state.settings.settings.onenergy_option
   );
-  const practiceReducer = useSelector((state) => {
-    const {onenergyAppReducer} = state;
-    return onenergyAppReducer ? onenergyAppReducer.practiceReducer : null;
-      }
+  const practiceReducer = useSelector((state) =>
+    state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null
   );
   const [selectedRoutine, setSelectedRoutine] = useState(null);
 
@@ -95,8 +90,6 @@ const MemberTracksList = (props) => {
       : practiceReducer.guides.find(
           (level) => parseInt(level.id) === parseInt(item.level)
         ).rank;
-    const {bgm, titles} = optionData;
-    const {bodyBg} = colors;
     return itemRank <= user.rank ? (
       <Swipeable
         ref={(ref) => (row[index] = ref)}
@@ -111,7 +104,7 @@ const MemberTracksList = (props) => {
           style={[
             styles.trackItem,
             styles.boxShadow,
-            { backgroundColor: bodyBg },
+            { backgroundColor: colors.bodyBg },
           ]}
         >
           <TouchableOpacity
@@ -188,7 +181,7 @@ const MemberTracksList = (props) => {
                 </Text>
                 <Text style={styles.subTitle}>
                   {
-                    titles.find(
+                    optionData.titles.find(
                       (el) => el.id === "practices_routines_label_practices"
                     ).title
                   }{" "}
@@ -196,13 +189,13 @@ const MemberTracksList = (props) => {
                 </Text>
                 <Text style={styles.subTitle}>
                   {
-                    titles.find(
+                    optionData.titles.find(
                       (el) =>
                         el.id === "practices_routines_label_background_music"
                     ).title
                   }{" "}
-                  {bgm((el) => el.id === item.bgm_id)
-                    ? bgm((el) => el.id === item.bgm_id).name
+                  {optionData.bgm.find((el) => el.id === item.bgm_id)
+                    ? optionData.bgm.find((el) => el.id === item.bgm_id).name
                     : ""}
                 </Text>
               </View>
@@ -232,7 +225,7 @@ const MemberTracksList = (props) => {
         style={[
           styles.trackItem,
           styles.boxShadow,
-          { backgroundColor: bodyBg },
+          { backgroundColor: colors.bodyBg },
         ]}
       >
         <ImageBackground
@@ -278,7 +271,6 @@ const MemberTracksList = (props) => {
     );
   };
 
-  // noinspection NpmUsedModulesInstalled
   const rightActions = (dragX, item, index) => {
     return (
       <View

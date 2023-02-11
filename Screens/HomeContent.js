@@ -1,5 +1,3 @@
-// noinspection ES6ConvertLetToConst
-
 import React, {useEffect, useState} from "react";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
@@ -85,8 +83,8 @@ const HomeContent = (props) => {
     },[...Object.values(progressReducer.points)])
     const fetchCurrentSolarTerm = async () => {
         try {
-            const api = getApi(props.config);
-            const data = await api.customRequest(
+            const {customRequest} = getApi(props.config);
+            const data = await customRequest(
                 "wp-json/onenergy/v1/currentSolar/",
                 "get",       // get, post, patch, delete etc.
                 {},               // JSON, FormData or any other type of payload you want to send in a body of request
@@ -177,9 +175,9 @@ const HomeContent = (props) => {
                 'list': quest.list
             });
         });
-        const apiRequest = getApi(props.config);
+        const {customRequest} = getApi(props.config);
         console.log('claimUpdate home', progressReducer.points, achievements);
-        await apiRequest.customRequest(
+        await customRequest(
             "wp-json/onenergy/v1/claimUpdate",
             "post",
             {
@@ -242,8 +240,8 @@ const HomeContent = (props) => {
     }
     const fetchIpAndLocation = async () => {
         try {
-            const api = getApi(props.config);
-            const localInfo = await api.customRequest(
+            const {customRequest} = getApi(props.config);
+            const localInfo = await customRequest(
                 "wp-json/onenergy/v1/getLocalInfo/",
                 "get",       // get, post, patch, delete etc.
                 {},               // JSON, FormData or any other type of payload you want to send in a body of request

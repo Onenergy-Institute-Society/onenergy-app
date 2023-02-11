@@ -35,8 +35,8 @@ const FeedbackScreen = props => {
 
     const sendFeedback = async () => {
         try {
-            const apiSlide = getApi(props.config);
-            await apiSlide.customRequest(
+            const {customRequest} = getApi(props.config);
+            await customRequest(
                 "wp-json/onenergy/v1/support",
                 "post",
                 {"department":department.id, "subject":subject, "content":content},

@@ -10,38 +10,19 @@ const InitData = (props) => {
     const {screenProps} = props;
     const {global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
-    const defaultLanguage = useSelector((state) => {
-        const {settingReducer} = state;
-        const {languages: languages1} = settingReducer;
-        return languages1;
-    });
-    const optionData = useSelector((state) => {
-        const {onenergy_option} = state.settings.settings;
-        return onenergy_option;
-    });
-    const cacheData = useSelector((state) => {
-        const {onenergy_cache} = state.settings.settings;
-        return onenergy_cache;
-    });
-    const practiceReducer = useSelector((state) => {
-        const {onenergyAppReducer} = state;
-        return onenergyAppReducer ? onenergyAppReducer.practiceReducer : null;
-    });
-    const progressReducer = useSelector((state) => {
-        const {onenergyAppReducer} = state;
-        return onenergyAppReducer ? onenergyAppReducer.progressReducer : null;
-    });
-    const achievementReducer = useSelector((state) => {
-        const {onenergyAppReducer} = state;
-        return onenergyAppReducer ? onenergyAppReducer.achievementReducer : null;
-    });
+    const defaultLanguage = useSelector((state) => state.settingReducer.languages);
+    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
+    const cacheData = useSelector((state) => state.settings.settings.onenergy_cache);
+    const practiceReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null);
+    const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
+    const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
     const postsReducer = useSelector((state) => state.postsReducer ? state.postsReducer : null);
     const dispatch = useDispatch();
 
     const fetchInitDate = async (loadGroup, loadGuide, loadRoutine, loadAchievement, loadProgress) => {
         try {
-            const api = getApi(props.config);
-            const data = await api.customRequest(
+            const {customRequest} = getApi(props.config);
+            const data = await customRequest(
                 "wp-json/onenergy/v1/initData/",
                 "get",       // get, post, patch, delete etc.
                 {
