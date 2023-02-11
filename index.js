@@ -2358,7 +2358,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     })
 
     externalCodeSetup.forumsHooksApi.setForumItemComponent(props => <ForumItem {...props}/>)
-    externalCodeSetup.navigationApi.setAnimatedSwitchNavigator((routes, options, routeProps) => {
+    /*externalCodeSetup.navigationApi.setAnimatedSwitchNavigator((routes, options, routeProps) => {
         const feature = routeProps.settings.features.multisite_network;
         const hasMultiSite = Platform.select({
             ios: feature.is_enabled_ios,
@@ -2415,7 +2415,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             routes: newRoutes,
             options: newOptions,
         }
-    })
+    })*/
     externalCodeSetup.forumSingleHooksApi.setHeaderRightComponent(({
                                                                        t,
                                                                        forum,
