@@ -8,16 +8,16 @@ const TrackSlider = (props) => {
     const {type, totalDuration, pastPosition, user} = props;
     const {position, duration} = useProgress()
     const [pastDuration, setPastDuration] = useState(0);
-    const secondsToHHMMSS = (seconds: number | string) => {
+    const secondsToHHMMSS = (seconds) => {
         seconds = Number(seconds);
         const h = Math.floor(seconds / 3600);
         const m = Math.floor((seconds % 3600) / 60);
         const s = Math.floor((seconds % 3600) % 60);
 
-        const hrs = h > 0 ? (h < 10 ? `0${h}:` : `${h}:`) : '';
-        const mins = m > 0 ? (m < 10 ? `0${m}\'` : `${m}\'`) : '00\'';
-        const scnds = s > 0 ? (s < 10 ? `0${s}\"` : `${s}\"`) : '00\"';
-        return `${hrs}${mins}${scnds}`;
+        const strHours = h > 0 ? (h < 10 ? `0${h}:` : `${h}:`) : '';
+        const strMinutes = m > 0 ? (m < 10 ? `0${m}\'` : `${m}\'`) : '00\'';
+        const strSeconds = s > 0 ? (s < 10 ? `0${s}\"` : `${s}\"`) : '00\"';
+        return `${strHours}${strMinutes}${strSeconds}`;
     };
     useEffect(() => {
         if (type)
@@ -30,6 +30,7 @@ const TrackSlider = (props) => {
         }
     }, [pastPosition])
 
+    const {test_mode} = user;
     return (
         <>
             {type === 'routine' ?
@@ -52,8 +53,8 @@ const TrackSlider = (props) => {
                         maximumValue={duration}
                         minimumTrackTintColor={'#8c79ea'}
                         maximumTrackTintColor={'#d0c9f6'}
-                        disabled={!user.test_mode}
-                        onValueChange={val => {
+                        disabled={!test_mode}
+                        onValueChange={() => {
                             TrackPlayer.pause();
                         }}
                         onSlidingComplete={val => {

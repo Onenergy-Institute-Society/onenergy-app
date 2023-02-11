@@ -1,3 +1,5 @@
+// noinspection ES6ConvertLetToConst
+
 import React, {useEffect, useState} from "react";
 import {connect, useSelector, useDispatch} from "react-redux";
 import {
@@ -50,7 +52,7 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
     const dispatch = useDispatch();
     const [sunrise, setSunrise] = useState('');
-    const [moonPhase, setMoonPhase] = useState('');
+    const [moonPhase, setMoonPhase] = useState({});
     const [nextMoonPhase, setNextMoonPhase] = useState({});
     const [currentSolarTerm, setCurrentSolarTerm] = useState(null);
     const [points, setPoints] = useState(null);
@@ -129,9 +131,9 @@ const HomeContent = (props) => {
                     'list': quest.list
                 });
             });
-            const apiRequest = getApi(props.config);
             console.log('statsUpdate home', progressReducer, achievements);
-            await apiRequest.customRequest(
+            const {customRequest} = getApi(props.config);
+            await customRequest(
                 "wp-json/onenergy/v1/statsUpdate",
                 "post",
                 {
@@ -225,8 +227,8 @@ const HomeContent = (props) => {
         setMoonPhase({phaseName, phaseTitle})
         const lunarAge = (phaseNumber * 3)/20;
         let dateDiff;
-        let moonPhaseTitle = '';
-        let moonPhaseDate = '';
+        let moonPhaseTitle;
+        let moonPhaseDate;
 
         if (lunarAge <= 14.765) {
             dateDiff = 14.765 - lunarAge;

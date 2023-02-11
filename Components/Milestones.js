@@ -74,13 +74,13 @@ const Milestones = (props) => {
         return show;
     }
     const renderItem = ({item}) => {
-        return (
+        let element = (
             Array.isArray(item.step) ?
                 <MilestonesAccordian item={item} handleOnPress={handleOnPress} optionData={optionData} {...props}/>
                 :
                 <AchievementItem mode={type} item={item} handleOnPress={handleOnPress} {...props}/>
-            : null
         );
+        return element;
     };
     return (
         <SafeAreaView style={global.container}>

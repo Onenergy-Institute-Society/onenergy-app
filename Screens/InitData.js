@@ -1,8 +1,6 @@
 import React, {useEffect} from "react";
-import {connect, useSelector, useDispatch} from "react-redux";
-import {
-    SafeAreaView, Text, ImageBackground, BackHandler, ActivityIndicator
-} from "react-native";
+import {connect, useDispatch, useSelector} from "react-redux";
+import {ActivityIndicator, BackHandler, ImageBackground, SafeAreaView, Text} from "react-native";
 import {getApi} from "@src/services";
 import messaging from '@react-native-firebase/messaging';
 import * as Analytics from "../Utils/Analytics";
@@ -12,12 +10,31 @@ const InitData = (props) => {
     const {screenProps} = props;
     const {global} = screenProps;
     const user = useSelector((state) => state.user.userObject);
-    const defaultLanguage = useSelector((state) => state.settingReducer.languages);
-    const optionData = useSelector((state) => state.settings.settings.onenergy_option);
-    const cacheData = useSelector((state) => state.settings.settings.onenergy_cache);
-    const practiceReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null);
-    const progressReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.progressReducer : null);
-    const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
+    const defaultLanguage = useSelector((state) => {
+        const {settingReducer} = state;
+        const {languages: languages1} = settingReducer;
+        return languages1;
+    });
+    const optionData = useSelector((state) => {
+        const {onenergy_option} = state.settings.settings;
+        return onenergy_option;
+    });
+    const cacheData = useSelector((state) => {
+        const {onenergy_cache} = state.settings.settings;
+        return onenergy_cache;
+    });
+    const practiceReducer = useSelector((state) => {
+        const {onenergyAppReducer} = state;
+        return onenergyAppReducer ? onenergyAppReducer.practiceReducer : null;
+    });
+    const progressReducer = useSelector((state) => {
+        const {onenergyAppReducer} = state;
+        return onenergyAppReducer ? onenergyAppReducer.progressReducer : null;
+    });
+    const achievementReducer = useSelector((state) => {
+        const {onenergyAppReducer} = state;
+        return onenergyAppReducer ? onenergyAppReducer.achievementReducer : null;
+    });
     const postsReducer = useSelector((state) => state.postsReducer ? state.postsReducer : null);
     const dispatch = useDispatch();
 

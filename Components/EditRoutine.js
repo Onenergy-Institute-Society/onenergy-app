@@ -414,14 +414,14 @@ const EditRoutine = props => {
         )
     }
 
-    const handleWillOpen = (index: any) => () => {
+    const handleWillOpen = (index) => () => {
         if ((key !== '') && (key !== index)) {
             if (row[key]) {
                 row[key].close();
             }
         }
     }
-    const handleOpen = (index: any) => () => {
+    const handleOpen = (index) => () => {
         setKey(index);
     }
     const renderTracks = (handler, id, itemData) => {
@@ -432,8 +432,7 @@ const EditRoutine = props => {
                 leftThreshold={10}
                 rightThreshold={10}
                 renderRightActions={(_, dragX) => rightActions(dragX, itemData, id)}
-                onSwipeableRightWillOpen={handleWillOpen(id)}
-                onSwipeableLeftWillOpen={handleWillOpen(id)}
+                onSwipeableWillOpen={handleWillOpen(id)}
                 onSwipeableOpen={handleOpen(id)}
             >
                 <View style={{width: windowWidth - s(30), flexDirection: "row", justifyContent: "flex-start"}}>

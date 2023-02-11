@@ -5,7 +5,7 @@ import {NavigationActions, withNavigation} from "react-navigation";
 import ScalableImage from "../Components/ScalableImage";
 import TouchableScale from './TouchableScale';
 import {s, vs, windowWidth} from '../Utils/Scale';
-import AwesomeAlert from "../Components/AwesomeAlert";
+import AwesomeAlert from 'react-native-awesome-alerts';
 import withDeeplinkClickHandler from "@src/components/hocs/withDeeplinkClickHandler";
 import moment from 'moment';
 import * as Analytics from "../Utils/Analytics";

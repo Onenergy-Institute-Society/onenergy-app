@@ -1,17 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {connect, useDispatch, useSelector} from "react-redux";
+import {connect, useDispatch} from "react-redux";
 import {AppState, StyleSheet, TouchableOpacity, View} from 'react-native';
 import TrackPlayer, {Event, State, useTrackPlayerEvents} from 'react-native-track-player';
-import IconButton from "@src/components/IconButton";
 import {s} from '../Utils/Scale';
 import TrackSlider from "./TrackSlider";
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 import * as Analytics from "../Utils/Analytics";
-import {
-    SvgPauseCircleIcon,
-    SvgPlayCircleIcon,
-    SvgStopCircleIcon,
-} from "../Utils/svg";
+import {SvgPauseCircleIcon, SvgPlayCircleIcon, SvgStopCircleIcon,} from "../Utils/svg";
 
 const AudioPlayer = (props) => {
     const {screenProps, user} = props;
@@ -61,7 +56,7 @@ const AudioPlayer = (props) => {
     }, [track]);
 
     async function addTrack(track) {
-        const state = await TrackPlayer.getState();
+        await TrackPlayer.getState();
         await TrackPlayer.reset();
         return await TrackPlayer.add(track, -1);
     }
@@ -137,18 +132,19 @@ const AudioPlayer = (props) => {
         setStopped(true);
     };
 
+    const {textColor, secondaryButtonBg} = colors;
     return (
-        <View style={[styles.playerMaxView, {backgroundColor: colors.secondaryButtonBg}]}>
+        <View style={[styles.playerMaxView, {backgroundColor: secondaryButtonBg}]}>
             <View style={styles.buttonsSection}>
                 <View style={styles.buttonsCol}>
                     <TouchableOpacity onPress={onPlayPausePress} style={styles.playPauseButton}
                                       hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
-                        {playing ? <SvgPauseCircleIcon color={colors.textColor}/>:<SvgPlayCircleIcon color={colors.textColor}/>}
+                        {playing ? <SvgPauseCircleIcon color={textColor}/>:<SvgPlayCircleIcon color={textColor}/>}
                     </TouchableOpacity>
                     {!stopped ? (
                         <TouchableOpacity onPress={onStopPress} style={styles.stopButton}
                                           hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
-                            <SvgStopCircleIcon color={colors.textColor}/>
+                            <SvgStopCircleIcon color={textColor}/>
                         </TouchableOpacity>
                     ) : null}
                 </View>
@@ -160,7 +156,7 @@ const AudioPlayer = (props) => {
     );
 };
 
-const flexStyles: any = {
+const flexStyles = {
     display: 'flex',
     flex: 1,
     justifyContent: 'space-around',

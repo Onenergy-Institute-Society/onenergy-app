@@ -1,3 +1,4 @@
+// @ts-ignore
 import React, {useEffect, useRef, useState} from 'react';
 import {FlatList, StyleProp, Text, ViewStyle} from 'react-native';
 import WebVttParser from './VTTtoJsonParser.js';
@@ -24,7 +25,7 @@ const InteractiveTranscripts = ({
                                 }: InteractiveTranscriptsProps) => {
     const [cueArray, setCueArray] = useState([]);
     const [selectedIndex, changeSelectedIndex] = useState(-1);
-    let flatlistRef: any = useRef<FlatList>(null);
+    let flatListRef: any = useRef<FlatList>(null);
 
     useEffect(() => {
         try {
@@ -35,7 +36,7 @@ const InteractiveTranscripts = ({
                     changeSelectedIndex(0);
                     let output = WebVttParser(text);
                     if (output[0].startTime > 0) {
-                        let tempArray = output.map((item, itemIndex) => {
+                        let tempArray = output.map((item) => {
                             item.sequence = item.sequence + 1;
                             return item;
                         })
@@ -51,12 +52,12 @@ const InteractiveTranscripts = ({
                     }
                 });
             if (cueArray.length > 0) {
-                let cueval = cueTextAndIndex(cueArray, currentDuration);
-                changeSelectedIndex(cueval.cueindex);
-                if (cueval.cueindex >= 0 && selectedIndex !== cueval.cueindex) {
-                    flatlistRef.scrollToIndex({
+                let cueVal = cueTextAndIndex(cueArray, currentDuration);
+                changeSelectedIndex(cueVal.cueindex);
+                if (cueVal.cueindex >= 0 && selectedIndex !== cueVal.cueindex) {
+                    flatListRef.scrollToIndex({
                         animated: false,
-                        index: cueval.cueindex,
+                        index: cueVal.cueindex,
                         viewPosition: 0.3,
                     });
                 }
@@ -99,7 +100,7 @@ const InteractiveTranscripts = ({
                 <FlatList
                     style={{flex: 1}}
                     ref={(ref) => {
-                        flatlistRef = ref;
+                        flatListRef = ref;
                     }}
                     getItemLayout={getItemLayout}
                     scrollEnabled={false}

@@ -222,7 +222,7 @@ const AudioPlayerRoutine = (props) => {
 };
 
 
-const flexStyles: any = {
+const flexStyles = {
     display: 'flex',
     flex: 1,
     justifyContent: 'space-around',

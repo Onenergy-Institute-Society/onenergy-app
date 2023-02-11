@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {
   Alert,
   FlatList,
@@ -12,12 +12,12 @@ import {
   UIManager,
   View,
 } from "react-native";
-import { useSelector } from "react-redux";
-import { mvs, s, vs, windowWidth } from "../Utils/Scale";
+import {useSelector} from "react-redux";
+import {mvs, s, vs, windowWidth} from "../Utils/Scale";
 import AudioPlayerRoutine from "./AudioPlayerRoutine";
-import { Swipeable } from "react-native-gesture-handler";
+import {Swipeable} from "react-native-gesture-handler";
 import IconButton from "@src/components/IconButton";
-import { SvgBell, SvgChevronsLeft, SvgClock } from "../Utils/svg";
+import {SvgBell, SvgChevronsLeft, SvgClock} from "../Utils/svg";
 import * as Analytics from "../Utils/Analytics";
 
 if (Platform.OS === "android") {
@@ -29,10 +29,15 @@ const MemberTracksList = (props) => {
   const { global, colors } = screenProps;
   const user = useSelector((state) => state.user.userObject);
   const optionData = useSelector(
-    (state) => state.settings.settings.onenergy_option
+    (state) => {
+      const {onenergy_option} = state.settings.settings;
+      return onenergy_option;
+    }
   );
-  const practiceReducer = useSelector((state) =>
-    state.onenergyAppReducer ? state.onenergyAppReducer.practiceReducer : null
+  const practiceReducer = useSelector((state) => {
+    const {onenergyAppReducer} = state;
+    return onenergyAppReducer ? onenergyAppReducer.practiceReducer : null;
+      }
   );
   const [selectedRoutine, setSelectedRoutine] = useState(null);
 
@@ -76,9 +81,9 @@ const MemberTracksList = (props) => {
   };
   const row = [];
   const [key, setKey] = useState("");
-  const handleWillOpen = (index: any) => () =>
+  const handleWillOpen = (index) => () =>
     key !== "" && key !== index && row[key].close();
-  const handleOpen = (index: any) => () => setKey(index);
+  const handleOpen = (index) => () => setKey(index);
   const renderItem = ({ item, index }) => {
     let showPlayer = !!(selectedRoutine && selectedRoutine.id === item.id);
     let totalDuration = 0;
@@ -90,6 +95,8 @@ const MemberTracksList = (props) => {
       : practiceReducer.guides.find(
           (level) => parseInt(level.id) === parseInt(item.level)
         ).rank;
+    const {bgm, titles} = optionData;
+    const {bodyBg} = colors;
     return itemRank <= user.rank ? (
       <Swipeable
         ref={(ref) => (row[index] = ref)}
@@ -97,15 +104,14 @@ const MemberTracksList = (props) => {
         leftThreshold={10}
         rightThreshold={10}
         renderRightActions={(_, dragX) => rightActions(dragX, item, index)}
-        onSwipeableRightWillOpen={handleWillOpen(index)}
-        onSwipeableLeftWillOpen={handleWillOpen(index)}
+        onSwipeableWillOpen={handleWillOpen(index)}
         onSwipeableOpen={handleOpen(index)}
       >
         <View
           style={[
             styles.trackItem,
             styles.boxShadow,
-            { backgroundColor: colors.bodyBg },
+            { backgroundColor: bodyBg },
           ]}
         >
           <TouchableOpacity
@@ -182,7 +188,7 @@ const MemberTracksList = (props) => {
                 </Text>
                 <Text style={styles.subTitle}>
                   {
-                    optionData.titles.find(
+                    titles.find(
                       (el) => el.id === "practices_routines_label_practices"
                     ).title
                   }{" "}
@@ -190,13 +196,13 @@ const MemberTracksList = (props) => {
                 </Text>
                 <Text style={styles.subTitle}>
                   {
-                    optionData.titles.find(
+                    titles.find(
                       (el) =>
                         el.id === "practices_routines_label_background_music"
                     ).title
                   }{" "}
-                  {optionData.bgm.find((el) => el.id === item.bgm_id)
-                    ? optionData.bgm.find((el) => el.id === item.bgm_id).name
+                  {bgm((el) => el.id === item.bgm_id)
+                    ? bgm((el) => el.id === item.bgm_id).name
                     : ""}
                 </Text>
               </View>
@@ -226,7 +232,7 @@ const MemberTracksList = (props) => {
         style={[
           styles.trackItem,
           styles.boxShadow,
-          { backgroundColor: colors.bodyBg },
+          { backgroundColor: bodyBg },
         ]}
       >
         <ImageBackground
@@ -262,8 +268,8 @@ const MemberTracksList = (props) => {
             </Text>
             <Text style={[styles.subTitle, { color: "grey" }]}>
               Background:{" "}
-              {optionData.bgm.find((el) => el.id === item.bgm_id)
-                ? optionData.bgm.find((el) => el.id === item.bgm_id).name
+              {bgm((el) => el.id === item.bgm_id)
+                ? bgm((el) => el.id === item.bgm_id).name
                 : ""}
             </Text>
           </View>
@@ -272,6 +278,7 @@ const MemberTracksList = (props) => {
     );
   };
 
+  // noinspection NpmUsedModulesInstalled
   const rightActions = (dragX, item, index) => {
     return (
       <View
