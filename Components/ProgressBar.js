@@ -1,6 +1,4 @@
-// @ts-ignore
 import React from 'react';
-// @ts-ignore
 import Slider from 'react-native-slider';
 import {StyleSheet, Text, View} from 'react-native';
 import {ms} from "../Utils/Scale";

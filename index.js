@@ -2113,16 +2113,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             return null;
         }
     })
-    externalCodeSetup.deeplinksApi.setDeeplinksWithoutEmbeddedReturnValueFilter((defaultValue, linkObject, navigationService) => {
-        console.log('setDeeplinksWithoutEmbeddedReturnValueFilter', linkObject)
-        return true;
-    });
-    externalCodeSetup.deeplinksApi.setDeeplinksReturnValueFilter(
-        (defaultReturnValue, linkObject, navigation) => {
-            console.log('setDeeplinksReturnValueFilter', linkObject)
-            return true;
-        }
-    );
+
     externalCodeSetup.deeplinksApi.setDeeplinksWithoutEmbeddedReturnValueFilter((defaultValue, linkObject, navigationService) => {
         console.log('setDeeplinksWithoutEmbeddedReturnValueFilter', linkObject)
         if (linkObject.action === "open_screen") {
@@ -2619,6 +2610,50 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 </View>
             </>
         );
+    })
+    externalCodeSetup.pageScreenHooksApi.setOnShouldStartLoadWithRequest(props => {
+        const {
+            index,
+            req,
+            isLoading,
+            isFocused,
+            currentUrl,
+            nextUrl,
+            isExternalDeeplink,
+            onNext,
+            openExternal,
+            shouldOpenInExternalBrowser,
+            isSameSite,
+            attemptDeepLink
+        } = props;
+
+        // If webview was not tapped, handle loading in the active webview
+        if (req.navigationType !== "click") {
+            return true;
+        }
+        // If webview is loading, handle redirection in the same webview
+        if (isLoading) {
+            return true;
+        }
+
+        if (!req.url) {
+            return true;
+        }
+
+        if (nextUrl.pathname === null) {
+            return true;
+        }
+
+        if (
+            currentUrl.pathname === nextUrl.pathname &&
+            currentUrl.host === nextUrl.host
+        ) {
+            return true;
+        }
+
+        if (!isFocused) {
+            return false;
+        }
     })
 }
 

@@ -25,20 +25,6 @@
     "react-native-chart-kit": "^6.12.0",
     "suncalc": "^1.9.0"
   },
-  "devDependencies": {
-    "@react-native-community/push-notification-ios": "^1.10.1",
-    "@segment/analytics-react-native": "^2.13.0",
-    "@segment/sovran-react-native": "^0.4.5",
-    "moment": "^2.29.4",
-    "react-native-chart-kit": "^6.12.0",
-    "react-native-datepicker": "^1.7.2",
-    "react-native-gesture-handler": "^2.9.0",
-    "react-native-progress": "^5.0.0",
-    "react-native-push-notification": "^8.1.1",
-    "react-native-track-player": "^3.2.0",
-    "react-redux": "^8.0.5",
-    "suncalc": "^1.9.0"
-  },
   "nativeDependencies": {
     "@segment/analytics-react-native": "^2.13.0",
     "@segment/sovran-react-native": "^0.4.5"

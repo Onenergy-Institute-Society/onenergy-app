@@ -132,19 +132,18 @@ const AudioPlayer = (props) => {
         setStopped(true);
     };
 
-    const {textColor, secondaryButtonBg} = colors;
     return (
-        <View style={[styles.playerMaxView, {backgroundColor: secondaryButtonBg}]}>
+        <View style={[styles.playerMaxView, {backgroundColor: colors.secondaryButtonBg}]}>
             <View style={styles.buttonsSection}>
                 <View style={styles.buttonsCol}>
                     <TouchableOpacity onPress={onPlayPausePress} style={styles.playPauseButton}
                                       hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
-                        {playing ? <SvgPauseCircleIcon color={textColor}/>:<SvgPlayCircleIcon color={textColor}/>}
+                        {playing ? <SvgPauseCircleIcon color={colors.textColor}/>:<SvgPlayCircleIcon color={colors.textColor}/>}
                     </TouchableOpacity>
                     {!stopped ? (
                         <TouchableOpacity onPress={onStopPress} style={styles.stopButton}
                                           hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
-                            <SvgStopCircleIcon color={textColor}/>
+                            <SvgStopCircleIcon color={colors.textColor}/>
                         </TouchableOpacity>
                     ) : null}
                 </View>
@@ -156,7 +155,7 @@ const AudioPlayer = (props) => {
     );
 };
 
-const flexStyles = {
+const flexStyles: any = {
     display: 'flex',
     flex: 1,
     justifyContent: 'space-around',

@@ -97,7 +97,8 @@ const MemberTracksList = (props) => {
         leftThreshold={10}
         rightThreshold={10}
         renderRightActions={(_, dragX) => rightActions(dragX, item, index)}
-        onSwipeableWillOpen={handleWillOpen(index)}
+        onSwipeableRightWillOpen={handleWillOpen(index)}
+        onSwipeableLeftWillOpen={handleWillOpen(index)}
         onSwipeableOpen={handleOpen(index)}
       >
         <View
@@ -246,25 +247,9 @@ const MemberTracksList = (props) => {
             </Text>
           </View>
           <View style={styles.subTitleBox}>
-            <Text style={[styles.subTitle, { color: "grey" }]}>
-              {item.level &&
-              practiceReducer.guides.find(
-                (level) => parseInt(level.id) === parseInt(item.level)
-              )
-                ? practiceReducer.guides.find(
-                    (level) => level.id === item.level
-                  ).title
-                : "Preparatory Practices"}
-            </Text>
-            <Text style={[styles.subTitle, { color: "grey" }]}>
-              Practices: {item.routine.length}
-            </Text>
-            <Text style={[styles.subTitle, { color: "grey" }]}>
-              Background:{" "}
-              {bgm((el) => el.id === item.bgm_id)
-                ? bgm((el) => el.id === item.bgm_id).name
-                : ""}
-            </Text>
+                        <Text style={[styles.subTitle, {color:'grey'}]}>{item.level&&practiceReducer.guides.find(level=>parseInt(level.id)===parseInt(item.level))?practiceReducer.guides.find(level=>level.id===item.level).title:'Preparatory Practices'}</Text>
+                        <Text style={[styles.subTitle, {color:'grey'}]}>Practices: {item.routine.length}</Text>
+                        <Text style={[styles.subTitle, {color:'grey'}]}>Background: {optionData.bgm.find(el => el.id === item.bgm_id)?optionData.bgm.find(el => el.id === item.bgm_id).name:''}</Text>
           </View>
         </ImageBackground>
       </View>
