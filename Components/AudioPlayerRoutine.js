@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {connect, useDispatch, useSelector} from "react-redux";
+import {connect, useDispatch} from "react-redux";
 import {StyleSheet, Text, TouchableOpacity, View, Platform} from 'react-native';
 import TrackPlayer, {Event, State, useTrackPlayerEvents} from 'react-native-track-player';
-import IconButton from "@src/components/IconButton";
 import {s} from '../Utils/Scale';
 import Video from 'react-native-video';
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
@@ -20,7 +19,7 @@ const AudioPlayerRoutine = (props) => {
     const [nextTrack, setNextTrack] = useState(0);
     const [pastPosition, setPastPosition] = useState(0);
     const dispatch = useDispatch();
-    console.log(routine)
+
     const updateProgress = async () => {
         try {
             dispatch({
@@ -174,7 +173,7 @@ const AudioPlayerRoutine = (props) => {
                     </View>
                 </View>
                 <View style={styles.progressBarSection}>
-                    <TrackSlider user={user} type={"routine"} pastPosition={pastPosition}
+                    <TrackSlider stopped={stopped} user={user} type={"routine"} pastPosition={pastPosition}
                                  totalDuration={totalDuration} {...props}/>
                     {routine.bgm_id ? (
                         <Video

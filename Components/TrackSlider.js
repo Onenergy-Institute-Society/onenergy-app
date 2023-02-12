@@ -5,7 +5,7 @@ import Slider from 'react-native-slider';
 import {ms, s, vs} from "../Utils/Scale";
 
 const TrackSlider = (props) => {
-    const {type, totalDuration, pastPosition, user} = props;
+    const {type, totalDuration, pastPosition, user, stopped} = props;
     const {position, duration} = useProgress()
     const [pastDuration, setPastDuration] = useState(0);
     const secondsToHHMMSS = (seconds: number | string) => {
@@ -24,11 +24,10 @@ const TrackSlider = (props) => {
             setPastDuration(pastDuration + pastPosition);
     }, [duration])
     useEffect(() => {
-        if (type) {
-            if (pastPosition === 0)
-                setPastDuration(0);
+        if (stopped) {
+            setPastDuration(0);
         }
-    }, [pastPosition])
+    }, [stopped])
 
     return (
         <>
