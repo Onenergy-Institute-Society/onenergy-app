@@ -4,7 +4,7 @@ import {getApi} from "@src/services";
 import {NavigationActions, StackActions, withNavigation} from "react-navigation";
 import {connect, useDispatch, useSelector} from "react-redux";
 import IconButton from "@src/components/IconButton";
-import AwesomeAlert from 'react-native-awesome-alerts';
+import AwesomeAlert from "../Utils/AwesomeAlert";
 
 const LessonButton = (props) => {
     const {global, colors, lesson} = props;

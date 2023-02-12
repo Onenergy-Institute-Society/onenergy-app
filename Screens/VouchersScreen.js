@@ -19,7 +19,7 @@ import RNRestart from 'react-native-restart';
 import {BlurView} from "@react-native-community/blur";
 import ScalableImage from "../Components/ScalableImage";
 import {SvgIconBack} from "../Utils/svg";
-import AwesomeAlert from 'react-native-awesome-alerts';
+import AwesomeAlert from "../Utils/AwesomeAlert";
 import * as Analytics from "../Utils/Analytics";
 
 const VouchersScreen = (props) => {

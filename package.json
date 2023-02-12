@@ -20,8 +20,6 @@
   "dependencies": {
     "@segment/analytics-react-native": "^2.10.1",
     "@segment/sovran-react-native": "^0.4.5",
-    "react-native-animated-numbers": "^0.4.1",
-    "react-native-awesome-alerts": "^2.0.0",
     "react-native-chart-kit": "^6.12.0",
     "suncalc": "^1.9.0"
   },
@@ -32,8 +30,5 @@
   "podDependencies": {
     "segment-analytics-react-native": "@segment/analytics-react-native",
     "sovran-react-native": "@segment/sovran-react-native"
-  },
-  "devDependencies": {
-    "@react-native-community/datetimepicker": "^6.7.4"
   }
 }
