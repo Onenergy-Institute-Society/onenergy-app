@@ -33,7 +33,7 @@ const LessonButton = (props) => {
                 false
             ).then(response => response.data);
             if (data) {
-                 course = await apiRequest.customRequest(
+                 course = await customRequest(
                     "wp-json/buddyboss-app/learndash/v1/courses/" + lesson.parent.id,
                     "get",
                     {},

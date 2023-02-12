@@ -2280,9 +2280,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                                                             'list': quest.list
                                                         });
                                                     });
-                                                    const apiRequest = getApi(config);
+                                                    const {customRequest} = getApi(config);
                                                     console.log('statsUpdate logout', progressReducer, achievements);
-                                                    apiRequest.customRequest(
+                                                    customRequest(
                                                         "wp-json/onenergy/v1/statsUpdate",
                                                         "post",
                                                         {
