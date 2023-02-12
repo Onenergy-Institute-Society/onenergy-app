@@ -298,14 +298,36 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         let featuredUrl = viewModel.featuredUrl.replace('-300x200', '-1024x683');
         let statusText;
         let statusBarColor;
+        const lesson_time = new moment.utc(viewModel.date);
         const current_time = new moment.utc();
+        const diffMinutes = lesson_time.diff(current_time, 'minutes');
+        const diffHours = lesson_time.diff(current_time, 'hours');
+        const diffDays = lesson_time.diff(current_time, 'days');
+        let diffTime;
+        if (diffMinutes < 60) {
+            diffTime = 'in ' + diffMinutes + ' Minutes';
+        } else {
+            if (diffHours < 24) {
+                diffTime = 'tomorrow';
+            } else {
+                diffTime = 'in ' + diffDays + ' Days';
+            }
+        }
+        let lessonNote = '';
         if (viewModel.progression === 100) {
             statusBarColor = colors.coursesLabelCompleted;
             statusText = optionData.titles.find(el => el.id === 'programs_label_completed').title;
+            lessonNote = 'Congratulations on completion';
         } else if (viewModel.price && viewModel.price.expired) {
             statusBarColor = "black";
             statusText = optionData.titles.find(el => el.id === 'programs_label_expired').title;
+            lessonNote = 'Course is expired, no more access';
         } else if (viewModel.hasAccess) {
+            if (lesson_time > current_time) {
+                lessonNote = 'Next lesson will be available ' + diffTime;
+            } else {
+                lessonNote = 'Next lesson is available now';
+            }
             const expiringTime = new moment.utc(viewModel.price.expires_on);
             const diffExpiringDays = expiringTime.diff(current_time, 'days');
             let diffExpiringTime;
@@ -313,6 +335,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             if (diffExpiringDays <= 7 && diffExpiringDays > 0) {
                 statusBarColor = "grey";
                 statusText = diffExpiringTime;
+                lessonNote = 'Course is expiring soon';
             } else {
                 if (viewModel.progression > 0) {
                     statusBarColor = colors.coursesLabelProgress;
@@ -320,6 +343,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                 } else {
                     statusBarColor = colors.coursesLabelFree;
                     statusText = optionData.titles.find(el => el.id === 'programs_label_enrolled').title;
+                    lessonNote = 'Please start your first lesson';
                 }
             }
         } else {
@@ -832,6 +856,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     let tempGuides = {...state.practiceReducer};
                     loop1:
                         for (let [levelIndex, level] of state.practiceReducer.guides.entries()) {
+                        loop2:
                             for (let [sectionIndex, section] of level.sections.entries()) {
                                 let tempIndex = section.data.findIndex(item => lessonGuides.includes(item.id));
                                 if (tempIndex >= 0) {
@@ -861,13 +886,12 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                     break;
                 case "ONENERGY_PROGRESS_UPLOADED":
                     console.log('ONENERGY_PROGRESS_UPLOADED', Math.floor(new Date().getTime() / 1000));
+                    const opuTempProgressState = {...state.progressReducer};
+                    opuTempProgressState.actionList = [];
+                    opuTempProgressState.lastUpload = Math.floor(new Date().getTime() / 1000);
                     return {
                         ...state,
-                        progressReducer: {
-                            ...state.progressReducer,
-                            actionList: [],
-                            lastUpload: Math.floor(new Date().getTime() / 1000)
-                        }
+                        progressReducer: opuTempProgressState
                     };
                 case "ONENERGY_DAILY_UPDATE":
                     console.log('ONENERGY_DAILY_UPDATE');
@@ -1052,7 +1076,9 @@ export const applyCustomCode = (externalCodeSetup: any) => {
                             state.practiceReducer.groups[groupIndex].guides.forEach(guide_id => {
                                 loop1:
                                     for (let level of state.practiceReducer.guides) {
+                                    loop2:
                                         for (let section of level.sections) {
+                                        loop3:
                                             for (let guide of section.data) {
                                                 if (guide.id === guide_id) {
                                                     tempArray.push({
@@ -2358,7 +2384,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
     })
 
     externalCodeSetup.forumsHooksApi.setForumItemComponent(props => <ForumItem {...props}/>)
-    /*externalCodeSetup.navigationApi.setAnimatedSwitchNavigator((routes, options, routeProps) => {
+    externalCodeSetup.navigationApi.setAnimatedSwitchNavigator((routes, options, routeProps) => {
         const feature = routeProps.settings.features.multisite_network;
         const hasMultiSite = Platform.select({
             ios: feature.is_enabled_ios,
@@ -2415,7 +2441,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             routes: newRoutes,
             options: newOptions,
         }
-    })*/
+    })
     externalCodeSetup.forumSingleHooksApi.setHeaderRightComponent(({
                                                                        t,
                                                                        forum,
