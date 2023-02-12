@@ -5,7 +5,6 @@ import TrackPlayer, {Event, State, useTrackPlayerEvents} from 'react-native-trac
 import {s} from '../Utils/Scale';
 import TrackSlider from "./TrackSlider";
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
-import * as Analytics from "../Utils/Analytics";
 import {SvgPauseCircleIcon, SvgPlayCircleIcon, SvgStopCircleIcon,} from "../Utils/svg";
 
 const AudioPlayer = (props) => {
@@ -25,10 +24,6 @@ const AudioPlayer = (props) => {
                     data: track
                 }
             });
-            Analytics.segmentClient.track('End Guided Practice', {
-                id: track.id,
-                title: track.title
-            }).then();
             setMessageBarDisplay(true);
         } catch (e) {
             console.error(e);

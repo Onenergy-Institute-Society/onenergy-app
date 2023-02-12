@@ -16,6 +16,4 @@ Pod::Spec.new do |s|
   s.source_files = "ios/**/*.{h,m,mm}"
 
   s.dependency "React-Core"
-  s.dependency "sovran-react-native"
-  s.dependency "segment-analytics-react-native"
 end

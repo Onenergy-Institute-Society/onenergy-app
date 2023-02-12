@@ -20,7 +20,6 @@ import {BlurView} from "@react-native-community/blur";
 import ScalableImage from "../Components/ScalableImage";
 import {SvgIconBack} from "../Utils/svg";
 import AwesomeAlert from "../Utils/AwesomeAlert";
-import * as Analytics from "../Utils/Analytics";
 
 const VouchersScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
@@ -54,7 +53,6 @@ const VouchersScreen = (props) => {
        }
    }
     useEffect(()=>{
-        Analytics.segmentClient.screen('Voucher').then();
         fetchVoucherData().then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'voucher_title').title,

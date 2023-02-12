@@ -265,10 +265,6 @@ const HomeContent = (props) => {
         }
     },[settings.latitude])
     useEffect(async () => {
-        Analytics.segmentClient.screen('Home').then();
-        props.navigation.setParams({
-            title: optionData.titles.find(el => el.id === 'home_title').title,
-        });
         calcSolarMoon();
         setCurrentSolarTerm({
             Image:optionData.currentSolarTermImage,
@@ -313,9 +309,6 @@ const HomeContent = (props) => {
                         'data': item.item
                     }
                 });
-                Analytics.segmentClient.track('Set Daily Goal', {
-                    time: item.item
-                }).then();
                 this.todayGoalDialog.close();
             }}>
                 <View style={[cornerStyle, bottomStyle, {

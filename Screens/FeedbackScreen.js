@@ -60,7 +60,6 @@ const FeedbackScreen = props => {
        }
    }
     useEffect(() => {
-        Analytics.segmentClient.screen('Feedback').then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'feedback_title').title,
             onSendPress: onSendPress
