@@ -49,7 +49,7 @@ const HomeContent = (props) => {
     const achievementReducer = useSelector((state) => state.onenergyAppReducer ? state.onenergyAppReducer.achievementReducer : null);
     const dispatch = useDispatch();
     const [sunrise, setSunrise] = useState('');
-    const [moonPhase, setMoonPhase] = useState('');
+    const [moonPhase, setMoonPhase] = useState({});
     const [nextMoonPhase, setNextMoonPhase] = useState({});
     const [currentSolarTerm, setCurrentSolarTerm] = useState(null);
     const [points, setPoints] = useState(null);
@@ -82,8 +82,8 @@ const HomeContent = (props) => {
     },[...Object.values(progressReducer.points)])
     const fetchCurrentSolarTerm = async () => {
         try {
-            const api = getApi(props.config);
-            const data = await api.customRequest(
+            const {customRequest} = getApi(props.config);
+            const data = await customRequest(
                 "wp-json/onenergy/v1/currentSolar/",
                 "get",       // get, post, patch, delete etc.
                 {},               // JSON, FormData or any other type of payload you want to send in a body of request
@@ -128,9 +128,9 @@ const HomeContent = (props) => {
                     'list': quest.list
                 });
             });
-            const apiRequest = getApi(props.config);
             console.log('statsUpdate home', progressReducer, achievements);
-            await apiRequest.customRequest(
+            const {customRequest} = getApi(props.config);
+            await customRequest(
                 "wp-json/onenergy/v1/statsUpdate",
                 "post",
                 {
@@ -174,9 +174,9 @@ const HomeContent = (props) => {
                 'list': quest.list
             });
         });
-        const apiRequest = getApi(props.config);
+        const {customRequest} = getApi(props.config);
         console.log('claimUpdate home', progressReducer.points, achievements);
-        await apiRequest.customRequest(
+        await customRequest(
             "wp-json/onenergy/v1/claimUpdate",
             "post",
             {
@@ -224,8 +224,8 @@ const HomeContent = (props) => {
         setMoonPhase({phaseName, phaseTitle})
         const lunarAge = (phaseNumber * 3)/20;
         let dateDiff;
-        let moonPhaseTitle = '';
-        let moonPhaseDate = '';
+        let moonPhaseTitle;
+        let moonPhaseDate;
 
         if (lunarAge <= 14.765) {
             dateDiff = 14.765 - lunarAge;
@@ -239,8 +239,8 @@ const HomeContent = (props) => {
     }
     const fetchIpAndLocation = async () => {
         try {
-            const api = getApi(props.config);
-            const localInfo = await api.customRequest(
+            const {customRequest} = getApi(props.config);
+            const localInfo = await customRequest(
                 "wp-json/onenergy/v1/getLocalInfo/",
                 "get",       // get, post, patch, delete etc.
                 {},               // JSON, FormData or any other type of payload you want to send in a body of request

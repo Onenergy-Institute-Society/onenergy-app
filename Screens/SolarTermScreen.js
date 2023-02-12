@@ -16,8 +16,8 @@ const SolarTermScreen = props => {
 
     const fetchPostData = async () => {
         try {
-            const apiPage = getApi(props.config);
-            await apiPage.customRequest(
+            const {customRequest} = getApi(props.config);
+            await customRequest(
                 "wp-json/wp/v2/posts/29378?_embed",
                 "get",
                 {},

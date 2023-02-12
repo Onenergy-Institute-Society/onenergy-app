@@ -66,9 +66,9 @@ const VimeoBlockLoader = (props) => {
     }, [vimeoConfig])
     return (
         videoLoading ?
-            <ImageBackground style={styles.video}>
+            <View style={styles.video}>
                 <ActivityIndicator size="large"/>
-            </ImageBackground>
+            </View>
             :
             <View style={styles.container}>
                 <VimeoBlock videoId={block.result} video={video} duration={duration} thumbnail={thumbnail}

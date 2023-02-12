@@ -1,15 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {connect, useDispatch, useSelector} from "react-redux";
+import {connect, useDispatch} from "react-redux";
 import {AppState, StyleSheet, TouchableOpacity, View} from 'react-native';
 import TrackPlayer, {Event, State, useTrackPlayerEvents} from 'react-native-track-player';
 import {s} from '../Utils/Scale';
 import TrackSlider from "./TrackSlider";
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
-import {
-    SvgPauseCircleIcon,
-    SvgPlayCircleIcon,
-    SvgStopCircleIcon,
-} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
+import {SvgPauseCircleIcon, SvgPlayCircleIcon, SvgStopCircleIcon,} from "../Utils/svg";
 
 const AudioPlayer = (props) => {
     const {screenProps, user} = props;
@@ -28,6 +25,10 @@ const AudioPlayer = (props) => {
                     data: track
                 }
             });
+            Analytics.segmentClient.track('End Guided Practice', {
+                id: track.id,
+                title: track.title
+            }).then();
             setMessageBarDisplay(true);
         } catch (e) {
             console.error(e);
@@ -55,7 +56,7 @@ const AudioPlayer = (props) => {
     }, [track]);
 
     async function addTrack(track) {
-        const state = await TrackPlayer.getState();
+        await TrackPlayer.getState();
         await TrackPlayer.reset();
         return await TrackPlayer.add(track, -1);
     }

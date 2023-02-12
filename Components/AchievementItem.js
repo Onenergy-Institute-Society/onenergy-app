@@ -68,11 +68,11 @@ const AchievementItem = (props) => {
                                 {item.awards&&item.awards.length&&item.awards.map(point =>
                                     <Text
                                         style={[global.pointTitle, {
-                                            flexWrap: "nowrap",
-                                            fontSize: s(24),
-                                            color: '#FFF'
-                                        }]}
-                                    >
+                                                flexWrap: "nowrap",
+                                                fontSize: s(24),
+                                                color: '#FFF'
+                                            }]}
+                                        >
                                         +{point.point} {optionData.points.find(pt => pt.pointName === point.name).pointTitle}
                                     </Text>
                                 )}

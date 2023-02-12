@@ -22,8 +22,8 @@ const PracticeMember = props => {
 
     const removeRoutine = async (item) => {
         try {
-            const apiSlide = getApi(props.config);
-            await apiSlide.customRequest(
+            const {customRequest} = getApi(props.config);
+            await customRequest(
                 "wp-json/onenergy/v1/delRoutine",
                 "post",
                 {"routine": item},

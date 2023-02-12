@@ -4,7 +4,7 @@ import {getApi} from "@src/services";
 import {NavigationActions, StackActions, withNavigation} from "react-navigation";
 import {connect, useDispatch, useSelector} from "react-redux";
 import IconButton from "@src/components/IconButton";
-import AwesomeAlert from "../Components/AwesomeAlert";
+import AwesomeAlert from "../Utils/AwesomeAlert";
 
 const LessonButton = (props) => {
     const {global, colors, lesson} = props;
@@ -22,9 +22,9 @@ const LessonButton = (props) => {
 
     const completeLesson = async () => {
         try {
-            const apiRequest = getApi(props.config);
+            const {customRequest} = getApi(props.config);
             let course;
-            const data = await apiRequest.customRequest(
+            const data = await customRequest(
                 "wp-json/buddyboss-app/learndash/v1/lessons/" + lesson.id + "/complete",
                 "post",
                 {"course_id": lesson.parent.id},

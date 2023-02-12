@@ -1,8 +1,6 @@
 import React, {useEffect} from "react";
-import {connect, useSelector, useDispatch} from "react-redux";
-import {
-    SafeAreaView, Text, ImageBackground, BackHandler, ActivityIndicator
-} from "react-native";
+import {connect, useDispatch, useSelector} from "react-redux";
+import {ActivityIndicator, BackHandler, ImageBackground, SafeAreaView, Text} from "react-native";
 import {getApi} from "@src/services";
 import messaging from '@react-native-firebase/messaging';
 import {languages} from "../Utils/Settings";
@@ -22,8 +20,8 @@ const InitData = (props) => {
 
     const fetchInitDate = async (loadGroup, loadGuide, loadRoutine, loadAchievement, loadProgress) => {
         try {
-            const api = getApi(props.config);
-            const data = await api.customRequest(
+            const {customRequest} = getApi(props.config);
+            const data = await customRequest(
                 "wp-json/onenergy/v1/initData/",
                 "get",       // get, post, patch, delete etc.
                 {

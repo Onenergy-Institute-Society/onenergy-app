@@ -37,8 +37,8 @@ const PracticeGroup = props => {
 
     const JoinGroupPractice = async (gp_id, gp_time) => {
         try {
-            const api = getApi(props.config);
-            await api.customRequest(
+            const {customRequest} = getApi(props.config);
+            await customRequest(
                 "wp-json/onenergy/v1/JoinGroupPractice",          // Endpoint suffix or full url. Suffix will be appended to the site url that app uses. Example of a suffix is "wp-json/buddyboss/v1/members". Example of full url would be "https://app-demos.buddyboss.com/learndash/wp-json/buddyboss/v1/members".
                 "post",       // get, post, patch, delete etc.
                 {"gp_id": gp_id, "gp_time": gp_time},               // JSON, FormData or any other type of payload you want to send in a body of request

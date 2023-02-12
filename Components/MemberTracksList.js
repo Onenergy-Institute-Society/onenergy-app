@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {
   Alert,
   FlatList,
@@ -12,12 +12,13 @@ import {
   UIManager,
   View,
 } from "react-native";
-import { useSelector } from "react-redux";
-import { mvs, s, vs, windowWidth } from "../Utils/Scale";
+import {useSelector} from "react-redux";
+import {mvs, s, vs, windowWidth} from "../Utils/Scale";
 import AudioPlayerRoutine from "./AudioPlayerRoutine";
-import { Swipeable } from "react-native-gesture-handler";
+import {Swipeable} from "react-native-gesture-handler";
 import IconButton from "@src/components/IconButton";
-import { SvgBell, SvgChevronsLeft, SvgClock } from "../Utils/svg";
+import {SvgBell, SvgChevronsLeft, SvgClock} from "../Utils/svg";
+import * as Analytics from "../Utils/Analytics";
 
 if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental &&
@@ -43,6 +44,12 @@ const MemberTracksList = (props) => {
       parseInt(routine.id) !== parseInt(selectedRoutine.id)
     ) {
       setSelectedRoutine(routine);
+      Analytics.segmentClient
+        .track("Start Routine Practice", {
+          id: routine.id,
+          title: routine.title,
+        })
+        .then();
     }
   };
 
@@ -69,9 +76,9 @@ const MemberTracksList = (props) => {
   };
   const row = [];
   const [key, setKey] = useState("");
-  const handleWillOpen = (index: any) => () =>
+  const handleWillOpen = (index) => () =>
     key !== "" && key !== index && row[key].close();
-  const handleOpen = (index: any) => () => setKey(index);
+  const handleOpen = (index) => () => setKey(index);
   const renderItem = ({ item, index }) => {
     let showPlayer = !!(selectedRoutine && selectedRoutine.id === item.id);
     let totalDuration = 0;
@@ -240,25 +247,9 @@ const MemberTracksList = (props) => {
             </Text>
           </View>
           <View style={styles.subTitleBox}>
-            <Text style={[styles.subTitle, { color: "grey" }]}>
-              {item.level &&
-              practiceReducer.guides.find(
-                (level) => parseInt(level.id) === parseInt(item.level)
-              )
-                ? practiceReducer.guides.find(
-                    (level) => level.id === item.level
-                  ).title
-                : "Preparatory Practices"}
-            </Text>
-            <Text style={[styles.subTitle, { color: "grey" }]}>
-              Practices: {item.routine.length}
-            </Text>
-            <Text style={[styles.subTitle, { color: "grey" }]}>
-              Background:{" "}
-              {optionData.bgm.find((el) => el.id === item.bgm_id)
-                ? optionData.bgm.find((el) => el.id === item.bgm_id).name
-                : ""}
-            </Text>
+                        <Text style={[styles.subTitle, {color:'grey'}]}>{item.level&&practiceReducer.guides.find(level=>parseInt(level.id)===parseInt(item.level))?practiceReducer.guides.find(level=>level.id===item.level).title:'Preparatory Practices'}</Text>
+                        <Text style={[styles.subTitle, {color:'grey'}]}>Practices: {item.routine.length}</Text>
+                        <Text style={[styles.subTitle, {color:'grey'}]}>Background: {optionData.bgm.find(el => el.id === item.bgm_id)?optionData.bgm.find(el => el.id === item.bgm_id).name:''}</Text>
           </View>
         </ImageBackground>
       </View>

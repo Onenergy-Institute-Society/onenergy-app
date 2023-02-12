@@ -19,7 +19,8 @@ import RNRestart from 'react-native-restart';
 import {BlurView} from "@react-native-community/blur";
 import ScalableImage from "../Components/ScalableImage";
 import {SvgIconBack} from "../Utils/svg";
-import AwesomeAlert from "../Components/AwesomeAlert";
+import AwesomeAlert from "../Utils/AwesomeAlert";
+import * as Analytics from "../Utils/Analytics";
 
 const VouchersScreen = (props) => {
     const optionData = useSelector((state) => state.settings.settings.onenergy_option);
@@ -33,11 +34,11 @@ const VouchersScreen = (props) => {
     const [alertBody, setAlertBody] = useState('');
     const [alertConfirmText, setAlertConfirmText] = useState('');
     const dispatch = useDispatch();
+    const {customRequest} = getApi(props.config);
 
     const fetchVoucherData = async () => {
         try {
-            const apiVoucher = getApi(props.config);
-            await apiVoucher.customRequest(
+            await customRequest(
                 "wp-json/onenergy/v1/voucher",
                 "get",
                 {},
@@ -53,14 +54,14 @@ const VouchersScreen = (props) => {
        }
    }
     useEffect(()=>{
+        Analytics.segmentClient.screen('Voucher').then();
         fetchVoucherData().then();
         props.navigation.setParams({
             title: optionData.titles.find(el => el.id === 'voucher_title').title,
        });
    },[])
     const reloadUser = async () => {
-        const apiRequest = getApi(props.config);
-        await apiRequest.customRequest(
+        await customRequest(
             "wp-json/wp/v2/users/" + user.id,
             "get",
             {},
@@ -101,8 +102,8 @@ const VouchersScreen = (props) => {
                                     async () => {
                                         try {
                                             setLoading(true);
-                                            const apiRequest = getApi(props.config);
-                                            await apiRequest.customRequest(
+                                            const {customRequest} = getApi(props.config);
+                                            await customRequest(
                                                 "wp-json/onenergy/v1/redeemVoucher",
                                                 "post",
                                                 {"id": item.id},

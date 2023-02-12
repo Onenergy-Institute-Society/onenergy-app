@@ -31,8 +31,8 @@ const QuotesScreen = props => {
     const [options, setOptions] = useState({});
 
     const fetchQuote = async () => {
-        const api = getApi(props.config);
-        const data = await api.customRequest(
+        const {customRequest} = getApi(props.config);
+        const data = await customRequest(
             "wp-json/wp/v2/posts?_embed&categories=125&status=publish&order=desc&orderby=date&per_page=5&page=" + page,          // Endpoint suffix or full url. Suffix will be appended to the site url that app uses. Example of a suffix is "wp-json/buddyboss/v1/members". Example of full url would be "https://app-demos.buddyboss.com/learndash/wp-json/buddyboss/v1/members".
             "get",  // get, post, patch, delete etc.
             {},     // JSON, FormData or any other type of payload you want to send in a body of request

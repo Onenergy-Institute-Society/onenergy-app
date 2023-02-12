@@ -12,7 +12,7 @@ import {
     View
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {s, windowWidth, windowHeight, mvs} from "../Utils/Scale";
+import {s, windowWidth, windowHeight, mvs} from "./Scale";
 
 const HwBackHandler = BackHandler;
 const HW_BACK_EVENT = 'hardwareBackPress';

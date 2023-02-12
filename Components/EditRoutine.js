@@ -4,10 +4,12 @@ import {connect, useDispatch, useSelector} from "react-redux";
 import {
     ActivityIndicator,
     Alert,
-    Image, Platform,
+    Image,
+    Platform,
     SafeAreaView,
     ScrollView,
-    StyleSheet, Switch,
+    StyleSheet,
+    Switch,
     Text,
     TextInput,
     TouchableOpacity,
@@ -62,12 +64,13 @@ const EditRoutine = props => {
     const [changedReminder, setChangedReminder] = useState(false);
     const [changedStatus, setChangedStatus] = useState(false);
     const [cancelContentTouches, setCancelContentTouches] = useState(true);
+
     const row = [];
     const [key, setKey] = useState('');
     const updateTracks = async () => {
         try {
-            const apiRoutine = getApi(props.config);
-            await apiRoutine.customRequest(
+            const {customRequest} = getApi(props.config);
+            await customRequest(
                 "wp-json/onenergy/v1/editRoutine/",
                 "post",
                 {"routine": routineDetailState},
@@ -83,8 +86,8 @@ const EditRoutine = props => {
         try {
             setWaitingGetID(true);
             setSaving(true);
-            const apiRoutine = getApi(props.config);
-            const data = await apiRoutine.customRequest(
+            const {customRequest} = getApi(props.config);
+            const data = await customRequest(
                 "wp-json/onenergy/v1/addRoutine",
                 "post",
                 {"routine": routineDetailState},
@@ -345,7 +348,7 @@ const EditRoutine = props => {
         console.log('Update tracks after update', tracks)
         setRoutines(items);
         setRoutineDetailState(prevState => {
-            return {...prevState, routine: items, tracks: tracks}
+            return {...prevState, routine: items, audioTracks: tracks}
         });
         setChangedStatus(true);
         setRefresh(refresh + 1);

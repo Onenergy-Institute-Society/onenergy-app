@@ -74,7 +74,6 @@ const Milestones = (props) => {
                 <MilestonesAccordian item={item} handleOnPress={handleOnPress} optionData={optionData} {...props}/>
                 :
                 <AchievementItem mode={type} item={item} handleOnPress={handleOnPress} {...props}/>
-            : null
         );
     };
     return (
