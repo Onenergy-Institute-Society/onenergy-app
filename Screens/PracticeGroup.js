@@ -196,8 +196,8 @@ const PracticeGroup = props => {
                                                           waitingTextStyle={styles.waitingTextStyle}/>
                                 </View>
                             </View>
-                            {conditionLessons || user.test_mode ?
-                                timeToGo <= 30 || user.test_mode ?
+                            {conditionLessons || user.group_test_mode ?
+                                timeToGo <= 30 || user.group_test_mode ?
                                     <TouchableOpacity style={styles.btnJoin}
                                                       onPress={() => {
                                                           handlePress(item, CurrentStartTime, startMinutes)
@@ -221,7 +221,7 @@ const PracticeGroup = props => {
                                 </TouchableOpacity>
                             }
                         </View>
-                        {conditionLessons || user.test_mode ?
+                        {conditionLessons || user.group_test_mode ?
                             <View style={{flexDirection:"row", justifyContent:"flex-start", alignItems:"center", width: windowWidth - s(30)}}>
                                 <SvgClock color={colors.primaryColor} size={s(14)} style={{marginRight:s(5), marginLeft:s(5)}}/>
                                 <Text style={styles.subtitle}>{new Date(item.duration * 1000).toISOString().substring(14, 16)}'{new Date(item.duration * 1000).toISOString().substring(17, 19)}"</Text>

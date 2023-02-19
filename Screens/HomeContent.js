@@ -424,8 +424,8 @@ const HomeContent = (props) => {
                                         data={{data: [progressReducer.todayDuration / (progressReducer.todayGoal * 60) <= 1 ? progressReducer.todayDuration / (progressReducer.todayGoal * 60) : 1]}}
                                         width={(windowWidth - s(80)) / 2}
                                         height={(windowWidth - s(80)) / 2}
-                                        strokeWidth={s(24)}
-                                        radius={s(52)}
+                                        strokeWidth={ms(24)}
+                                        radius={ms(52)}
                                         chartConfig={{
                                             backgroundGradientFrom: "#FFF",
                                             backgroundGradientFromOpacity: 1,
