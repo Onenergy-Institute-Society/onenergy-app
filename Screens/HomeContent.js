@@ -201,7 +201,7 @@ const HomeContent = (props) => {
             phaseName = 'New Moon';
             phaseTitle = optionData.titles.find(el => el.id === 'home_moonphase_new_moon').title;
         } else if (phaseNumber > 4 && phaseNumber < 50) {
-            phaseName = 'waxing_crescent';
+            phaseName = 'Waxing Crescent';
             phaseTitle = optionData.titles.find(el => el.id === 'home_moonphase_waxing_crescent').title;
         } else if (phaseNumber >= 50 && phaseNumber <= 54) {
             phaseName = 'First Quarter';
@@ -222,6 +222,7 @@ const HomeContent = (props) => {
             phaseName = 'Waning Crescent';
             phaseTitle = optionData.titles.find(el => el.id === 'home_moonphase_waning_crescent').title;
         }
+
         setMoonPhase({phaseName, phaseTitle})
         const lunarAge = (phaseNumber * 3)/20;
         let dateDiff;
@@ -424,8 +425,8 @@ const HomeContent = (props) => {
                                         data={{data: [progressReducer.todayDuration / (progressReducer.todayGoal * 60) <= 1 ? progressReducer.todayDuration / (progressReducer.todayGoal * 60) : 1]}}
                                         width={(windowWidth - s(80)) / 2}
                                         height={(windowWidth - s(80)) / 2}
-                                        strokeWidth={ms(24)}
-                                        radius={ms(52)}
+                                        strokeWidth={24}
+                                        radius={52}
                                         chartConfig={{
                                             backgroundGradientFrom: "#FFF",
                                             backgroundGradientFromOpacity: 1,

@@ -25,7 +25,9 @@ import {SvgAddIcon, SvgIconBack, SvgIconCheck, SvgIconCross, SvgPlayIcon, SvgSto
 import Video from 'react-native-video';
 import * as Analytics from "../Utils/Analytics";
 import DatePicker from 'react-native-datepicker';
+import  { DateTimePickerAndroid }  from '@react-native-community/datetimepicker';
 import {routineImages} from "../Utils/Settings";
+import moment from 'moment';
 import PushNotification from "react-native-push-notification";
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 
@@ -197,7 +199,6 @@ const EditRoutine = props => {
                     }
                 }
                 let fireDate = new Date();
-
                 fireDate.setHours(parseInt(routineDetailState.reminder_time.substring(0, 2)));
                 fireDate.setMinutes(parseInt(routineDetailState.reminder_time.substring(3, 5)));
 
@@ -802,6 +803,18 @@ const EditRoutine = props => {
             )
         })
     }
+    const onTimePickerAndroidChange = (event, selectedDate) => {
+        console.log(selectedDate)
+        setRoutineDetailState(prevState => {return {...prevState, reminder_time: moment(selectedDate).format('HH:mm')}});setChangedStatus(true);setChangedReminder(true);
+    }
+    const showTimePickerAndroid = () => {
+        DateTimePickerAndroid.open({
+            value: routineDetailState.reminder_time?moment().hour(parseInt(routineDetailState.reminder_time.substring(0, 2))).minute(parseInt(routineDetailState.reminder_time.substring(3, 5))):new Date(),
+            onChange: onTimePickerAndroidChange,
+            mode: 'time',
+            is24Hour: true,
+        });
+    }
     return (
         <SafeAreaView style={global.container}>
             <ScrollView nestedScrollEnabled={true} style={styles.ScrollContainer}
@@ -883,7 +896,6 @@ const EditRoutine = props => {
                         </View>
                     </View>
                 </View>
-                {Platform.OS==='ios'?
                 <View style={global.roundBox}>
                     <View style={{
                         width: windowWidth - s(35),
@@ -894,36 +906,51 @@ const EditRoutine = props => {
                         <Text style={global.settingsItemTitle}>{optionData.titles.find(el => el.id === 'practices_edit_routine_title_daily_reminder').title}</Text>
                     </View>
                     <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-                        <View style={[styles.listContainer, {justifyContent: "center", width: "75%"}]}>
-                            <View style={{position:"absolute", right:0, top:vs(15)}}>
-                                <Image style={{marginRight: 10, tintColor: colors.primaryColor}}
-                                       source={require("@src/assets/img/arrow-down.png")}/>
+                        {Platform.OS==='ios'?
+                            <View style={[styles.listContainer, {justifyContent: "center", width: "75%"}]}>
+                                <View style={{position:"absolute", right:0, top:vs(15)}}>
+                                    <Image style={{marginRight: 10, tintColor: colors.primaryColor}}
+                                           source={require("@src/assets/img/arrow-down.png")}/>
+                                </View>
+                                <DatePicker
+                                    style={{width:"100%",
+                                        fontFamily: "Montserrat-Regular",
+                                        fontSize: s(14),}}
+                                    placeholder="Select Time"
+                                    customStyles={{
+                                        dateInput: {
+                                            borderWidth: 0,
+                                            fontFamily: "Montserrat-Regular",
+                                            fontSize: s(14),
+                                        },
+                                        placeholderText: {
+                                            fontFamily: "Montserrat-Regular",
+                                            fontSize: s(14),
+                                        }
+                                    }}
+                                    date={routineDetailState.reminder_time?routineDetailState.reminder_time:""}
+                                    mode="time"
+                                    format="HH:mm"
+                                    confirmBtnText={optionData.titles.find(el => el.id === 'button_ok').title}
+                                    cancelBtnText={optionData.titles.find(el => el.id === 'button_cancel').title}
+                                    minuteInterval={10}
+                                    onDateChange={(time) => {setRoutineDetailState(prevState => {return {...prevState, reminder_time: time}});setChangedStatus(true);setChangedReminder(true);}}
+                                />
                             </View>
-                            <DatePicker
-                                style={{width:"100%",
-                                    fontFamily: "Montserrat-Regular",
-                                    fontSize: s(14),}}
-                                placeholder="Select Time"
-                                customStyles={{
-                                    dateInput: {
-                                        borderWidth: 0,
-                                        fontFamily: "Montserrat-Regular",
-                                        fontSize: s(14),
-                                    },
-                                    placeholderText: {
-                                        fontFamily: "Montserrat-Regular",
-                                        fontSize: s(14),
-                                    }
-                                }}
-                                date={routineDetailState.reminder_time?routineDetailState.reminder_time:""}
-                                mode="time"
-                                format="HH:mm"
-                                confirmBtnText={optionData.titles.find(el => el.id === 'button_ok').title}
-                                cancelBtnText={optionData.titles.find(el => el.id === 'button_cancel').title}
-                                minuteInterval={10}
-                                onDateChange={(time) => {setRoutineDetailState(prevState => {return {...prevState, reminder_time: time}});setChangedStatus(true);setChangedReminder(true);}}
-                            />
-                        </View>
+                        :
+                            <TouchableWithoutFeedback
+                                onPress={() => {
+                                    showTimePickerAndroid();
+                                }}>
+                                <View style={[styles.listContainer, {justifyContent: "center", width: "75%"}]}>
+                                    <Text>{routineDetailState.reminder_time?routineDetailState.reminder_time:"Select Time"}</Text>
+                                    <View style={{position:"absolute", right:0, top:vs(15)}}>
+                                        <Image style={{marginRight: 10, tintColor: colors.primaryColor}}
+                                               source={require("@src/assets/img/arrow-down.png")}/>
+                                    </View>
+                                </View>
+                            </TouchableWithoutFeedback>
+                        }
                         <View style={{width: "20%", justifyContent:"center", alignItems:"center"}}>
                             <Switch
                                 value={routineDetailState.reminder_enable}
@@ -933,7 +960,7 @@ const EditRoutine = props => {
                             />
                         </View>
                     </View>
-                </View>:null}
+                </View>
                 {user.rank>0?
                 <View style={global.roundBox}>
                     <View style={{
