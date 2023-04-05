@@ -86,7 +86,7 @@ import PushNotification from "react-native-push-notification";
 import * as Analytics from "./Utils/Analytics";
 
 export const applyCustomCode = (externalCodeSetup: any) => {
-    externalCodeSetup.topicsApi.setTopicItemComponent(props => {
+/*    externalCodeSetup.topicsApi.setTopicItemComponent(props => {
         return <TopicItem {...props}/>;
     })
     externalCodeSetup.navigationApi.addNavigationRoute(
@@ -2113,13 +2113,13 @@ export const applyCustomCode = (externalCodeSetup: any) => {
             // default: true
             popInitialNotification: true,
 
-            /**
+            /!**
              * (optional) default: true
              * - Specified if permissions (ios) and token (android and ios) will requested or not,
              * - if not, you must call PushNotificationsHandler.requestPermissions() later
              * - if you are not using remote notification or do not have Firebase installed, use this:
              *     requestPermissions: Platform.OS === 'ios'
-             */
+             *!/
             requestPermissions: true,
         });
         PushNotification.createChannel({
@@ -2680,7 +2680,7 @@ export const applyCustomCode = (externalCodeSetup: any) => {
         if (!isFocused) {
             return false;
         }
-    })
+    })*/
 }
 
 
